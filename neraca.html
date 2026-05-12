@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neraca Koperasi</title>
+  <style>
+    :root{
+      --primary:#3b82f6;
+      --primary-dark:#2563eb;
+      --success:#10b981;
+      --danger:#ef4444;
+      --gray-50:#f9fafb;
+      --gray-100:#f3f4f6;
+      --gray-200:#e5e7eb;
+      --gray-600:#4b5563;
+      --gray-800:#1f2937;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--gray-100);color:var(--gray-800)}
+    
+    /* ===== HEADER ===== */
+    header{
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      color:#fff;
+      padding:14px 16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 2px 12px rgba(59,130,246,.25);
+      position:sticky;
+      top:0;
+      z-index:100
+    }
+    .header-left{display:flex;align-items:center;gap:12px}
+    .header-left h1{font-size:16px;font-weight:600}
+    .btn-back{
+      background:rgba(255,255,255,.2);
+      backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.3);
+      color:#fff;
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:.2s
+    }
+    .btn-back:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}
+    .header-btns{display:flex;gap:8px}
+    .header-btns button{
+      background:rgba(255,255,255,.2);
+      backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.3);
+      color:#fff;
+      padding:7px 14px;
+      border-radius:8px;
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer;
+      transition:.2s
+    }
+    .header-btns button:hover{background:rgba(255,255,255,.3);transform:translateY(-1px)}
+
+    /* ===== CONTAINER ===== */
+    .container{max-width:900px;margin:20px auto;background:#fff;padding:24px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+    .tanggal{text-align:center;margin-bottom:20px;color:var(--gray-600);font-size:13px;font-weight:500}
+    .filter{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+    .filter input{padding:9px 14px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px}
+    .filter input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+    .filter button{padding:9px 18px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:.2s}
+    .filter button:hover{background:var(--primary-dark);transform:translateY(-1px)}
+    
+    /* ===== NERACA ===== */
+    .neraca{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+   .kolom:nth-child(1) h3{background:var(--success);color:#fff;padding:12px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600}
+.kolom:nth-child(2) h3{background:var(--primary);color:#fff;padding:12px;border-radius:8px 8px 0 0;font-size:12px;font-weight:600}    .isi{border:1px solid var(--gray-200);border-top:none;padding:14px;border-radius:0 0 8px 8px;background:var(--gray-50)}
+    .baris{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--gray-200);font-size:14px}
+    .baris:last-child{border:none}
+    .baris span:first-child{color:var(--gray-600)}
+    .baris span:last-child{font-weight:500}
+    .sub{padding-left:16px;color:var(--gray-600)}
+    .total{display:flex;justify-content:space-between;padding:12px 0;margin-top:10px;border-top:2px solid var(--gray-800);font-weight:700;font-size:15px}
+    
+    /* ===== BALANCE BOX ===== */
+    .balance-box{margin-top:24px;padding:14px;border-radius:12px;text-align:center;font-weight:600;font-size:15px}
+    .success{background:#d1fae5;color:#065f46;border:2px solid #6ee7b7}
+    .error{background:#fee2e2;color:#991b1b;border:2px solid #fca5a5}
+    .selisih{font-size:12px;display:block;margin-top:4px;opacity:.8}
+    
+    /* ===== DEBUG ===== */
+    .debug-box{margin-top:24px;background:#fffbeb;border:1px dashed #f59e0b;padding:14px;border-radius:10px;font-size:12px;color:#92400e}
+    .debug-box strong{color:#78350f}
+    .debug-box hr{margin:8px 0;border:none;border-top:1px dashed #fbbf24}
+    
+    @media print{
+      header,.filter,.debug-box{display:none!important}
+      body{background:#fff}
+      .container{box-shadow:none;padding:0;margin:0;max-width:100%}
+    }
+    @media(max-width:768px){
+      .neraca{grid-template-columns:1fr}
+      .container{margin:12px;padding:16px;border-radius:12px}
+      header{padding:12px}
+      .header-left h1{font-size:14px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <button class="btn-back" onclick="kembali()" title="Kembali">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <h1>NERACA</h1>
+    </div>
+    <div class="header-btns">
+      <button onclick="window.print()">Print</button>
+      <button onclick="shareWA()">WA</button>
+      <button onclick="exportPDF()">PDF</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tanggal" id="tglNeraca">Per 31 Desember 2026</div>
+    
+    <div class="filter">
+      <input type="date" id="tanggalCutoff">
+      <button onclick="hitungNeraca()">Tampilkan</button>
+    </div>
+
+    <div class="neraca">
+      <!-- AKTIVA -->
+      <div class="kolom">
+        <h3>AKTIVA</h3>
+        <div class="isi">
+          <div class="baris"><span>Kas</span><span id="saldoKas">Rp 0</span></div>
+          <div class="baris sub"><span>- Cash</span><span id="kasCash">Rp 0</span></div>
+          <div class="baris sub"><span>- Bank</span><span id="kasBank">Rp 0</span></div>
+          <div class="baris"><span>Piutang Anggota</span><span id="piutang">Rp 0</span></div>
+          <div class="total"><span>TOTAL AKTIVA</span><span id="totalAktiva">Rp 0</span></div>
+        </div>
+      </div>
+
+      <!-- PASIVA -->
+      <div class="kolom">
+        <h3>PASIVA</h3>
+        <div class="isi">
+          <div class="baris"><span>Modal Awal</span><span id="modalAwal">Rp 0</span></div>
+          <div class="baris"><span>Simpanan Anggota</span><span id="totalSimpanan">Rp 0</span></div>
+          <div class="baris sub"><span>- Pokok</span><span id="simpananPokok">Rp 0</span></div>
+          <div class="baris sub"><span>- Wajib</span><span id="simpananWajib">Rp 0</span></div>
+          <div class="baris sub"><span>- Sukarela</span><span id="simpananSukarela">Rp 0</span></div>
+          <div class="baris"><span>SHU Ditahan</span><span id="shuDitahan">Rp 0</span></div>
+          <div class="baris"><span>SHU Berjalan</span><span id="shuBerjalan">Rp 0</span></div>
+          <div class="total"><span>TOTAL PASIVA</span><span id="totalPasiva">Rp 0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="balanceCheck" class="balance-box"></div>
+
+    <div class="debug-box" id="debugBox">
+      <strong>DEBUG NERACA:</strong><br>
+      1. Saldo Awal Cash: <span id="dbgSaldoAwalCash">Rp 0</span><br>
+      2. Saldo Awal Bank: <span id="dbgSaldoAwalBank">Rp 0</span><br>
+      3. Modal Awal: <span id="dbgModalAwal">Rp 0</span><br>
+      4. Kas Cash Sekarang: <span id="dbgKasCash">Rp 0</span><br>
+      5. Kas Bank Sekarang: <span id="dbgKasBank">Rp 0</span><br>
+      6. Total Kas: <span id="dbgSaldoKas">Rp 0</span><br>
+      7. Piutang: <span id="dbgPiutang">Rp 0</span><br>
+      8. TOTAL AKTIVA: <span id="dbgTotalAktiva">Rp 0</span><br>
+      <hr>
+      9. Total Simpanan: <span id="dbgSimpanan">Rp 0</span><br>
+      10. SHU Ditahan: <span id="dbgShuDitahan">Rp 0</span><br>
+      11. Pendapatan Jasa: <span id="dbgPendapatan">Rp 0</span><br>
+      12. Beban: <span id="dbgBeban">Rp 0</span><br>
+      13. SHU Berjalan: <span id="dbgShuBerjalan">Rp 0</span><br>
+      14. TOTAL PASIVA: <span id="dbgTotalPasiva">Rp 0</span><br>
+      <hr>
+      15. SELISIH: <span id="dbgSelisih">Rp 0</span><br>
+      16. Total Pinjaman: <span id="dbgTotalPinjaman">Rp 0</span><br>
+      17. Angsuran Pokok: <span id="dbgAngsuranPokok">Rp 0</span><br>
+      18. Total Kas Masuk: <span id="dbgKasMasuk">Rp 0</span><br>
+      19. Total Kas Keluar: <span id="dbgKasKeluar">Rp 0</span><br>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+    authDomain: "arfa-c7dee.firebaseapp.com",
+    databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+    projectId: "arfa-c7dee",
+    storageBucket: "arfa-c7dee.firebasestorage.app",
+    messagingSenderId: "468058520812",
+    appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  let dataGlobal = {};
+
+  const rupiah = n => new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",minimumFractionDigits:0}).format(Number(n)||0);
+
+  db.ref().on("value", snap=>{
+    dataGlobal = snap.val() || {};
+    hitungNeraca();
+  });
+
+  function hitungNeraca(){
+    const cutoffStr = document.getElementById("tanggalCutoff").value;
+    const cutoff = cutoffStr ? new Date(cutoffStr).getTime() : new Date().getTime();
+    document.getElementById("tglNeraca").innerText = "Per " + new Date(cutoff).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+
+    const kasData = dataGlobal.kas || {};
+    const transaksi = kasData.transaksi || {};
+    let debugKasMasuk = 0;
+    let debugKasKeluar = 0;
+    
+    // ===== 1. AKTIVA =====
+    let kasCash = Number(kasData.saldoAwal?.cash) || 0;
+    let kasBank = Number(kasData.saldoAwal?.bank) || 0;
+    
+    Object.values(transaksi).forEach(t=>{
+      if(!t || !t.tanggal) return;
+      let tgl = typeof t.tanggal === "number" ? t.tanggal : new Date(t.tanggal).getTime();
+      if(tgl > cutoff) return;
+      const jumlah = Number(t.jumlah) || 0;
+      const sumber = (t.sumberKas || "cash").toLowerCase();
+      if(t.tipe === "masuk"){
+        if(sumber === "bank") kasBank += jumlah; else kasCash += jumlah;
+        debugKasMasuk += jumlah;
+      } else if(t.tipe === "keluar"){
+        if(sumber === "bank") kasBank -= jumlah; else kasCash -= jumlah;
+        debugKasKeluar += jumlah;
+      }
+    });
+    
+    const saldoKas = kasCash + kasBank;
+
+    // 1b. PIUTANG
+    let totalPinjaman = 0;
+    let totalAngsuranPokok = 0;
+
+    Object.values(dataGlobal.pinjaman || {}).forEach(p => {
+      if(!p) return;
+      let tgl = typeof p.tanggal === "number" ? p.tanggal : new Date(p.tanggal).getTime();
+      if(tgl > cutoff) return;
+      totalPinjaman += Number(p.jumlah || 0);
+    });
+
+    Object.values(dataGlobal.angsuran || {}).forEach(a => {
+      if(!a) return;
+      let tgl = typeof a.tanggal === "number" ? a.tanggal : new Date(a.tanggal).getTime();
+      if(tgl > cutoff) return;
+      let pokok = Number(a.pokok) || 0;
+      if(pokok === 0 && a.kasId && transaksi[a.kasId]){
+        pokok = Number(transaksi[a.kasId].rincian?.pokok) || 0;
+      }
+      if(pokok === 0 && a.kasId && transaksi[a.kasId]){
+        const kasJumlah = Number(transaksi[a.kasId].jumlah) || 0;
+        const jasa = Number(transaksi[a.kasId].rincian?.jasa) || Number(a.jasa) || 0;
+        pokok = kasJumlah - jasa;
+      }
+      totalAngsuranPokok += Math.max(0, pokok);
+    });
+
+    const piutang = Math.max(0, totalPinjaman - totalAngsuranPokok);
+    const totalAktiva = saldoKas + piutang;
+
+    // ===== 2. PASIVA =====
+    const modalAwal = Number(kasData.saldoAwal?.cash || 0) + Number(kasData.saldoAwal?.bank || 0);
+    
+    let pokok = 0, wajib = 0, sukarela = 0;
+    Object.values(dataGlobal.simpanan || {}).forEach(s => {
+      if(!s) return;
+      let tgl = typeof s.tanggal === "number" ? s.tanggal : new Date(s.tanggal).getTime();
+      if(tgl > cutoff) return;
+      const jenis = (s.jenis || "").toLowerCase();
+      const jumlah = Number(s.jumlah) || 0;
+      if(jenis.includes("pokok")) pokok += jumlah;
+      else if(jenis.includes("wajib")) wajib += jumlah;
+      else sukarela += jumlah;
+    });
+    
+    let totalPendapatan = 0, pendapatanLain = 0;
+    Object.values(dataGlobal.angsuran || {}).forEach(a => {
+      if(!a) return;
+      let tgl = typeof a.tanggal === "number" ? a.tanggal : new Date(a.tanggal).getTime();
+      if(tgl > cutoff) return;
+      totalPendapatan += Number(a.jasa) || 0;
+    });
+    
+    Object.values(transaksi).forEach(t => {
+      if(!t) return;
+      const kategori = (t.kategori || "").toLowerCase();
+      if(t.tipe === "masuk" && kategori.includes("lain")){
+        pendapatanLain += Number(t.jumlah) || 0;
+      }
+    });
+    
+    const totalSimpanan = pokok + wajib + sukarela;
+    const shuBerjalan = totalPendapatan + pendapatanLain;
+    const shuDitahan = Number(dataGlobal.shuDitahan || 0);
+    const totalPasiva = modalAwal + totalSimpanan + shuDitahan + shuBerjalan;
+
+    // ===== 3. RENDER =====
+    document.getElementById("kasCash").innerText = rupiah(kasCash);
+    document.getElementById("kasBank").innerText = rupiah(kasBank);
+    document.getElementById("saldoKas").innerText = rupiah(saldoKas);
+    document.getElementById("piutang").innerText = rupiah(piutang);
+    document.getElementById("totalAktiva").innerText = rupiah(totalAktiva);
+    document.getElementById("modalAwal").innerText = rupiah(modalAwal);
+    document.getElementById("simpananPokok").innerText = rupiah(pokok);
+    document.getElementById("simpananWajib").innerText = rupiah(wajib);
+    document.getElementById("simpananSukarela").innerText = rupiah(sukarela);
+    document.getElementById("totalSimpanan").innerText = rupiah(totalSimpanan);
+    document.getElementById("shuDitahan").innerText = rupiah(shuDitahan);
+    document.getElementById("shuBerjalan").innerText = rupiah(shuBerjalan);
+    document.getElementById("totalPasiva").innerText = rupiah(totalPasiva);
+
+    // DEBUG
+    document.getElementById("dbgSaldoAwalCash").innerText = rupiah(kasData.saldoAwal?.cash || 0);
+    document.getElementById("dbgSaldoAwalBank").innerText = rupiah(kasData.saldoAwal?.bank || 0);
+    document.getElementById("dbgModalAwal").innerText = rupiah(modalAwal);
+    document.getElementById("dbgKasCash").innerText = rupiah(kasCash);
+    document.getElementById("dbgKasBank").innerText = rupiah(kasBank);
+    document.getElementById("dbgSaldoKas").innerText = rupiah(saldoKas);
+    document.getElementById("dbgPiutang").innerText = rupiah(piutang);
+    document.getElementById("dbgTotalAktiva").innerText = rupiah(totalAktiva);
+    document.getElementById("dbgSimpanan").innerText = rupiah(totalSimpanan);
+    document.getElementById("dbgShuDitahan").innerText = rupiah(shuDitahan);
+    document.getElementById("dbgPendapatan").innerText = rupiah(totalPendapatan);
+    document.getElementById("dbgBeban").innerText = rupiah(0);
+    document.getElementById("dbgShuBerjalan").innerText = rupiah(shuBerjalan);
+    document.getElementById("dbgTotalPasiva").innerText = rupiah(totalPasiva);
+    document.getElementById("dbgTotalPinjaman").innerText = rupiah(totalPinjaman);
+    document.getElementById("dbgAngsuranPokok").innerText = rupiah(totalAngsuranPokok);
+    document.getElementById("dbgKasMasuk").innerText = rupiah(debugKasMasuk);
+    document.getElementById("dbgKasKeluar").innerText = rupiah(debugKasKeluar);
+    
+    const selisih = totalAktiva - totalPasiva;
+    document.getElementById("dbgSelisih").innerText = rupiah(selisih);
+    
+    const balanceBox = document.getElementById("balanceCheck");
+    if(Math.abs(selisih) < 1){
+      balanceBox.className = "balance-box success";
+      balanceBox.innerHTML = "✓ Neraca Seimbang";
+    }else{
+      balanceBox.className = "balance-box error";
+      balanceBox.innerHTML = `✘ Tidak Seimbang <span class="selisih">Selisih ${rupiah(selisih)}</span>`;
+    }
+  }
+
+  // ===== FUNGSI HEADER =====
+  function kembali(){
+    if(document.referrer) history.back();
+    else window.location.href = 'laporan.html';
+  }
+
+  function shareWA(){
+    const tgl = document.getElementById("tglNeraca").innerText;
+    const aktiva = document.getElementById("totalAktiva").innerText;
+    const pasiva = document.getElementById("totalPasiva").innerText;
+    const balance = document.getElementById("balanceCheck").innerText;
+    
+    const text = `*NERACA KOPERASI*\n${tgl}\n\n*AKTIVA:* ${aktiva}\n*PASIVA:* ${pasiva}\n\n${balance}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');
+  }
+
+  function exportPDF(){
+    const opt = {
+      margin: 10,
+      filename: `Neraca_${new Date().toISOString().slice(0,10)}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(document.querySelector('.container')).save();
+  }
+
+  document.getElementById("tanggalCutoff").valueAsDate = new Date();
+</script>
+</body>
+</html>

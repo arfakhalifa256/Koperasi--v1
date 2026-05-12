@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kas Koperasi</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+:root{
+  --primary:#1e90ff;--primary-dark:#0f3057;--card:#fff;--bg:#f4f6f9;
+  --text:#1f2937;--muted:#6b7280;--success:#16a34a;--danger:#dc2626;
+  --warning:#f59e0b;--purple:#5e35b1;--shadow:0 4px 15px rgba(0,0,0,0.08);--radius:16px;
+}
+
+body{background:var(--bg);padding:12px;color:var(--text);font-size:13px;}
+
+/* ===== HEADER ===== */
+.app-header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;padding:14px 16px;border-radius:var(--radius);
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:var(--shadow);margin-bottom:16px;position:sticky;top:12px;z-index:100;
+}
+.header-left{display:flex;align-items:center;gap:10px;}
+.btn-back{
+  background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);
+  color:#fff;width:36px;height:36px;border-radius:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:0.2s;
+}
+.btn-back:active{transform:scale(0.92);}
+.header-title{font-weight:700;font-size:16px;letter-spacing:0.3px;}
+
+/* ===== CARD ===== */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:16px;
+  margin-bottom:14px;box-shadow:var(--shadow);border:1px solid #e5e7eb;
+}
+.card-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:14px;
+  padding-bottom:12px;border-bottom:2px solid var(--primary);
+}
+.card-header.material-icons{font-size:22px;color:var(--primary);}
+.card-header h2{font-size:15px;font-weight:700;color:var(--primary-dark);}
+
+/* ===== FORM ===== */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.form-group.full{grid-column:1 / -1;}
+.form-group label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.3px;}
+.form-group input,.form-group select{
+  width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #e5e7eb;
+  outline:none;font-size:14px;transition:0.2s;background:#fafafa;
+}
+.form-group input:focus,.form-group select:focus{
+  border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(30,144,255,0.12);
+}
+
+button{
+  width:100%;padding:13px;border:none;border-radius:12px;
+  background:var(--primary);color:#fff;font-size:14px;font-weight:600;
+  cursor:pointer;transition:0.2s;font-family:'Poppins',sans-serif;
+}
+button:active{transform:scale(0.98);}
+button:disabled{background:#94a3b8;cursor:not-allowed;}
+
+/* ===== SALDO GRID ===== */
+.saldo-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+}
+.saldo-item{
+  padding:16px;border-radius:14px;text-align:center;color:white;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+.saldo-item.label{font-size:11px;opacity:0.9;margin-bottom:6px;font-weight:500;}
+.saldo-item.value{font-size:20px;font-weight:700;}
+.saldo-item.awal{background:var(--purple);}
+.saldo-item.masuk{background:var(--success);}
+.saldo-item.keluar{background:var(--danger);}
+.saldo-item.akhir{
+  grid-column:1 / -1;background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  box-shadow:0 4px 15px rgba(30,144,255,0.35);
+}
+.saldo-item.akhir.value{font-size:26px;}
+
+/* ===== LIST TRANSAKSI ===== */
+.list{display:flex;flex-direction:column;gap:8px;max-height:450px;overflow-y:auto;}
+.item{
+  background:#fafafa;border-radius:14px;padding:14px;
+  border:1px solid #f1f5f9;transition:0.2s;
+}
+.item:active{background:#f1f5f9;}
+.item-top{display:flex;justify-content:space-between;margin-bottom:6px;align-items:center;}
+.item-jenis{
+  font-weight:700;font-size:10px;padding:4px 10px;border-radius:8px;
+  text-transform:uppercase;letter-spacing:0.5px;
+}
+.item-jenis.masuk{background:#dcfce7;color:#166534;}
+.item-jenis.keluar{background:#fee2e2;color:#991b1b;}
+.item-jumlah{font-weight:700;font-size:15px;color:var(--text);}
+.item-ket{font-size:12px;color:var(--muted);margin-bottom:3px;}
+.item-waktu{font-size:10px;color:#9ca3af;}
+.list-empty{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
+
+@media (max-width:600px){
+  body{padding:10px;}
+ .app-header{border-radius:14px;padding:12px 14px;}
+ .header-title{font-size:15px;}
+ .card{padding:14px;border-radius:14px;}
+ .form-grid{grid-template-columns:1fr;}
+ .saldo-grid{grid-template-columns:1fr;}
+ .saldo-item.value{font-size:18px;}
+ .saldo-item.akhir.value{font-size:22px;}
+ .item-jumlah{font-size:14px;}
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-left">
+    <button class="btn-back" onclick="history.back()">
+      <span class="material-icons" style="font-size:20px">arrow_back</span>
+    </button>
+    <span class="header-title">KAS KOPERASI</span>
+  </div>
+</header>
+
+<!-- ====================== SALDO AWAL ====================== -->
+<div class="card">
+  <div class="card-header">
+    <span class="material-icons">account_balance_wallet</span>
+    <h2>Saldo Awal</h2>
+  </div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>💵 Saldo Cash</label>
+      <input type="number" id="saldoCashInput" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label>🏦 Saldo Bank</label>
+      <input type="number" id="saldoBankInput" placeholder="0">
+    </div>
+  <button id="btnSimpanSaldoAwal">Simpan Saldo Awal</button>
+</div>
+
+<!-- ====================== RINGKASAN ====================== -->
+<div class="card">
+  <div class="card-header">
+    <span class="material-icons">dashboard</span>
+    <h2>Ringkasan Kas</h2>
+  </div>
+  <div class="saldo-grid">
+    <div class="saldo-item awal">
+      <div class="label">Saldo Awal</div>
+      <div class="value" id="txtSaldoAwal">Rp 0</div>
+    </div>
+    <div class="saldo-item masuk">
+      <div class="label">Total Masuk</div>
+      <div class="value" id="txtMasuk">Rp 0</div>
+    </div>
+    <div class="saldo-item keluar">
+      <div class="label">Total Keluar</div>
+      <div class="value" id="txtKeluar">Rp 0</div>
+    </div>
+    <div class="saldo-item akhir">
+      <div class="label">Saldo Akhir</div>
+      <div class="value" id="txtAkhir">Rp 0</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================== INPUT TRANSAKSI ====================== -->
+<div class="card">
+  <div class="card-header">
+    <span class="material-icons">receipt_long</span>
+    <h2>Input Transaksi</h2>
+  </div>
+  <div class="form-group">
+    <label>Jenis Transaksi</label>
+    <select id="jenisInput">
+      <option value="masuk">Kas Masuk</option>
+      <option value="keluar">Kas Keluar</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label>Jumlah</label>
+    <input type="number" id="jumlahInput" placeholder="Masukkan jumlah">
+  </div>
+  <div class="form-group">
+    <label>Keterangan</label>
+    <input type="text" id="ketInput" placeholder="Contoh: Setoran anggota">
+  </div>
+  <button id="btnTambah">Simpan Transaksi</button>
+</div>
+
+<!-- ====================== RIWAYAT ====================== -->
+<div class="card">
+  <div class="card-header">
+    <span class="material-icons">history</span>
+    <h2>Riwayat Transaksi</h2>
+  </div>
+  <div class="list" id="listTransaksi"></div>
+</div>
+
+<script>
+// ====================== FIREBASE CONFIG ======================
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.firebasestorage.app",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ====================== ELEMENT ======================
+const saldoCashInput = document.getElementById("saldoCashInput");
+const saldoBankInput = document.getElementById("saldoBankInput");
+const btnSimpanSaldoAwal = document.getElementById("btnSimpanSaldoAwal");
+const jenisInput = document.getElementById("jenisInput");
+const jumlahInput = document.getElementById("jumlahInput");
+const ketInput = document.getElementById("ketInput");
+const btnTambah = document.getElementById("btnTambah");
+const txtSaldoAwal = document.getElementById("txtSaldoAwal");
+const txtMasuk = document.getElementById("txtMasuk");
+const txtKeluar = document.getElementById("txtKeluar");
+const txtAkhir = document.getElementById("txtAkhir");
+const listTransaksi = document.getElementById("listTransaksi");
+
+let saldoAwal = 0;
+
+// ====================== FORMAT RUPIAH ======================
+function rupiah(angka){
+  return "Rp " + Number(angka).toLocaleString("id-ID");
+}
+
+// ====================== SIMPAN SALDO AWAL ======================
+btnSimpanSaldoAwal.onclick = async ()=>{
+  const cash = Number(saldoCashInput.value) || 0;
+  const bank = Number(saldoBankInput.value) || 0;
+
+  btnSimpanSaldoAwal.disabled = true;
+  btnSimpanSaldoAwal.innerText = "Menyimpan...";
+
+  try {
+    await db.ref("kas/saldoAwal").set({
+      cash,
+      bank,
+      updatedAt: Date.now()
+    });
+    alert("Saldo awal berhasil disimpan");
+  } catch(err) {
+    alert("Gagal simpan: " + err.message);
+  }
+
+  btnSimpanSaldoAwal.disabled = false;
+  btnSimpanSaldoAwal.innerText = "Simpan Saldo Awal";
+};
+
+// ====================== TAMBAH TRANSAKSI ======================
+btnTambah.onclick = async ()=>{
+  const jenis = jenisInput.value;
+  const jumlah = Number(jumlahInput.value);
+  const ket = ketInput.value.trim();
+
+  if(!jumlah || jumlah <= 0){
+    alert("Jumlah tidak valid");
+    return;
+  }
+
+  btnTambah.disabled = true;
+  btnTambah.innerText = "Menyimpan...";
+
+  try {
+    const id = Date.now();
+    await db.ref("kas/transaksi/" + id).set({
+      jenis,
+      jumlah,
+      ket: ket || "Transaksi Kas",
+      waktu: new Date().toISOString()
+    });
+    jumlahInput.value = "";
+    ketInput.value = "";
+  } catch(err) {
+    alert("Gagal simpan: " + err.message);
+  }
+
+  btnTambah.disabled = false;
+  btnTambah.innerText = "Simpan Transaksi";
+};
+
+// ====================== LOAD DATA REALTIME ======================
+db.ref("kas").on("value", snap=>{
+  const data = snap.val() || {};
+  const saldoCash = Number(data.saldoAwal?.cash) || 0;
+  const saldoBank = Number(data.saldoAwal?.bank) || 0;
+  const transaksi = data.transaksi || {};
+
+  saldoCashInput.value = saldoCash;
+  saldoBankInput.value = saldoBank;
+
+  saldoAwal = saldoCash + saldoBank;
+
+  let totalMasuk = 0;
+  let totalKeluar = 0;
+
+  listTransaksi.innerHTML = "";
+
+  const sortedKeys = Object.keys(transaksi).sort((a,b)=> b-a);
+
+  if(sortedKeys.length === 0){
+    listTransaksi.innerHTML = `<div class="list-empty">Belum ada transaksi</div>`;
+  }
+
+  sortedKeys.forEach(id=>{
+  const t = semuaTransaksi[id];
+
+  const jumlah = parseFloat(t.jumlah) || 0;
+
+  // 🔥 SUPPORT 2 FORMAT (lama + baru)
+  const jenis = (t.jenis || t.tipe || "").toLowerCase();
+
+  if(jenis === "masuk"){
+    totalMasuk += jumlah;
+  } else if(jenis === "keluar"){
+    totalKeluar += jumlah;
+  }
+
+  // 🔥 SUPPORT 2 FORMAT TANGGAL
+  const waktu = t.waktu || t.tanggal;
+
+  const waktuFormat = waktu
+    ? new Date(waktu).toLocaleString("id-ID",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+      })
+    : "-";
+
+  listTransaksi.innerHTML += `
+    <div class="item">
+      <div class="item-top">
+        <div class="item-jenis ${jenis}">${jenis.toUpperCase()}</div>
+        <div class="item-jumlah">${rupiah(jumlah)}</div>
+      </div>
+      <div class="item-ket">${t.ket || t.keterangan || "-"}</div>
+      <div class="item-waktu">${waktuFormat}</div>
+    </div>
+  `;
+});
+
+  const saldoAkhir = saldoAwal + totalMasuk - totalKeluar;
+
+  txtSaldoAwal.innerText = rupiah(saldoAwal);
+  txtMasuk.innerText = rupiah(totalMasuk);
+  txtKeluar.innerText = rupiah(totalKeluar);
+  txtAkhir.innerText = rupiah(saldoAkhir);
+});
+</script>
+
+</body>
+</html>

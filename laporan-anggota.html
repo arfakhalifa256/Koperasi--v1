@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Angsuran</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary: #1e90ff;
+  --primary-dark: #0f3057;
+  --card: #ffffff;
+  --bg: #f1f5f9;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  padding-bottom: 20px;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-back {
+  background: rgba(255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.btn-back:hover {
+  background: rgba(255,255,0.25);
+  transform: translateX(-2px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 2px;
+}
+
+.brand-text.subtitle {
+  font-size: 10px;
+  opacity: 0.9;
+  line-height: 1;
+}
+
+.brand-text.title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.header-actions button {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Poppins', sans-serif;
+}
+
+.header-actions button:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  padding: 14px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  text-align: center;
+  margin: 8px 0 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--card);
+  padding: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+/* ===== FILTER ===== */
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-group label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.filter-group select {
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(30,144,255,0.1);
+}
+
+/* ===== SUMMARY ===== */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.summary-item {
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.summary-item .label{
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:2px;
+  font-weight:500;
+}
+
+.summary-item .value{
+  font-size:15px;
+  font-weight:700;
+  color:var(--text);
+}
+/* ===== ANGGOTA CARD ===== */
+.anggota-card {
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+
+.anggota-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(30,144,255,0.12);
+}
+
+.anggota-header {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.anggota-nama {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* ===== TABLE ===== */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  min-width: 600px;
+}
+
+th {
+  background: #f8fafc;
+  padding: 7px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background: #f8fafc;
+}
+
+.badge-status {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge-lunas {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge-belum {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.card-footer {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.card-footer div {
+  text-align: center;
+}
+
+.card-footer span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+/* ===== TOAST ===== */
+#toastPDF {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: none;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 9999;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:768px){
+  body { font-size: 12px; }
+.container { padding: 10px; }
+.card { padding: 12px; }
+.summary-grid { grid-template-columns: 1fr; }
+.filter-grid { grid-template-columns: 1fr; }
+  table { font-size: 10px; }
+  th,td { padding: 5px 6px; }
+.brand img { width: 32px; height: 32px; }
+.brand-text.title { font-size: 13px; }
+.header-actions button { padding: 5px 8px; font-size: 10px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA</div>
+      </div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button onclick="exportPDF()">PDF</button>
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="container">
+  <h4 class="page-title">LAPORAN PINJAMAN</h4>
+
+  <div class="card">
+    <div class="filter-grid">
+      <div class="filter-group">
+        <label>Filter Anggota</label>
+        <select id="filterAnggota" onchange="render()">
+          <option value="all">Semua Anggota</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Filter Status</label>
+        <select id="filterStatus" onchange="render()">
+          <option value="all">Semua Status</option>
+          <option value="LUNAS">LUNAS</option>
+          <option value="BELUM">BELUM</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="label">Total Pinjaman</div>
+        <div class="value">Rp <span id="totalPinjaman">0</span></div>
+      </div>
+      <div class="summary-item">
+        <div class="label">Total Angsuran</div>
+        <div class="value">Rp <span id="totalAngsuran">0</span></div>
+      </div>
+      <div class="summary-item">
+        <div class="label">Total Tagihan +20%</div>
+        <div class="value" style="color:var(--danger)">Rp <span id="totalSisa">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cardsContainer"></div>
+</div>
+
+<div id="toastPDF">Membuat PDF...</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.firebasestorage.app",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const pinjamanRef = ref(db,"pinjaman");
+const angsuranRef = ref(db,"angsuran");
+
+let dataPinjaman = {};
+let dataAngsuran = {};
+
+const formatRp = n => Number(n||0).toLocaleString("id-ID");
+
+window.kembali = function(){
+  window.location.href="laporan.html";
+}
+
+function loadFilter(){
+  const sel = document.getElementById("filterAnggota");
+  sel.innerHTML = `<option value="all">Semua Anggota</option>`;
+  const set = new Set();
+  Object.values(dataPinjaman).forEach(p=>set.add(p.nama));
+  [...set].sort().forEach(n=>sel.innerHTML += `<option value="${n}">${n}</option>`);
+}
+
+window.render = function(){
+  const filterNama = document.getElementById("filterAnggota").value;
+  const filterStatus = document.getElementById("filterStatus").value;
+  const container = document.getElementById("cardsContainer");
+  container.innerHTML = "";
+
+  let totalPin = 0, totalAng = 0, totalSisa = 0;
+  const group = {};
+
+  Object.entries(dataPinjaman).forEach(([id,p])=>{
+    if(!group[p.nama]) group[p.nama] = [];
+    group[p.nama].push({id,...p});
+  });
+
+  for(const nama in group){
+    if(filterNama!== "all" && nama.trim().toLowerCase()!== filterNama.trim().toLowerCase()) continue;
+
+    let rows = "";
+    let tp=0, ta=0, ts=0;
+
+    group[nama].sort((a,b) => (b.tanggal || 0) - (a.tanggal || 0));
+
+    group[nama].forEach(p=>{
+      let angs = 0;
+      let lastAngsuran = null;
+
+      Object.values(dataAngsuran).forEach(a=>{
+        if(a.pinjamanId === p.id){
+          angs += Number(a.jumlah||0);
+          if (!lastAngsuran || a.tanggal > lastAngsuran) {
+            lastAngsuran = a.tanggal;
+          }
+        }
+      });
+
+      const pin = Number(p.jumlah||0);
+      let sisa = pin - angs;
+if(sisa < 0) sisa = 0;
+      const status = sisa <= 0? "LUNAS" : "BELUM";
+
+      if(filterStatus!== "all" && filterStatus!== status) return;
+
+      tp += pin;
+      ta += angs;
+      ts += sisa;
+
+      const tglPinjam = p.tanggal? new Date(Number(p.tanggal)).toLocaleDateString("id-ID") : "-";
+      const tglAngsuran = lastAngsuran? new Date(lastAngsuran).toLocaleDateString("id-ID") : "-";
+
+      const badgeClass = status === "LUNAS"? "badge-lunas" : "badge-belum";
+
+      let jasa20 = sisa * 0.2;
+let totalTagihan = sisa + jasa20;
+
+rows += `
+<tr>
+  <td>${p.nomor||"-"}</td>
+  <td>${tglPinjam}</td>
+
+  <td class="text-right">
+    Rp ${formatRp(pin)}
+  </td>
+
+  <td>${tglAngsuran}</td>
+
+  <td class="text-right">
+    Rp ${formatRp(angs)}
+  </td>
+
+  
+<td class="text-right">
+  <div style="font-weight:700;color:#dc2626">
+    Rp ${formatRp(totalTagihan)}
+  </div>
+
+  <div style="font-size:10px;color:#666">
+    Pokok: Rp ${formatRp(sisa)}
+  </div>
+
+  <div style="font-size:10px;color:#f59e0b">
+    Jasa 20%: Rp ${formatRp(jasa20)}
+  </div>
+</td> <td><span class="badge-status ${badgeClass}">${status}</span></td>
+        </tr>`;
+    });
+
+    if(rows === "") continue;
+
+    totalPin += tp;
+    totalAng += ta;
+    totalSisa += ts;
+
+    container.innerHTML += `
+      <div class="card anggota-card">
+        <div class="anggota-header">
+          <div class="anggota-nama">${nama}</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Tgl Pinjam</th>
+                <th>Pinjaman</th>
+                <th>Tgl Angsur</th>
+                <th>Angsuran</th>
+                <th>Sisa</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="card-footer">
+          <div>
+            <span>Total Pinjaman</span>
+            Rp ${formatRp(tp)}
+          </div>
+          <div>
+            <span>Total Angsuran</span>
+            Rp ${formatRp(ta)}
+          </div>
+          <div>
+            <span>Total Tagihan</span>
+Rp ${formatRp(ts + (ts*0.2))}
+    </div>
+        </div>
+      </div>`;
+  }
+
+  document.getElementById("totalPinjaman").innerText = formatRp(totalPin);
+  document.getElementById("totalAngsuran").innerText = formatRp(totalAng);
+  document.getElementById("totalSisa").innerText =
+  formatRp(totalSisa + (totalSisa * 0.2));};
+
+onValue(pinjamanRef,s=>{
+  dataPinjaman = s.exists()?s.val():{};
+  loadFilter();
+  render();
+});
+
+onValue(angsuranRef,s=>{
+  dataAngsuran = s.exists()?s.val():{};
+  render();
+});
+
+window.exportPDF = function () {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("l", "mm", "a4");
+
+  const filterNama = document.getElementById("filterAnggota").value;
+  const filterStatus = document.getElementById("filterStatus").value;
+  const date = new Date().toLocaleDateString("id-ID");
+
+  const group = {};
+  Object.entries(dataPinjaman).forEach(([id, p]) => {
+    if (!group[p.nama]) group[p.nama] = [];
+    group[p.nama].push({ id,...p });
+  });
+
+  let first = true;
+  let totalPin = 0, totalAng = 0, totalSisa = 0;
+
+  for (const nama in group) {
+    if (filterNama!== "all" && nama.trim().toLowerCase()!== filterNama.trim().toLowerCase()) continue;
+
+    let rows = [];
+    let tp = 0, ta = 0, ts = 0;
+
+    group[nama].forEach(p => {
+      let angs = 0;
+      let lastAngsuran = null;
+
+      Object.values(dataAngsuran).forEach(a => {
+        if (a.pinjamanId === p.id) {
+          angs += Number(a.jumlah || 0);
+          if (!lastAngsuran || a.tanggal > lastAngsuran) {
+            lastAngsuran = a.tanggal;
+          }
+        }
+      });
+
+      const pin = Number(p.jumlah || 0);
+      let sisa = pin - angs;
+if(sisa < 0) sisa = 0;
+
+const jasa20 = sisa * 0.2;
+const totalTagihan = sisa + jasa20;
+      const status = sisa <= 0? "LUNAS" : "BELUM";
+
+      if (filterStatus!== "all" && filterStatus!== status) return;
+
+      tp += pin;
+      ta += angs;
+      ts += sisa;
+
+      const tglPinjam = p.tanggal? new Date(Number(p.tanggal)).toLocaleDateString("id-ID") : "-";
+      const tglAngsuran = lastAngsuran? new Date(lastAngsuran).toLocaleDateString("id-ID") : "-";
+
+      rows.push([
+        p.nomor || "-",
+        tglPinjam,
+        "Rp " + formatRp(pin),
+        tglAngsuran,
+        "Rp " + formatRp(angs),
+       "Rp " + formatRp(totalTagihan), status
+      ]);
+    });
+
+    if (rows.length === 0) continue;
+
+    totalPin += tp;
+    totalAng += ta;
+    totalSisa += ts;
+
+    if (!first) doc.addPage();
+    first = false;
+
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("KOPERASI ARFA DRIVER", 148, 12, { align: "center" });
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.text("LAPORAN PINJAMAN ANGGOTA", 148, 18, { align: "center" });
+
+    doc.setFontSize(9);
+    doc.text("Tanggal cetak: " + date, 282, 28, { align: "right" });
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("Nama: " + nama, 14, 28);
+
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.text("Total Pinjaman: Rp " + formatRp(tp), 14, 34);
+    doc.text("Total Angsuran: Rp " + formatRp(ta), 14, 39);
+    doc.text("Total Sisa: Rp " + formatRp(ts), 14, 44);
+
+    doc.autoTable({
+      startY: 50,
+      head: [["No", "Tgl Pinjam", "Pinjaman", "Tgl Angsur", "Angsuran", "Tagihan +20%", "Status"]],  body: rows,
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [30, 144, 255], textColor: 255, fontStyle: 'bold' },
+      columnStyles: {
+        2: { halign: 'right' },
+        4: { halign: 'right' },
+        5: { halign: 'right' }
+      },
+      didParseCell: function (data) {
+        if (data.column.index === 6) {
+          if (data.cell.raw === "LUNAS") {
+            data.cell.styles.textColor = [0, 128, 0];
+            data.cell.styles.fontStyle = 'bold';
+          } else {
+            data.cell.styles.textColor = [200, 0, 0];
+            data.cell.styles.fontStyle = 'bold';
+          }
+        }
+      }
+    });
+  }
+
+
+  // Download
+  let fileName = "Laporan_Angsuran";
+  if (filterNama!== "all") {
+    const namaClean = filterNama.trim().replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
+    fileName += "_" + namaClean;
+  }
+  const today = new Date().toLocaleDateString("id-ID").replace(/\//g,"-");
+  fileName += "_" + today + ".pdf";
+
+  document.getElementById("toastPDF").style.display = "block";
+  setTimeout(() => {
+    document.getElementById("toastPDF").style.display = "none";
+  }, 2000);
+
+  const pdfBlob = doc.output("blob");
+  const url = URL.createObjectURL(pdfBlob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+    a.remove();
+  }, 1000);
+};
+</script>
+</body>
+</html>

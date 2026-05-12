@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Koperasi App</title>
+<link rel="icon" href="./img/icon-192.png?v=1">
+<link rel="apple-touch-icon" href="./img/icon-192.png">
+
+<link rel="manifest" href="./manifest.json">
+
+<meta name="theme-color" content="#1e90ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Koperasi App">
+
+<!-- 🔥 TAMBAHAN PENTING -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+    <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+  
+  *{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+  }
+
+  :root{
+    --primary:#1e90ff;
+    --primary-dark:#187bdb;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --shadow:0 10px 30px rgba(15,23,42,.10);
+    --radius:22px;
+  }
+
+  body{
+    font-family:'Poppins', sans-serif;
+    background:linear-gradient(180deg,#eaf4ff 0%, #f4f7fb 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    color:var(--text);
+  }
+
+  .wrap{
+    width:100%;
+    max-width:420px;
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:28px 20px;
+    text-align:center;
+    border:1px solid #eaf0f6;
+  }
+
+  /* ===== WAKTU & SALAM ===== */
+  .time-box {
+    background: linear-gradient(135deg, var(--primary) 0%, #0ea5e9 100%);
+    color: #fff;
+    padding: 12px 14px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 16px rgba(30,144,255,0.22);
+  }
+
+  #jam {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+    line-height: 1.2;
+  }
+  
+  
+  
+
+  .logo{
+    width:90px;
+    height:90px;
+    border-radius:24px;
+    margin:0 auto 18px;
+    display:block;
+    object-fit:cover;
+    background:#fff;
+    box-shadow:0 12px 25px rgba(30,144,255,.18);
+    border:2px solid #dbeafe;
+    padding:8px;
+  }
+
+  h1{
+    font-size:26px;
+    font-weight:700;
+    color:var(--primary);
+    margin-bottom:10px;
+  }
+
+  p{
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .btn{
+    display:block;
+    width:100%;
+    text-decoration:none;
+    background:linear-gradient(135deg, var(--primary) 0%, #0ea5e9 100%);
+    color:#fff;
+    padding:14px 16px;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:600;
+    transition:all 0.3s ease;
+    margin-top:10px;
+    box-shadow: 0 4px 15px rgba(30,144,255,0.3);
+  }
+
+  .btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(30,144,255,0.4);
+  }
+
+  .sub-btn{
+     text-align:center;
+    display:block;
+    width:100%;
+    text-decoration:none;
+    background:#fff;
+    color:var(--primary);
+    padding:13px 16px;
+    border-radius:14px;
+    font-size:14px;
+    font-weight:600;
+    transition:all 0.3s ease;
+    margin-top:10px;
+    border:2px solid #e0f2fe;
+  }
+
+  .sub-btn:hover{
+    background:#f0f9ff;
+    border-color:var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .footer{
+    margin-top:16px;
+    text-align:center;
+    color:#94a3b8;
+    font-size:11px;
+    font-weight:500;
+  }
+
+  @media (max-width:480px){
+    body{ padding:12px; }
+    .card{ padding:24px 18px; }
+    h1{ font-size:22px; }
+    p{ font-size: 10.5px; }
+    #jam{ font-size:22px; 
+      color:yellow;
+    }
+    #salam{ font-size:14px; }
+    .logo{ width:80px; height:80px; }
+    .btn{ font-size:14px; padding:13px 16px; }
+    .sub-btn{ font-size:13px; padding:12px 16px; }
+  }
+  
+  </style>
+</head>
+<body>
+  
+  <div class="wrap">
+    <div class="card">
+      <!-- 🔥 TAMBAH INI -->
+      <div class="time-box">
+        <div id="jam">00:00:00</div>
+        <div id="salam">Selamat datang</div>
+      </div>
+      
+       <img src="./img/icon-512.png?v=1" alt="Logo School Bus App" class="logo">
+      
+      <h1>Koperasi App</h1>
+
+      <p>
+        Aplikasi pengelolaan koprasi driver KHALFA IMS.
+        Input data, edit data koperasi, lihat laporan, dan cetak PDF dalam satu sistem.
+      </p>
+
+      <a href="login.html" class="btn">Login ke Aplikasi</a>
+        </div>
+
+    <div class="footer">
+      Versi 1.02 • Mobile Friendly
+    </div>
+  </div>
+
+  <script>
+  // 🔥 JAM + SALAM REALTIME
+function updateWaktu() {
+  const now = new Date();
+  const jam = now.getHours();
+  const menit = String(now.getMinutes()).padStart(2, '0');
+  const detik = String(now.getSeconds()).padStart(2, '0');
+  
+  // Ambil username dari localStorage
+  const username = localStorage.getItem("username");
+  
+  // Update jam
+  document.getElementById("jam").textContent = `${jam}:${menit}:${detik}`;
+  
+  // Update salam + username
+  let salam = "Selamat datang";
+  if(jam < 11) salam = "Selamat pagi";
+  else if(jam < 15) salam = "Selamat siang";
+  else if(jam < 18) salam = "Selamat sore";
+  else salam = "Selamat malam";
+  
+  // Tempelin username kalau ada, kalau ga ada biarin aja
+  document.getElementById("salam").textContent = username 
+    ? `${salam}, ${username}` 
+    : salam;
+}
+  
+
+updateWaktu();
+setInterval(updateWaktu, 1000);
+  
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+
+  </script>
+</body>
+</html>

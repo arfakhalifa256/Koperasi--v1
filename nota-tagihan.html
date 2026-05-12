@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nota Tagihan</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+:root{
+  --primary:#3b82f6;
+  --primary-dark:#2563eb;
+  --success:#10b981;
+  --danger:#ef4444;
+  --warning:#f59e0b;
+  --gray-50:#f9fafb;
+  --gray-100:#f3f4f6;
+  --gray-200:#e5e7eb;
+  --gray-600:#4b5563;
+  --gray-800:#1f2937;
+}
+body{background:var(--gray-100);color:var(--gray-800);font-size:13px;padding-bottom:20px}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:#fff;
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 12px rgba(59,130,246,.25);
+  position:sticky;
+  top:0;
+  z-index:100
+}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-left h3{font-size:12px;font-weight:600}
+.btn-back{
+  background:rgba(255,255,255,.2);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.3);
+  color:#fff;
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.2s
+}
+.btn-back:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}
+
+.card{
+  max-width:700px;
+  margin:16px auto;
+  background:#fff;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,.08)
+}
+.sub{text-align:center;color:var(--gray-600);margin-bottom:20px;font-size:12px}
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px dashed var(--gray-200);
+  font-size:13px
+}
+.label{color:var(--gray-600)}
+.value{font-weight:600}
+.total{
+  margin-top:20px;
+  background:linear-gradient(135deg,#eff6ff,#dbeafe);
+  padding:16px;
+  border-radius:12px;
+  border:2px solid var(--primary)
+}
+.total.row{border:none}
+.big{font-size:20px;color:var(--primary-dark);font-weight:700}
+button{
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:var(--primary);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+  font-size:13px
+}
+button:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-wa{background:#25d366}
+.btn-wa:hover{background:#20ba5a}
+.btn-riwayat{background:var(--warning)}
+.btn-riwayat:hover{background:#d97706}
+select{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1.5px solid var(--gray-200);
+  font-size:14px;
+  margin-bottom:15px
+}
+select:focus{
+  outline:none;
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(59,130,246,.1)
+}
+#riwayatBox{
+  display:none;
+  margin-top:20px;
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08)
+}
+#riwayatBox h3{margin-bottom:15px;color:var(--primary-dark);font-size:14px}
+.riwayat-item{
+  border:1px solid var(--gray-200);
+  border-radius:10px;
+  padding:12px;
+  margin-bottom:10px;
+  background:var(--gray-50)
+}
+.riwayat-item-header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+  font-weight:600
+}
+.riwayat-item-detail{font-size:12px;color:var(--gray-600)}
+.tagihan-belum{
+  border:1px solid #fecaca;
+  background:#fef2f2;
+  padding:14px;
+  border-radius:10px;
+  margin-bottom:15px
+}
+.tagihan-belum-title{
+  font-weight:700;
+  margin-bottom:12px;
+  color:#991b1b;
+  font-size:13px
+}
+@media print{
+  header,button,select{display:none!important}
+  body{background:#fff;padding:0}
+ .card{box-shadow:none;border:1px solid #ddd}
+}
+@media(max-width:768px){
+ .card{margin:12px;padding:16px;border-radius:12px}
+  h1{font-size:16px}
+ .big{font-size:18px}
+}
+    .container {
+    padding: 12px;
+  }
+  
+  .menu-section {
+    padding: 16px 12px;
+  }
+  
+  .menu-card {
+    font-size: 12px;
+    padding: 14px 10px;
+  }
+  
+  .menu-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .brand img {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .brand-text .title {
+    font-size: 13px;
+  }
+}
+  
+  
+
+</style>
+  
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      </div>
+      <div class="brand-text">
+        
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA DRIVER</div>
+      
+    </div>
+  </div>
+  <div class="header-actions">
+      <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+  
+</div>
+</header>
+
+<div class="card">
+  <h1>KOPERASI ARFA</h1>
+  <div class="sub">NOTA TAGIHAN PINJAMAN</div>
+
+  <select id="pilihPinjaman">
+    <option value="">Pilih Anggota / Pinjaman</option>
+  </select>
+
+  <div class="row">
+    <div class="label">Nama</div>
+    <div class="value" id="nama">-</div>
+  </div>
+  <div class="row">
+    <div class="label">No Pinjaman</div>
+    <div class="value" id="nomor">-</div>
+  </div>
+  <div class="row">
+    <div class="label">Tanggal Pinjam</div>
+    <div class="value" id="tanggal">-</div>
+  </div>
+  <div class="row">
+    <div class="label">Total Pinjaman</div>
+    <div class="value" id="pinjaman">Rp 0</div>
+  </div>
+  <div class="row">
+    <div class="label">Sudah Dibayar</div>
+    <div class="value" id="dibayar">Rp 0</div>
+  </div>
+  <div class="row">
+    <div class="label">Sisa Pokok</div>
+    <div class="value" id="sisa">Rp 0</div>
+  </div>
+
+  <div class="total">
+    <div class="row">
+      <div>Sisa Pokok</div>
+      <div id="pokok">Rp 0</div>
+    </div>
+    <div class="row">
+      <div>Jasa 20%</div>
+      <div id="jasa">Rp 0</div>
+    </div>
+    <div class="row big">
+      <div>TOTAL TAGIHAN</div>
+      <div id="total">Rp 0</div>
+    </div>
+  </div>
+
+  <button onclick="window.print()">Cetak Nota</button>
+  <button class="btn-wa" onclick="kirimWA()">Kirim Nota ke WA</button>
+  <button class="btn-riwayat" onclick="toggleRiwayat()">Lihat Riwayat Angsuran</button>
+
+  <div id="riwayatBox">
+    <h3>Riwayat Angsuran</h3>
+    <div id="riwayatBelumBayar"></div>
+    <div id="riwayatList">Belum ada data</div>
+  </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.firebasestorage.app",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const rupiah = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
+const select = document.getElementById("pilihPinjaman");
+
+let dataPinjaman = {};
+let dataAngsuran = {};
+let dataAktif = null;
+let sisaAktif = 0;
+let totalTagihanAktif = 0;
+
+// LOAD DROPDOWN - CUMA NAMA DOANG
+db.ref("pinjaman").once("value").then(snap=>{
+  let html = `<option value="">Pilih Anggota / Pinjaman</option>`;
+  snap.forEach(d=>{
+    const p = d.val();
+    dataPinjaman[d.key] = {...p, id: d.key};
+    html += `<option value="${d.key}">${p.nama || "-"}</option>`;
+  });
+  select.innerHTML = html;
+});
+
+// LOAD ANGSURAN
+db.ref("angsuran").on("value", snap=>{
+  dataAngsuran = snap.val() || {};
+  if(select.value) select.onchange();
+});
+
+// PILIH PINJAMAN
+select.onchange = function(){
+  const id = this.value;
+  if(!id) return resetTampilan();
+
+  const p = dataPinjaman[id];
+  dataAktif = p;
+
+  // HITUNG TOTAL PINJAMAN = POKOK
+  const totalPinjaman = Number(p.jumlah || 0);
+
+  // HITUNG TOTAL DIBAYAR - CUMA POKOK AJA
+  let totalBayarPokok = 0;
+  let listAngsuran = [];
+
+  Object.entries(dataAngsuran).forEach(([key, a])=>{
+    if(a.pinjamanId === id){
+      totalBayarPokok += Number(a.pokok || 0);
+      listAngsuran.push({...a, id: key});
+    }
+  });
+
+  // SISA POKOK
+  const sisaPokok = Math.max(totalPinjaman - totalBayarPokok, 0);
+
+  // JASA 20% DARI SISA POKOK - INI YG BENER
+  const jasa20 = Math.round(sisaPokok * 0.20);
+
+  // TOTAL TAGIHAN = SISA POKOK + JASA
+  const totalTagihan = sisaPokok + jasa20;
+
+  sisaAktif = sisaPokok;
+  totalTagihanAktif = totalTagihan;
+
+  // TAMPILKAN
+  document.getElementById("nama").innerText = p.nama || "-";
+  document.getElementById("nomor").innerText = p.nomor || "-";
+  document.getElementById("tanggal").innerText = new Date(p.tanggal).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+  document.getElementById("pinjaman").innerText = rupiah(totalPinjaman);
+  document.getElementById("dibayar").innerText = rupiah(totalBayarPokok);
+  document.getElementById("sisa").innerText = rupiah(sisaPokok);
+  document.getElementById("pokok").innerText = rupiah(sisaPokok);
+  document.getElementById("jasa").innerText = rupiah(jasa20);
+  document.getElementById("total").innerText = rupiah(totalTagihan);
+
+  // RIWAYAT
+  renderRiwayat(listAngsuran, sisaPokok, jasa20, totalTagihan);
+};
+
+function resetTampilan(){
+  document.getElementById("nama").innerText = "-";
+  document.getElementById("nomor").innerText = "-";
+  document.getElementById("tanggal").innerText = "-";
+  document.getElementById("pinjaman").innerText = rupiah(0);
+  document.getElementById("dibayar").innerText = rupiah(0);
+  document.getElementById("sisa").innerText = rupiah(0);
+  document.getElementById("pokok").innerText = rupiah(0);
+  document.getElementById("jasa").innerText = rupiah(0);
+  document.getElementById("total").innerText = rupiah(0);
+  document.getElementById("riwayatBox").style.display = "none";
+}
+
+function renderRiwayat(listAngsuran, sisaPokok, jasa20, totalTagihan){
+  // BOX TUNGGAKAN
+  const belumBayarBox = document.getElementById("riwayatBelumBayar");
+  if(sisaPokok > 0){
+    belumBayarBox.innerHTML = `
+      <div class="tagihan-belum">
+        <div class="tagihan-belum-title">Tagihan Belum Dibayar</div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span>Sisa Pokok</span>
+          <strong>${rupiah(sisaPokok)}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span>Jasa 20%</span>
+          <strong>${rupiah(jasa20)}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px">
+          <span>Total Tagihan</span>
+          <strong>${rupiah(totalTagihan)}</strong>
+        </div>
+      </div>
+    `;
+  } else {
+    belumBayarBox.innerHTML = `
+      <div style="border:1px solid #86efac;background:#f0fdf4;padding:12px;border-radius:10px;margin-bottom:15px;text-align:center;color:#166534;font-weight:600">
+        ✓ Lunas - Tidak Ada Tagihan
+      </div>
+    `;
+  }
+
+  // LIST ANGSURAN
+  let htmlRiwayat = "";
+  if(listAngsuran.length === 0){
+    htmlRiwayat = "<div style='text-align:center;color:#999;padding:20px'>Belum ada riwayat angsuran</div>";
+  } else {
+    listAngsuran.sort((a,b)=>b.tanggal - a.tanggal).forEach(a=>{
+      const total = Number(a.pokok || 0) + Number(a.jasa || 0);
+      htmlRiwayat += `
+        <div class="riwayat-item">
+          <div class="riwayat-item-header">
+            <span>${new Date(a.tanggal).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"})}</span>
+            <span style="color:var(--primary)">${rupiah(total)}</span>
+          </div>
+          <div class="riwayat-item-detail">
+            <div>Pokok: ${rupiah(a.pokok || 0)}</div>
+            <div>Jasa: ${rupiah(a.jasa || 0)}</div>
+            <div>Metode: ${(a.metode || "cash").toUpperCase()}</div>
+          </div>
+        </div>
+      `;
+    });
+  }
+  document.getElementById("riwayatList").innerHTML = htmlRiwayat;
+}
+
+function kirimWA(){
+  if(!dataAktif){
+    alert("Pilih anggota dulu");
+    return;
+  }
+
+  const pesan = `*NOTA TAGIHAN PINJAMAN*\nKOPERASI ARFA\n\n` +
+    `Nama: ${dataAktif.nama || "-"}\n` +
+    `No Pinjaman: ${dataAktif.nomor || "-"}\n\n` +
+    `Sisa Pokok: ${rupiah(sisaAktif)}\n` +
+    `Jasa 20%: ${rupiah(totalTagihanAktif - sisaAktif)}\n\n` +
+    `*TOTAL TAGIHAN: ${rupiah(totalTagihanAktif)}*\n\n` +
+    `Mohon segera melakukan pembayaran.\n\nTerima kasih 🙏`;
+
+  const url = "https://wa.me/?text=" + encodeURIComponent(pesan);
+  window.open(url,"_blank");
+}
+
+let riwayatVisible = false;
+function toggleRiwayat(){
+  const box = document.getElementById("riwayatBox");
+  riwayatVisible =!riwayatVisible;
+  box.style.display = riwayatVisible? "block" : "none";
+}
+// ===== FUNGSI HEADER =====
+  function kembali(){
+    if(document.referrer) history.back();
+    else window.location.href = 'laporan.html';
+  }
+</script>
+
+</body>
+</html>

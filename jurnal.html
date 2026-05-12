@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buku Kas</title>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary: #1e90ff;
+  --primary-dark: #0f3057;
+  --card: #ffffff;
+  --bg: #f1f5f9;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --success: #16a34a;
+  --danger: #dc2626;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  padding-bottom: 20px;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 2px;
+}
+
+.brand-text.subtitle {
+  font-size: 10px;
+  opacity: 0.9;
+  line-height: 1;
+}
+
+.brand-text.title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.header-actions button {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-actions button:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+.header-actions.btn-back {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.header-actions.btn-back:hover {
+  transform: translateX(-2px);
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  padding: 14px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  text-align: center;
+  margin: 8px 0 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--card);
+  padding: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+/* ===== SUMMARY ===== */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.summary-item {
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.summary-item.label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.summary-item.value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ===== FILTER ===== */
+.filter {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  align-items: end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.filter input,
+.filter select {
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+}
+
+.filter input:focus,
+.filter select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(30,144,255,0.1);
+}
+
+.filter-btns {
+  display: flex;
+  gap: 6px;
+  grid-column: 1 / -1;
+}
+
+.filter-btns button {
+  flex: 1;
+  padding: 7px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s;
+}
+
+.filter-btns button:hover {
+  background: var(--primary-dark);
+}
+
+.filter-btns button.btn-secondary {
+  background: #e2e8f0;
+  color: var(--text);
+}
+
+.filter-btns button.btn-secondary:hover {
+  background: #cbd5e1;
+}
+
+/* ===== TABLE ===== */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  min-width: 650px;
+}
+
+th {
+  background: #f8fafc;
+  padding: 8px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+td:nth-child(3) {
+  text-align: left;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background: #f8fafc;
+}
+
+.masuk {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.keluar {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* ===== PRINT ===== */
+@media print {
+  header,.filter-btns { display: none; }
+  body { background: white; padding: 0; }
+.card { box-shadow: none; border: 1px solid #ddd; }
+.container { padding: 0; }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:768px){
+  body { font-size: 12px; }
+.container { padding: 10px; }
+.card { padding: 12px; }
+.summary-grid { grid-template-columns: 1fr; }
+.filter { grid-template-columns: 1fr; }
+  table { font-size: 10px; }
+  th,td { padding: 6px; }
+.brand img { width: 32px; height: 32px; }
+.brand-text.title { font-size: 13px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA DRIVER</div>
+      </div>
+    </div>
+  </div>
+  <div class="header-actions">
+        <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="container">
+  <h3 class="page-title">BUKU KAS</h3>
+
+  <div class="card">
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="label">Total Saldo</div>
+        <div class="value">Rp <span id="saldo">0</span></div>
+      </div>
+      <div class="summary-item">
+        <div class="label">Debit</div>
+        <div class="value masuk">Rp <span id="totalMasuk">0</span></div>
+      </div>
+      <div class="summary-item">
+        <div class="label">Kredit</div>
+        <div class="value keluar">Rp <span id="totalKeluar">0</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="filter">
+      <div class="filter-group">
+        <label>Dari Tanggal</label>
+        <input type="date" id="tglAwal">
+      </div>
+      <div class="filter-group">
+        <label>Sampai Tanggal</label>
+        <input type="date" id="tglAkhir">
+      </div>
+      <div class="filter-group">
+        <label>Sumber</label>
+        <select id="filterSumber">
+          <option value="semua">Semua</option>
+          <option value="cash">Cash</option>
+          <option value="bank">Bank</option>
+        </select>
+      </div>
+      <div class="filter-btns">
+        <button onclick="filterData()">Filter</button>
+        <button class="btn-secondary" onclick="resetFilter()">Reset</button>
+        <button onclick="exportPDF()">Export PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Keterangan</th>
+            <th>Debit</th>
+            <th>Kredit</th>
+            <th>Saldo</th>
+          </tr>
+        </thead>
+        <tbody id="laporanKas"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain:"arfa-c7dee.firebaseapp.com",
+  databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId:"arfa-c7dee"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getDatabase(app);
+const kasRef=ref(db,"/kas");
+
+let laporanData=[];
+
+function rp(n){
+  return Number(n||0).toLocaleString("id-ID");
+}
+
+function tgl(t){
+  const d=new Date(t);
+  return isNaN(d)?"-":d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});
+}
+
+onValue(kasRef,(snap)=>{
+  laporanData=[];
+  if(snap.exists()){
+    const data=snap.val();
+    for(const k in data){
+      const item=data[k];
+      laporanData.push({
+        tanggal:item.tanggal? new Date(item.tanggal) : new Date(),
+        keterangan:item.keterangan?? "-",
+        sumber:(item.sumberKas?? "cash").toLowerCase(),
+        masuk:item.tipe==="masuk"? Number(item.jumlah) : 0,
+        keluar:item.tipe==="keluar"? Number(item.jumlah) : 0
+      });
+    }
+  }
+  tampilkan(laporanData);
+});
+
+function tampilkan(data){
+  const tbody=document.getElementById("laporanKas");
+  tbody.innerHTML="";
+
+  let saldo=0;
+  let totalMasuk=0;
+  let totalKeluar=0;
+  let no=1;
+
+  data.sort((a,b)=>a.tanggal-b.tanggal);
+
+  if(data.length === 0){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#6b7280;padding:20px">Tidak ada data</td></tr>`;
+  }
+
+  data.forEach(i=>{
+    totalMasuk+=i.masuk;
+    totalKeluar+=i.keluar;
+    saldo += i.masuk - i.keluar;
+
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${no++}</td>
+      <td>${tgl(i.tanggal)}</td>
+      <td style="text-align:left">${i.keterangan}</td>
+      <td class="masuk text-right">${i.masuk? "Rp "+rp(i.masuk) : "-"}</td>
+      <td class="keluar text-right">${i.keluar? "Rp "+rp(i.keluar) : "-"}</td>
+      <td class="text-right"><b>Rp ${rp(saldo)}</b></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("saldo").innerText=rp(saldo);
+  document.getElementById("totalMasuk").innerText=rp(totalMasuk);
+  document.getElementById("totalKeluar").innerText=rp(totalKeluar);
+}
+
+window.filterData=function(){
+  const awal=document.getElementById("tglAwal").value;
+  const akhir=document.getElementById("tglAkhir").value;
+  const sumber=document.getElementById("filterSumber").value;
+
+  let filtered=[...laporanData];
+
+  if(awal && akhir){
+    const a=new Date(awal);
+    const b=new Date(akhir);
+    b.setHours(23,59,59,999);
+    filtered=filtered.filter(i=>i.tanggal>=a && i.tanggal<=b);
+  }
+
+  if(sumber!=="semua"){
+    filtered=filtered.filter(i=>i.sumber===sumber);
+  }
+
+  tampilkan(filtered);
+}
+
+window.resetFilter=function(){
+  document.getElementById("tglAwal").value="";
+  document.getElementById("tglAkhir").value="";
+  document.getElementById("filterSumber").value="semua";
+  tampilkan(laporanData);
+}
+
+window.exportPDF=function(){
+  if(laporanData.length === 0){
+    alert("Data belum siap!");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc=new jsPDF();
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica","bold");
+  doc.text("ARFA DRIVER", 105, 15, {align:"center"});
+  doc.setFontSize(12);
+  doc.text("BUKU KAS", 105, 22, {align:"center"});
+
+  const tglCetak = new Date().toLocaleDateString("id-ID");
+  doc.setFontSize(9);
+  doc.setFont("helvetica","normal");
+  doc.text(`Tanggal Cetak: ${tglCetak}`, 14, 30);
+
+  let rows=[];
+  document.querySelectorAll("#laporanKas tr").forEach(tr=>{
+    const td=tr.querySelectorAll("td");
+    if(td.length > 0){
+      rows.push([
+        td[0].innerText,
+        td[1].innerText,
+        td[2].innerText,
+        td[3].innerText,
+        td[4].innerText,
+        td[5].innerText
+      ]);
+    }
+  });
+
+  doc.autoTable({
+    startY:35,
+    head:[["No","Tanggal","Keterangan","Debit","Kredit","Saldo"]],
+    body:rows,
+    styles:{fontSize:9,cellPadding:2},
+    headStyles:{fillColor:[30,144,255],textColor:255},
+    columnStyles:{
+      0:{halign:"center"},
+      3:{halign:"right"},
+      4:{halign:"right"},
+      5:{halign:"right"}
+    }
+  });
+
+  const today = new Date().toLocaleDateString("id-ID").replace(/\//g,"-");
+  doc.save(`buku_kas_${today}.pdf`);
+}
+
+window.kembali=function(){
+  window.location.href="laporan.html";
+}
+</script>
+
+</body>
+</html>

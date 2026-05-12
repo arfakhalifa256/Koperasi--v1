@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simpanan Anggota</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary: #1e90ff;
+  --primary-dark: #0f3057;
+  --card: #ffffff;
+  --bg: #f1f5f9;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --success: #16a34a;
+  --danger: #dc2626;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  padding-bottom: 20px;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 2px;
+}
+
+.brand-text.subtitle {
+  font-size: 10px;
+  opacity: 0.9;
+  line-height: 1;
+}
+
+.brand-text.title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  padding: 14px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  text-align: center;
+  margin: 8px 0 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--card);
+  padding: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  margin: 0 0 12px 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.total {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--primary-dark);
+}
+
+.anggota-card {
+  border-left: 5px solid var(--primary);
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.anggota-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.anggota-card-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.anggota-card-row:last-child {
+  margin-bottom: 0;
+  padding-top: 5px;
+  border-top: 1px dashed var(--border);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+input, select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(30,144,255,0.1);
+}
+
+button {
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: var(--danger);
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: var(--radius);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin: 0 0 15px 0;
+  font-size: 15px;
+}
+
+.modal-content button {
+  margin-top: 8px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:768px){
+  body { font-size: 12px; }
+ .container { padding: 10px; }
+ .card { padding: 12px; }
+ .brand img { width: 32px; height: 32px; }
+ .brand-text.title { font-size: 13px; }
+   
+}
+    .header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.header-actions button {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Poppins', sans-serif;
+}
+
+.header-actions button:hover {
+  background: rgba(255,255,255,0.25);
+}
+  
+</style>
+</head>
+
+<body>
+<header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA DRIVER</div>
+      </div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button onclick="exportPDF()">PDF</button>
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+  
+<div class="container">
+  <h3 class="page-title">FORM SIMPANAN</h3>
+
+  <div class="card total">
+    Total Simpanan : Rp <span id="totalSimpanan">0</span>
+  </div>
+
+  <div class="card" id="formTambah">
+    <h3>Tambah Simpanan</h3>
+    <div class="form-group">
+      <label>Pilih Anggota</label>
+      <select id="anggotaSelect"></select>
+    </div>
+    <div class="form-group">
+      <label>Jenis Simpanan</label>
+      <select id="jenis">
+        <option value="pokok">Simpanan Pokok</option>
+        <option value="wajib">Simpanan Wajib</option>
+        <option value="sukarela">Simpanan Sukarela</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Metode</label>
+      <select id="metode">
+        <option value="cash">Cash</option>
+        <option value="bank">Bank</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Jumlah</label>
+      <input type="number" id="jumlah" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label>Keterangan</label>
+      <input type="text" id="keterangan" placeholder="Contoh: Setoran bulan Januari">
+    </div>
+    <button id="btnSimpan">Simpan</button>
+  </div>
+
+  <div class="card">
+    <h3>Data Simpanan Anggota</h3>
+    <div id="cardContainer"></div>
+  </div>
+</div>
+
+<!-- MODAL EDIT -->
+<div class="modal" id="modalForm">
+  <div class="modal-content"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.appspot.com",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* ================= ROLE ================= */
+const role = localStorage.getItem("role") || "user";
+if(role!== "admin"){
+  document.getElementById("formTambah").style.display = "none";
+}
+
+/* ================= REF ================= */
+const anggotaRef = ref(db,"/anggota");
+const simpananRef = ref(db,"/simpanan");
+const kasRef = ref(db,"/kas");
+
+let anggotaMap = {};
+let anggotaData = {};
+let kasList = [];
+
+/* ================= LOAD ANGGOTA ================= */
+onValue(anggotaRef, snapshot => {
+  const select = document.getElementById("anggotaSelect");
+  select.innerHTML = "<option value=''>Pilih Anggota</option>";
+  anggotaMap = {};
+  snapshot.forEach(child => {
+    const data = child.val();
+    anggotaMap[child.key] = data;
+    const opt = document.createElement("option");
+    opt.value = child.key;
+    opt.textContent = data.nama + " (" + data.id + ")";
+    select.appendChild(opt);
+  });
+});
+
+  /* Logout */
+window.logout = () => {
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
+window.kembali = () => {
+  window.location.href = "dash.html";
+}
+  
+/* ================= LOAD KAS ================= */
+onValue(kasRef, snapshot => {
+  kasList = [];
+  snapshot.forEach(child=>{
+    kasList.push({
+      id: child.key,
+     ...child.val()
+    });
+  });
+});
+
+/* ================= LOAD SIMPANAN ================= */
+onValue(simpananRef, snapshot => {
+  if(Object.keys(anggotaMap).length === 0) return;
+  const container = document.getElementById("cardContainer");
+  container.innerHTML = "";
+  let total = 0;
+  let rekap = {};
+  snapshot.forEach(child => {
+    const data = child.val();
+    const jumlah = Number(data.jumlah) || 0;
+    total += jumlah;
+    const anggotaId = data.anggotaId || data.nama;
+    if(!rekap[anggotaId]){
+      let idAnggota = data.idAnggota || "-";
+      let nama = data.nama;
+      if(!data.idAnggota){
+        for(const key in anggotaMap){
+          if(anggotaMap[key].nama === data.nama){
+            idAnggota = anggotaMap[key].id;
+            nama = anggotaMap[key].nama;
+            break;
+          }
+        }
+      }
+      rekap[anggotaId] = {
+        nama,
+        id: idAnggota,
+        pokok: 0,
+        wajib: 0,
+        sukarela: 0,
+        list: []
+      };
+    }
+    rekap[anggotaId][data.jenis] += jumlah;
+    rekap[anggotaId].list.push({
+      id: child.key,
+     ...data
+    });
+  });
+  anggotaData = rekap;
+  const sorted = Object.entries(rekap).sort((a,b)=>{
+    return String(a[1].id).localeCompare(String(b[1].id),'id',{numeric:true});
+  });
+  if(sorted.length === 0){
+    container.innerHTML = `<div style="text-align:center;color:#6b7280;padding:20px">Belum ada data</div>`;
+  }
+  sorted.forEach(([anggotaId, data]) => {
+    const totalAnggota = data.pokok + data.wajib + data.sukarela;
+    const card = document.createElement("div");
+    card.className = "anggota-card";
+    card.innerHTML = `
+      <div class="anggota-card-row">
+        <b>${data.nama}</b>
+        <span>ID: ${data.id}</span>
+      </div>
+      <div class="anggota-card-row">
+        <span>Pokok</span>
+        <span>Rp ${data.pokok.toLocaleString("id-ID")}</span>
+      </div>
+      <div class="anggota-card-row">
+        <span>Wajib</span>
+        <span>Rp ${data.wajib.toLocaleString("id-ID")}</span>
+      </div>
+      <div class="anggota-card-row">
+        <span>Sukarela</span>
+        <span>Rp ${data.sukarela.toLocaleString("id-ID")}</span>
+      </div>
+      <div class="anggota-card-row">
+        <b>Total</b>
+        <b>Rp ${totalAnggota.toLocaleString("id-ID")}</b>
+      </div>
+    `;
+    if(role === "admin"){
+  card.onclick = () => bukaDetail(anggotaId);
+} else {
+  card.style.cursor = "default"; // ga bisa diklik
+}
+       container.appendChild(card);
+  });
+  document.getElementById("totalSimpanan").innerText = total.toLocaleString("id-ID");
+});
+
+/* ================= TAMBAH ================= */
+document.getElementById("btnSimpan").addEventListener("click", async () => {
+  const select = document.getElementById("anggotaSelect");
+  if(!select.value) return alert("Pilih anggota");
+  const anggota = anggotaMap[select.value];
+  const jumlah = Number(document.getElementById("jumlah").value);
+  if(!jumlah || jumlah <= 0) return alert("Jumlah tidak valid");
+  const jenis = document.getElementById("jenis").value;
+  const ket = document.getElementById("keterangan").value;
+  const metode = document.getElementById("metode").value;
+  const newSimpanan = push(simpananRef);
+  await newSimpanan.set({
+    anggotaId: select.value,
+    idAnggota: anggota.id,
+    nama: anggota.nama,
+    jenis,
+    jumlah,
+    keterangan: ket,
+    metode,
+    tanggal: Date.now()
+  });
+  await push(kasRef,{
+    simpananId: newSimpanan.key,
+    tanggal: Date.now(),
+    keterangan: `Simpanan ${jenis} (${anggota.nama})`,
+    tipe: "masuk",
+    sumberKas: metode,
+    jumlah
+  });
+  document.getElementById("jumlah").value = "";
+  document.getElementById("keterangan").value = "";
+});
+
+/* ================= DETAIL ================= */
+window.bukaDetail = function(id){
+  const data = anggotaData[id];
+  if(!data) return;
+  let html = `
+    <h3>${data.nama}</h3>
+    <div style="max-height:300px;overflow:auto">
+  `;
+  data.list.forEach(item=>{
+    html += `
+      <div style="border-bottom:1px solid #ddd;padding:8px">
+        <b>${item.jenis}</b> - Rp ${Number(item.jumlah).toLocaleString("id-ID")}
+        <br>
+        <small>${item.keterangan || "-"}</small>
+        ${role === "admin"? `
+        <br>
+        <div style="display:flex;gap:6px;margin-top:6px">
+          <button style="flex:1" onclick="editItem('${item.id}','${item.jenis}',${item.jumlah},'${item.metode || "cash"}')">Edit</button>
+          <button style="flex:1" class="btn-danger" onclick="hapusItem('${item.id}')">Hapus</button>
+        </div>
+        ` : ''}
+      </div>
+    `;
+  });
+  html += `</div><br><button onclick="tutupModal()">Tutup</button>`;
+  document.getElementById("modalForm").style.display = "flex";
+  document.querySelector(".modal-content").innerHTML = html;
+};
+/* ================= EDIT ================= */
+window.editItem = function(id,jenis,jumlah,metode){
+  if(role!== "admin") return alert("Akses ditolak!");
+  let html = `
+    <h3>Edit Simpanan</h3>
+    <div class="form-group">
+      <label>Jenis</label>
+      <select id="eJenis">
+        <option value="pokok" ${jenis==="pokok"?"selected":""}>Pokok</option>
+        <option value="wajib" ${jenis==="wajib"?"selected":""}>Wajib</option>
+        <option value="sukarela" ${jenis==="sukarela"?"selected":""}>Sukarela</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Metode</label>
+      <select id="eMetode">
+        <option value="cash" ${metode==="cash"?"selected":""}>Cash</option>
+        <option value="bank" ${metode==="bank"?"selected":""}>Bank</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Jumlah</label>
+      <input type="number" id="eJumlah" value="${jumlah}">
+    </div>
+    <button onclick="simpanEdit('${id}')">Simpan</button>
+    <button class="btn-danger" onclick="tutupModal()">Batal</button>
+  `;
+  document.querySelector(".modal-content").innerHTML = html;
+};
+
+window.simpanEdit = async function(id){
+  if(role!== "admin") return alert("Akses ditolak!");
+  const jenis = document.getElementById("eJenis").value;
+  const jumlah = Number(document.getElementById("eJumlah").value);
+  const metode = document.getElementById("eMetode").value;
+  if(!jumlah || jumlah <= 0) return alert("Jumlah tidak valid");
+  await update(ref(db,"/simpanan/" + id),{
+    jenis,
+    jumlah,
+    metode
+  });
+  const kasItem = kasList.find(k => k.simpananId === id);
+  if(kasItem){
+    await update(ref(db,"/kas/" + kasItem.id),{
+      jumlah,
+      sumberKas: metode,
+      keterangan: `Simpanan ${jenis}`
+    });
+  }
+  alert("Berhasil diupdate");
+  tutupModal();
+};
+
+window.hapusItem = async function(id){
+  if(role!== "admin") return alert("Akses ditolak!");
+  if(!confirm("Yakin hapus data?")) return;
+  await remove(ref(db,"/simpanan/" + id));
+  const kasItem = kasList.find(k => k.simpananId === id);
+  if(kasItem){
+    await remove(ref(db,"/kas/" + kasItem.id));
+  }
+  tutupModal();
+};
+
+
+/* ================= MODAL ================= */
+window.tutupModal = function(){
+  document.getElementById("modalForm").style.display = "none";
+};
+
+/* ================= EXPORT PDF ================= */
+document.getElementById("btnPDF").onclick = exportPDF;
+window.exportPDF = function(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(14);
+  doc.setFont("helvetica","bold");
+  doc.text("KOPERASI ARFA DRIVER", 105, 15, {align:"center"});
+  doc.setFontSize(12);
+  doc.text("LAPORAN SIMPANAN ANGGOTA", 105, 22, {align:"center"});
+  const tglCetak = new Date().toLocaleDateString("id-ID");
+  doc.setFontSize(9);
+  doc.setFont("helvetica","normal");
+  doc.text(`Tanggal Cetak: ${tglCetak}`, 14, 30);
+
+  let rows = [];
+  Object.values(anggotaData).forEach(data=>{
+    rows.push([
+      data.id,
+      data.nama,
+      "Rp " + data.pokok.toLocaleString("id-ID"),
+      "Rp " + data.wajib.toLocaleString("id-ID"),
+      "Rp " + data.sukarela.toLocaleString("id-ID"),
+      "Rp " + (data.pokok + data.wajib + data.sukarela).toLocaleString("id-ID")
+    ]);
+  });
+
+  doc.autoTable({
+    startY: 35,
+    head: [["ID", "Nama", "Pokok", "Wajib", "Sukarela", "Total"]],
+    body: rows,
+    styles: {fontSize: 9, cellPadding: 2},
+    headStyles: {fillColor: [30,144,255], textColor: 255},
+    columnStyles: {
+      0: {halign: "center"},
+      2: {halign: "right"},
+      3: {halign: "right"},
+      4: {halign: "right"},
+      5: {halign: "right"}
+    }
+  });
+  const today = new Date().toLocaleDateString("id-ID").replace(/\//g,"-");
+  doc.save(`simpanan_anggota_${today}.pdf`);
+}
+  /* Logout */
+window.logout = () => {
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
+window.kembali = () => {
+  window.location.href = "dash.html";
+}
+
+</script>
+
+</body>
+</html>

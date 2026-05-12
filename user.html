@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kelola User (Admin)</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+:root{
+  --primary:#1e90ff;--primary-dark:#0f3057;--card:#fff;--bg:#f4f6f9;
+  --text:#1f2937;--muted:#6b7280;--danger:#ef4444;--warning:#f59e0b;
+  --success:#16a34a;--shadow:0 4px 15px rgba(0,0,0,0.08);--radius:16px;
+}
+
+body{background:var(--bg);color:var(--text);font-size:13px;}
+
+/* ===== HEADER ===== */
+header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;padding:12px 16px;font-size:12px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 3px 8px rgba(0,0,0,0.15);position:sticky;top:0;z-index:100;
+}
+.header-right{display:flex;align-items:center;gap:8px;}
+.user-badge{
+  background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.25);color:#fff;padding:6px 12px;
+  border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;
+  max-width:160px;overflow:hidden;text-overflow:ellipsis;
+}
+.title{font-weight:700;font-size:12px;letter-spacing:0.3px;}
+.menu-btn{
+  background:transparent;border:none;color:white;font-size:16px;
+  cursor:pointer;padding:2px 4px;
+}
+/* ===== SIDEBAR ===== */
+.sidebar{
+  position:fixed;top:0;left:-240px;width:220px;height:100%;background:#0d47a1;
+  padding:16px;transition:.3s;z-index:99999;overflow-y:auto;
+}
+.sidebar.active{left:0;}
+.sidebar h3{color:#fff;margin-bottom:16px;font-size:16px;}
+.sidebar a{
+  display:block;color:#fff;text-decoration:none;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,.1);font-size:13px;
+}
+.sidebar a:hover{color:#90caf9;}
+.divider{height:12px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9999;}
+.overlay.active{display:block;}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  position:fixed;top:0;left:0;width:240px;height:100vh;background:var(--primary-dark);
+  color:white;padding:16px 10px;transform:translateX(-100%);
+  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);z-index:1000;overflow-y:auto;
+}
+.sidebar.open{transform:translateX(0);box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+.sidebar h3{
+  margin-bottom:16px;font-size:14px;font-weight:700;padding:0 8px 10px 8px;
+  border-bottom:1px solid rgba(255,255,255,0.2);
+}
+.sidebar a{
+  display:flex;align-items:center;gap:10px;color:#cbd5e1;text-decoration:none;
+  padding:9px 12px;border-radius:8px;margin-bottom:2px;font-size:13px;
+  font-weight:500;transition:all 0.2s ease;cursor:pointer;
+}
+.sidebar a:hover{background:var(--primary);color:white;transform:translateX(3px);}
+.sidebar.divider{height:1px;background:rgba(255,255,255,0.1);margin:10px 8px;}
+
+.overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.4);display:none;z-index:999;
+}
+.overlay.show{display:block;}
+
+/* ===== CONTAINER ===== */
+.container{padding:14px;max-width:1100px;margin:0 auto;}
+
+/* ===== CARD ===== */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:16px;
+  margin-bottom:14px;box-shadow:var(--shadow);border:1px solid #e5e7eb;
+}
+.card h3{
+  margin:0 0 14px 0;font-size:12px;font-weight:700;color:var(--primary-dark);
+  display:flex;align-items:center;gap:8px;padding-bottom:10px;
+  border-bottom:2px solid var(--primary);
+}
+
+/* ===== FORM ===== */
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.form-group label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;}
+.form-group input,.form-group select{
+  width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #e5e7eb;
+  outline:none;font-size:14px;transition:0.2s;background:#fafafa;
+}
+.form-group input:focus,.form-group select:focus{
+  border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(30,144,255,0.12);
+}
+
+.checkbox-wrap{
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  font-size:13px;color:var(--text);
+}
+.checkbox-wrap input{width:16px;height:16px;accent-color:var(--primary);}
+
+button{
+  width:100%;padding:13px;border:none;border-radius:12px;
+  background:var(--primary);color:#fff;font-size:14px;font-weight:600;
+  cursor:pointer;transition:0.2s;font-family:'Poppins',sans-serif;
+}
+button.add{background:var(--success);}
+button:active{transform:scale(0.98);}
+button:disabled{background:#94a3b8;cursor:not-allowed;}
+
+/* ===== TABLE ===== */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid #e5e7eb;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead{background:#f8fafc;}
+th{
+  padding:12px 10px;text-align:left;font-weight:700;color:var(--muted);
+  font-size:11px;text-transform:uppercase;letter-spacing:0.5px;
+}
+td{padding:12px 10px;border-top:1px solid #f1f5f9;}
+tbody tr:active{background:#f8fafc;}
+tbody tr:hover{background:#fafafa;}
+
+select{
+  padding:6px 10px;border-radius:8px;border:1.5px solid #e5e7eb;
+  font-size:12px;font-weight:600;cursor:pointer;outline:none;
+}
+select:focus{border-color:var(--primary);}
+
+.action-btns{display:flex;gap:6px;}
+.icon-btn{
+  width:32px;height:32px;border-radius:8px;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:0.2s;padding:0;
+}
+.icon-btn.reset{background:#fef3c7;color:#92400e;}
+.icon-btn.delete{background:#fee2e2;color:#991b1b;}
+.icon-btn:active{transform:scale(0.9);}
+
+@media (max-width:600px){
+  body{font-size:12px;}
+  header{padding:10px 14px;}
+ .title{font-size:12px;}
+ .user-badge{font-size:10px;padding:5px 10px;max-width:110px;}
+ .container{padding:10px;}
+ .card{padding:14px;border-radius:14px;}
+ .card h3{font-size:12px;}
+  table{font-size:12px;}
+  th,td{padding:10px 8px;}
+ .icon-btn{width:30px;height:30px;font-size:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
+  <h3>Menu User</h3>
+  <a href="anggota.html" class="menu-admin">👤anggota</a>
+  <a href="kas.html" class="menu-admin">💰 kas</a>
+  <a href="simpanan.html" class="menu-admin">📄 Simpanan</a>
+  <a href="pinjaman.html" class="menu-admin">💰 Pinjaman</a>
+  <a href="angsuran.html" class="menu-admin">📄 Angsuran</a>
+  <a href="cair.html" class="menu-admin">💰Pencairan simpanan</a>
+  <div class="divider"></div>
+  <a href="laporan.html">📊 Laporan</a>
+  <a href="backup.html" class="menu-admin">📊 backup Kas</a>
+  <a href="saldoawal.html" class="menu-admin">👤 Saldo awal</a>
+  <a href="user.html" class="menu-admin">👤 Kelola User</a>
+  <div class="divider"></div>
+  <a href="#" id="btnLogoutSide">🚪 Logout</a>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay"></div>
+
+<header>
+  <div class="header-right">
+    <div id="welcomeUser" class="user-badge">Halo</div>
+  </div>
+    <div class="header-right">
+  <span class="title">KELOLA USER</span>
+  <button onclick="toggleSidebar()" class="menu-btn">☰</button>
+</div>
+</header>
+
+<div class="container">
+
+  <!-- Tambah User -->
+  <div class="card">
+    <h3><span class="material-icons" style="font-size:20px;vertical-align:middle;">person_add</span> Tambah User Baru</h3>
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" id="username" placeholder="Masukkan username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Masukkan password">
+    </div>
+    <div class="checkbox-wrap">
+      <input type="checkbox" id="showPassword">
+      <label for="showPassword">Tampilkan Password</label>
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <select id="role">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+    <button class="add" id="btnTambah">Tambah User</button>
+  </div>
+
+  <!-- Daftar User -->
+  <div class="card">
+    <h3><span class="material-icons" style="font-size:20px;vertical-align:middle;">group</span> Daftar User</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Password</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove, update, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.firebasestorage.app",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const usersRef = ref(db,'/users');
+
+/* ================= CEK LOGIN ================= */
+const usernameLogin = localStorage.getItem("username");
+const role = localStorage.getItem("role");
+
+if(!usernameLogin ||!role){
+  window.location.href="index.html";
+}
+
+document.getElementById("welcomeUser").innerText = `${usernameLogin} (${role})`;
+
+if(role!== "admin"){
+  alert("Hanya admin yang bisa akses halaman ini!");
+  window.location.href="dash.html";
+}
+
+/* ================= SIDEBAR ================= */
+window.toggleSidebar = function(){
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("overlay").classList.toggle("show");
+}
+
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
+document.getElementById("btnLogoutSide").addEventListener("click", (e)=>{
+  e.preventDefault();
+  logout();
+});
+
+/* ================= TOGGLE PASSWORD ================= */
+document.getElementById("showPassword").addEventListener("change", function(){
+  document.getElementById("password").type = this.checked? "text" : "password";
+});
+
+/* ================= LIST USER ================= */
+onValue(usersRef, snapshot=>{
+  const table = document.getElementById("userTable");
+  table.innerHTML = "";
+
+  if(snapshot.exists()){
+    const users = snapshot.val();
+    for(const key in users){
+      const u = users[key];
+      table.innerHTML += `
+        <tr>
+          <td><b>${u.username}</b></td>
+          <td>
+            <select onchange="ubahRole('${key}', this.value)">
+              <option value="user" ${u.role==='user'?'selected':''}>User</option>
+              <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
+            </select>
+          </td>
+          <td>••••••</td>
+          <td>
+            <div class="action-btns">
+              <button class="icon-btn reset" onclick="resetPassword('${key}')" title="Reset Password">🔑</button>
+              <button class="icon-btn delete" onclick="hapusUser('${key}','${u.username}')" title="Hapus User">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+  } else {
+    table.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#999;padding:20px;">Belum ada user</td></tr>`;
+  }
+});
+
+/* ================= TAMBAH USER ================= */
+document.getElementById("btnTambah").addEventListener("click", async ()=>{
+  const btn = document.getElementById("btnTambah");
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
+  const roleVal = document.getElementById("role").value;
+
+  if(!username ||!password) return alert("Isi semua field");
+
+  btn.innerText = "Menyimpan...";
+  btn.disabled = true;
+
+  try{
+    const snapshot = await get(usersRef);
+    let exists = false;
+    if(snapshot.exists()){
+      const users = snapshot.val();
+      for(const key in users){
+        if(users[key].username === username){
+          exists = true;
+          break;
+        }
+      }
+    }
+
+    if(exists){
+      alert("Username sudah ada!");
+    } else {
+      await push(usersRef, { username, password, role: roleVal });
+      alert("User berhasil ditambahkan");
+      document.getElementById("username").value="";
+      document.getElementById("password").value="";
+    }
+  }catch(err){
+    console.error(err);
+    alert("Gagal menambah user!");
+  }
+
+  btn.innerText = "Tambah User";
+  btn.disabled = false;
+});
+
+/* ================= HAPUS USER ================= */
+window.hapusUser = function(key, username){
+  if(username === localStorage.getItem("username")){
+    return alert("Tidak bisa hapus akun sendiri!");
+  }
+  if(confirm(`Yakin hapus user ${username}?`)){
+    remove(ref(db,'/users/'+key));
+  }
+}
+
+/* ================= RESET PASSWORD ================= */
+window.resetPassword = async function(key){
+  const newPW = prompt("Masukkan password baru:");
+  if(newPW && newPW.trim()!== ""){
+    update(ref(db,'/users/'+key),{password:newPW.trim()});
+    alert("Password berhasil direset");
+  }
+}
+
+/* ================= UBAH ROLE ================= */
+window.ubahRole = function(key, newRole){
+  update(ref(db,'/users/'+key),{role:newRole});
+}
+
+/* ================= LOGOUT ================= */
+window.logout = function(){
+  if(confirm("Yakin ingin logout?")){
+    localStorage.removeItem("username");
+    localStorage.removeItem("role");
+    localStorage.removeItem("login");
+    window.location.href = "index.html";
+  }
+}
+
+/* ================= ENTER TAMBAH ================= */
+document.addEventListener("keypress", function(e){
+  if(e.key === "Enter"){
+    document.getElementById("btnTambah").click();
+  }
+});
+</script>
+</body>
+</html>

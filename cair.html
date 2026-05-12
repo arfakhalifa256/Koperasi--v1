@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pencairan Simpanan Sukarela</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #1e90ff;
+  --primary-dark: #0f3057;
+  --card: #ffffff;
+  --bg: #f1f5f9;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+}
+
+html, body { margin: 0; padding: 0; overflow-x: hidden; }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  padding-bottom: 20px;
+}
+
+header {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left { display: flex; align-items: center; gap: 10px; }
+
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 2px;
+}
+.brand-text.subtitle { font-size: 10px; opacity: 0.9; line-height: 1; }
+.brand-text.title { font-size: 14px; font-weight: 700; line-height: 1.2; }
+
+.header-actions { display: flex; gap: 6px; align-items: center; }
+
+.header-actions button {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-actions button:hover { background: rgba(255,255,255,0.25); }
+
+.btn-back {
+  width: 32px;
+  height: 32px;
+  padding: 0!important;
+  border-radius: 8px;
+}
+
+.btn-back:hover {
+  transform: translateX(-2px);
+}
+
+.container { padding: 14px; max-width: 1000px; margin: 0 auto; }
+
+.page-title {
+  text-align: center;
+  margin: 8px 0 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+
+.card {
+  background: var(--card);
+  padding: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label { font-size: 11px; font-weight: 600; color: var(--muted); }
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(30,144,255,0.1);
+}
+
+.form-group input:disabled {
+  background: #f8fafc;
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.saldo-box {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border: 1.5px solid #93c5fd;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.saldo-box.label { font-size: 11px; color: #1e40af; font-weight: 600; margin-bottom: 4px; }
+.saldo-box.value { font-size: 20px; font-weight: 700; color: var(--primary-dark); }
+
+.btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.btn-group button {
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn-group button:hover {
+  background: var(--primary-dark);
+}
+
+.btn-group button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+#notif { margin-top: 10px; }
+
+.alert {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.alert.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.alert.warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.alert.info { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 600px; }
+
+th {
+  background: #f8fafc;
+  padding: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover { background: #f8fafc; }
+th.text-right, td.text-right { text-align: right; }
+
+.masuk { color: var(--success); font-weight: 600; }
+.keluar { color: var(--danger); font-weight: 600; }
+
+.badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.badge-cash { background: #dcfce7; color: #166534; }
+.badge-bank { background: #dbeafe; color: #1e40af; }
+
+@media (max-width:768px){
+  body { font-size: 12px; }
+.container { padding: 10px; }
+.card { padding: 12px; }
+.form-grid { grid-template-columns: 1fr; }
+.btn-group { grid-template-columns: 1fr; }
+table { font-size: 10px; }
+th,td { padding: 6px; }
+.brand img { width: 32px; height: 32px; }
+.brand-text.title { font-size: 13px; }
+.header-actions button { padding: 5px 8px; font-size: 10px; }
+}
+
+#pinjamanSelect { font-size: 11px; }
+</style>
+</head>
+
+<body>
+  <header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA DRIVER</div>
+      </div>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button onclick="exportPDF()">PDF</button>
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+  
+
+
+<div class="container">
+  <h3 class="page-title">📄 PENCAIRAN SIMPANAN SUKARELA</h3>
+
+  <div class="card">
+    <div class="form-group">
+      <label>Pilih Anggota</label>
+      <select id="anggotaSelect"></select>
+    </div>
+    <div class="saldo-box">
+      <div class="label">Saldo Sukarela</div>
+      <div class="value">Rp <span id="saldo">0</span></div>
+    </div>
+  </div>
+
+  <div class="card adminOnly">
+    <h3>💰 Form Pencairan (Admin)</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Jumlah Pencairan</label>
+        <input type="number" id="jumlah" placeholder="0" min="1">
+      </div>
+      <div class="form-group">
+        <label>Metode Pencairan</label>
+        <select id="metode">
+          <option value="cash">Cash</option>
+          <option value="bank">Bank</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Keterangan</label>
+        <input type="text" id="keterangan" placeholder="Contoh: Pencairan untuk keperluan">
+      </div>
+      <div class="form-group full">
+        <div class="btn-group">
+          <button onclick="cairkan()" id="btnSimpan">Cairkan Sekarang</button>
+          <button onclick="exportNotaPencairan()" id="btnNota" disabled>Nota PDF</button>
+        </div>
+      </div>
+      <div id="notif"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📋 Riwayat Simpanan Sukarela</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Keterangan</th>
+            <th class="text-right">Jumlah</th>
+            <th>Metode</th>
+          </tr>
+        </thead>
+        <tbody id="riwayat"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.firebasestorage.app",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const role = localStorage.getItem("role");
+if(role!=="admin"){
+  document.querySelector(".adminOnly").style.display="none";
+}
+
+const anggotaRef = ref(db,"/anggota");
+const simpananRef = ref(db,"/simpanan");
+const kasRef = ref(db,"/kas");
+
+let anggotaData = {};
+let simpananData = [];
+let dirHandle = null;
+window.angsuranTerakhirId = null;
+
+function formatTanggal(t){
+  if(!t) return "-";
+  const d = new Date(t);
+  if(isNaN(d)) return t;
+  return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});
+}
+
+onValue(anggotaRef,(snap)=>{
+  anggotaData = snap.val() || {};
+  if(Object.keys(anggotaData).length === 0){
+    document.getElementById("notif").innerHTML="<div class='alert warning'><span class='material-icons' style='font-size:18px'>warning</span>Data /anggota kosong di Firebase</div>";
+  }
+  loadDropdown();
+}, (error) => {
+  console.error("❌ Firebase /anggota ERROR:", error);
+  document.getElementById("notif").innerHTML="<div class='alert warning'><span class='material-icons' style='font-size:18px'>error</span>Firebase error: " + error.message + "</div>";
+  anggotaData = {
+    "-Test1": {nama: "TEST - Budi", id: "AG001", hp: "081234567890"},
+    "-Test2": {nama: "TEST - Siti", id: "AG002", hp: "081234567891"}
+  };
+  loadDropdown();
+});
+
+onValue(simpananRef,(snap)=>{
+  simpananData=[];
+  snap.forEach(child=>{
+    let val = child.val();
+    val.id = child.key;
+    simpananData.push(val);
+  });
+  updateView();
+});
+
+function loadDropdown(){
+  const select=document.getElementById("anggotaSelect");
+  select.innerHTML="<option value=''>-- Pilih Anggota --</option>";
+  Object.entries(anggotaData).sort((a,b) => a[1].nama.localeCompare(b[1].nama)).forEach(([id,a])=>{
+    select.innerHTML+=`<option value="${id}">${a.nama}</option>`;
+  });
+}
+
+document.getElementById("anggotaSelect").addEventListener("change",updateView);
+
+function updateView(){
+  const id=document.getElementById("anggotaSelect").value;
+  if(!id) {
+    document.getElementById("saldo").innerText="0";
+    document.getElementById("riwayat").innerHTML=`<tr><td colspan="4" style="text-align:center;padding:20px;color:#6b7280">Pilih anggota dulu</td></tr>`;
+    document.getElementById("btnNota").disabled = true;
+    return;
+  }
+
+  let saldo=0;
+  let rows="";
+
+  const transaksi = simpananData
+.filter(d=>d.anggotaId===id && d.jenis==="sukarela")
+.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+  transaksi.forEach(d=>{
+    saldo+=Number(d.jumlah);
+    const jumlahClass = d.jumlah>0?'masuk':'keluar';
+    const jumlahText = (d.jumlah>0?'+':'') + 'Rp '+Number(d.jumlah).toLocaleString("id-ID");
+    const metode = d.metode || 'cash';
+    const badgeClass = metode === 'bank'?'badge-bank':'badge-cash';
+
+    rows+=`
+      <tr>
+        <td>${formatTanggal(d.tanggal)}</td>
+        <td>${d.keterangan||"-"}</td>
+        <td class="${jumlahClass} text-right">${jumlahText}</td>
+        <td><span class="badge ${badgeClass}">${metode.toUpperCase()}</span></td>
+      </tr>`;
+  });
+
+  document.getElementById("saldo").innerText=saldo.toLocaleString("id-ID");
+  document.getElementById("riwayat").innerHTML= rows || `<tr><td colspan="4" style="text-align:center;padding:20px;color:#6b7280">Belum ada transaksi</td></tr>`;
+
+  const terakhirCair = transaksi.find(d => Number(d.jumlah) < 0);
+  if(terakhirCair){
+    window.angsuranTerakhirId = terakhirCair.id;
+    document.getElementById("btnNota").disabled = false;
+  } else {
+    window.angsuranTerakhirId = null;
+    document.getElementById("btnNota").disabled = true;
+  }
+}
+
+window.cairkan=async function(){
+  if(role!=="admin"){
+    alert("Hanya admin yang bisa mencairkan!");
+    return;
+  }
+
+  const id=document.getElementById("anggotaSelect").value;
+  if(!id) return alert("Pilih anggota dulu");
+
+  const jumlah=parseInt(document.getElementById("jumlah").value);
+  const ket=document.getElementById("keterangan").value||"Pencairan";
+  const metode=document.getElementById("metode").value;
+
+  let saldo=0;
+  simpananData.forEach(d=>{
+    if(d.anggotaId===id && d.jenis==="sukarela"){
+      saldo+=Number(d.jumlah);
+    }
+  });
+
+  if(jumlah>saldo){
+    document.getElementById("notif").innerHTML="<div class='alert warning'><span class='material-icons' style='font-size:18px'>warning</span>Saldo tidak cukup!</div>";
+    return;
+  }
+
+  if(jumlah <= 0 || isNaN(jumlah)){
+    document.getElementById("notif").innerHTML="<div class='alert warning'><span class='material-icons' style='font-size:18px'>warning</span>Jumlah harus lebih dari 0!</div>";
+    return;
+  }
+
+  const tanggal = new Date().toLocaleString("id-ID");
+
+  const pushRef = await push(simpananRef,{
+    anggotaId:id,
+    nama:anggotaData[id].nama,
+    jenis:"sukarela",
+    jumlah:-jumlah,
+    tanggal:tanggal,
+    keterangan:ket,
+    metode:metode
+  });
+
+  await push(kasRef,{
+    sumber:`Pencairan Sukarela - ${anggotaData[id].nama}`,
+    jumlah:-jumlah,
+    tanggal:tanggal,
+    tipe:"keluar",
+    sumberKas:metode,
+    keterangan:ket
+  });
+
+  window.angsuranTerakhirId = pushRef.key;
+  document.getElementById("btnNota").disabled = false;
+  document.getElementById("notif").innerHTML="<div class='alert success'><span class='material-icons' style='font-size:18px'>check_circle</span>Berhasil dicairkan via " + metode.toUpperCase() + "</div>";
+  document.getElementById("jumlah").value="";
+  document.getElementById("keterangan").value="";
+
+  setTimeout(() => {
+    document.getElementById("notif").innerHTML="";
+  }, 3000);
+};
+
+window.exportNotaPencairan = async function(){
+  const idFirebase = document.getElementById("anggotaSelect").value;
+  if(!idFirebase) return alert("Pilih anggota dulu");
+
+  const anggota = anggotaData[idFirebase];
+  if(!anggota) return alert("Data anggota tidak ditemukan");
+
+  const nama = anggota.nama;
+  const idAnggota = anggota.id || anggota.nomor || idFirebase;
+  const noHP = anggota.hp || anggota.nohp || anggota.wa || "";
+
+  const transaksi = simpananData
+.filter(d=>d.anggotaId===idFirebase && d.jenis==="sukarela")
+.sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+  if(transaksi.length === 0) return alert("Belum ada transaksi");
+
+  let terakhir = transaksi.find(d => Number(d.jumlah) < 0);
+  if(!terakhir) return alert("Belum ada pencairan");
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" });
+
+  let tglCair = "-";
+  if(terakhir.tanggal){
+    const d = new Date(terakhir.tanggal);
+    if(!isNaN(d)){
+      tglCair = d.toLocaleDateString("id-ID", {day:"2-digit", month:"long", year:"numeric"});
+    } else {
+      tglCair = terakhir.tanggal;
+    }
+  }
+
+  const jumlahCair = Math.abs(Number(terakhir.jumlah));
+  let sisa = 0;
+  transaksi.forEach(d => sisa += Number(d.jumlah));
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica","bold");
+  doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"});
+  doc.setFontSize(9);
+  doc.setFont("helvetica","normal");
+  doc.text("Jl. Tentara Pelajar, Parigi, Pd.Aren Tangsel. ", 74, 21, {align:"center"});
+  doc.line(10, 25, 138, 25);
+
+  doc.setFontSize(12);
+  doc.setFont("helvetica","bold");
+  doc.text("NOTA PENCAIRAN SIMPANAN SUKARELA", 74, 33, {align:"center"});
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica","normal");
+
+  let y = 45;
+  doc.text("Tanggal", 15, y);
+  doc.text(": " + tglCair, 55, y);
+
+  y += 7;
+  doc.text("Nama Anggota", 15, y);
+  doc.setFont("helvetica","bold");
+  doc.text(": " + nama, 55, y);
+  doc.setFont("helvetica","normal");
+
+  y += 7;
+  doc.text("ID Anggota", 15, y);
+  doc.text(": " + idAnggota, 55, y);
+
+  y += 10;
+  doc.line(15, y, 133, y);
+  y += 8;
+
+  doc.text("Jumlah Dicairkan", 15, y);
+  doc.setFont("helvetica","bold");
+  doc.text(": Rp " + jumlahCair.toLocaleString("id-ID"), 55, y);
+
+  y += 7;
+  doc.setFont("helvetica","normal");
+  doc.text("Metode", 15, y);
+  doc.text(": " + (terakhir.metode || 'CASH').toUpperCase(), 55, y);
+
+  y += 7;
+  doc.text("Keterangan", 15, y);
+  doc.text(": " + (terakhir.keterangan || "-"), 55, y);
+
+  y += 7;
+  doc.text("Sisa Saldo", 15, y);
+  doc.setFont("helvetica","bold");
+  doc.text(": Rp " + sisa.toLocaleString("id-ID"), 55, y);
+
+  y += 20;
+  doc.setFont("helvetica","normal");
+  doc.text("Penerima,", 20, y);
+  doc.text("Admin Koperasi,", 95, y);
+
+  y += 25;
+  doc.text("( " + nama + " )", 15, y);
+  doc.text("( Admin )", 95, y);
+
+  doc.setFontSize(8);
+  doc.text("Dicetak: " + new Date().toLocaleString("id-ID"), 15, 195);
+
+  const fileName = `Nota_Pencairan_${nama.replace(/\s/g,"_")}_${Date.now()}.pdf`;
+  doc.save(fileName);
+};
+
+window.kembali = () => {
+  window.location.href = "dash.html";
+}
+
+window.onload = function () {
+  if(role!=="admin"){
+    document.querySelector(".adminOnly").style.display="none";
+  }
+};
+</script>
+
+</body>
+</html>
