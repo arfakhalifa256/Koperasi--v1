@@ -279,6 +279,8 @@ select:focus{
   </div>
 </div>
 
+<!-- GANTI SELURUH BAGIAN LOAD DROPDOWN + LOAD ANGSURAN MENJADI INI -->
+
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
@@ -293,178 +295,452 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const rupiah = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
-const select = document.getElementById("pilihPinjaman");
+const rupiah = n =>
+  "Rp " + Number(n || 0).toLocaleString("id-ID");
+
+const select =
+  document.getElementById("pilihPinjaman");
 
 let dataPinjaman = {};
 let dataAngsuran = {};
+
 let dataAktif = null;
 let sisaAktif = 0;
 let totalTagihanAktif = 0;
 
-// LOAD DROPDOWN - CUMA NAMA DOANG
-db.ref("pinjaman").once("value").then(snap=>{
-  let html = `<option value="">Pilih Anggota / Pinjaman</option>`;
-  snap.forEach(d=>{
-    const p = d.val();
-    dataPinjaman[d.key] = {...p, id: d.key};
-    html += `<option value="${d.key}">${p.nama || "-"}</option>`;
+/* =========================
+   LOAD DATA PINJAMAN + ANGSURAN
+   HANYA TAMPILKAN YANG BELUM LUNAS
+========================= */
+
+/* =========================
+   LOAD DROPDOWN
+   HANYA PINJAMAN BELUM LUNAS
+========================= */
+
+function loadDropdownPinjaman(){
+
+  db.ref("pinjaman").once("value").then(pinjamanSnap=>{
+
+    db.ref("angsuran").once("value").then(angsuranSnap=>{
+
+      dataPinjaman = {};
+      dataAngsuran = angsuranSnap.val() || {};
+
+      let html = `
+        <option value="">
+          Pilih Anggota / Pinjaman
+        </option>
+      `;
+
+      pinjamanSnap.forEach(d=>{
+
+        const p = d.val();
+
+        const pinjamanId = d.key;
+
+        const totalPinjaman =
+          Number(p.jumlah || 0);
+
+        let totalBayarPokok = 0;
+
+        // CEK SEMUA ANGSURAN
+        Object.values(dataAngsuran).forEach(a=>{
+
+          // CARI ID YANG COCOK
+          const relasiId =
+            a.pinjamanId ||
+            a.idPinjaman ||
+            a.pinjaman ||
+            a.noPinjaman ||
+            "";
+
+          if(relasiId == pinjamanId){
+
+            totalBayarPokok +=
+              Number(a.pokok || 0);
+
+          }
+
+        });
+
+        // HITUNG SISA
+        const sisaPokok =
+          totalPinjaman - totalBayarPokok;
+
+        // SIMPAN DATA
+        dataPinjaman[pinjamanId] = {
+          ...p,
+          id: pinjamanId
+        };
+
+        // TAMPILKAN HANYA YANG BELUM LUNAS
+        if(sisaPokok > 0){
+
+          html += `
+            <option value="${pinjamanId}">
+              ${p.nama || "-"}
+            </option>
+          `;
+
+        }
+
+      });
+
+      select.innerHTML = html;
+
+    });
+
   });
-  select.innerHTML = html;
+
+}
+/* =========================
+   REALTIME UPDATE
+========================= */
+
+db.ref("angsuran").on("value", ()=>{
+
+  loadDropdownPinjaman();
+
 });
 
-// LOAD ANGSURAN
-db.ref("angsuran").on("value", snap=>{
-  dataAngsuran = snap.val() || {};
-  if(select.value) select.onchange();
+/* =========================
+   LOAD AWAL
+========================= */
+
+loadDropdownPinjaman();
+  // refresh tampilan jika ada yg dipilih
+  if(select.value){
+
+    const masihAda =
+      dataPinjaman[select.value];
+
+    if(masihAda){
+
+      select.onchange();
+
+    } else {
+
+      resetTampilan();
+
+    }
+
+  }
+
 });
 
-// PILIH PINJAMAN
+/* =========================
+   LOAD AWAL
+========================= */
+
+loadDropdownPinjaman();
+
+/* =========================
+   PILIH PINJAMAN
+========================= */
+
 select.onchange = function(){
+
   const id = this.value;
-  if(!id) return resetTampilan();
+
+  if(!id){
+
+    resetTampilan();
+    return;
+
+  }
 
   const p = dataPinjaman[id];
+
+  if(!p){
+
+    resetTampilan();
+    return;
+
+  }
+
   dataAktif = p;
 
-  // HITUNG TOTAL PINJAMAN = POKOK
-  const totalPinjaman = Number(p.jumlah || 0);
+  // TOTAL PINJAMAN
+  const totalPinjaman =
+    Number(p.jumlah || 0);
 
-  // HITUNG TOTAL DIBAYAR - CUMA POKOK AJA
+  // TOTAL BAYAR POKOK
   let totalBayarPokok = 0;
+
   let listAngsuran = [];
 
-  Object.entries(dataAngsuran).forEach(([key, a])=>{
+  Object.entries(dataAngsuran).forEach(([key,a])=>{
+
     if(a.pinjamanId === id){
-      totalBayarPokok += Number(a.pokok || 0);
-      listAngsuran.push({...a, id: key});
+
+      totalBayarPokok +=
+        Number(a.pokok || 0);
+
+      listAngsuran.push({
+        ...a,
+        id:key
+      });
+
     }
+
   });
 
-  // SISA POKOK
-  const sisaPokok = Math.max(totalPinjaman - totalBayarPokok, 0);
+  // SISA
+  const sisaPokok = Math.max(
+    totalPinjaman - totalBayarPokok,
+    0
+  );
 
-  // JASA 20% DARI SISA POKOK - INI YG BENER
-  const jasa20 = Math.round(sisaPokok * 0.20);
+  // JASA 20%
+  const jasa20 =
+    Math.round(sisaPokok * 0.20);
 
-  // TOTAL TAGIHAN = SISA POKOK + JASA
-  const totalTagihan = sisaPokok + jasa20;
+  // TOTAL TAGIHAN
+  const totalTagihan =
+    sisaPokok + jasa20;
 
   sisaAktif = sisaPokok;
   totalTagihanAktif = totalTagihan;
 
   // TAMPILKAN
-  document.getElementById("nama").innerText = p.nama || "-";
-  document.getElementById("nomor").innerText = p.nomor || "-";
-  document.getElementById("tanggal").innerText = new Date(p.tanggal).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
-  document.getElementById("pinjaman").innerText = rupiah(totalPinjaman);
-  document.getElementById("dibayar").innerText = rupiah(totalBayarPokok);
-  document.getElementById("sisa").innerText = rupiah(sisaPokok);
-  document.getElementById("pokok").innerText = rupiah(sisaPokok);
-  document.getElementById("jasa").innerText = rupiah(jasa20);
-  document.getElementById("total").innerText = rupiah(totalTagihan);
+  document.getElementById("nama").innerText =
+    p.nama || "-";
+
+  document.getElementById("nomor").innerText =
+    p.nomor || "-";
+
+  document.getElementById("tanggal").innerText =
+    p.tanggal
+      ? new Date(p.tanggal).toLocaleDateString(
+          "id-ID",
+          {
+            day:"2-digit",
+            month:"long",
+            year:"numeric"
+          }
+        )
+      : "-";
+
+  document.getElementById("pinjaman").innerText =
+    rupiah(totalPinjaman);
+
+  document.getElementById("dibayar").innerText =
+    rupiah(totalBayarPokok);
+
+  document.getElementById("sisa").innerText =
+    rupiah(sisaPokok);
+
+  document.getElementById("pokok").innerText =
+    rupiah(sisaPokok);
+
+  document.getElementById("jasa").innerText =
+    rupiah(jasa20);
+
+  document.getElementById("total").innerText =
+    rupiah(totalTagihan);
 
   // RIWAYAT
-  renderRiwayat(listAngsuran, sisaPokok, jasa20, totalTagihan);
+  renderRiwayat(
+    listAngsuran,
+    sisaPokok,
+    jasa20,
+    totalTagihan
+  );
+
 };
 
+/* =========================
+   RESET
+========================= */
+
 function resetTampilan(){
+
+  dataAktif = null;
+
   document.getElementById("nama").innerText = "-";
   document.getElementById("nomor").innerText = "-";
   document.getElementById("tanggal").innerText = "-";
-  document.getElementById("pinjaman").innerText = rupiah(0);
-  document.getElementById("dibayar").innerText = rupiah(0);
-  document.getElementById("sisa").innerText = rupiah(0);
-  document.getElementById("pokok").innerText = rupiah(0);
-  document.getElementById("jasa").innerText = rupiah(0);
-  document.getElementById("total").innerText = rupiah(0);
-  document.getElementById("riwayatBox").style.display = "none";
+
+  document.getElementById("pinjaman").innerText =
+    rupiah(0);
+
+  document.getElementById("dibayar").innerText =
+    rupiah(0);
+
+  document.getElementById("sisa").innerText =
+    rupiah(0);
+
+  document.getElementById("pokok").innerText =
+    rupiah(0);
+
+  document.getElementById("jasa").innerText =
+    rupiah(0);
+
+  document.getElementById("total").innerText =
+    rupiah(0);
+
+  document.getElementById("riwayatBox").style.display =
+    "none";
+
 }
 
-function renderRiwayat(listAngsuran, sisaPokok, jasa20, totalTagihan){
-  // BOX TUNGGAKAN
-  const belumBayarBox = document.getElementById("riwayatBelumBayar");
+/* =========================
+   RIWAYAT
+========================= */
+
+function renderRiwayat(
+  listAngsuran,
+  sisaPokok,
+  jasa20,
+  totalTagihan
+){
+
+  const belumBayarBox =
+    document.getElementById(
+      "riwayatBelumBayar"
+    );
+
   if(sisaPokok > 0){
+
     belumBayarBox.innerHTML = `
       <div class="tagihan-belum">
-        <div class="tagihan-belum-title">Tagihan Belum Dibayar</div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+
+        <div class="tagihan-belum-title">
+          Tagihan Belum Dibayar
+        </div>
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          margin-bottom:6px
+        ">
           <span>Sisa Pokok</span>
           <strong>${rupiah(sisaPokok)}</strong>
         </div>
-        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          margin-bottom:6px
+        ">
           <span>Jasa 20%</span>
           <strong>${rupiah(jasa20)}</strong>
         </div>
-        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px">
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          font-weight:700;
+          font-size:14px
+        ">
           <span>Total Tagihan</span>
           <strong>${rupiah(totalTagihan)}</strong>
         </div>
+
       </div>
     `;
+
   } else {
+
     belumBayarBox.innerHTML = `
-      <div style="border:1px solid #86efac;background:#f0fdf4;padding:12px;border-radius:10px;margin-bottom:15px;text-align:center;color:#166534;font-weight:600">
+      <div style="
+        border:1px solid #86efac;
+        background:#f0fdf4;
+        padding:12px;
+        border-radius:10px;
+        margin-bottom:15px;
+        text-align:center;
+        color:#166534;
+        font-weight:600
+      ">
         ✓ Lunas - Tidak Ada Tagihan
       </div>
     `;
+
   }
 
-  // LIST ANGSURAN
   let htmlRiwayat = "";
+
   if(listAngsuran.length === 0){
-    htmlRiwayat = "<div style='text-align:center;color:#999;padding:20px'>Belum ada riwayat angsuran</div>";
+
+    htmlRiwayat = `
+      <div style="
+        text-align:center;
+        color:#999;
+        padding:20px
+      ">
+        Belum ada riwayat angsuran
+      </div>
+    `;
+
   } else {
-    listAngsuran.sort((a,b)=>b.tanggal - a.tanggal).forEach(a=>{
-      const total = Number(a.pokok || 0) + Number(a.jasa || 0);
-      htmlRiwayat += `
-        <div class="riwayat-item">
-          <div class="riwayat-item-header">
-            <span>${new Date(a.tanggal).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"})}</span>
-            <span style="color:var(--primary)">${rupiah(total)}</span>
+
+    listAngsuran
+      .sort((a,b)=>
+        new Date(b.tanggal) -
+        new Date(a.tanggal)
+      )
+      .forEach(a=>{
+
+        const total =
+          Number(a.pokok || 0) +
+          Number(a.jasa || 0);
+
+        htmlRiwayat += `
+          <div class="riwayat-item">
+
+            <div class="riwayat-item-header">
+
+              <span>
+                ${new Date(a.tanggal)
+                  .toLocaleDateString(
+                    "id-ID",
+                    {
+                      day:"2-digit",
+                      month:"short",
+                      year:"numeric"
+                    }
+                  )}
+              </span>
+
+              <span style="color:var(--primary)">
+                ${rupiah(total)}
+              </span>
+
+            </div>
+
+            <div class="riwayat-item-detail">
+
+              <div>
+                Pokok:
+                ${rupiah(a.pokok || 0)}
+              </div>
+
+              <div>
+                Jasa:
+                ${rupiah(a.jasa || 0)}
+              </div>
+
+              <div>
+                Metode:
+                ${(a.metode || "cash")
+                  .toUpperCase()}
+              </div>
+
+            </div>
+
           </div>
-          <div class="riwayat-item-detail">
-            <div>Pokok: ${rupiah(a.pokok || 0)}</div>
-            <div>Jasa: ${rupiah(a.jasa || 0)}</div>
-            <div>Metode: ${(a.metode || "cash").toUpperCase()}</div>
-          </div>
-        </div>
-      `;
-    });
-  }
-  document.getElementById("riwayatList").innerHTML = htmlRiwayat;
-}
+        `;
 
-function kirimWA(){
-  if(!dataAktif){
-    alert("Pilih anggota dulu");
-    return;
+      });
+
   }
 
-  const pesan = `*NOTA TAGIHAN PINJAMAN*\nKOPERASI ARFA\n\n` +
-    `Nama: ${dataAktif.nama || "-"}\n` +
-    `No Pinjaman: ${dataAktif.nomor || "-"}\n\n` +
-    `Sisa Pokok: ${rupiah(sisaAktif)}\n` +
-    `Jasa 20%: ${rupiah(totalTagihanAktif - sisaAktif)}\n\n` +
-    `*TOTAL TAGIHAN: ${rupiah(totalTagihanAktif)}*\n\n` +
-    `Mohon segera melakukan pembayaran.\n\nTerima kasih 🙏`;
+  document.getElementById("riwayatList").innerHTML =
+    htmlRiwayat;
 
-  const url = "https://wa.me/?text=" + encodeURIComponent(pesan);
-  window.open(url,"_blank");
 }
-
-let riwayatVisible = false;
-function toggleRiwayat(){
-  const box = document.getElementById("riwayatBox");
-  riwayatVisible =!riwayatVisible;
-  box.style.display = riwayatVisible? "block" : "none";
-}
-// ===== FUNGSI HEADER =====
-  function kembali(){
-    if(document.referrer) history.back();
-    else window.location.href = 'laporan.html';
-  }
 </script>
-
 </body>
 </html>

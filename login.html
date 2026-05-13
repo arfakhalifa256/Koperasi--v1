@@ -7,37 +7,87 @@
 
 <style>
 body{
-  font-family:Arial;
-  background:#f4f6f9;
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #1e90ff, #0f3057);
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
+  margin:0;
 }
 
+/* ===== LOGIN BOX ===== */
 .box{
   background:#fff;
-  padding:20px;
-  border-radius:10px;
+  padding:28px 24px;
+  border-radius:12px;
   width:320px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  max-width:90vw;
+  box-shadow:0 8px 25px rgba(0,0,0,0.15);
+  text-align:center;
+}
+
+/* ===== LOGO ===== */
+.box .logo{
+  width:65px;
+  height:65px;
+  object-fit:contain;
+  background:#f3f4f6;
+  padding:8px;
+  border-radius:50%;
+  margin-bottom:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+
+.box h3{
+  margin:0 0 18px 0;
+  text-align:center;
+  color:#1f2937;
+  font-size:18px;
+  font-weight:700;
 }
 
 input, select{
   width:100%;
-  height:40px;
-  margin-bottom:10px;
-  padding:8px;
+  height:42px;
+  margin-bottom:12px;
+  padding:10px 12px;
+  border:1.5px solid #e5e7eb;
+  border-radius:8px;
+  font-size:13px;
+  box-sizing:border-box;
+  transition:0.2s;
+}
+
+input:focus, select:focus{
+  outline:none;
+  border-color:#1e90ff;
+  box-shadow:0 0 0 3px rgba(30,144,255,0.1);
 }
 
 button{
   width:100%;
-  height:40px;
+  height:42px;
   background:#1e90ff;
   color:#fff;
   border:none;
+  border-radius:8px;
   cursor:pointer;
-  margin-bottom:5px;
+  margin-bottom:8px;
+  font-weight:600;
+  font-size:14px;
+  transition:0.2s;
+}
+
+button:hover{
+  background:#0f3057;
+  transform:translateY(-1px);
+}
+
+button:disabled{
+  background:#9ca3af;
+  cursor:not-allowed;
+  transform:none;
 }
 
 .small{
@@ -45,26 +95,42 @@ button{
   text-align:center;
   color:#1e90ff;
   cursor:pointer;
+  margin-top:8px;
+}
+
+.small:hover{
+  text-decoration:underline;
 }
 
 #loading{
   display:none;
   text-align:center;
   font-size:13px;
+  color:#1e90ff;
+  margin:10px 0;
+}
+
+@media(max-width:480px){
+  .box .logo{
+    width:55px;
+    height:55px;
+  }
 }
 </style>
 </head>
 
 <body>
-
 <div class="box">
+
+  <!-- LOGO DI ATAS TEXT LOGIN -->
+  <img src="img/icon-192.png" alt="Logo Koperasi ARFA" class="logo">
 
   <h3 id="title">Login</h3>
 
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
+  <input type="text" id="username" placeholder="Username" autocomplete="username">
+  <input type="password" id="password" placeholder="Password" autocomplete="current-password">
 
-  <!-- 🔥 PILIH ROLE -->
+  <!-- PILIH ROLE -->
   <select id="roleSelect" style="display:none;">
     <option value="user">User</option>
     <option value="admin">Admin</option>
@@ -82,11 +148,9 @@ button{
 </div>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-/* ===== FIREBASE ===== */
 const firebaseConfig = {
   apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
   authDomain:"arfa-c7dee.firebaseapp.com",
@@ -100,7 +164,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-/* ===== MODE ===== */
 let mode = "login";
 
 window.toggleMode = function(){
@@ -124,9 +187,7 @@ window.toggleMode = function(){
       : "Sudah punya akun? Login";
 };
 
-/* ===== REGISTER ===== */
 window.register = async function(){
-
   const username = document.getElementById("username").value.trim().toLowerCase();
   const password = document.getElementById("password").value.trim();
   const role = document.getElementById("roleSelect").value;
@@ -159,7 +220,6 @@ window.register = async function(){
     });
 
     alert("Berhasil daftar sebagai " + role.toUpperCase());
-
     toggleMode();
 
   }catch(err){
@@ -171,9 +231,7 @@ window.register = async function(){
   loading.style.display = "none";
 };
 
-/* ===== LOGIN ===== */
 window.login = async function(){
-
   const username = document.getElementById("username").value.trim().toLowerCase();
   const password = document.getElementById("password").value.trim();
 
@@ -204,13 +262,11 @@ window.login = async function(){
       return;
     }
 
-    /* ===== SIMPAN SESSION ===== */
     localStorage.setItem("login","true");
     localStorage.setItem("username",u.username);
     localStorage.setItem("role",u.role);
 
     alert("Login berhasil sebagai " + u.role.toUpperCase());
-
     window.location.href = "dash.html";
 
   }catch(err){
