@@ -358,7 +358,7 @@ td.text-right {
   font-weight: 700;
 }
 
-.modal-content.form-group {
+.modal-content .form-group {
   margin-bottom: 12px;
 }
 
@@ -588,9 +588,12 @@ td.text-right {
 
   </div>
 </div>
+    
   <div class="card">
   <h3>Input Transaksi</h3>
+
   <div class="form-grid">
+
     <div class="form-group">
       <label>Sumber Kas</label>
       <select id="sumberKas">
@@ -598,6 +601,7 @@ td.text-right {
         <option value="bank">Bank</option>
       </select>
     </div>
+
     <div class="form-group">
       <label>Tipe</label>
       <select id="tipe" onchange="toggleKategori()">
@@ -606,34 +610,33 @@ td.text-right {
         <option value="biaya">Biaya Operasional</option>
       </select>
     </div>
+
     <div class="form-group">
-  <label>Kategori</label>
-  <select id="kategori">
-  <option value="simpanan pokok">Simpanan Pokok</option>
-  <option value="simpanan wajib">Simpanan Wajib</option>
-  <option value="simpanan sukarela">Simpanan Sukarela</option>
-  <option value="angsuran">Angsuran</option>
-  <option value="pinjaman">Pinjaman</option>
-  <option value="beban operasional">Beban Operasional</option>
-  <option value="pendapatan lain">Pendapatan Lain</option>
-</select>
-      
+      <label>Kategori</label>
+      <select id="kategori"></select>
     </div>
+
     <div class="form-group">
       <label>Tanggal</label>
       <input type="datetime-local" id="tanggal">
     </div>
+
     <div class="form-group">
       <label>Jumlah</label>
       <input type="number" id="jumlah" placeholder="0">
     </div>
+
     <div class="form-group full">
       <label>Keterangan</label>
       <input type="text" id="keterangan" placeholder="Contoh: Listrik Januari">
     </div>
+
     <div class="form-group full">
-      <button class="btn-primary" id="btnSimpan">Simpan Transaksi</button>
+      <button class="btn-primary" id="btnSimpan">
+        Simpan Transaksi
+      </button>
     </div>
+
   </div>
 </div>
 
@@ -698,10 +701,10 @@ td.text-right {
   </div>
 </div>
 <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, update, remove, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, onValue, update, remove, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";const firebaseConfig = {
-  
+const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
   authDomain: "arfa-c7dee.firebaseapp.com",
   databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
@@ -711,7 +714,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // Role check
-const role = localStorage.getItem("role") || "username";
+const role = localStorage.getItem("role") || "user";
 if(role!== "admin") {
   document.querySelector("#btnSimpan").style.display="none";
   document.querySelectorAll(".menu-admin").forEach(el => el.style.display="none");
@@ -723,7 +726,7 @@ const kasRef = ref(db,"kas");
 const saldoAwalRef = ref(db, "kas/saldoAwal");
 
 let editKey = null;
-let saldoCash = 0, saldoBank = 0, totalMasuk = 0, totalKeluar = 0, totalBiaya = 0;
+let saldoCash = 0, saldoBank = 0, totalMasuk = 0, totalKeluar = 0;
 
 function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
 
@@ -745,7 +748,7 @@ document.getElementById("btnLogoutSide").addEventListener("click", ()=>{
   location.href="index.html";
 });
 
-/* 👋 USER INFO */
+/* USER INFO */
 document.addEventListener("DOMContentLoaded", () => {
   const el = document.getElementById("userInfo");
   const username = localStorage.getItem("username");
@@ -760,57 +763,71 @@ document.addEventListener("DOMContentLoaded", () => {
 document.getElementById("btnSimpanSaldo").onclick = async () => {
   const cash = Number(document.getElementById("inputSaldoCash").value) || 0;
   const bank = Number(document.getElementById("inputSaldoBank").value) || 0;
-
   const tanggalInput = document.getElementById("tanggalSaldoAwal").value;
+  const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
 
-  const tanggal = tanggalInput
-    ? new Date(tanggalInput).getTime()
-    : Date.now();
-
-  await update(saldoAwalRef, {
-    cash,
-    bank,
-    tanggal,
-    updatedAt: Date.now()
-  });
-
+  await update(saldoAwalRef, { cash, bank, tanggal, updatedAt: Date.now() });
   alert("Saldo awal berhasil disimpan");
 };
 
-  
 /* ===== TOGGLE KATEGORI ===== */
 window.toggleKategori = function(){
   const tipe = document.getElementById("tipe").value;
-  document.getElementById("groupKategori").style.display = tipe === "biaya"? "block" : "none";
+  const kategori = document.getElementById("kategori");
+  let html = "";
+
+  if(tipe === "masuk"){
+    html = `
+      <option value="simpanan pokok">Simpanan Pokok</option>
+      <option value="simpanan wajib">Simpanan Wajib</option>
+      <option value="simpanan sukarela">Simpanan Sukarela</option>
+      <option value="angsuran">Angsuran</option>
+      <option value="pendapatan lain">Pendapatan Lain-lain</option>
+    `;
+  } else {
+    // keluar dan biaya pakai kategori yang sama
+    html = `
+      <option value="konsumsi">Konsumsi</option>
+      <option value="biaya operasional">Biaya Operasional</option>
+      <option value="pinjaman">Pinjaman</option>
+      <option value="pengambilan simpanan">Pengambilan Simpanan</option>
+      <option value="transfer bank">Transfer Bank</option>
+    `;
+  }
+  kategori.innerHTML = html;
 }
 
 /* ===== SIMPAN KAS ===== */
 document.getElementById("btnSimpan").onclick = async()=>{
   const sumberKas = document.getElementById("sumberKas").value;
-  const tipe = document.getElementById("tipe").value;
+  let tipe = document.getElementById("tipe").value;
   const jumlah = Number(document.getElementById("jumlah").value);
   const ket = document.getElementById("keterangan").value;
   const tanggalInput = document.getElementById("tanggal").value;
-  const kategori = tipe === "biaya"? document.getElementById("kategori").value : null;
-const data = {
-  tipe: document.getElementById("tipe").value,
-  jumlah: Number(document.getElementById("jumlah").value),
-  kategori: document.getElementById("kategori").value,
-  tanggal: Date.now()
-};
+  const kategori = document.getElementById("kategori").value || "";
+
   if(!jumlah){ alert("Jumlah wajib diisi"); return; }
 
+  // Cek saldo
   if(tipe==="keluar" || tipe==="biaya"){
     if(sumberKas==="cash" && jumlah>saldoCash){ alert("Saldo CASH tidak cukup"); return; }
     if(sumberKas==="bank" && jumlah>saldoBank){ alert("Saldo BANK tidak cukup"); return; }
   }
 
+  // Normalisasi: biaya = keluar biar gampang diitung
+  if(tipe === "biaya") tipe = "keluar";
+
   const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
-  const dataKas = { sumberKas, tipe, jumlah, keterangan: ket||"Transaksi Kas", tanggal };
-  if(kategori) dataKas.kategori = kategori;
+  const dataKas = {
+    sumberKas,
+    tipe,
+    jumlah,
+    kategori,
+    keterangan: ket || kategori || "Transaksi Kas",
+    tanggal
+  };
 
   await push(ref(db,"kas/transaksi"), dataKas);
-
   alert("Data berhasil disimpan");
   document.getElementById("jumlah").value="";
   document.getElementById("keterangan").value="";
@@ -818,92 +835,84 @@ const data = {
 
 /* ===== LOAD KAS ===== */
 onValue(kasRef, snap => {
-
   saldoCash = 0;
   saldoBank = 0;
   totalMasuk = 0;
   totalKeluar = 0;
-  totalBiaya = 0;
 
   const riwayat = document.getElementById("riwayat");
   riwayat.innerHTML = "";
 
   if (!snap.exists()) return;
-
   const raw = snap.val();
 
-  // ===== SALDO AWAL =====
+  // SALDO AWAL
   const saldoAwal = raw.saldoAwal || {};
-
   saldoCash = Number(saldoAwal.cash || 0);
   saldoBank = Number(saldoAwal.bank || 0);
-
   document.getElementById("inputSaldoCash").value = saldoCash;
   document.getElementById("inputSaldoBank").value = saldoBank;
 
-  // tampilkan tanggal saldo awal
   if (saldoAwal.tanggal) {
     const t = new Date(saldoAwal.tanggal);
-
-    const iso = new Date(
-      t.getTime() - t.getTimezoneOffset() * 60000
-    ).toISOString().slice(0,16);
-
+    const iso = new Date(t.getTime() - t.getTimezoneOffset() * 60000).toISOString().slice(0,16);
     document.getElementById("tanggalSaldoAwal").value = iso;
   }
 
-  // ===== AMBIL TRANSAKSI =====
+  // TRANSAKSI
   const data = Object.entries(raw.transaksi || {})
-    .sort((a,b)=> Number(b[1].tanggal) - Number(a[1].tanggal));
+   .sort((a,b)=> Number(b[1].tanggal) - Number(a[1].tanggal));
 
   data.forEach(([key, i]) => {
-
-    const jumlah = Number(i.jumlah) || 0;
-    const tipe = String(i.tipe || "masuk").toLowerCase();
+    let jumlah = Number(i.jumlah) || 0;
+    let tipe = String(i.tipe || "").toLowerCase();
     const sumber = String(i.sumberKas || "cash").toLowerCase();
+    const kategori = String(i.kategori || "").toLowerCase();
+    const ket = String(i.keterangan || "").toLowerCase();
+
+    // AUTO DETEKSI DATA LAMA
+    if(!tipe){
+      if(kategori.includes("pinjaman") || kategori.includes("pengambilan") ||
+         kategori.includes("biaya") || kategori.includes("operasional") ||
+         kategori.includes("konsumsi") || ket.includes("pinjaman") || ket.includes("biaya")){
+        tipe = "keluar";
+      } else {
+        tipe = "masuk";
+      }
+    }
+
+    // Normalisasi: biaya = keluar
+    if(tipe === "biaya") tipe = "keluar";
 
     const tanggal = i.tanggal
-      ? new Date(Number(i.tanggal)).toLocaleString("id-ID",{
-          day:"2-digit",
-          month:"short",
-          year:"numeric",
-          hour:"2-digit",
-          minute:"2-digit"
+     ? new Date(Number(i.tanggal)).toLocaleString("id-ID",{
+          day:"2-digit", month:"short", year:"numeric",
+          hour:"2-digit", minute:"2-digit"
         })
       : "-";
 
-    // ===== HITUNG TOTAL =====
+    // HITUNG TOTAL
     if (tipe === "masuk") {
       totalMasuk += jumlah;
-    } else if (tipe === "keluar") {
+    } else {
       totalKeluar += jumlah;
-    } else if (tipe === "biaya") {
-      totalBiaya += jumlah;
     }
 
-    // ===== HITUNG SALDO =====
+    // HITUNG SALDO
     if (sumber === "cash") {
-      if (tipe === "masuk") {
-        saldoCash += jumlah;
-      } else {
-        saldoCash -= jumlah;
-      }
+      if (tipe === "masuk") saldoCash += jumlah;
+      else saldoCash -= jumlah;
     }
-
     if (sumber === "bank") {
-      if (tipe === "masuk") {
-        saldoBank += jumlah;
-      } else {
-        saldoBank -= jumlah;
-      }
+      if (tipe === "masuk") saldoBank += jumlah;
+      else saldoBank -= jumlah;
     }
 
-    // ===== TAMPILKAN TABEL =====
-    let className = tipe === "biaya" ? "keluar" : tipe;
-    let labelTipe = tipe === "biaya" ? "BIAYA" : tipe.toUpperCase();
+    // TAMPILKAN TABEL
+    let className = tipe === "masuk"? "masuk" : "keluar";
+    let labelTipe = tipe === "masuk"? "MASUK" : "KELUAR";
 
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
       <td>${tanggal}</td>
       <td class="${className}">${labelTipe}</td>
@@ -912,31 +921,19 @@ onValue(kasRef, snap => {
       <td class="text-right">Rp ${formatRp(jumlah)}</td>
       <td>${i.keterangan || "-"}</td>
     `;
-
     if (role === "admin") {
       tr.style.cursor = "pointer";
       tr.addEventListener("click", () => editKas(key));
     }
-
     riwayat.appendChild(tr);
   });
 
-  // ===== UPDATE SUMMARY =====
-  document.getElementById("saldoCash").innerText =
-    formatRp(saldoCash);
-
-  document.getElementById("saldoBank").innerText =
-    formatRp(saldoBank);
-
-  document.getElementById("totalMasuk").innerText =
-    formatRp(totalMasuk);
-
-  document.getElementById("totalKeluar").innerText =
-    formatRp(totalKeluar + totalBiaya);
-
-  document.getElementById("saldoTotal").innerText =
-    formatRp(saldoCash + saldoBank);
-
+  // UPDATE SUMMARY
+  document.getElementById("saldoCash").innerText = formatRp(saldoCash);
+  document.getElementById("saldoBank").innerText = formatRp(saldoBank);
+  document.getElementById("totalMasuk").innerText = formatRp(totalMasuk);
+  document.getElementById("totalKeluar").innerText = formatRp(totalKeluar);
+  document.getElementById("saldoTotal").innerText = formatRp(saldoCash + saldoBank);
 });
 
 /* ===== EDIT KAS ===== */
@@ -948,27 +945,9 @@ window.editKas = async function(key){
   editKey = key;
   document.getElementById("editKasKey").value = key;
   document.getElementById("editKasSumber").value = d.sumberKas || "cash";
-  document.getElementById("editKasTipe").value = d.tipe || "masuk";
+  document.getElementById("editKasTipe").value = d.tipe === "keluar"? "keluar" : "masuk";
   document.getElementById("editKasJumlah").value = d.jumlah || 0;
   document.getElementById("editKasKeterangan").value = d.keterangan || "";
-
-  // Tambah kategori kalo biaya
-  let katHtml = "";
-  if(d.tipe === "biaya"){
-    katHtml = `
-    <div class="form-group">
-      <label>Kategori Beban</label>
-      <select id="editKasKategori">
-        <option value="gaji" ${d.kategori==="gaji"?"selected":""}>Gaji Pengurus</option>
-        <option value="listrik" ${d.kategori==="listrik"?"selected":""}>Listrik & Air</option>
-        <option value="atk" ${d.kategori==="atk"?"selected":""}>ATK & Fotocopy</option>
-        <option value="transport" ${d.kategori==="transport"?"selected":""}>Transport</option>
-        <option value="konsumsi" ${d.kategori==="konsumsi"?"selected":""}>Konsumsi Rapat</option>
-        <option value="lain" ${d.kategori==="lain"?"selected":""}>Lain-lain</option>
-      </select>
-    </div>`;
-  }
-  document.getElementById("editKasKategoriWrap").innerHTML = katHtml;
 
   if(d.tanggal){
     const t = new Date(d.tanggal);
@@ -983,17 +962,19 @@ window.tutupModalKas = function(){ document.getElementById("modalEditKas").style
 window.updateKas = async function(){
   const key = document.getElementById("editKasKey").value;
   const sumber = document.getElementById("editKasSumber").value;
-  const tipe = document.getElementById("editKasTipe").value;
+  let tipe = document.getElementById("editKasTipe").value;
   const jumlah = Number(document.getElementById("editKasJumlah").value);
   const keterangan = document.getElementById("editKasKeterangan").value;
   const tanggalInput = document.getElementById("editKasTanggal").value;
   const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
 
-  const dataUpdate = { sumberKas: sumber, tipe, jumlah, keterangan: keterangan||"Transaksi Kas", tanggal };
-  const katEl = document.getElementById("editKasKategori");
-  if(katEl) dataUpdate.kategori = katEl.value;
-
-  await update(ref(db,"kas/transaksi/"+key), dataUpdate);
+  await update(ref(db,"kas/transaksi/"+key), {
+    sumberKas: sumber,
+    tipe,
+    jumlah,
+    keterangan: keterangan||"Transaksi Kas",
+    tanggal
+  });
   alert("Data berhasil diperbarui");
   tutupModalKas();
 }
@@ -1010,58 +991,13 @@ window.hapusKasModal = async function(){
 
 window.kembali = function(){ window.location.href="dash.html"; }
 
-// ===== MIGRASI DATA LAMA - VERSI DEBUG =====
-window.migrasiDataLama = async function(){
-  if(!confirm("Yakin mau migrasi? Proses ini cuma perlu 1x. Lanjutkan?")) return;
+// Set tanggal default
+document.getElementById("tanggal").value =
+  new Date(Date.now() - new Date().getTimezoneOffset()*60000)
+ .toISOString()
+ .slice(0,16);
 
-  try {
-    const kasRef = ref(db, "kas");
-    const snap = await get(kasRef);
-
-    if(!snap.exists()){
-      alert("Error: /kas kosong total di Firebase");
-      return;
-    }
-
-    const data = snap.val();
-    let transaksiLama = {};
-
-    Object.entries(data).forEach(([key, val])=>{
-      if(key!== "saldoAwal" && key!== "transaksi" && typeof val === "object" && val.tipe){
-        transaksiLama[key] = val;
-      }
-    });
-
-    console.log("Data lama ketemu:", transaksiLama);
-    alert(`Data lama ketemu: ${Object.keys(transaksiLama).length} transaksi`);
-
-    if(Object.keys(transaksiLama).length === 0){
-      alert("Ga ada data lama yang perlu dimigrasi. Struktur udah bener.");
-      document.getElementById("boxMigrasi").style.display = "none";
-      return;
-    }
-
-    // Cek dulu ada /kas/transaksi ga
-    const cekTransaksi = await get(ref(db, "kas/transaksi"));
-    const transaksiBaru = cekTransaksi.exists()? cekTransaksi.val() : {};
-
-    // Gabungin data lama + baru
-    await set(ref(db, "kas/transaksi"), {...transaksiBaru,...transaksiLama});
-
-    // Hapus dari root
-    for(const key of Object.keys(transaksiLama)){
-      await set(ref(db, `kas/${key}`), null);
-    }
-
-    alert(`✅ Berhasil! ${Object.keys(transaksiLama).length} transaksi dipindah.\nHalaman akan refresh otomatis.`);
-    document.getElementById("boxMigrasi").style.display = "none";
-    setTimeout(()=>location.reload(), 1000);
-
-  } catch(err){
-    alert("GAGAL MIGRASI: " + err.message);
-    console.error(err);
-  }
-}
+toggleKategori();
 </script>
 </body>
 </html>
