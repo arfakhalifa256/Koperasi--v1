@@ -188,8 +188,31 @@ select:focus{
     font-size: 13px;
   }
 }
-  
-  
+  .toast{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:#10b981;
+  color:#fff;
+  padding:14px 18px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:600;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+  z-index:9999;
+  animation:slideIn .3s ease;
+}
+
+@keyframes slideIn{
+  from{
+    transform:translateY(-20px);
+    opacity:0;
+  }
+  to{
+    transform:translateY(0);
+    opacity:1;
+  }
+}
 
 </style>
   
@@ -293,10 +316,12 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const db = firebase.database();
 
 const rupiah = n =>
-  "Rp " + Number(n || 0).toLocaleString("id-ID");
+  "Rp " + Number(n || 0)
+  .toLocaleString("id-ID");
 
 const select =
   document.getElementById("pilihPinjaman");
@@ -309,23 +334,53 @@ let sisaAktif = 0;
 let totalTagihanAktif = 0;
 
 /* =========================
-   LOAD DATA PINJAMAN + ANGSURAN
-   HANYA TAMPILKAN YANG BELUM LUNAS
+   FORMAT TANGGAL
 ========================= */
+
+function formatTanggal(tgl){
+
+  if(!tgl) return "-";
+
+  try{
+
+    const d = new Date(tgl);
+
+    if(isNaN(d)) return tgl;
+
+    return d.toLocaleDateString(
+      "id-ID",
+      {
+        day:"2-digit",
+        month:"long",
+        year:"numeric"
+      }
+    );
+
+  }catch{
+
+    return tgl;
+
+  }
+
+}
 
 /* =========================
    LOAD DROPDOWN
-   HANYA PINJAMAN BELUM LUNAS
 ========================= */
 
 function loadDropdownPinjaman(){
 
-  db.ref("pinjaman").once("value").then(pinjamanSnap=>{
+  db.ref("pinjaman")
+  .once("value")
+  .then(pinjamanSnap=>{
 
-    db.ref("angsuran").once("value").then(angsuranSnap=>{
+    db.ref("angsuran")
+    .once("value")
+    .then(angsuranSnap=>{
 
       dataPinjaman = {};
-      dataAngsuran = angsuranSnap.val() || {};
+      dataAngsuran =
+        angsuranSnap.val() || {};
 
       let html = `
         <option value="">
@@ -344,10 +399,9 @@ function loadDropdownPinjaman(){
 
         let totalBayarPokok = 0;
 
-        // CEK SEMUA ANGSURAN
-        Object.values(dataAngsuran).forEach(a=>{
+        Object.values(dataAngsuran)
+        .forEach(a=>{
 
-          // CARI ID YANG COCOK
           const relasiId =
             a.pinjamanId ||
             a.idPinjaman ||
@@ -357,24 +411,33 @@ function loadDropdownPinjaman(){
 
           if(relasiId == pinjamanId){
 
+            const bayarPokok =
+              Number(
+                a.pokok ||
+                a.jumlah ||
+                a.bayar ||
+                a.nominal ||
+                a.angsuran ||
+                0
+              );
+
             totalBayarPokok +=
-              Number(a.pokok || 0);
+              bayarPokok;
 
           }
 
         });
 
-        // HITUNG SISA
         const sisaPokok =
-          totalPinjaman - totalBayarPokok;
+          totalPinjaman -
+          totalBayarPokok;
 
-        // SIMPAN DATA
         dataPinjaman[pinjamanId] = {
           ...p,
-          id: pinjamanId
+          id:pinjamanId
         };
 
-        // TAMPILKAN HANYA YANG BELUM LUNAS
+        // tampilkan hanya yg belum lunas
         if(sisaPokok > 0){
 
           html += `
@@ -394,46 +457,23 @@ function loadDropdownPinjaman(){
   });
 
 }
+
 /* =========================
-   REALTIME UPDATE
+   LOAD AWAL
 ========================= */
 
-db.ref("angsuran").on("value", ()=>{
+loadDropdownPinjaman();
+
+/* =========================
+   REALTIME
+========================= */
+
+db.ref("angsuran")
+.on("value", ()=>{
 
   loadDropdownPinjaman();
 
 });
-
-/* =========================
-   LOAD AWAL
-========================= */
-
-loadDropdownPinjaman();
-  // refresh tampilan jika ada yg dipilih
-  if(select.value){
-
-    const masihAda =
-      dataPinjaman[select.value];
-
-    if(masihAda){
-
-      select.onchange();
-
-    } else {
-
-      resetTampilan();
-
-    }
-
-  }
-
-});
-
-/* =========================
-   LOAD AWAL
-========================= */
-
-loadDropdownPinjaman();
 
 /* =========================
    PILIH PINJAMAN
@@ -461,21 +501,37 @@ select.onchange = function(){
 
   dataAktif = p;
 
-  // TOTAL PINJAMAN
   const totalPinjaman =
     Number(p.jumlah || 0);
 
-  // TOTAL BAYAR POKOK
   let totalBayarPokok = 0;
 
   let listAngsuran = [];
 
-  Object.entries(dataAngsuran).forEach(([key,a])=>{
+  Object.entries(dataAngsuran)
+  .forEach(([key,a])=>{
 
-    if(a.pinjamanId === id){
+    const relasiId =
+      a.pinjamanId ||
+      a.idPinjaman ||
+      a.pinjaman ||
+      a.noPinjaman ||
+      "";
+
+    if(relasiId == id){
+
+      const bayarPokok =
+        Number(
+          a.pokok ||
+          a.jumlah ||
+          a.bayar ||
+          a.nominal ||
+          a.angsuran ||
+          0
+        );
 
       totalBayarPokok +=
-        Number(a.pokok || 0);
+        bayarPokok;
 
       listAngsuran.push({
         ...a,
@@ -486,61 +542,62 @@ select.onchange = function(){
 
   });
 
-  // SISA
-  const sisaPokok = Math.max(
-    totalPinjaman - totalBayarPokok,
-    0
-  );
+  const sisaPokok =
+    Math.max(
+      totalPinjaman -
+      totalBayarPokok,
+      0
+    );
 
-  // JASA 20%
   const jasa20 =
-    Math.round(sisaPokok * 0.20);
+    Math.round(
+      sisaPokok * 0.20
+    );
 
-  // TOTAL TAGIHAN
   const totalTagihan =
     sisaPokok + jasa20;
 
   sisaAktif = sisaPokok;
-  totalTagihanAktif = totalTagihan;
 
-  // TAMPILKAN
-  document.getElementById("nama").innerText =
+  totalTagihanAktif =
+    totalTagihan;
+
+  document.getElementById("nama")
+  .innerText =
     p.nama || "-";
 
-  document.getElementById("nomor").innerText =
+  document.getElementById("nomor")
+  .innerText =
     p.nomor || "-";
 
-  document.getElementById("tanggal").innerText =
-    p.tanggal
-      ? new Date(p.tanggal).toLocaleDateString(
-          "id-ID",
-          {
-            day:"2-digit",
-            month:"long",
-            year:"numeric"
-          }
-        )
-      : "-";
+  document.getElementById("tanggal")
+  .innerText =
+    formatTanggal(p.tanggal);
 
-  document.getElementById("pinjaman").innerText =
+  document.getElementById("pinjaman")
+  .innerText =
     rupiah(totalPinjaman);
 
-  document.getElementById("dibayar").innerText =
+  document.getElementById("dibayar")
+  .innerText =
     rupiah(totalBayarPokok);
 
-  document.getElementById("sisa").innerText =
+  document.getElementById("sisa")
+  .innerText =
     rupiah(sisaPokok);
 
-  document.getElementById("pokok").innerText =
+  document.getElementById("pokok")
+  .innerText =
     rupiah(sisaPokok);
 
-  document.getElementById("jasa").innerText =
+  document.getElementById("jasa")
+  .innerText =
     rupiah(jasa20);
 
-  document.getElementById("total").innerText =
+  document.getElementById("total")
+  .innerText =
     rupiah(totalTagihan);
 
-  // RIWAYAT
   renderRiwayat(
     listAngsuran,
     sisaPokok,
@@ -558,30 +615,32 @@ function resetTampilan(){
 
   dataAktif = null;
 
-  document.getElementById("nama").innerText = "-";
-  document.getElementById("nomor").innerText = "-";
-  document.getElementById("tanggal").innerText = "-";
+  document.getElementById("nama")
+  .innerText = "-";
 
-  document.getElementById("pinjaman").innerText =
-    rupiah(0);
+  document.getElementById("nomor")
+  .innerText = "-";
 
-  document.getElementById("dibayar").innerText =
-    rupiah(0);
+  document.getElementById("tanggal")
+  .innerText = "-";
 
-  document.getElementById("sisa").innerText =
-    rupiah(0);
+  document.getElementById("pinjaman")
+  .innerText = rupiah(0);
 
-  document.getElementById("pokok").innerText =
-    rupiah(0);
+  document.getElementById("dibayar")
+  .innerText = rupiah(0);
 
-  document.getElementById("jasa").innerText =
-    rupiah(0);
+  document.getElementById("sisa")
+  .innerText = rupiah(0);
 
-  document.getElementById("total").innerText =
-    rupiah(0);
+  document.getElementById("pokok")
+  .innerText = rupiah(0);
 
-  document.getElementById("riwayatBox").style.display =
-    "none";
+  document.getElementById("jasa")
+  .innerText = rupiah(0);
+
+  document.getElementById("total")
+  .innerText = rupiah(0);
 
 }
 
@@ -596,151 +655,248 @@ function renderRiwayat(
   totalTagihan
 ){
 
-  const belumBayarBox =
-    document.getElementById(
-      "riwayatBelumBayar"
-    );
-
-  if(sisaPokok > 0){
-
-    belumBayarBox.innerHTML = `
-      <div class="tagihan-belum">
-
-        <div class="tagihan-belum-title">
-          Tagihan Belum Dibayar
-        </div>
-
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          margin-bottom:6px
-        ">
-          <span>Sisa Pokok</span>
-          <strong>${rupiah(sisaPokok)}</strong>
-        </div>
-
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          margin-bottom:6px
-        ">
-          <span>Jasa 20%</span>
-          <strong>${rupiah(jasa20)}</strong>
-        </div>
-
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          font-weight:700;
-          font-size:14px
-        ">
-          <span>Total Tagihan</span>
-          <strong>${rupiah(totalTagihan)}</strong>
-        </div>
-
-      </div>
-    `;
-
-  } else {
-
-    belumBayarBox.innerHTML = `
-      <div style="
-        border:1px solid #86efac;
-        background:#f0fdf4;
-        padding:12px;
-        border-radius:10px;
-        margin-bottom:15px;
-        text-align:center;
-        color:#166534;
-        font-weight:600
-      ">
-        ✓ Lunas - Tidak Ada Tagihan
-      </div>
-    `;
-
-  }
-
-  let htmlRiwayat = "";
+  let html = "";
 
   if(listAngsuran.length === 0){
 
-    htmlRiwayat = `
+    html = `
       <div style="
         text-align:center;
+        padding:20px;
         color:#999;
-        padding:20px
       ">
-        Belum ada riwayat angsuran
+        Belum ada riwayat
       </div>
     `;
 
-  } else {
+  }else{
 
     listAngsuran
-      .sort((a,b)=>
-        new Date(b.tanggal) -
-        new Date(a.tanggal)
-      )
-      .forEach(a=>{
+    .sort((a,b)=>
+      new Date(b.tanggal) -
+      new Date(a.tanggal)
+    )
+    .forEach(a=>{
 
-        const total =
-          Number(a.pokok || 0) +
-          Number(a.jasa || 0);
+      const total =
+        Number(a.pokok || 0) +
+        Number(a.jasa || 0);
 
-        htmlRiwayat += `
-          <div class="riwayat-item">
+      html += `
+        <div class="riwayat-item">
 
-            <div class="riwayat-item-header">
+          <div class="riwayat-item-header">
 
-              <span>
-                ${new Date(a.tanggal)
-                  .toLocaleDateString(
-                    "id-ID",
-                    {
-                      day:"2-digit",
-                      month:"short",
-                      year:"numeric"
-                    }
-                  )}
-              </span>
+            <span>
+              ${formatTanggal(a.tanggal)}
+            </span>
 
-              <span style="color:var(--primary)">
-                ${rupiah(total)}
-              </span>
+            <span style="
+              color:var(--primary)
+            ">
+              ${rupiah(total)}
+            </span>
 
+          </div>
+
+          <div class="
+            riwayat-item-detail
+          ">
+
+            <div>
+              Pokok:
+              ${rupiah(a.pokok || 0)}
             </div>
 
-            <div class="riwayat-item-detail">
+            <div>
+              Jasa:
+              ${rupiah(a.jasa || 0)}
+            </div>
 
-              <div>
-                Pokok:
-                ${rupiah(a.pokok || 0)}
-              </div>
-
-              <div>
-                Jasa:
-                ${rupiah(a.jasa || 0)}
-              </div>
-
-              <div>
-                Metode:
-                ${(a.metode || "cash")
-                  .toUpperCase()}
-              </div>
-
+            <div>
+              Metode:
+              ${(a.metode || "cash")
+              .toUpperCase()}
             </div>
 
           </div>
-        `;
 
-      });
+        </div>
+      `;
+
+    });
 
   }
 
-  document.getElementById("riwayatList").innerHTML =
-    htmlRiwayat;
+  document.getElementById(
+    "riwayatList"
+  ).innerHTML = html;
 
 }
+
+/* =========================
+   TOGGLE RIWAYAT
+========================= */
+
+function toggleRiwayat(){
+
+  const box =
+    document.getElementById(
+      "riwayatBox"
+    );
+
+  box.style.display =
+    box.style.display === "block"
+      ? "none"
+      : "block";
+
+}
+
+/* =========================
+   KIRIM WA
+========================= */
+
+function kirimWA(){
+
+  if(!dataAktif){
+
+    alert(
+      "Pilih pinjaman terlebih dahulu"
+    );
+
+    return;
+
+  }
+
+  let nomorWA =
+    dataAktif.hp ||
+    dataAktif.noHp ||
+    dataAktif.nohp ||
+    dataAktif.whatsapp ||
+    dataAktif.telepon ||
+    dataAktif.wa ||
+    dataAktif.nomorHp ||
+    "";
+
+  if(!nomorWA){
+
+    db.ref("anggota")
+    .once("value")
+    .then(snap=>{
+
+      snap.forEach(d=>{
+
+        const a = d.val();
+
+        if(a.nama ==
+          dataAktif.nama){
+
+          nomorWA =
+            a.hp ||
+            a.noHp ||
+            a.nohp ||
+            a.whatsapp ||
+            a.telepon ||
+            a.wa ||
+            a.nomorHp ||
+            "";
+
+        }
+
+      });
+
+      bukaWA(nomorWA);
+
+    });
+
+  }else{
+
+    bukaWA(nomorWA);
+
+  }
+
+}
+
+/* =========================
+   BUKA WA
+========================= */
+
+function bukaWA(nomorWA){
+
+  if(!nomorWA){
+
+    alert(
+      "Nomor WhatsApp tidak ditemukan"
+    );
+
+    return;
+
+  }
+
+  nomorWA = nomorWA
+    .toString()
+    .replace(/\D/g,"")
+    .replace(/^0/,"62");
+
+  const pesan =
+`*KOPERASI ARFA DRIVER*
+NOTA TAGIHAN PINJAMAN
+
+Nama:
+${dataAktif.nama || "-"}
+
+No Pinjaman:
+${dataAktif.nomor || "-"}
+
+Tanggal:
+${formatTanggal(dataAktif.tanggal)}
+
+Total Pinjaman:
+${rupiah(dataAktif.jumlah || 0)}
+
+Sudah Dibayar:
+${document.getElementById("dibayar").innerText}
+
+Sisa Pokok:
+${rupiah(sisaAktif)}
+
+Jasa 20%:
+${document.getElementById("jasa").innerText}
+
+*TOTAL TAGIHAN*
+${rupiah(totalTagihanAktif)}
+
+Terima kasih.
+KOPERASI ARFA DRIVER`;
+
+  const url =
+    "https://wa.me/" +
+    nomorWA +
+    "?text=" +
+    encodeURIComponent(pesan);
+
+  window.open(url,"_blank");
+
+  // notif
+  const toast =
+    document.createElement("div");
+
+  toast.className = "toast";
+
+  toast.innerHTML =
+    "✓ Nota berhasil dibuka di WhatsApp";
+
+  document.body.appendChild(toast);
+
+  setTimeout(()=>{
+
+    toast.remove();
+
+  },3000);
+
+}
+
+
 </script>
 </body>
 </html>

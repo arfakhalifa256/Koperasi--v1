@@ -22,15 +22,9 @@ position:sticky;top:0;z-index:1000;
 }
 .brand{display:flex;align-items:center;gap:8px;}
 .brand img{width:32px;height:32px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
-.brand-text .subtitle{
-  font-size:9px;
-  opacity:0.9;
-}
-
-.brand-text .title{
-  font-size:12px;
-  font-weight:700;
-}.menu-btn{font-size:20px;cursor:pointer;background:transparent;border:none;color:#fff;padding:10;}
+.brand-text.subtitle{font-size:9px;opacity:0.9;}
+.brand-text.title{font-size:12px;font-weight:700;}
+.menu-btn{font-size:22px;cursor:pointer;background:transparent;border:none;color:#fff;padding:0;}
 
 /* ===== SIDEBAR ===== */
 .sidebar{
@@ -97,7 +91,8 @@ color:var(--muted);
 font-weight:700;
 color:var(--text);
 }
-/* ===== BUTTON ===== */
+/* ===== BUTTON ===== /
+/ ===== BUTTON ===== */
 .btn-group{
 display:flex;
 gap:8px;
@@ -221,81 +216,35 @@ background:#43a047;
 .badge.bank{
 background:#1e88e5;
 }
-.item-actions{
-display:flex;
-gap:8px;
-margin-top:10px;
-}
 
-.btn-edit,
-.btn-delete{
-flex:1;
-padding:8px;
-border:none;
-border-radius:8px;
-font-size:11px;
-font-weight:600;
-cursor:pointer;
-}
-
-.btn-edit{
-background:#1e88e5;
-color:#fff;
-}
-
-.btn-delete{
-background:#e53935;
-color:#fff;
-}
-  button{
-padding:10px;
-border-radius:8px;
-border:1px solid var(--border);
-background:#fff;
-cursor:pointer;
-font-family:'Poppins',sans-serif;
-font-weight:600;
-transition:.2s;
-}
   </style>    
 </head>    
 <body>   
   <!-- SIDEBAR -->    
- <div id="sidebar" class="sidebar">
-  <h3>Menu Koperasi</h3>
+  <div id="sidebar" class="sidebar">    
+  <h3>Menu</h3>    
     
-<a href="anggota.html" class="menu-admin">👤anggota</a>
-<a href="kas.html" class="menu-admin">💰 kas</a>
-<a href="simpanan.html" class="menu-admin">📄 Simpanan</a>
-<a href="pinjaman.html" class="menu-admin">💰 Pinjaman</a>
-<a href="angsuran.html" class="menu-admin">📄 Angsuran</a>
-<a href="cair.html" class="menu-admin">💰Pencairan simpanan</a>
-<div class="divider"></div>
-<a href="laporan.html">📊 Laporan</a>
-<a href="backup.html" class="menu-admin">📊 backup Kas</a>
-<a href="saldoawal.html" id="menuUser" class="menu-admin">👤 Saldo awal</a>
-<a href="labarugi.html" id="menuUser" class="menu-admin">👤 Rugilaba</a>
-<a href="neraca.html" id="menuUser" class="menu-admin">👤 Neraca</a>
-<a href="user.html" id="menuUser" class="menu-admin">👤 Kelola User</a>
-<div class="divider"></div>
-<a href="#" id="btnLogoutSide">🚪 Logout</a>
-</div>
-<div id="overlay" class="overlay"></div>
-    <header>
-  <div class="header-left">
-    <div class="brand">
-      <img src="img/icon-192.png">
-      <div class="brand-text">
-        <div class="subtitle">Koperasi</div>
-        <div class="title">ARFA</div>
-      </div>
-      <h3>ANGSURAN</h3>
-    </div>
-  </div>
-  <div class="header-actions">
-  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-</div>
-</header>
+    <a href="anggota.html">👤 Anggota</a>  
+<a href="kas.html">💰 Kas</a>  
+<a href="simpanan.html">📄 Simpanan</a>  
+<a href="pinjaman.html">💳 Pinjaman</a>  
+<a href="angsuran.html">📑 Angsuran</a>    <div class="divider"></div>  <a href="backup.html">📦 Backup</a>  
+<a href="laporan.html">📊 Laporan</a>    <div class="divider"></div>  <a href="user.html">👤 Kelola User</a>  
+<a href="dash.html">🚪 Logout</a>  
+</div>      
+  <div id="overlay" class="overlay"></div> 
+  
+  <header>    
+    <div class="brand">    
+    <img src="img/icon-192.png">  
+    <div class="brand-text">    
+  <div class="subtitle">Koperasi</div>    
+  <div class="title">ARFA</div>    
+</div>    
+  <h3>ANGSURAN</h3>    
+<span class="menu-btn" onclick="toggleSidebar()">☰</span>  
+</header>  
+
     <!-- RIWAYAT -->    
 <button class="btn-tampil" onclick="toggleRiwayat()" id="btnTampil">    
   <span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:6px;">visibility</span>    
@@ -403,67 +352,12 @@ transition:.2s;
     </div>    
 </div>    
 </div>  
-  <!-- POPUP EDIT -->
-<div id="popupEditAngsuran" class="modal">
-  <div class="modal-content">
-    
-    <div class="modal-header">
-      <h3>Edit Angsuran</h3>
-      <button class="btn-close" onclick="tutupPopupEdit()">
-        <span class="material-icons">close</span>
-      </button>
-    </div>
-
-    <div style="padding:15px;overflow:auto;">
-
-      <div class="form-group">
-        <label>Nama</label>
-        <input type="text" id="editNama" disabled>
-      </div>
-
-      <div class="form-group">
-        <label>Tanggal</label>
-        <input type="date" id="editTanggal">
-      </div>
-
-      <div class="form-group">
-        <label>Metode</label>
-        <select id="editMetode">
-          <option value="cash">Cash</option>
-          <option value="bank">Bank</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Pokok</label>
-        <input type="text" id="editJumlah">
-      </div>
-
-      <div class="form-group">
-        <label>Jasa</label>
-        <input type="text" id="editJasa">
-      </div>
-
-      <div class="btn-group">
-        <button id="btnUpdate">Update Angsuran</button>
-      </div>
-
-    </div>
-  </div>
-</div>
   <div id="toast" class="toast"></div>    
   </body>    
 </html>    
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getDatabase,
-  ref,
-  onValue,
-  push,
-  set,
-  update
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
@@ -490,11 +384,7 @@ window.toggleSidebar = function(){
   document.getElementById("sidebar").classList.toggle("active");
   document.getElementById("overlay").classList.toggle("active");
 }
-const overlay = document.getElementById("overlay");
-
-if(overlay){
-  overlay.onclick = toggleSidebar;
-}
+document.getElementById("overlay").onclick = toggleSidebar;
 
 // ================= ROLE FILTER =================
 if(role!== "admin"){
@@ -515,62 +405,12 @@ const kasRef = ref(db,"/kas/transaksi");
 
 let dataPinjaman = {};
 let dataAngsuran = {};
-
-
-// ================= LOAD DATA PINJAMAN =================
-onValue(pinjamanRef, (snap) => {
-
-  dataPinjaman = {};
-
-  snap.forEach((d) => {
-
-    let p = d.val() || {};
-
-    // NORMALISASI NOMINAL PINJAMAN
-    let nominal =
-      Number(
-        p.jumlah ||
-        p.pinjaman ||
-        p.nominal ||
-        p.totalPinjaman ||
-        0
-      );
-
-    // JIKA FORMAT STRING RP
-    if (isNaN(nominal)) {
-      nominal = getNumber(
-        p.jumlah ||
-        p.pinjaman ||
-        p.nominal ||
-        p.totalPinjaman ||
-        0
-      );
-    }
-
-    p.jumlah = nominal;
-
-    dataPinjaman[d.key] = p;
-  });
-
-  // LOAD DROPDOWN SETELAH DATA MASUK
-  loadPinjaman();
-
-  // REFRESH INFO
-  if(pinIdAktif){
-    pilihPinjaman();
-  }
-
-  // UPDATE STAT
-  hitungStatistik();
-
-});
-  let pinIdAktif = null;
-let editAngsuranId = null;
+let pinIdAktif = null;
 window.angsuranTerakhirId = null;
 
 /* FORMAT */
 function rupiah(n){
-  return "Rp " + Number(n || 0).toLocaleString("id-ID");
+  return Number(n || 0).toLocaleString("id-ID",{style:"currency",currency:"IDR"});
 }
 function formatTanggal(t){
   return new Date(Number(t)).toLocaleDateString("id-ID",{
@@ -601,77 +441,41 @@ function showToast(msg,error=false){
   setTimeout(()=>{ toast.className = "toast"; },2500);
 }
 
-/* LOAD DATA ANGSURAN */
+/* LOAD DATA PINJAMAN */
+onValue(pinjamanRef,snap=>{
+  dataPinjaman = {};
+  snap.forEach(d=>{ dataPinjaman[d.key] = d.val(); });
+  loadPinjaman();
+  hitungStatistik();
+});
+
+/* LOAD DATA ANGSURAN - CUMA 1X */
 onValue(angsuranRef,snap=>{
-
   dataAngsuran = {};
-
   snap.forEach(d=>{
     let a = d.val();
-
     a.jumlah = Number(a.jumlah) || 0;
     a.jasa = Number(a.jasa) || 0;
-
+    // Fix parsing tanggal
     if(a.tanggal && typeof a.tanggal==="string"){
       let t = new Date(a.tanggal);
       if(!isNaN(t)) a.tanggal = t.getTime();
     }
-
-    if(!a.tanggal){
-      a.tanggal = Date.now();
-    }
-
+    if(!a.tanggal){ a.tanggal = Date.now(); }
     dataAngsuran[d.key] = a;
   });
 
-  // PENTING
-  loadPinjaman();
-
-  if(pinIdAktif){
-    pilihPinjaman();
-  }
-
+  if(pinIdAktif) pilihPinjaman();
   hitungStatistik();
-
-  if(riwayatVisible){
-    renderRiwayat();
-  }
-
+  if(riwayatVisible) renderRiwayat();
 });
 
 /* HITUNG SISA PINJAMAN */
 function getSisaPinjaman(pinjamanId){
   const p = dataPinjaman[pinjamanId];
-  if(!p){
-    return {
-      pinjaman: 0,
-      angsuran: 0,
-      sisa: 0
-    };
-  }
+  if(!p) return { pinjaman: 0, angsuran: 0, sisa: 0 };
 
-  // AMBIL TOTAL PINJAMAN DARI BERBAGAI FIELD
-  let totalPinjaman =
-    Number(
-      p.jumlah ||
-      p.pinjaman ||
-      p.nominal ||
-      p.totalPinjaman ||
-      0
-    );
-
-  // JIKA STRING "Rp 1.000.000"
-  if(isNaN(totalPinjaman)){
-    totalPinjaman = getNumber(
-      p.jumlah ||
-      p.pinjaman ||
-      p.nominal ||
-      p.totalPinjaman ||
-      0
-    );
-  }
-
-  // TOTAL ANGSURAN
+  const totalPinjaman = Number(p.jumlah || p.pinjaman || p.nominal || p.totalPinjaman || 0);
   let totalAngsuran = 0;
 
   Object.values(dataAngsuran).forEach(a=>{
@@ -680,106 +484,39 @@ function getSisaPinjaman(pinjamanId){
     }
   });
 
-  // HITUNG SISA
-  let sisa = Math.round(totalPinjaman - totalAngsuran);
-
-if(sisa < 0){
-  sisa = 0;
-}
-
-  // NORMALISASI
-  sisa = Math.max(0, Math.round(sisa));
+  let sisa = totalPinjaman - totalAngsuran;
+  if(sisa < 0) sisa = 0;
 
   return {
     pinjaman: totalPinjaman,
     angsuran: totalAngsuran,
-    sisa
+    sisa: Math.round(sisa)
   };
 }
+
 /* LOAD DROPDOWN PEMINJAM */
 function loadPinjaman(){
-
   const select = document.getElementById("pinjamanSelect");
-
   let html = `<option value="">Pilih Peminjam</option>`;
 
-  const listAktif = [];
+  const listAktif = Object.entries(dataPinjaman)
+   .map(([id, p]) => {
+      const info = getSisaPinjaman(id);
+      return { id, nama: p.nama || "-", nomor: p.nomor || "-", sisa: info.sisa };
+    })
+   .filter(item => item.sisa > 0)
+   .sort((a, b) => a.nama.localeCompare(b.nama));
 
-  Object.entries(dataPinjaman).forEach(([id, p]) => {
-
-    const info = getSisaPinjaman(id);
-
-    // HANYA TAMPIL YANG BELUM LUNAS
-    if(info.sisa > 0){
-
-      listAktif.push({
-        id,
-        nama: p.nama || "-",
-        nomor: p.nomor || "-",
-        sisa: info.sisa
-      });
-
-    }
-
-  });
-
-  // SORT NAMA
-  listAktif.sort((a,b)=>
-    a.nama.localeCompare(b.nama)
-  );
-
-  // JIKA TIDAK ADA
   if(listAktif.length === 0){
-
-    html += `
-      <option value="">
-        Tidak ada pinjaman aktif
-      </option>
-    `;
-
-    select.innerHTML = html;
-    select.disabled = true;
-
-    return;
+    html += `<option value="">Semua pinjaman sudah lunas</option>`;
+  } else {
+    listAktif.forEach(item => {
+      html += `<option value="${item.id}">${item.nama} - ${item.nomor} • Sisa: ${rupiah(item.sisa)}</option>`;
+    });
   }
-
-  // ADA DATA
-  select.disabled = false;
-
-  listAktif.forEach(item => {
-
-    html += `
-      <option value="${item.id}">
-        ${item.nama} - ${item.nomor}
-        • Sisa ${rupiah(item.sisa)}
-      </option>
-    `;
-
-  });
-
   select.innerHTML = html;
-
-  // RESET JIKA PINJAMAN SUDAH LUNAS
-  if(pinIdAktif){
-
-    const masihAda = listAktif.some(x => x.id === pinIdAktif);
-
-    if(!masihAda){
-
-      pinIdAktif = null;
-
-      select.value = "";
-
-      document.getElementById("infoBox")
-        .classList.remove("active");
-
-      document.getElementById("btnSimpan").disabled = true;
-
-    }
-
-  }
-
 }
+
 /* STATISTIK */
 function hitungStatistik(){
   let aktif = 0;
@@ -853,142 +590,64 @@ document.getElementById("pinjamanSelect").onchange = function(){
 });
 
 /* SIMPAN ANGSURAN */
-/* SIMPAN ANGSURAN */
 document.getElementById("btnSimpan").onclick = async function(){
+  if(role!=="admin"){ showToast("Hanya admin yang bisa menambah angsuran", true); return; }
+  if(!pinIdAktif) return showToast("Pilih peminjam!", true);
 
-  if(role !== "admin"){
-    showToast("Hanya admin yang bisa menambah angsuran", true);
-    return;
-  }
-
-  if(!pinIdAktif){
-    return showToast("Pilih peminjam!", true);
-  }
-
-  try{
-
+  try {
     let tanggalInput = document.getElementById("tanggal").value;
     let jumlah = getNumber(document.getElementById("jumlah").value);
     let jasa = getNumber(document.getElementById("jasa").value) || 0;
     let metode = document.getElementById("metode").value;
 
-    if(!tanggalInput){
-      return showToast("Isi tanggal!", true);
-    }
+    if (!tanggalInput) return showToast("Isi tanggal!", true);
+    if (!metode) return showToast("Pilih metode!", true);
+    if (!jumlah || jumlah <= 0) return showToast("Jumlah harus > 0!", true);
 
-    if(!metode){
-      return showToast("Pilih metode!", true);
-    }
-
-    if(!jumlah || jumlah <= 0){
-  return showToast("Jumlah harus > 0!", true);
-}
     let p = dataPinjaman[pinIdAktif];
     let info = getSisaPinjaman(pinIdAktif);
 
-    // VALIDASI MELEBIHI SISA
     if(jumlah > info.sisa){
-      return showToast("Jumlah angsuran melebihi sisa pinjaman!", true);
+      showToast("Jumlah angsuran melebihi sisa pinjaman!", true);
+      return;
     }
 
     let tanggal = new Date(tanggalInput).getTime();
     let totalKas = jumlah + jasa;
 
-    // =========================
-    // SIMPAN KAS
-    // =========================
-    const kasBaruRef = push(kasRef);
-
-    await set(kasBaruRef,{
+    // PUSH KE /kas/transaksi BUKAN /kas
+    let kasPush = await push(kasRef, {
       tanggal,
-      keterangan: `Angsuran ${p.nama} (${p.nomor})`,
-      tipe:"masuk",
+      keterangan: "Angsuran " + p.nama + " (" + p.nomor + ")",
+      tipe: "masuk",
       sumberKas: metode,
       jumlah: totalKas,
-      rincian:{
-        pokok: jumlah,
-        jasa: jasa
-      }
+      rincian: { pokok: jumlah, jasa: jasa }
     });
 
-    // =========================
-    // SIMPAN ANGSURAN
-    // =========================
-    const angsuranBaruRef = push(angsuranRef);
-
-    await set(angsuranBaruRef,{
+    let angPush = await push(angsuranRef, {
       pinjamanId: pinIdAktif,
       nama: p.nama,
       tanggal,
       jumlah,
       jasa,
       metode,
-      kasId: kasBaruRef.key
+      kasId: kasPush.key
     });
 
-    window.angsuranTerakhirId = angsuranBaruRef.key;
-
+    window.angsuranTerakhirId = angPush.key;
     document.getElementById("btnNota").disabled = false;
     document.getElementById("btnWA").disabled = false;
+    showToast("Berhasil ✅ Klik 'Cetak Nota' atau 'Kirim WA'");
 
-    showToast("Angsuran berhasil disimpan ✅");
+    document.getElementById("jumlah").value = "";
+    document.getElementById("jasa").value = "";
 
-// =======================
-// AUTO KIRIM WA
-// =======================
-
-const total = jumlah + jasa;
-
-const sisaTerbaru = info.sisa - jumlah;
-
-const pesan =
-`*BUKTI ANGSURAN*
-Koperasi ARFA DRIVER
-
-Nama: ${p.nama}
-No Pinjaman: ${p.nomor}
-
-Tanggal: ${new Date(tanggal).toLocaleDateString("id-ID")}
-
-Pokok: ${rupiah(jumlah)}
-Jasa: ${rupiah(jasa)}
-Total: ${rupiah(total)}
-
-Sisa Pinjaman: ${rupiah(sisaTerbaru)}
-
-Terima kasih 🙏`;
-
-if(p.wa){
-
-  let nomorWA = String(p.wa)
-  .replace(/\D/g,'');
-
-if(nomorWA.startsWith("08")){
-  nomorWA = "62" + nomorWA.substring(1);
-}
-  const url =
-    `https://wa.me/${nomorWA}?text=` +
-    encodeURIComponent(pesan);
-
-  setTimeout(()=>{
-    window.open(url,'_blank');
-  },800);
-
-}
-
-// RESET FORM
-document.getElementById("jumlah").value = "";
-document.getElementById("jasa").value = "";
-
-// REFRESH INFO
-pilihPinjaman();
-  }catch(err){
-
+  } catch (err) {
     showToast("Gagal: " + err.message, true);
-
   }
-
 };
+
 /* CETAK NOTA */
 document.getElementById("btnNota").onclick = function(){
   if(!window.angsuranTerakhirId) return showToast("Simpan angsuran dulu!", true);
@@ -997,68 +656,25 @@ document.getElementById("btnNota").onclick = function(){
 };
 
 /* KIRIM WA */
-/* KIRIM WA */
 document.getElementById("btnWA").onclick = function(){
-
-  if(!window.angsuranTerakhirId){
-    return showToast("Simpan angsuran dulu!", true);
-  }
-
+  if(!window.angsuranTerakhirId) return showToast("Simpan angsuran dulu!", true);
   const a = dataAngsuran[window.angsuranTerakhirId];
-
-  if(!a){
-    return showToast("Data tidak ditemukan", true);
-  }
+  if(!a) return showToast("Data tidak ditemukan", true);
 
   const p = dataPinjaman[a.pinjamanId];
-
-  if(!p){
-    return showToast("Data pinjaman tidak ditemukan", true);
-  }
-
-  if(!p.wa){
-    return showToast("Nomor WA anggota belum ada!", true);
-  }
+  if(!p) return showToast("Data pinjaman tidak ditemukan", true);
 
   const tgl = new Date(a.tanggal).toLocaleDateString("id-ID");
-
   const total = (a.jumlah || 0) + (a.jasa || 0);
-
   const info = getSisaPinjaman(a.pinjamanId);
 
-  const pesan =
-`*BUKTI ANGSURAN*
-Koperasi ARFA DRIVER
+  const pesan = `*BUKTI ANGSURAN*\nKoperasi ARFA DRIVER\n\nNama: ${p.nama}\nNo: ${p.nomor}\nTanggal: ${tgl}\n\nPokok: ${rupiah(a.jumlah)}\nJasa: ${rupiah(a.jasa||0)}\nTotal: ${rupiah(total)}\n\nSisa Pinjaman: ${rupiah(info.sisa)}\n\nTerima kasih 🙏`;
 
-Nama: ${p.nama}
-No Pinjaman: ${p.nomor}
-
-Tanggal: ${tgl}
-
-Pokok: ${rupiah(a.jumlah)}
-Jasa: ${rupiah(a.jasa || 0)}
-Total: ${rupiah(total)}
-
-Sisa Pinjaman: ${rupiah(info.sisa)}
-
-Terima kasih 🙏`;
-
-  // FORMAT NOMOR
-  let nomorWA = String(p.wa).replace(/\D/g,'');
-
-  // UBAH 08 MENJADI 628
-  if(nomorWA.startsWith("08")){
-    nomorWA = "62" + nomorWA.substring(1);
-  }
-
-  const url =
-    `https://wa.me/${nomorWA}?text=` +
-    encodeURIComponent(pesan);
-
+  const url = "https://wa.me/?text=" + encodeURIComponent(pesan);
   window.open(url, "_blank");
-
-  showToast("WhatsApp berhasil dibuka ✅");
+  showToast("Link WA berhasil dibuka");
 };
+
 /* CETAK PDF */
 window.cetakNotaAngsuran = function(id){
   const a = dataAngsuran[id];
@@ -1164,118 +780,17 @@ window.toggleRiwayat = function(){
     btnEl.innerHTML = `<span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:6px;">visibility</span>Lihat Riwayat Angsuran`;
   }
 }
-// ===== EDIT ANGSURAN =====
-window.editAngsuran = function(id){
-  if(role!=="admin") return showToast("Hanya admin!", true);
-  const a = dataAngsuran[id];
-  if(!a) return showToast("Data tidak ditemukan", true);
 
-  editAngsuranId = id;
-  document.getElementById("editNama").value = a.nama || "";
-  document.getElementById("editTanggal").value = new Date(a.tanggal).toISOString().split("T")[0];
-  document.getElementById("editMetode").value = a.metode || "cash";
-  document.getElementById("editJumlah").value = formatRupiahInput(String(a.jumlah || 0));
-  document.getElementById("editJasa").value = formatRupiahInput(String(a.jasa || 0));
-  document.getElementById("popupEditAngsuran").classList.add("show");
-}
-
-window.tutupPopupEdit = function(){
-  document.getElementById("popupEditAngsuran").classList.remove("show");
-  editAngsuranId = null;
-}
-
-document.getElementById("editJumlah").addEventListener("input",function(){
-  this.value = formatRupiahInput(this.value);
-});
-document.getElementById("editJasa").addEventListener("input",function(){
-  this.value = formatRupiahInput(this.value);
-});
-
-document.getElementById("btnUpdate").onclick = async function(){
-  if(!editAngsuranId) return;
-  if(role!=="admin") return showToast("Hanya admin!", true);
-
-  const a = dataAngsuran[editAngsuranId];
-  const p = dataPinjaman[a.pinjamanId];
-
-  let tanggalInput = document.getElementById("editTanggal").value;
-  let jumlahBaru = getNumber(document.getElementById("editJumlah").value);
-  let jasaBaru = getNumber(document.getElementById("editJasa").value) || 0;
-  let metodeBaru = document.getElementById("editMetode").value;
-
-  if(!tanggalInput) return showToast("Isi tanggal!", true);
-  if(!metodeBaru) return showToast("Pilih metode!", true);
-  if(!jumlahBaru || jumlahBaru <= 0) return showToast("Jumlah harus > 0!", true);
-
-  // VALIDASI SISA PINJAMAN
-  let totalPinjaman = Number(p.jumlah || 0);
-  let totalAngsuranLain = 0;
-  Object.entries(dataAngsuran).forEach(([key,val])=>{
-    if(key!== editAngsuranId && val.pinjamanId === a.pinjamanId){
-      totalAngsuranLain += Number(val.jumlah || 0);
-    }
-  });
-
-  let sisaPinjaman = totalPinjaman - totalAngsuranLain;
-  if(jumlahBaru > sisaPinjaman){
-    return showToast(`Pokok melebihi sisa pinjaman! Sisa: ${rupiah(sisaPinjaman)}`, true);
-  }
-
-  try {
-    let tanggal = new Date(tanggalInput).getTime();
-    let totalKasBaru = jumlahBaru + jasaBaru;
-
-    const updates = {};
-    updates[`/angsuran/${editAngsuranId}/tanggal`] = tanggal;
-    updates[`/angsuran/${editAngsuranId}/jumlah`] = jumlahBaru;
-    updates[`/angsuran/${editAngsuranId}/jasa`] = jasaBaru;
-    updates[`/angsuran/${editAngsuranId}/metode`] = metodeBaru;
-
-    // Update kas juga biar sinkron
-    if(a.kasId){
-      updates[`/kas/transaksi/${a.kasId}/tanggal`] = tanggal;
-      updates[`/kas/transaksi/${a.kasId}/jumlah`] = totalKasBaru;
-      updates[`/kas/transaksi/${a.kasId}/sumberKas`] = metodeBaru;
-      updates[`/kas/transaksi/${a.kasId}/rincian/pokok`] = jumlahBaru;
-      updates[`/kas/transaksi/${a.kasId}/rincian/jasa`] = jasaBaru;
-      updates[`/kas/transaksi/${a.kasId}/keterangan`] = "Angsuran " + p.nama + " (" + p.nomor + ")";
-    }
-
-    await update(ref(db), updates);
-    tutupPopupEdit();
-    showToast("Angsuran berhasil diupdate ✅");
-  } catch (err) {
-    showToast("Gagal update: " + err.message, true);
-  }
-};
-
-// ===== HAPUS ANGSURAN + KAS =====
-window.hapusAngsuran = async function(id){
-  if(role!=="admin") return showToast("Hanya admin!", true);
-  if(!confirm("Hapus angsuran ini? Kas juga ikut kehapus!")) return;
-
-  const a = dataAngsuran[id];
-  if(!a) return showToast("Data tidak ditemukan", true);
-
-  try {
-    const updates = {};
-    updates[`/angsuran/${id}`] = null;
-    if(a.kasId){
-      updates[`/kas/transaksi/${a.kasId}`] = null;
-    }
-    await update(ref(db), updates);
-    showToast("Angsuran berhasil dihapus ✅");
-  } catch (err) {
-    showToast("Gagal hapus: " + err.message, true);
-  }
-};
+/* RENDER RIWAYAT */
 function renderRiwayat(){
   const listEl = document.getElementById("listTransaksi");
   let list = Object.entries(dataAngsuran).sort((a,b)=>(b[1].tanggal||0)-(a[1].tanggal||0));
+
   if(list.length===0){
     listEl.innerHTML = `<div class="item"><div class="item-ket">Belum ada data angsuran</div></div>`;
     return;
   }
+
   let html = "";
   list.forEach(([id,a])=>{
     const total = Number(a.jumlah||0) + Number(a.jasa||0);
@@ -1292,12 +807,6 @@ function renderRiwayat(){
           <span class="badge ${a.metode==="bank"?"bank":"cash"}">${(a.metode || "cash").toUpperCase()}</span>
         </div>
         <div class="item-waktu">${formatTanggal(a.tanggal)}</div>
-        ${role==="admin"? `
-        <div class="item-actions">
-          <button class="btn-edit" onclick="editAngsuran('${id}')">Edit</button>
-          <button class="btn-delete" onclick="hapusAngsuran('${id}')">Hapus</button>
-        </div>
-        ` : ''}
       </div>
     `;
   });
@@ -1313,4 +822,3 @@ window.onload = function () {
   document.getElementById("tanggal").value = new Date().toISOString().split("T")[0];
 };
 </script>
-  

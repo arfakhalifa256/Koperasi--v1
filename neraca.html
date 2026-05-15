@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -231,6 +232,7 @@
     let kasCash = Number(kasData.saldoAwal?.cash) || 0;
     let kasBank = Number(kasData.saldoAwal?.bank) || 0;
     
+    
     Object.values(transaksi).forEach(t=>{
       if(!t || !t.tanggal) return;
       let tgl = typeof t.tanggal === "number" ? t.tanggal : new Date(t.tanggal).getTime();
@@ -245,7 +247,6 @@
         debugKasKeluar += jumlah;
       }
     });
-    
     const saldoKas = kasCash + kasBank;
 
     // 1b. PIUTANG
@@ -302,12 +303,25 @@
     });
     
     Object.values(transaksi).forEach(t => {
-      if(!t) return;
-      const kategori = (t.kategori || "").toLowerCase();
-      if(t.tipe === "masuk" && kategori.includes("lain")){
-        pendapatanLain += Number(t.jumlah) || 0;
-      }
-    });
+  if(!t || !t.tanggal) return;
+
+  let tgl = typeof t.tanggal === "number"
+    ? t.tanggal
+    : new Date(t.tanggal).getTime();
+
+  if(tgl > cutoff) return;
+
+  const kategori = (t.kategori || "").toLowerCase();
+  const jumlah = Number(t.jumlah) || 0;
+
+  // Pendapatan lain-lain
+  if(t.tipe === "masuk" && (
+      kategori.includes("lain") ||
+      kategori.includes("pendapatan")
+    )){
+    pendapatanLain += jumlah;
+  }
+});
     
     const totalSimpanan = pokok + wajib + sukarela;
     const shuBerjalan = totalPendapatan + pendapatanLain;
@@ -352,6 +366,8 @@
     const selisih = totalAktiva - totalPasiva;
     document.getElementById("dbgSelisih").innerText = rupiah(selisih);
     
+    document.getElementById("dbgPendapatan").innerText =
+  rupiah(totalPendapatan + pendapatanLain);
     const balanceBox = document.getElementById("balanceCheck");
     if(Math.abs(selisih) < 1){
       balanceBox.className = "balance-box success";

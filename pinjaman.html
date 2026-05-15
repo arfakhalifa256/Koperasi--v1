@@ -116,6 +116,78 @@ header{
 .pinjaman-row{font-size:11px}
 .header-actions button{padding:5px 8px;font-size:10px}
 }
+  /* CUSTOM ALERT */
+.custom-alert{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+  padding:20px;
+  animation:fadeIn .2s ease;
+}
+
+.custom-alert-box{
+  width:100%;
+  max-width:320px;
+  background:#fff;
+  border-radius:18px;
+  padding:24px 20px;
+  text-align:center;
+  box-shadow:0 10px 35px rgba(0,0,0,.25);
+  animation:zoomIn .2s ease;
+}
+
+.alert-icon{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  margin-bottom:14px;
+  color:white;
+  font-weight:bold;
+}
+
+.alert-text{
+  font-size:14px;
+  font-weight:600;
+  color:#1f2937;
+  line-height:1.5;
+  margin-bottom:18px;
+}
+
+.custom-alert button{
+  border:none;
+  padding:10px 18px;
+  border-radius:10px;
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+  width:100%;
+  font-family:'Poppins',sans-serif;
+}
+
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+@keyframes zoomIn{
+  from{
+    opacity:0;
+    transform:scale(.85);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
 </style>
 </head>
 
@@ -275,9 +347,11 @@ if(role!=="admin"){
 const anggotaRef = ref(db, "anggota");
 const pinjamanRef = ref(db, "pinjaman");
 const kasRef = ref(db, "kas");
+const angsuranRef = ref(db, "angsuran");
 
 let dataPinjaman = {};
 let dataAnggota = {};
+  let dataAngsuran = {};
 let editId = null;
 
 const anggotaSelect = document.getElementById("anggota");
@@ -337,7 +411,10 @@ onValue(pinjamanRef, snap => {
     hitungSummary();
     return;
   }
-
+onValue(angsuranRef, snap => {
+  dataAngsuran = snap.val() || {};
+  renderPinjaman();
+});
   snap.forEach(d=>{
     let p = d.val();
     p.id = d.key;
@@ -399,6 +476,93 @@ function renderPinjaman(){
       Number(p.jumlah || 0) +
       jasaOtomatis;
 
+    // STATUS
+    // TOTAL PINJAMAN
+let totalPinjaman =
+  Number(p.jumlah || 0) + jasaOtomatis;
+
+// HITUNG TOTAL ANGSURAN
+// HITUNG TOTAL ANGSURAN
+let totalAngsuran = 0;
+
+Object.values(dataAngsuran).forEach(a => {
+
+  if(a.pinjamanId === p.id){
+
+    totalAngsuran +=
+      Number(a.jumlah || 0) +
+      Number(a.jasa || 0);
+
+  }
+
+});
+    
+// CUSTOM ALERT
+window.showAlert = function(
+  pesan,
+  tipe = "warning"
+){
+
+  const popup =
+    document.getElementById("customAlert");
+
+  const icon =
+    document.getElementById("alertIcon");
+
+  const text =
+    document.getElementById("alertText");
+
+  const btn =
+    popup.querySelector("button");
+
+  text.innerText = pesan;
+
+  // WARNA
+  if(tipe === "success"){
+
+    icon.style.background = "#10b981";
+    btn.style.background = "#10b981";
+    icon.innerHTML = "✅";
+
+  }
+  else if(tipe === "danger"){
+
+    icon.style.background = "#ef4444";
+    btn.style.background = "#ef4444";
+    icon.innerHTML = "❌";
+
+  }
+  else{
+
+    icon.style.background = "#f59e0b";
+    btn.style.background = "#f59e0b";
+    icon.innerHTML = "⚠️";
+
+  }
+
+  popup.style.display = "flex";
+}
+
+window.tutupAlert = function(){
+
+  document.getElementById(
+    "customAlert"
+  ).style.display = "none";
+
+}
+// CEK STATUS
+let lunas = totalAngsuran >= totalPinjaman;
+
+let status =
+  lunas
+  ? "LUNAS"
+  : "BELUM LUNAS";
+
+let warnaStatus =
+  lunas
+  ? "#10b981"
+  : "#ef4444";
+
     // CARD
     let card = document.createElement("div");
     card.className = "pinjaman-card";
@@ -420,12 +584,47 @@ function renderPinjaman(){
           </div>
         </div>
 
-        <div class="pinjaman-badge">
-          ${(p.sumberKas || "-").toUpperCase()}
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:end">
+
+          <div class="pinjaman-badge">
+            ${(p.sumberKas || "-").toUpperCase()}
+          </div>
+
+          <div style="
+            background:${warnaStatus};
+            color:white;
+            padding:4px 10px;
+            border-radius:20px;
+            font-size:10px;
+            font-weight:700
+          ">
+            ${status}
+          </div>
+
         </div>
 
       </div>
+    
+<div class="pinjaman-row">
+  <span class="label">Sudah Bayar</span>
 
+  <span class="value">
+    Rp ${format(totalAngsuran)}
+  </span>
+</div>
+
+<div class="pinjaman-row">
+  <span class="label">Sisa</span>
+
+  <span class="value" style="
+    color:${lunas ? '#10b981' : '#ef4444'};
+    font-weight:700
+  ">
+    Rp ${format(
+      Math.max(totalPinjaman - totalAngsuran,0)
+    )}
+  </span>
+</div>
       <div class="pinjaman-row">
         <span class="label">Tanggal</span>
 
@@ -451,15 +650,33 @@ function renderPinjaman(){
       </div>
 
       <div class="pinjaman-row">
+        <span class="label">Total</span>
+
+        <span class="value" style="
+          color:var(--primary);
+          font-weight:700
+        ">
+          Rp ${format(total)}
+        </span>
+      </div>
+
+      <div class="pinjaman-row">
+        <span class="label">Status</span>
+
+        <span class="value" style="
+          color:${warnaStatus};
+          font-weight:700
+        ">
+          ${status}
+        </span>
+      </div>
+
+      <div class="pinjaman-row">
         <span class="label">Ket</span>
 
         <span class="value">
           ${p.ket || "-"}
         </span>
-      </div>
-
-      <div class="pinjaman-total">
-        Total: Rp ${format(total)}
       </div>
 
       <div class="pinjaman-actions">
@@ -502,12 +719,38 @@ function hitungSummary(){
 }
 
 onValue(kasRef, snap=>{
+
   let saldo = 0;
+
   snap.forEach(d=>{
+
     let k = d.val();
-    saldo += Number(k.jumlah);
+
+    let jumlah =
+      Number(k.jumlah) || 0;
+
+    let tipe =
+      (k.tipe || "").toLowerCase();
+
+    // TRANSAKSI MASUK
+    if(tipe === "masuk"){
+
+      saldo += jumlah;
+
+    }
+
+    // TRANSAKSI KELUAR
+    else if(tipe === "keluar"){
+
+      saldo -= jumlah;
+
+    }
+
   });
-  document.getElementById("saldoKas").innerText = format(saldo);
+
+  document.getElementById("saldoKas").innerText =
+    format(saldo);
+
 });
 
 // NOMOR PINJAMAN
@@ -527,33 +770,135 @@ window.onload = async function(){
 
 // SIMPAN PINJAMAN
 window.simpanPinjaman = async function(){
-  if(role!=="admin") return alert("Hanya admin!");
 
-  let idAnggota = anggotaSelect.value;
-  let nama = anggotaSelect.options[anggotaSelect.selectedIndex]?.text || "";
-  let tanggalInput = document.getElementById("tanggal").value;
-  let jumlah = Number(document.getElementById("jumlah").value);
-  let jasa = Number(document.getElementById("jasa").value) || 0;
-  let metode = document.getElementById("metode").value;
-  let ket = document.getElementById("ket").value;
+  if(role !== "admin"){
+    return alert("Hanya admin!");
+  }
 
-  if(!idAnggota) return alert("Pilih anggota!");
-  if(!tanggalInput) return alert("Isi tanggal!");
-  if(!metode) return alert("Pilih metode!");
-  if(!jumlah || jumlah<=0) return alert("Jumlah harus > 0!");
+  let idAnggota =
+    anggotaSelect.value;
 
-  let nomor = document.getElementById("noPinjaman").value;
-  let tanggal = new Date(tanggalInput).getTime();
+  let nama =
+    anggotaSelect.options[
+      anggotaSelect.selectedIndex
+    ]?.text || "";
 
-  let kas = await push(kasRef,{
-    tanggal,
-    keterangan:`Pinjaman ${nama} (${nomor})`,
-    tipe:"keluar",
-    sumberKas:metode,
-    jumlah: jumlah + jasa
+  let tanggalInput =
+    document.getElementById("tanggal").value;
+
+  let jumlah =
+    Number(
+      document.getElementById("jumlah").value
+    );
+
+  let jasa =
+    Number(
+      document.getElementById("jasa").value
+    ) || 0;
+
+  let metode =
+    document.getElementById("metode").value;
+
+  let ket =
+    document.getElementById("ket").value;
+
+  // VALIDASI
+  if(!idAnggota){
+    return alert("Pilih anggota!");
+  }
+
+  if(!tanggalInput){
+    return alert("Isi tanggal!");
+  }
+
+  if(!metode){
+    return alert("Pilih metode!");
+  }
+
+  if(!jumlah || jumlah <= 0){
+    return alert("Jumlah harus > 0!");
+  }
+
+  // =========================
+  // CEK PINJAMAN BELUM LUNAS
+  // =========================
+
+  let masihAdaPinjaman = false;
+
+  Object.values(dataPinjaman).forEach(p => {
+
+    // hanya cek pinjaman anggota yg sama
+    if(p.idAnggota !== idAnggota){
+      return;
+    }
+
+    // total pinjaman
+    let totalPinjaman =
+      Number(p.jumlah || 0) +
+      Number(p.jasa || 0);
+
+    // total angsuran
+    let totalAngsuran = 0;
+
+    Object.values(dataAngsuran).forEach(a => {
+
+      // RELASI ANGSURAN
+      if(a.pinjamanId === p.id){
+
+        totalAngsuran +=
+          Number(a.jumlah || 0) +
+          Number(a.jasa || 0);
+
+      }
+
+    });
+
+    // kalau belum lunas
+    if(totalAngsuran < totalPinjaman){
+      masihAdaPinjaman = true;
+    }
+
   });
 
+  // BLOCK PINJAMAN BARU
+  if(masihAdaPinjaman){
+
+    return showAlert(
+  "Anggota masih memiliki pinjaman yang belum lunas!",
+  "danger"
+);
+
+  }
+
+  // =========================
+  // SIMPAN PINJAMAN BARU
+  // =========================
+
+  let nomor =
+    document.getElementById("noPinjaman").value;
+
+  let tanggal =
+    new Date(tanggalInput).getTime();
+
+  // KAS
+  let kas = await push(kasRef,{
+
+  tanggal,
+
+  keterangan:
+    `Pinjaman ${nama} (${nomor})`,
+
+  tipe:"keluar",
+
+  sumberKas:metode,
+
+  jumlah: jumlah
+
+});
+
+  // PINJAMAN
   await push(pinjamanRef,{
+
     nomor,
     idAnggota,
     nama,
@@ -562,17 +907,33 @@ window.simpanPinjaman = async function(){
     jasa,
     sumberKas:metode,
     ket,
-    kasId: kas.key
+
+    kasId: kas.key,
+
+    status:"belum"
+
   });
 
-  document.getElementById("notif").innerHTML = `<div class="alert success">Berhasil ✅</div>`;
-  setTimeout(()=>document.getElementById("notif").innerHTML = "",3000);
+  // NOTIF
+  document.getElementById("notif").innerHTML = `
+    <div class="alert success">
+      Berhasil ✅
+    </div>
+  `;
 
+  setTimeout(()=>{
+    document.getElementById("notif").innerHTML = "";
+  },3000);
+
+  // RESET FORM
   document.getElementById("jumlah").value = "";
   document.getElementById("jasa").value = "0";
   document.getElementById("ket").value = "";
   document.getElementById("metode").value = "";
-  document.getElementById("noPinjaman").value = await getNoPinjaman();
+
+  document.getElementById("noPinjaman").value =
+    await getNoPinjaman();
+
 }
 
 // EDIT & HAPUS
@@ -775,7 +1136,24 @@ document.getElementById("popupEdit").addEventListener("click", function(e){
   if(e.target === this) tutupPopup();
 });
 </script>
+<!-- ALERT -->
+<div id="customAlert" class="custom-alert">
+  <div class="custom-alert-box">
 
+    <div id="alertIcon" class="alert-icon">
+      ⚠️
+    </div>
+
+    <div id="alertText" class="alert-text">
+      Pesan alert
+    </div>
+
+    <button onclick="tutupAlert()">
+      OK
+    </button>
+
+  </div>
+</div>
 </body>
 </html>
 

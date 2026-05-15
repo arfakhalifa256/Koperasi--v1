@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kas Koperasi</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary: #1e90ff;
+  --primary-dark: #0f3057;
+  --card: #ffffff;
+  --bg: #f1f5f9;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --success: #16a34a;
+  --danger: #dc2626;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  padding-bottom: 20px;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-back {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.btn-back:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateX(-2px);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 2px;
+}
+
+.brand-text.subtitle {
+  font-size: 10px;
+  opacity: 0.9;
+  line-height: 1;
+}
+
+.brand-text.title {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.user-section {
+  position: relative;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 36px;
+  background: white;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  overflow: hidden;
+  min-width: 120px;
+  z-index: 999;
+}
+
+.dropdown-menu div {
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.dropdown-menu div:hover {
+  background: #f0f0f0;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  padding: 14px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  text-align: center;
+  margin: 8px 0 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  letter-spacing: 0.5px;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--card);
+  padding: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ===== SUMMARY ===== */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.summary-grid.total {
+  grid-template-columns: 1fr;
+}
+
+.summary-item {
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.summary-item .label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.summary-item .value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.summary-item.total .value {
+  font-size: 18px;
+  color: var(--primary);
+}
+
+/* ===== FORM ===== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group.full {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(30,144,255,0.1);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+/* ===== TABLE ===== */
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  min-width: 600px;
+}
+
+th {
+  background: #f8fafc;
+  padding: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover {
+  background: #f8fafc;
+  cursor: pointer;
+}
+
+th.text-right,
+td.text-right {
+  text-align: right;
+}
+
+.masuk {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.keluar {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* ===== MODAL ===== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.modal-content .form-group {
+  margin-bottom: 12px;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.modal-btns button {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn-save {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-delete {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-cancel {
+  background: #e2e8f0;
+  color: var(--text);
+}
+/* ===== SIDEBAR ===== */
+.sidebar{
+  position:fixed;top:0;left:-240px;width:220px;height:100%;background:#0d47a1;
+  padding:16px;transition:.3s;z-index:99999;overflow-y:auto;
+}
+.sidebar.active{left:0;}
+.sidebar h3{color:#fff;margin-bottom:16px;font-size:16px;}
+.sidebar a{
+  display:block;color:#fff;text-decoration:none;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,.1);font-size:13px;
+}
+.sidebar a:hover{color:#90caf9;}
+.divider{height:12px;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9999;}
+.overlay.active{display:block;}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 100%;
+  background: var(--primary-dark);
+  color: white;
+  padding: 20px 16px;
+  transform: translateX(-100%);
+  transition: 0.3s;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar h3 {
+  margin-bottom: 16px;
+  font-size: 15px;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  z-index: 999;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:768px){
+  body { font-size: 12px; }
+.container { padding: 10px; }
+.card { padding: 12px; }
+.summary-grid { grid-template-columns: 1fr; }
+.form-grid { grid-template-columns: 1fr; }
+  table { font-size: 10px; }
+  th,td { padding: 6px; }
+.brand img { width: 32px; height: 32px; }
+.brand-text.title { font-size: 13px; }
+}
+  .menu-btn {
+  cursor: pointer;
+  font-size: 22px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+</style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+ <div id="sidebar" class="sidebar">
+  <h3>Menu Koperasi</h3>
+    
+<a href="anggota.html" class="menu-admin">👤anggota</a>
+<a href="main.html" class="menu-admin">💰 kas</a>
+<a href="simpanan.html" class="menu-admin">📄 Simpanan</a>
+<a href="pinjaman.html" class="menu-admin">💰 Pinjaman</a>
+<a href="angsuran.html" class="menu-admin">📄 Angsuran</a>
+<a href="cair.html" class="menu-admin">💰Pencairan simpanan</a>
+<div class="divider"></div>
+<a href="laporan.html">📊 Laporan</a>
+<a href="backup.html" class="menu-admin">📊 backup Kas</a>
+<a href="saldoawal.html" id="menuUser" class="menu-admin">👤 Saldo awal</a>
+<a href="labarugi.html" id="menuUser" class="menu-admin">👤 Rugilaba</a>
+<a href="neraca.html" id="menuUser" class="menu-admin">👤 Neraca</a>
+<a href="user.html" id="menuUser" class="menu-admin">👤 Kelola User</a>
+<div class="divider"></div>
+<a href="#" id="btnLogoutSide">🚪 Logout</a>
+</div>
+
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay"></div>
+
+
+
+  <header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA</div>
+      </div>
+    </div>
+
+    <span id="userInfo"></span>
+  </div>
+
+  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+</header>
+  
+
+
+<div class="container">
+  <h3 class="page-title">KAS</h3>
+
+  <div class="card">
+    <div class="summary-grid total">
+      <div class="summary-item total">
+        <div class="label">Total Saldo</div>
+        <div class="value">Rp <span id="saldoTotal">0</span></div>
+      </div>
+      
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="label">Cash (dengan saldo awal)</div>
+       <div class="value">Rp <span id="saldoCash">0</span></div>
+      </div>
+      
+      <div class="summary-item">
+  <div class="label">Bank (dengan saldo awal)</div>
+   <div class="value">Rp <span id="saldoBank">0</span></div>
+      </div>
+      
+      <div class="summary-item">
+        <div class="label">Kas Masuk</div>
+        <div class="value masuk">Rp <span id="totalMasuk">0</span></div>
+      </div>
+      <div class="summary-item">
+        <div class="label">Kas Keluar</div>
+        <div class="value keluar">Rp <span id="totalKeluar">0</span></div>
+      </div>
+    </div>
+  </div>
+<div class="card">
+  <h3>Saldo Awal</h3>
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Tanggal Saldo Awal</label>
+      <input type="datetime-local" id="tanggalSaldoAwal">
+    </div>
+
+    <div class="form-group">
+      <label>Saldo Cash</label>
+      <input type="number" id="inputSaldoCash" placeholder="0">
+    </div>
+
+    <div class="form-group">
+      <label>Saldo Bank</label>
+      <input type="number" id="inputSaldoBank" placeholder="0">
+    </div>
+
+    <div class="form-group full">
+      <button class="btn-primary" id="btnSimpanSaldo">
+        Simpan Saldo Awal
+      </button>
+    </div>
+
+  </div>
+</div>
+    
+  <div class="card">
+  <h3>Input Transaksi</h3>
+
+  <div class="form-grid">
+
+    <div class="form-group">
+      <label>Sumber Kas</label>
+      <select id="sumberKas">
+        <option value="cash">Cash</option>
+        <option value="bank">Bank</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Tipe</label>
+      <select id="tipe" onchange="toggleKategori()">
+        <option value="masuk">Kas Masuk</option>
+        <option value="keluar">Kas Keluar</option>
+        <option value="biaya">Biaya Operasional</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Kategori</label>
+      <select id="kategori"></select>
+    </div>
+
+    <div class="form-group">
+      <label>Tanggal</label>
+      <input type="datetime-local" id="tanggal">
+    </div>
+
+    <div class="form-group">
+      <label>Jumlah</label>
+      <input type="number" id="jumlah" placeholder="0">
+    </div>
+
+    <div class="form-group full">
+      <label>Keterangan</label>
+      <input type="text" id="keterangan" placeholder="Contoh: Listrik Januari">
+    </div>
+
+    <div class="form-group full">
+      <button class="btn-primary" id="btnSimpan">
+        Simpan Transaksi
+      </button>
+    </div>
+
+  </div>
+</div>
+
+  <div class="card">
+    <h3>Riwayat Transaksi</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+  <tr>
+    <th>Tanggal</th>
+    <th>Tipe</th>
+    <th>Sumber</th>
+    <th>Kategori</th>
+    <th class="text-right">Jumlah</th>
+    <th>Keterangan</th>
+  </tr>
+</thead>
+    
+        <tbody id="riwayat"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit Kas -->
+<div class="modal" id="modalEditKas">
+  <div class="modal-content">
+    <h3>Edit Transaksi</h3>
+    <input type="hidden" id="editKasKey">
+    <div class="form-group">
+      <label>Sumber Kas</label>
+      <select id="editKasSumber">
+        <option value="cash">Cash</option>
+        <option value="bank">Bank</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Tipe</label>
+      <select id="editKasTipe">
+        <option value="masuk">Kas Masuk</option>
+        <option value="keluar">Kas Keluar</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Jumlah</label>
+      <input type="number" id="editKasJumlah">
+    </div>
+    <div class="form-group">
+      <label>Tanggal</label>
+      <input type="datetime-local" id="editKasTanggal">
+    </div>
+    <div class="form-group">
+      <label>Keterangan</label>
+      <input type="text" id="editKasKeterangan">
+    </div>
+    <div id="editKasKategoriWrap"></div>
+    <div class="modal-btns">
+      <button class="btn-save" onclick="updateKas()">Simpan</button>
+      <button class="btn-delete" onclick="hapusKasModal()">Hapus</button>
+      <button class="btn-cancel" onclick="tutupModalKas()">Batal</button>
+    </div>
+  </div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, update, remove, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Role check
+const role = localStorage.getItem("role") || "user";
+if(role!== "admin") {
+  document.querySelector("#btnSimpan").style.display="none";
+  document.querySelectorAll(".menu-admin").forEach(el => el.style.display="none");
+  document.querySelectorAll("input,select").forEach(el => el.disabled=true);
+}
+
+// References
+const kasRef = ref(db,"kas");
+const saldoAwalRef = ref(db, "kas/saldoAwal");
+
+let editKey = null;
+let saldoCash = 0, saldoBank = 0, totalMasuk = 0, totalKeluar = 0;
+
+function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
+
+/* ===== SIDEBAR ===== */
+window.toggleSidebar = function(){
+  const s = document.getElementById("sidebar");
+  const o = document.getElementById("overlay");
+  if(s.classList.contains("open")){
+    s.classList.remove("open");
+    o.style.display = "none";
+  } else {
+    s.classList.add("open");
+    o.style.display = "block";
+  }
+};
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
+document.getElementById("btnLogoutSide").addEventListener("click", ()=>{
+  localStorage.clear();
+  location.href="index.html";
+});
+
+/* USER INFO */
+document.addEventListener("DOMContentLoaded", () => {
+  const el = document.getElementById("userInfo");
+  const username = localStorage.getItem("username");
+  const role = localStorage.getItem("role");
+  if(!username ||!role){ el.innerHTML = "⚠️ Belum login"; return; }
+  const jam = new Date().getHours();
+  let salam = jam < 11? "Pagi" : jam < 15? "Siang" : jam < 18? "Sore" : "Malam";
+  el.innerHTML = `${salam}, <b>${username}</b>`;
+});
+
+/* ===== SALDO AWAL ===== */
+document.getElementById("btnSimpanSaldo").onclick = async () => {
+  const cash = Number(document.getElementById("inputSaldoCash").value) || 0;
+  const bank = Number(document.getElementById("inputSaldoBank").value) || 0;
+  const tanggalInput = document.getElementById("tanggalSaldoAwal").value;
+  const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
+
+  await update(saldoAwalRef, { cash, bank, tanggal, updatedAt: Date.now() });
+  alert("Saldo awal berhasil disimpan");
+};
+
+/* ===== TOGGLE KATEGORI ===== */
+window.toggleKategori = function(){
+  const tipe = document.getElementById("tipe").value;
+  const kategori = document.getElementById("kategori");
+  let html = "";
+
+  if(tipe === "masuk"){
+    html = `
+      <option value="simpanan pokok">Simpanan Pokok</option>
+      <option value="simpanan wajib">Simpanan Wajib</option>
+      <option value="simpanan sukarela">Simpanan Sukarela</option>
+      <option value="angsuran">Angsuran</option>
+      <option value="pendapatan lain">Pendapatan Lain-lain</option>
+    `;
+  } else {
+    // keluar dan biaya pakai kategori yang sama
+    html = `
+      <option value="konsumsi">Konsumsi</option>
+      <option value="biaya operasional">Biaya Operasional</option>
+      <option value="pinjaman">Pinjaman</option>
+      <option value="pengambilan simpanan">Pengambilan Simpanan</option>
+      <option value="transfer bank">Transfer Bank</option>
+    `;
+  }
+  kategori.innerHTML = html;
+}
+
+/* ===== SIMPAN KAS ===== */
+document.getElementById("btnSimpan").onclick = async()=>{
+  const sumberKas = document.getElementById("sumberKas").value;
+  let tipe = document.getElementById("tipe").value;
+  const jumlah = Number(document.getElementById("jumlah").value);
+  const ket = document.getElementById("keterangan").value;
+  const tanggalInput = document.getElementById("tanggal").value;
+  const kategori = document.getElementById("kategori").value || "";
+
+  if(!jumlah){ alert("Jumlah wajib diisi"); return; }
+
+  // Cek saldo
+  if(tipe==="keluar" || tipe==="biaya"){
+    if(sumberKas==="cash" && jumlah>saldoCash){ alert("Saldo CASH tidak cukup"); return; }
+    if(sumberKas==="bank" && jumlah>saldoBank){ alert("Saldo BANK tidak cukup"); return; }
+  }
+
+  // Normalisasi: biaya = keluar biar gampang diitung
+  if(tipe === "biaya") tipe = "keluar";
+
+  const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
+  const dataKas = {
+    sumberKas,
+    tipe,
+    jumlah,
+    kategori,
+    keterangan: ket || kategori || "Transaksi Kas",
+    tanggal
+  };
+
+  await push(ref(db,"kas/transaksi"), dataKas);
+  alert("Data berhasil disimpan");
+  document.getElementById("jumlah").value="";
+  document.getElementById("keterangan").value="";
+}
+
+/* ===== LOAD KAS ===== */
+onValue(kasRef, snap => {
+  saldoCash = 0;
+  saldoBank = 0;
+  totalMasuk = 0;
+  totalKeluar = 0;
+
+  const riwayat = document.getElementById("riwayat");
+  riwayat.innerHTML = "";
+
+  if (!snap.exists()) return;
+  const raw = snap.val();
+
+  // SALDO AWAL
+  const saldoAwal = raw.saldoAwal || {};
+  saldoCash = Number(saldoAwal.cash || 0);
+  saldoBank = Number(saldoAwal.bank || 0);
+  document.getElementById("inputSaldoCash").value = saldoCash;
+  document.getElementById("inputSaldoBank").value = saldoBank;
+
+  if (saldoAwal.tanggal) {
+    const t = new Date(saldoAwal.tanggal);
+    const iso = new Date(t.getTime() - t.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+    document.getElementById("tanggalSaldoAwal").value = iso;
+  }
+
+  // TRANSAKSI
+  const data = Object.entries(raw.transaksi || {})
+   .sort((a,b)=> Number(b[1].tanggal) - Number(a[1].tanggal));
+
+  data.forEach(([key, i]) => {
+    let jumlah = Number(i.jumlah) || 0;
+    let tipe = String(i.tipe || "").toLowerCase();
+    const sumber = String(i.sumberKas || "cash").toLowerCase();
+    const kategori = String(i.kategori || "").toLowerCase();
+    const ket = String(i.keterangan || "").toLowerCase();
+
+    // AUTO DETEKSI DATA LAMA
+    if(!tipe){
+      if(kategori.includes("pinjaman") || kategori.includes("pengambilan") ||
+         kategori.includes("biaya") || kategori.includes("operasional") ||
+         kategori.includes("konsumsi") || ket.includes("pinjaman") || ket.includes("biaya")){
+        tipe = "keluar";
+      } else {
+        tipe = "masuk";
+      }
+    }
+
+    // Normalisasi: biaya = keluar
+    if(tipe === "biaya") tipe = "keluar";
+
+    const tanggal = i.tanggal
+     ? new Date(Number(i.tanggal)).toLocaleString("id-ID",{
+          day:"2-digit", month:"short", year:"numeric",
+          hour:"2-digit", minute:"2-digit"
+        })
+      : "-";
+
+    // HITUNG TOTAL
+    if (tipe === "masuk") {
+      totalMasuk += jumlah;
+    } else {
+      totalKeluar += jumlah;
+    }
+
+    // HITUNG SALDO
+    if (sumber === "cash") {
+      if (tipe === "masuk") saldoCash += jumlah;
+      else saldoCash -= jumlah;
+    }
+    if (sumber === "bank") {
+      if (tipe === "masuk") saldoBank += jumlah;
+      else saldoBank -= jumlah;
+    }
+
+    // TAMPILKAN TABEL
+    let className = tipe === "masuk"? "masuk" : "keluar";
+    let labelTipe = tipe === "masuk"? "MASUK" : "KELUAR";
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${tanggal}</td>
+      <td class="${className}">${labelTipe}</td>
+      <td>${sumber.toUpperCase()}</td>
+      <td>${i.kategori || '-'}</td>
+      <td class="text-right">Rp ${formatRp(jumlah)}</td>
+      <td>${i.keterangan || "-"}</td>
+    `;
+    if (role === "admin") {
+      tr.style.cursor = "pointer";
+      tr.addEventListener("click", () => editKas(key));
+    }
+    riwayat.appendChild(tr);
+  });
+
+  // UPDATE SUMMARY
+  document.getElementById("saldoCash").innerText = formatRp(saldoCash);
+  document.getElementById("saldoBank").innerText = formatRp(saldoBank);
+  document.getElementById("totalMasuk").innerText = formatRp(totalMasuk);
+  document.getElementById("totalKeluar").innerText = formatRp(totalKeluar);
+  document.getElementById("saldoTotal").innerText = formatRp(saldoCash + saldoBank);
+});
+
+/* ===== EDIT KAS ===== */
+window.editKas = async function(key){
+  const snap = await get(ref(db, "kas/transaksi/"+key));
+  const d = snap.val();
+  if(!d) return;
+
+  editKey = key;
+  document.getElementById("editKasKey").value = key;
+  document.getElementById("editKasSumber").value = d.sumberKas || "cash";
+  document.getElementById("editKasTipe").value = d.tipe === "keluar"? "keluar" : "masuk";
+  document.getElementById("editKasJumlah").value = d.jumlah || 0;
+  document.getElementById("editKasKeterangan").value = d.keterangan || "";
+
+  if(d.tanggal){
+    const t = new Date(d.tanggal);
+    const iso = new Date(t.getTime()-t.getTimezoneOffset()*60000).toISOString().slice(0,16);
+    document.getElementById("editKasTanggal").value = iso;
+  }
+  document.getElementById("modalEditKas").style.display = "flex";
+}
+
+window.tutupModalKas = function(){ document.getElementById("modalEditKas").style.display = "none"; }
+
+window.updateKas = async function(){
+  const key = document.getElementById("editKasKey").value;
+  const sumber = document.getElementById("editKasSumber").value;
+  let tipe = document.getElementById("editKasTipe").value;
+  const jumlah = Number(document.getElementById("editKasJumlah").value);
+  const keterangan = document.getElementById("editKasKeterangan").value;
+  const tanggalInput = document.getElementById("editKasTanggal").value;
+  const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
+
+  await update(ref(db,"kas/transaksi/"+key), {
+    sumberKas: sumber,
+    tipe,
+    jumlah,
+    keterangan: keterangan||"Transaksi Kas",
+    tanggal
+  });
+  alert("Data berhasil diperbarui");
+  tutupModalKas();
+}
+
+window.hapusKasModal = async function(){
+  const key = document.getElementById("editKasKey").value;
+  if(!key) return;
+  if(confirm("Yakin ingin menghapus transaksi ini?")){
+    await remove(ref(db,"kas/transaksi/"+key));
+    alert("Data berhasil dihapus");
+    tutupModalKas();
+  }
+}
+
+window.kembali = function(){ window.location.href="dash.html"; }
+
+// Set tanggal default
+document.getElementById("tanggal").value =
+  new Date(Date.now() - new Date().getTimezoneOffset()*60000)
+ .toISOString()
+ .slice(0,16);
+
+toggleKategori();
+</script>
+</body>
+</html>

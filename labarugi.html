@@ -19,7 +19,6 @@
     *{margin:0;padding:0;box-sizing:border-box}
     body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--gray-100);color:var(--gray-800)}
     
-    /* ===== HEADER ===== */
     header{
       background:linear-gradient(135deg,var(--primary),var(--primary-dark));
       color:#fff;
@@ -64,7 +63,6 @@
     }
     .header-btns button:hover{background:rgba(255,255,255,.3);transform:translateY(-1px)}
 
-    /* ===== CONTAINER ===== */
     .container{max-width:700px;margin:20px auto;background:#fff;padding:24px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
     .periode{text-align:center;margin-bottom:20px;color:var(--gray-600);font-size:13px;font-weight:500}
     .filter{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
@@ -73,10 +71,18 @@
     .filter button{padding:9px 18px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:.2s}
     .filter button:hover{background:var(--primary-dark);transform:translateY(-1px)}
     
-    /* ===== LAPORAN ===== */
-  
-    .laporan h4{background:#d1fae5;color:#065f46;border:2px solid #6ee7b7,font-size:12px}
-   .laporan h4:first-child{margin-top:0}
+    .laporan h4{
+      background:#d1fae5;
+      color:#065f46;
+      border:2px solid #6ee7b7;
+      padding:10px 14px;
+      border-radius:8px 8px 0 0;
+      margin-top:16px;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:0.5px
+    }
+    .laporan h4:first-child{margin-top:0}
     .isi{border:1px solid var(--gray-200);border-top:none;padding:14px;border-radius:0 0 8px 8px;background:var(--gray-50)}
     .baris{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--gray-200);font-size:14px}
     .baris:last-child{border:none}
@@ -84,12 +90,10 @@
     .baris span:last-child{font-weight:500}
     .total{display:flex;justify-content:space-between;padding:12px 0;margin-top:10px;border-top:2px solid var(--gray-800);font-weight:700;font-size:15px}
     
-    /* ===== SHU BOX ===== */
     .shu-box{margin-top:24px;padding:18px;border-radius:12px;text-align:center;font-weight:700;font-size:15px}
     .laba{background:#d1fae5;color:#065f46;border:2px solid #6ee7b7}
     .rugi{background:#fee2e2;color:#991b1b;border:2px solid #fca5a5}
     
-    /* ===== DEBUG ===== */
     .debug-box{margin-top:24px;background:#fffbeb;border:1px dashed #f59e0b;padding:14px;border-radius:10px;font-size:12px;color:#92400e}
     .debug-box strong{color:#78350f}
     .debug-box hr{margin:8px 0;border:none;border-top:1px dashed #fbbf24}
@@ -133,7 +137,6 @@
     </div>
 
     <div class="laporan">
-      <!-- PENDAPATAN -->
       <h4>PENDAPATAN</h4>
       <div class="isi">
         <div class="baris"><span>Pendapatan Jasa Pinjaman</span><span id="pendapatanJasa">Rp 0</span></div>
@@ -141,9 +144,8 @@
         <div class="total"><span>TOTAL PENDAPATAN</span><span id="totalPendapatan">Rp 0</span></div>
       </div>
 
-      <!-- BEBAN -->
       <h4>BEBAN OPERASIONAL</h4>
-      <div class="isi" id="listBeban">
+      <div class="isi">
         <div class="baris"><span>Beban Gaji</span><span id="bebanGaji">Rp 0</span></div>
         <div class="baris"><span>Beban Listrik & Air</span><span id="bebanListrik">Rp 0</span></div>
         <div class="baris"><span>Beban ATK</span><span id="bebanAtk">Rp 0</span></div>
@@ -206,6 +208,7 @@
     let totalJasa = 0, jmlTransaksiJasa = 0;
     let pendapatanLain = 0;
 
+    // Ambil jasa dari angsuran
     Object.values(dataGlobal.angsuran || {}).forEach(a=>{
       if(!a) return;
       let tgl = typeof a.tanggal === "number" ? a.tanggal : new Date(a.tanggal).getTime();
@@ -217,29 +220,36 @@
       }
     });
 
+    // Ambil pendapatan lain dari kas.transaksi
     Object.values(transaksi).forEach(t=>{
       if(!t || t.tipe !== "masuk") return;
       let tgl = typeof t.tanggal === "number" ? t.tanggal : new Date(t.tanggal).getTime();
       if(tgl < tglMulai || tgl > tglAkhir) return;
+      
       const kategori = (t.kategori || "").toLowerCase();
       const keterangan = (t.keterangan || "").toLowerCase();
-      if(kategori.includes("pendapatan") && !keterangan.includes("jasa") && !keterangan.includes("angsur")){
+      
+      // Jika kategori = pendapatan lain, atau keterangan mengandung "pendapatan lain"
+      if(kategori.includes("pendapatan lain") || keterangan.includes("pendapatan lain")){
         pendapatanLain += Number(t.jumlah) || 0;
       }
     });
 
     const totalPendapatan = totalJasa + pendapatanLain;
 
-    // ===== 2. BEBAN =====
+    // ===== 2. BEBAN OPERASIONAL =====
     let bebanGaji = 0, bebanListrik = 0, bebanAtk = 0, bebanLain = 0;
 
     Object.values(transaksi).forEach(t=>{
       if(!t || t.tipe !== "keluar") return;
       let tgl = typeof t.tanggal === "number" ? t.tanggal : new Date(t.tanggal).getTime();
       if(tgl < tglMulai || tgl > tglAkhir) return;
+      
       const kategori = (t.kategori || "").toLowerCase();
       const keterangan = (t.keterangan || "").toLowerCase();
       const jumlah = Number(t.jumlah) || 0;
+      
+      // Skip jika ini pembayaran pinjaman/angsuran/simpanan
       const isNotBeban = keterangan.includes("pinjam") || keterangan.includes("angsur") || keterangan.includes("simpanan");
       if(isNotBeban) return;
       
@@ -249,7 +259,7 @@
         bebanListrik += jumlah;
       } else if(kategori.includes("atk") || keterangan.includes("atk") || keterangan.includes("alat tulis")){
         bebanAtk += jumlah;
-      } else if(kategori === "operasional" || kategori === "biaya"){
+      } else if(kategori.includes("biaya operasional") || kategori.includes("operasional") || kategori.includes("biaya")){
         bebanLain += jumlah;
       }
     });
@@ -283,7 +293,6 @@
     document.getElementById("dbgShu").innerText = rupiah(shu);
   }
 
-  // ===== FUNGSI HEADER =====
   function kembali(){
     if(document.referrer) history.back();
     else window.location.href = 'dash.html';

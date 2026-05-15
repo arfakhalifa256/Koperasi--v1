@@ -375,7 +375,7 @@ canvas {
   <h3>Menu Koperasi</h3>
     
 <a href="anggota.html" class="menu-admin">👤anggota</a>
-<a href="kas.html" class="menu-admin">💰 kas</a>
+<a href="main.html" class="menu-admin">💰 kas</a>
 <a href="simpanan.html" class="menu-admin">📄 Simpanan</a>
 <a href="pinjaman.html" class="menu-admin">💰 Pinjaman</a>
 <a href="angsuran.html" class="menu-admin">📄 Angsuran</a>
@@ -439,7 +439,196 @@ canvas {
 <h3>Grafik Pelunasan Pinjaman</h3>
 <canvas id="chartPelunasan"></canvas>
 </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.appspot.com",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* ===== REF ===== */
+const kasRef = ref(db, "kas");
+const pinjamanRef = ref(db, "pinjaman");
+const angsuranRef = ref(db, "angsuran");
+const simpananRef = ref(db, "simpanan");
+const cairRef = ref(db, "cair");
+
+/* ===== STATE ===== */
+let saldoCash = 0, saldoBank = 0;
+let totalMasuk = 0, totalKeluar = 0;
+
+let dataKas = {};
+let dataPinjaman = {};
+let dataAngsuran = {};
+let dataSimpanan = {};
+let dataCair = {};
+
+/* ===== FORMAT RUPIAH ===== */
+const rupiah = n =>
+  Number(n || 0).toLocaleString("id-ID");
+/* ===== LISTEN SEMUA DATA ===== */
+onValue(kasRef, snap => {
+  dataKas = snap.val() || {};
+  hitungSaldo();
+});
+
+onValue(pinjamanRef, snap => {
+  dataPinjaman = snap.val() || {};
+  hitungSaldo();
+});
+
+onValue(angsuranRef, snap => {
+  dataAngsuran = snap.val() || {};
+  hitungSaldo();
+});
+
+onValue(simpananRef, snap => {
+  dataSimpanan = snap.val() || {};
+  hitungSaldo();
+});
+
+onValue(cairRef, snap => {
+  dataCair = snap.val() || {};
+  hitungSaldo();
+});
+
+/* ===== LOGIKA PERHITUNGAN SAMA PERSIS KAS.HTML ===== */
+
+  /* ===== HITUNG HANYA DARI KAS ===== */
+function hitungSaldo(){
+
+  saldoCash = 0;
+  saldoBank = 0;
+
+  // saldo awal
+  const saldoAwal = dataKas.saldoAwal || {};
+
+  saldoCash = Number(saldoAwal.cash || 0);
+  saldoBank = Number(saldoAwal.bank || 0);
+
+  // transaksi
+  const transaksi = dataKas.transaksi || {};
+
+  Object.values(transaksi).forEach(i => {
+
+    const jumlah =
+      Number(i.jumlah || 0);
+
+    let tipe =
+      String(
+        i.tipe ||
+        i.jenis ||
+        ""
+      ).toLowerCase();
+
+    const sumber =
+      String(
+        i.sumberKas || "cash"
+      ).toLowerCase();
+
+    // normalisasi
+    if(tipe === "biaya"){
+      tipe = "keluar";
+    }
+
+    // cash
+    if(sumber === "cash"){
+
+      if(tipe === "masuk"){
+        saldoCash += jumlah;
+      }
+      else{
+        saldoCash -= jumlah;
+      }
+
+    }
+
+    // bank
+    if(sumber === "bank"){
+
+      if(tipe === "masuk"){
+        saldoBank += jumlah;
+      }
+      else{
+        saldoBank -= jumlah;
+      }
+
+    }
+
+  });
+
+  updateDOM();
+
+}
+/* ===== UPDATE TAMPILAN ===== */
+/* ===== UPDATE TAMPILAN ===== */
+function updateDOM(){
+
+  const totalSaldo = saldoCash + saldoBank;
+
+  document.getElementById("saldoCash").innerText =
+    "Rp " + rupiah(saldoCash);
+
+  document.getElementById("saldoBank").innerText =
+    "Rp " + rupiah(saldoBank);
+
+  document.getElementById("saldoTotal").innerText =
+    "Rp " + rupiah(totalSaldo);
+
+  // SALDO KAS = TOTAL SALDO - SALDO AWAL
+  const saldoAwal =
+    Number(dataKas?.saldoAwal?.cash || 0) +
+    Number(dataKas?.saldoAwal?.bank || 0);
+
+  document.getElementById("saldoKas").innerText =
+    "Rp " + rupiah(totalSaldo - saldoAwal);
+
+}
+
+/* ===== ROLE MENU ===== */
+const role = localStorage.getItem("role");
+if(role !== "admin"){
+  document.querySelectorAll(".menu-admin").forEach(el => {
+    el.style.display = "none";
+  });
+}
+
+/* ===== USER DISPLAY ===== */
+document.addEventListener("DOMContentLoaded", () => {
+  const username = localStorage.getItem("username") || "User";
+  const jam = new Date().getHours();
+  let salam = jam < 11 ? "Pagi" : jam < 15 ? "Siang" : jam < 18 ? "Sore" : "Malam";
+  
+  const el = document.getElementById("userDisplay");
+  if(el) el.innerHTML = `${salam}, <b>${username}</b>`;
+});
+
+/* ===== SIDEBAR ===== */
+window.toggleSidebar = function(){
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("overlay").classList.toggle("active");
+};
+
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
+
+/* ===== LOGOUT ===== */
+document.getElementById("btnLogoutSide").addEventListener("click", () => {
+  if(confirm("Yakin ingin logout?")){
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+});
+</script>
 <div class="card">
 <h3>Top Peminjam</h3>
 <div id="topPeminjam" class="top-list"></div>
@@ -500,123 +689,6 @@ function rupiah(n){
     }
   );
 }
-
-/* =========================
-   LOAD SALDO KAS
-========================= */
-onValue(kasRef, snapshot => {
-  let saldoKas = 0;
-  let saldoCash = 0;
-  let saldoBank = 0;
-
-  if(snapshot.exists()){
-
-    const raw = snapshot.val();
-
-    /* =====================
-       SALDO AWAL
-    ===================== */
-    saldoKas =
-      Number(raw?.saldoAwal?.kas || 0);
-
-    saldoCash =
-      Number(raw?.saldoAwal?.cash || 0);
-
-    saldoBank =
-      Number(raw?.saldoAwal?.bank || 0);
-
-    /* =====================
-       AMBIL TRANSAKSI
-    ===================== */
-    let transaksi = {};
-
-    // jika pakai /kas/transaksi
-    if(raw.transaksi){
-
-      transaksi = raw.transaksi;
-
-    } else {
-
-      // jika transaksi langsung di root /kas
-      Object.entries(raw).forEach(([k,v]) => {
-
-        if(
-          typeof v === "object" &&
-          (
-            v.jenis ||
-            v.tipe
-          )
-        ){
-          transaksi[k] = v;
-        }
-
-      });
-
-    }
-
-    /* =====================
-       HITUNG CASH & BANK
-    ===================== */
-    Object.values(transaksi).forEach(item => {
-
-      const jumlah =
-        Number(item.jumlah) || 0;
-
-      // support jenis / tipe
-      const jenis =
-        String(
-          item.jenis ||
-          item.tipe ||
-          "masuk"
-        ).toLowerCase();
-
-      const sumber =
-        String(
-          item.sumberKas || "cash"
-        ).toLowerCase();
-
-      // CASH
-      if(sumber === "cash"){
-
-        if(jenis === "masuk"){
-          saldoCash += jumlah;
-        } else {
-          saldoCash -= jumlah;
-        }
-
-      }
-
-      // BANK
-      else if(sumber === "bank"){
-
-        if(jenis === "masuk"){
-          saldoBank += jumlah;
-        } else {
-          saldoBank -= jumlah;
-        }
-
-      }
-
-    });
-
-  }
-
-  /* =====================
-     TAMPILKAN
-  ===================== */
-  document.getElementById("saldoCash").innerText =
-    rupiah(saldoCash);
-
-  document.getElementById("saldoBank").innerText =
-    rupiah(saldoBank);
-
-  document.getElementById("saldoTotal").innerText =
-    rupiah(saldoCash + saldoBank);
-
-  document.getElementById("saldoKas").innerText =
-    rupiah((saldoCash + saldoBank)-1320000);
-
-});
 
 /* =========================
    ROLE MENU
