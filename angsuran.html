@@ -225,7 +225,7 @@ background:#1e88e5;
   <h3>Menu</h3>    
     
     <a href="anggota.html">👤 Anggota</a>  
-<a href="kas.html">💰 Kas</a>  
+<a href="main.html">💰 Kas</a>  
 <a href="simpanan.html">📄 Simpanan</a>  
 <a href="pinjaman.html">💳 Pinjaman</a>  
 <a href="angsuran.html">📑 Angsuran</a>    <div class="divider"></div>  <a href="backup.html">📦 Backup</a>  
@@ -442,81 +442,174 @@ function showToast(msg,error=false){
 }
 
 /* LOAD DATA PINJAMAN */
+
+    let pinjamanLoaded = false;
+let angsuranLoaded = false;
+
+/* LOAD DATA PINJAMAN */
 onValue(pinjamanRef,snap=>{
   dataPinjaman = {};
-  snap.forEach(d=>{ dataPinjaman[d.key] = d.val(); });
-  loadPinjaman();
-  hitungStatistik();
+
+  snap.forEach(d=>{
+    dataPinjaman[d.key] = d.val();
+  });
+
+  pinjamanLoaded = true;
+
+  if(pinjamanLoaded && angsuranLoaded){
+    loadPinjaman();
+    hitungStatistik();
+
+    if(pinIdAktif){
+      pilihPinjaman();
+    }
+  }
 });
 
-/* LOAD DATA ANGSURAN - CUMA 1X */
+/* LOAD DATA ANGSURAN */
 onValue(angsuranRef,snap=>{
   dataAngsuran = {};
+
   snap.forEach(d=>{
     let a = d.val();
+
     a.jumlah = Number(a.jumlah) || 0;
     a.jasa = Number(a.jasa) || 0;
-    // Fix parsing tanggal
-    if(a.tanggal && typeof a.tanggal==="string"){
+
+    if(a.tanggal && typeof a.tanggal === "string"){
       let t = new Date(a.tanggal);
-      if(!isNaN(t)) a.tanggal = t.getTime();
+
+      if(!isNaN(t)){
+        a.tanggal = t.getTime();
+      }
     }
-    if(!a.tanggal){ a.tanggal = Date.now(); }
+
+    if(!a.tanggal){
+      a.tanggal = Date.now();
+    }
+
     dataAngsuran[d.key] = a;
   });
 
-  if(pinIdAktif) pilihPinjaman();
-  hitungStatistik();
-  if(riwayatVisible) renderRiwayat();
-});
+  angsuranLoaded = true;
 
-/* HITUNG SISA PINJAMAN */
+  if(pinjamanLoaded && angsuranLoaded){
+    loadPinjaman();
+    hitungStatistik();
+
+    if(pinIdAktif){
+      pilihPinjaman();
+    }
+
+    if(riwayatVisible){
+      renderRiwayat();
+    }
+  }
+});/* LOAD DROPDOWN PEMINJAM */
+/* LOAD DROPDOWN PEMINJAM */
+function loadPinjaman(){
+
+  const select = document.getElementById("pinjamanSelect");
+
+  let html = `<option value="">Pilih Peminjam</option>`;
+
+  const listAktif = [];
+
+  Object.entries(dataPinjaman).forEach(([id,p])=>{
+
+    let info = getSisaPinjaman(id);
+
+    // FILTER HANYA BELUM LUNAS
+    if(info.sisa > 0){
+
+      listAktif.push({
+        id,
+        nama : p.nama || "-",
+        nomor : p.nomor || "-",
+        sisa : info.sisa
+      });
+
+    }
+
+  });
+
+  // SORT NAMA
+  listAktif.sort((a,b)=>
+    a.nama.localeCompare(b.nama)
+  );
+
+  // RENDER
+  if(listAktif.length === 0){
+
+    html += `
+      <option value="">
+        Semua pinjaman sudah lunas
+      </option>
+    `;
+
+  } else {
+
+    listAktif.forEach(item=>{
+
+      html += `
+        <option value="${item.id}">
+          ${item.nama} - ${item.nomor}
+          • Sisa: ${rupiah(item.sisa)}
+        </option>
+      `;
+
+    });
+
+  }
+
+  select.innerHTML = html;
+}
+    /* HITUNG SISA PINJAMAN */
 function getSisaPinjaman(pinjamanId){
-  const p = dataPinjaman[pinjamanId];
-  if(!p) return { pinjaman: 0, angsuran: 0, sisa: 0 };
 
-  const totalPinjaman = Number(p.jumlah || p.pinjaman || p.nominal || p.totalPinjaman || 0);
+  let p = dataPinjaman[pinjamanId];
+
+  if(!p){
+    return {
+      pinjaman:0,
+      angsuran:0,
+      sisa:0
+    };
+  }
+
+  // total pinjaman
+  let totalPinjaman =
+    Number(
+      p.totalPinjaman ||
+      p.nominal ||
+      p.pinjaman ||
+      p.jumlah ||
+      p.total ||
+      0
+    );
+
+  // total angsuran pokok
   let totalAngsuran = 0;
 
   Object.values(dataAngsuran).forEach(a=>{
+
     if(a.pinjamanId === pinjamanId){
+
       totalAngsuran += Number(a.jumlah || 0);
+
     }
+
   });
 
+  // sisa
   let sisa = totalPinjaman - totalAngsuran;
-  if(sisa < 0) sisa = 0;
 
   return {
-    pinjaman: totalPinjaman,
-    angsuran: totalAngsuran,
-    sisa: Math.round(sisa)
+    pinjaman : totalPinjaman,
+    angsuran : totalAngsuran,
+    sisa : sisa > 0 ? sisa : 0
   };
 }
-
-/* LOAD DROPDOWN PEMINJAM */
-function loadPinjaman(){
-  const select = document.getElementById("pinjamanSelect");
-  let html = `<option value="">Pilih Peminjam</option>`;
-
-  const listAktif = Object.entries(dataPinjaman)
-   .map(([id, p]) => {
-      const info = getSisaPinjaman(id);
-      return { id, nama: p.nama || "-", nomor: p.nomor || "-", sisa: info.sisa };
-    })
-   .filter(item => item.sisa > 0)
-   .sort((a, b) => a.nama.localeCompare(b.nama));
-
-  if(listAktif.length === 0){
-    html += `<option value="">Semua pinjaman sudah lunas</option>`;
-  } else {
-    listAktif.forEach(item => {
-      html += `<option value="${item.id}">${item.nama} - ${item.nomor} • Sisa: ${rupiah(item.sisa)}</option>`;
-    });
-  }
-  select.innerHTML = html;
-}
-
 /* STATISTIK */
 function hitungStatistik(){
   let aktif = 0;
@@ -544,36 +637,97 @@ function hitungStatistik(){
 }
 
 /* PILIH PINJAMAN */
+/* PILIH PINJAMAN */
 function pilihPinjaman(){
+
   if(!pinIdAktif){
     document.getElementById("infoBox").classList.remove("active");
     document.getElementById("btnSimpan").disabled = true;
     document.getElementById("btnNota").disabled = true;
     document.getElementById("btnWA").disabled = true;
+
+    document.getElementById("jumlah").value = "";
+    document.getElementById("jasa").value = "";
+
     return;
   }
 
   const p = dataPinjaman[pinIdAktif];
   let info = getSisaPinjaman(pinIdAktif);
 
+  // ================= AUTO ISI POKOK =================
+  let pokokDefault =
+    Number(
+      p.angsuranPokok ||
+      p.pokok ||
+      p.cicilan ||
+      p.angsuran ||
+      0
+    );
+
+  // kalau tidak ada data angsuran pokok
+  // isi otomatis dengan sisa pinjaman
+  if(pokokDefault <= 0){
+    pokokDefault = info.sisa;
+  }
+
+  document.getElementById("jumlah").value =
+    pokokDefault > 0
+      ? formatRupiahInput(String(pokokDefault))
+      : "";
+
+  // ================= AUTO ISI JASA =================
+  let jasaDefault =
+    Number(
+      p.jasa ||
+      p.besarJasa ||
+      p.nilaiJasa ||
+      p.jasaBulanan ||
+      p.jasaPerBulan ||
+      p.angsuranJasa ||
+      p.nominalJasa ||
+      0
+    );
+
+  document.getElementById("jasa").value =
+    jasaDefault > 0
+      ? formatRupiahInput(String(jasaDefault))
+      : "";
+
+  // ================= STATUS =================
   if(Math.round(info.sisa) <= 0){
+
     showToast("Pinjaman " + p.nama + " sudah LUNAS", true);
+
     document.getElementById("btnSimpan").disabled = true;
     document.getElementById("btnNota").disabled = true;
     document.getElementById("btnWA").disabled = true;
+
     document.getElementById("infoBox").classList.add("active");
-    document.getElementById("totalBayar").innerText = rupiah(info.angsuran);
-    document.getElementById("progressBayar").innerText = "100% - LUNAS";
+
+    document.getElementById("totalBayar").innerText =
+      rupiah(info.angsuran);
+
+    document.getElementById("progressBayar").innerText =
+      "100% - LUNAS";
+
     return;
   }
 
   document.getElementById("infoBox").classList.add("active");
-  document.getElementById("totalBayar").innerText = rupiah(info.angsuran);
-  document.getElementById("progressBayar").innerText = info.pinjaman>0? Math.round((info.angsuran/info.pinjaman)*100)+"%" : "0%";
+
+  document.getElementById("totalBayar").innerText =
+    rupiah(info.angsuran);
+
+  document.getElementById("progressBayar").innerText =
+    info.pinjaman > 0
+      ? Math.round((info.angsuran / info.pinjaman) * 100) + "%"
+      : "0%";
 
   document.getElementById("btnSimpan").disabled = false;
   document.getElementById("btnNota").disabled = true;
   document.getElementById("btnWA").disabled = true;
+
   window.angsuranTerakhirId = null;
 }
 
@@ -582,6 +736,29 @@ document.getElementById("pinjamanSelect").onchange = function(){
   pilihPinjaman();
 };
 
+    // otomatis hitung total bayar
+function updateInfoBayar(){
+
+  let pokok = getNumber(
+    document.getElementById("jumlah").value
+  );
+
+  let jasa = getNumber(
+    document.getElementById("jasa").value
+  );
+
+  let total = pokok + jasa;
+
+  document.getElementById("totalBayar").innerText =
+    rupiah(total);
+}
+
+document.getElementById("jumlah")
+  .addEventListener("input", updateInfoBayar);
+
+document.getElementById("jasa")
+  .addEventListener("input", updateInfoBayar);
+    
 /* INPUT FORMAT */
 ["jumlah","jasa"].forEach(id=>{
   document.getElementById(id).addEventListener("input",function(){
