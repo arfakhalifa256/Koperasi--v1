@@ -748,40 +748,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-/* =========================
-   SIDEBAR
-========================= */
-window.toggleSidebar = function(){
-
-  const sidebar =
-    document.getElementById("sidebar");
-
-  const overlay =
-    document.getElementById("overlay");
-
-  const isOpen =
-    sidebar.classList.contains("open");
-
-  if(isOpen){
-
-    sidebar.classList.remove("open");
-    overlay.style.display = "none";
-
-  } else {
-
-    sidebar.classList.add("open");
-    overlay.style.display = "block";
-
-  }
-
-};
-
-document
-  .getElementById("overlay")
-  .addEventListener(
-    "click",
-    toggleSidebar
-  );
 
 /* =========================
    LOGOUT
