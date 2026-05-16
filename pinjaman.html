@@ -305,7 +305,7 @@ header{
     </div>
   </div>
 </div>
-
+  
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, onValue, update, remove, get, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -347,6 +347,149 @@ const formatTanggal = t => {
   return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});
 }
 
+function showAlert(msg, type = "info") {
+  const alertBox = document.getElementById("customAlert");
+  const icon = document.getElementById("alertIcon");
+  const text = document.getElementById("alertText");
+
+  text.innerText = msg;
+
+  if(type === "danger"){
+    icon.style.background = "var(--danger)";
+    icon.innerHTML = "✕";
+  } else if(type === "success"){
+    icon.style.background = "var(--success)";
+    icon.innerHTML = "✓";
+  } else if(type === "warning"){
+    icon.style.background = "var(--warning)";
+    icon.innerHTML = "!";
+  } else {
+    icon.style.background = "var(--primary)";
+    icon.innerHTML = "i";
+  }
+
+  alertBox.style.display = "flex";
+}
+
+window.tutupAlert = function(){
+  document.getElementById("customAlert").style.display = "none";
+}
+
+  window.showAlertWA = function(url){
+
+  const old = document.getElementById("waNotifPopup");
+  if(old) old.remove();
+
+  const div = document.createElement("div");
+
+  div.id = "waNotifPopup";
+
+  div.innerHTML = `
+    <div style="
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.45);
+      z-index:999999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    ">
+      <div style="
+        background:white;
+        width:100%;
+        max-width:320px;
+        border-radius:20px;
+        padding:24px 20px;
+        text-align:center;
+        font-family:Poppins,sans-serif;
+        box-shadow:0 10px 35px rgba(0,0,0,.25);
+      ">
+
+        <div style="
+          width:70px;
+          height:70px;
+          background:#25d366;
+          color:white;
+          border-radius:50%;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:34px;
+          margin:auto auto 16px;
+        ">
+          ✓
+        </div>
+
+        <div style="
+          font-size:15px;
+          font-weight:700;
+          color:#1f2937;
+          margin-bottom:8px;
+        ">
+          Data berhasil disimpan
+        </div>
+
+        <div style="
+          font-size:13px;
+          color:#6b7280;
+          line-height:1.5;
+          margin-bottom:20px;
+        ">
+          Kirim pemberitahuan ke WhatsApp anggota?
+        </div>
+
+        <button id="btnBukaWA" style="
+          width:100%;
+          border:none;
+          background:#25d366;
+          color:white;
+          padding:12px;
+          border-radius:12px;
+          font-weight:700;
+          font-size:14px;
+          cursor:pointer;
+          margin-bottom:10px;
+        ">
+          Buka WhatsApp
+        </button>
+
+        <button id="btnTutupWA" style="
+          width:100%;
+          border:none;
+          background:#e5e7eb;
+          color:#111827;
+          padding:11px;
+          border-radius:12px;
+          font-weight:600;
+          cursor:pointer;
+        ">
+          Nanti Saja
+        </button>
+
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(div);
+
+  document.getElementById("btnBukaWA").onclick = () => {
+    let a = document.createElement("a");
+a.href = url;
+a.target = "_blank";
+a.rel = "noopener";
+
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+    div.remove();
+  };
+
+  document.getElementById("btnTutupWA").onclick = () => {
+    div.remove();
+  };
+}
+  
 window.kembali = () => window.location.href = "dash.html";
 
 // AUTO HITUNG JASA 20%
@@ -564,44 +707,43 @@ window.simpanPinjaman = async function(){
     tanggal, keterangan:`Pinjaman ${nama} (${nomor})`, tipe:"keluar", sumberKas:metode, jumlah: jumlah
   });
 
-  const pinjamanBaru = await push(pinjamanRef,{
-  nomor,
-  idAnggota,
-  nama,
-  tanggal,
-  jumlah,
-  jasa,
-  sumberKas:metode,
-  ket,
-  kasId: kas.key,
-  status:"belum"
-});
+  await push(pinjamanRef,{
+    nomor,
+    idAnggota,
+    nama,
+    tanggal,
+    jumlah,
+    jasa,
+    sumberKas:metode,
+    ket,
+    kasId: kas.key,
+    status:"belum"
+  });
 
-// =====================
-// WA OTOMATIS SETELAH SIMPAN
-// =====================
-
+  // ===== WA OTOMATIS =====
 let anggota = dataAnggota[idAnggota];
 
-let nomorWA =
-  anggota.hp ||
-  anggota.noHp ||
-  anggota.nohp ||
-  anggota.whatsapp ||
-  anggota.telepon ||
-  anggota.wa ||
-  "";
+if(anggota){
+  let nomorWA =
+    anggota.telepon || // ← ini yang penting
+    anggota.hp ||
+    anggota.noHp ||
+    anggota.nohp ||
+    anggota.whatsapp ||
+    anggota.wa ||
+    "";
 
-if(nomorWA){
+  if(nomorWA){
+    nomorWA = nomorWA.toString().replace(/\D/g,"");
+    if(nomorWA.startsWith("0")){
+      nomorWA = "62" + nomorWA.substring(1);
+    }
+    if(nomorWA.startsWith("8")){
+      nomorWA = "62" + nomorWA;
+    }
 
-  // format nomor jadi 62xxxx
-  nomorWA = nomorWA.toString()
-    .replace(/\D/g,"")
-    .replace(/^0/,"62");
-
-  let total = jumlah + jasa;
-
-  let pesan = `*KOPERASI ARFA DRIVER*
+    let total = jumlah + jasa;
+    let pesan = `*KOPERASI ARFA DRIVER*
 
 Halo ${nama},
 
@@ -618,13 +760,19 @@ Terima kasih 🙏
 
 KOPERASI ARFA DRIVER`;
 
-  let url = "https://wa.me/" + nomorWA + "?text=" + encodeURIComponent(pesan);
+    let url = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
+let a = document.createElement("a");
+a.href = url;
+a.target = "_blank";
+a.rel = "noopener";
 
-  // buka otomatis WA
-  window.open(url, "_blank");
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+  }
 }
-
-  document.getElementById("notif").innerHTML = `<div class="alert success">Berhasil ✅</div>`;
+    // ===== END WA =====
+    document.getElementById("notif").innerHTML = `<div class="alert success">Berhasil disimpan ✅</div>`;
   setTimeout(()=>{ document.getElementById("notif").innerHTML = ""; },3000);
 
   document.getElementById("jumlah").value = "";
@@ -632,6 +780,8 @@ KOPERASI ARFA DRIVER`;
   document.getElementById("ket").value = "";
   document.getElementById("metode").value = "";
   document.getElementById("noPinjaman").value = await getNoPinjaman();
+
+  showAlert("Data pinjaman berhasil disimpan", "success");
 }
 
 function loadDropdownEdit(){
@@ -767,8 +917,8 @@ window.cetakNota = function(id){
   doc.save(`Nota_${p.nomor}_${tgl.replace(/ /g,"-")}.pdf`);
 }
 
-
-// KIRIM WA OTOMATIS
+// KIRIM WA MANUAL
+// KIRIM WA MANUAL
 window.kirimWA = function(id){
   const p = dataPinjaman[id];
   if(!p) return showAlert("Data pinjaman tidak ditemukan", "danger");
@@ -776,26 +926,52 @@ window.kirimWA = function(id){
   let anggota = dataAnggota[p.idAnggota];
   if(!anggota) return showAlert("Data anggota tidak ditemukan", "danger");
 
-  let nomorWA = anggota.hp || anggota.noHp || anggota.nohp || anggota.whatsapp || anggota.telepon || anggota.wa || "";
-  if(!nomorWA) return showAlert("Nomor WhatsApp anggota tidak ada", "warning");
+  let nomorWA =
+    anggota.telepon || // ← taruh paling depan
+    anggota.hp ||
+    anggota.noHp ||
+    anggota.nohp ||
+    anggota.whatsapp ||
+    anggota.wa ||
+    "";
 
-  // bersihkan nomor jadi format 62xxx
-  nomorWA = nomorWA.toString().replace(/\D/g,"").replace(/^0/,"62");
+  if(!nomorWA){
+    return showAlert("Nomor WhatsApp anggota tidak ada", "warning");
+  }
 
-  let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
-  let total = Number(p.jumlah || 0) + jasaOtomatis;
+  nomorWA = nomorWA.toString().replace(/\D/g,"");
+
+  if(nomorWA.startsWith("0")){
+    nomorWA = "62" + nomorWA.substring(1);
+  }
+
+  if(nomorWA.startsWith("8")){
+    nomorWA = "62" + nomorWA;
+  }
+
+  let jasaOtomatis =
+    Number(p.jasa ?? Math.round(Number(p.jumlah || 0) * 0.2));
+
+  let total =
+    Number(p.jumlah || 0) + jasaOtomatis;
 
   let totalAngsuran = 0;
+
   Object.values(dataAngsuran).forEach(a => {
     if(a.pinjamanId === p.id){
-      totalAngsuran += Number(a.jumlah || 0) + Number(a.jasa || 0);
+      totalAngsuran +=
+        Number(a.jumlah || 0) +
+        Number(a.jasa || 0);
     }
   });
 
   let sisa = Math.max(total - totalAngsuran, 0);
+
   let tgl = formatTanggal(p.tanggal);
 
-  let pesan = `*KOPERASI ARFA DRIVER*
+  let pesan =
+`*KOPERASI ARFA DRIVER*
+
 Halo ${p.nama},
 
 Berikut detail pinjaman Anda:
@@ -810,23 +986,27 @@ Berikut detail pinjaman Anda:
 *Metode*: ${p.sumberKas.toUpperCase()}
 
 Mohon segera lakukan pembayaran jika sudah jatuh tempo.
+
 Terima kasih 🙏
 
 KOPERASI ARFA DRIVER`;
 
-  let url = "https://wa.me/" + nomorWA + "?text=" + encodeURIComponent(pesan);
-  window.open(url, "_blank");
-}
+  let url = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
+let a = document.createElement("a");
+a.href = url;
+a.target = "_blank";
+a.rel = "noopener";
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);}
+  
 </script>
-
-<!-- ALERT -->
-<div id="customAlert" class="custom-alert">
+  <div id="customAlert" class="custom-alert">
   <div class="custom-alert-box">
-    <div id="alertIcon" class="alert-icon">⚠️</div>
-    <div id="alertText" class="alert-text">Pesan alert</div>
+    <div id="alertIcon" class="alert-icon">i</div>
+    <div id="alertText" class="alert-text"></div>
     <button onclick="tutupAlert()">OK</button>
   </div>
 </div>
 </body>
 </html>
-  
