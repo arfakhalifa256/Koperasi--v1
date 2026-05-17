@@ -177,6 +177,7 @@ padding:10px 14px;border-radius:8px;opacity:0;transform:translateY(15px);
 transition:.3s;z-index:999999;font-size:12px;font-weight:600;
 box-shadow:0 3px 10px rgba(0,0,0,0.15);
 }
+
 .toast.show{opacity:1;transform:translateY(0);}
 .toast.error{background:var(--danger);}
 
@@ -271,6 +272,11 @@ background:#1e88e5;
   </div>      
       
       <div class="saldo-box bg-akhir">    
+  <h3>Pendapatan Lain</h3>    
+  <p id="statLain">Rp0</p>    
+</div>
+      
+      <div class="saldo-box bg-akhir">    
     <h3>Total Jasa</h3>    
     <p id="statJasa">Rp0</p>    
   </div>    
@@ -310,18 +316,29 @@ background:#1e88e5;
   <input type="text" id="jasa" placeholder="Rp 0">    
 </div>  
   
-  <div id="infoBox" class="info-box">    
-  <div class="info-row">    
-    <span class="label">Total Dibayar</span>    
-    <span class="value" id="totalBayar">Rp0</span>    
-  </div>    
+  <div class="form-group">    
+  <label>Pendapatan Lain</label>    
+  <input type="text" id="lain" placeholder="Rp 0">    
+</div>
+  <div id="infoBox" class="info-box">
+
     
-    <div class="info-row">    
-    <span class="label">Progress</span>    
-    <span class="value" id="progressBayar">0%</span>    
-  </div>    
-</div>  
-  
+  <div class="info-row">
+    <span class="label">Total Dibayar</span>
+    <span class="value" id="totalBayar">Rp0</span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Kelebihan Bayar</span>
+    <span class="value" id="kelebihanBayar">Rp0</span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Progress</span>
+    <span class="value" id="progressBayar">0%</span>
+  </div>
+
+</div>
   <div class="btn-group">    
   <button id="btnSimpan">Simpan Angsuran</button>    
   <button id="btnNota" disabled>Cetak Nota</button>    
@@ -354,10 +371,9 @@ background:#1e88e5;
 </div>  
   <div id="toast" class="toast"></div>    
   </body>    
-</html>    
-<script type="module">
+</html>  <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
@@ -372,26 +388,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// ================= LOGIN CHECK =================
 const username = localStorage.getItem("username");
 const role = localStorage.getItem("role");
 if(!username ||!role){
   window.location.href = "index.html";
 }
 
-// ================= SIDEBAR =================
 window.toggleSidebar = function(){
   document.getElementById("sidebar").classList.toggle("active");
   document.getElementById("overlay").classList.toggle("active");
 }
 document.getElementById("overlay").onclick = toggleSidebar;
 
-// ================= ROLE FILTER =================
 if(role!== "admin"){
   document.querySelectorAll(".menu-admin").forEach(el=>el.style.display="none");
 }
 
-// ================= LOGOUT =================
 window.logout = function(){
   if(confirm("Yakin ingin logout?")){
     localStorage.clear();
@@ -408,18 +420,23 @@ let dataAngsuran = {};
 let pinIdAktif = null;
 window.angsuranTerakhirId = null;
 
-/* FORMAT */
+let pinjamanLoaded = false;
+let angsuranLoaded = false;
+
 function rupiah(n){
   return Number(n || 0).toLocaleString("id-ID",{style:"currency",currency:"IDR"});
 }
+
 function formatTanggal(t){
   return new Date(Number(t)).toLocaleDateString("id-ID",{
     day:"2-digit", month:"short", year:"numeric"
   });
 }
+
 function getNumber(v){
   return parseInt(String(v).replace(/[^0-9]/g,"")) || 0;
 }
+
 function formatRupiahInput(v){
   let number_string = v.replace(/[^,\d]/g, '').toString();
   let split = number_string.split(',');
@@ -433,7 +450,6 @@ function formatRupiahInput(v){
   return rupiah? 'Rp ' + rupiah : '';
 }
 
-/* TOAST */
 function showToast(msg,error=false){
   const toast = document.getElementById("toast");
   toast.innerText = msg;
@@ -441,181 +457,101 @@ function showToast(msg,error=false){
   setTimeout(()=>{ toast.className = "toast"; },2500);
 }
 
-/* LOAD DATA PINJAMAN */
-
-    let pinjamanLoaded = false;
-let angsuranLoaded = false;
-
-/* LOAD DATA PINJAMAN */
 onValue(pinjamanRef,snap=>{
   dataPinjaman = {};
-
   snap.forEach(d=>{
     dataPinjaman[d.key] = d.val();
   });
-
   pinjamanLoaded = true;
-
   if(pinjamanLoaded && angsuranLoaded){
     loadPinjaman();
     hitungStatistik();
-
-    if(pinIdAktif){
-      pilihPinjaman();
-    }
+    if(pinIdAktif) pilihPinjaman();
   }
 });
 
-/* LOAD DATA ANGSURAN */
 onValue(angsuranRef,snap=>{
   dataAngsuran = {};
-
   snap.forEach(d=>{
     let a = d.val();
-
-    a.jumlah = Number(a.jumlah) || 0;
-    a.jasa = Number(a.jasa) || 0;
+    a.pokok = Number(a.pokok || a.jumlah || 0);
+    a.jasa = Number(a.jasa || 0);
+    a.kelebihanBayar = Number(a.kelebihanBayar || 0);
 
     if(a.tanggal && typeof a.tanggal === "string"){
       let t = new Date(a.tanggal);
-
-      if(!isNaN(t)){
-        a.tanggal = t.getTime();
-      }
+      if(!isNaN(t)) a.tanggal = t.getTime();
     }
-
-    if(!a.tanggal){
-      a.tanggal = Date.now();
-    }
+    if(!a.tanggal) a.tanggal = Date.now();
 
     dataAngsuran[d.key] = a;
   });
-
   angsuranLoaded = true;
-
   if(pinjamanLoaded && angsuranLoaded){
     loadPinjaman();
     hitungStatistik();
-
-    if(pinIdAktif){
-      pilihPinjaman();
-    }
-
-    if(riwayatVisible){
-      renderRiwayat();
-    }
+    if(pinIdAktif) pilihPinjaman();
+    if(riwayatVisible) renderRiwayat();
   }
-});/* LOAD DROPDOWN PEMINJAM */
-/* LOAD DROPDOWN PEMINJAM */
+});
+
 function loadPinjaman(){
-
   const select = document.getElementById("pinjamanSelect");
-
   let html = `<option value="">Pilih Peminjam</option>`;
-
   const listAktif = [];
 
   Object.entries(dataPinjaman).forEach(([id,p])=>{
-
     let info = getSisaPinjaman(id);
-
-    // FILTER HANYA BELUM LUNAS
     if(info.sisa > 0){
-
       listAktif.push({
         id,
         nama : p.nama || "-",
         nomor : p.nomor || "-",
         sisa : info.sisa
       });
-
     }
-
   });
 
-  // SORT NAMA
-  listAktif.sort((a,b)=>
-    a.nama.localeCompare(b.nama)
-  );
+  listAktif.sort((a,b)=> a.nama.localeCompare(b.nama));
 
-  // RENDER
   if(listAktif.length === 0){
-
-    html += `
-      <option value="">
-        Semua pinjaman sudah lunas
-      </option>
-    `;
-
+    html += `<option value="">Semua pinjaman sudah lunas</option>`;
   } else {
-
     listAktif.forEach(item=>{
-
-      html += `
-        <option value="${item.id}">
-          ${item.nama} - ${item.nomor}
-          • Sisa: ${rupiah(item.sisa)}
-        </option>
-      `;
-
+      html += `<option value="${item.id}">${item.nama} - ${item.nomor} • Sisa: ${rupiah(item.sisa)}</option>`;
     });
-
   }
 
   select.innerHTML = html;
 }
-    /* HITUNG SISA PINJAMAN */
+
 function getSisaPinjaman(pinjamanId){
-
   let p = dataPinjaman[pinjamanId];
+  if(!p) return {pinjaman:0,angsuran:0,sisa:0};
 
-  if(!p){
-    return {
-      pinjaman:0,
-      angsuran:0,
-      sisa:0
-    };
-  }
-
-  // total pinjaman
-  let totalPinjaman =
-    Number(
-      p.totalPinjaman ||
-      p.nominal ||
-      p.pinjaman ||
-      p.jumlah ||
-      p.total ||
-      0
-    );
-
-  // total angsuran pokok
+  let totalPinjaman = Number(p.totalPinjaman || p.nominal || p.pinjaman || p.jumlah || p.total || 0);
   let totalAngsuran = 0;
 
   Object.values(dataAngsuran).forEach(a=>{
-
     if(a.pinjamanId === pinjamanId){
-
-      totalAngsuran += Number(a.jumlah || 0);
-
+      totalAngsuran += Number(a.pokok || 0);
     }
-
   });
 
-  // sisa
   let sisa = totalPinjaman - totalAngsuran;
-
   return {
     pinjaman : totalPinjaman,
     angsuran : totalAngsuran,
-    sisa : sisa > 0 ? sisa : 0
+    sisa : sisa > 0? sisa : 0
   };
 }
-/* STATISTIK */
+
 function hitungStatistik(){
   let aktif = 0;
   let totalPinjamanAktif = 0;
   let totalSisa = 0;
   let totalJasa = 0;
+  let totalLain = 0;
 
   Object.keys(dataPinjaman).forEach(pinId=>{
     let info = getSisaPinjaman(pinId);
@@ -627,108 +563,64 @@ function hitungStatistik(){
   });
 
   Object.values(dataAngsuran).forEach(a=>{
-    totalJasa += Number(a.jasa) || 0;
+    totalJasa += Number(a.jasa || 0);
+    totalLain += Number(a.kelebihanBayar || 0);
   });
 
   document.getElementById("statAktif").innerText = aktif;
   document.getElementById("statPinjaman").innerText = rupiah(totalPinjamanAktif);
   document.getElementById("statSisa").innerText = rupiah(totalSisa);
   document.getElementById("statJasa").innerText = rupiah(totalJasa);
+  document.getElementById("statLain").innerText = rupiah(totalLain);
 }
 
-/* PILIH PINJAMAN */
-/* PILIH PINJAMAN */
 function pilihPinjaman(){
-
   if(!pinIdAktif){
     document.getElementById("infoBox").classList.remove("active");
     document.getElementById("btnSimpan").disabled = true;
     document.getElementById("btnNota").disabled = true;
     document.getElementById("btnWA").disabled = true;
-
     document.getElementById("jumlah").value = "";
     document.getElementById("jasa").value = "";
-
+    document.getElementById("lain").value = "";
     return;
   }
 
   const p = dataPinjaman[pinIdAktif];
   let info = getSisaPinjaman(pinIdAktif);
 
-  // ================= AUTO ISI POKOK =================
-  let pokokDefault =
-    Number(
-      p.angsuranPokok ||
-      p.pokok ||
-      p.cicilan ||
-      p.angsuran ||
-      0
-    );
+  let pokokDefault = Number(p.angsuranPokok || p.pokok || p.cicilan || p.angsuran || 0);
+  if(pokokDefault <= 0) pokokDefault = info.sisa;
 
-  // kalau tidak ada data angsuran pokok
-  // isi otomatis dengan sisa pinjaman
-  if(pokokDefault <= 0){
-    pokokDefault = info.sisa;
-  }
+  document.getElementById("jumlah").value = pokokDefault > 0? formatRupiahInput(String(pokokDefault)) : "";
 
-  document.getElementById("jumlah").value =
-    pokokDefault > 0
-      ? formatRupiahInput(String(pokokDefault))
-      : "";
+  let jasaDefault = Number(p.jasa || p.besarJasa || p.nilaiJasa || p.jasaBulanan || 0);
+  document.getElementById("jasa").value = jasaDefault > 0? formatRupiahInput(String(jasaDefault)) : "";
 
-  // ================= AUTO ISI JASA =================
-  let jasaDefault =
-    Number(
-      p.jasa ||
-      p.besarJasa ||
-      p.nilaiJasa ||
-      p.jasaBulanan ||
-      p.jasaPerBulan ||
-      p.angsuranJasa ||
-      p.nominalJasa ||
-      0
-    );
-
-  document.getElementById("jasa").value =
-    jasaDefault > 0
-      ? formatRupiahInput(String(jasaDefault))
-      : "";
-
-  // ================= STATUS =================
   if(Math.round(info.sisa) <= 0){
-
-    showToast("Pinjaman " + p.nama + " sudah LUNAS", true);
-
-    document.getElementById("btnSimpan").disabled = true;
-    document.getElementById("btnNota").disabled = true;
-    document.getElementById("btnWA").disabled = true;
-
-    document.getElementById("infoBox").classList.add("active");
-
-    document.getElementById("totalBayar").innerText =
-      rupiah(info.angsuran);
-
-    document.getElementById("progressBayar").innerText =
-      "100% - LUNAS";
-
-    return;
-  }
-
+  showToast("Pinjaman " + p.nama + " sudah LUNAS", true);
+  document.getElementById("btnSimpan").disabled = true;
+  document.getElementById("btnNota").disabled = true;
+  document.getElementById("btnWA").disabled = true;
   document.getElementById("infoBox").classList.add("active");
 
-  document.getElementById("totalBayar").innerText =
-    rupiah(info.angsuran);
+  const totalEl = document.getElementById("totalBayar");
+  const progressEl = document.getElementById("progressBayar");
+  const kelebihanEl = document.getElementById("kelebihanBayar");
 
-  document.getElementById("progressBayar").innerText =
-    info.pinjaman > 0
-      ? Math.round((info.angsuran / info.pinjaman) * 100) + "%"
-      : "0%";
+  if(totalEl) totalEl.innerText = rupiah(info.angsuran);
+  if(progressEl) progressEl.innerText = "100% - LUNAS";
+  if(kelebihanEl) kelebihanEl.innerText = rupiah(0);
+  return;
+}
 
+  document.getElementById("infoBox").classList.add("active");
   document.getElementById("btnSimpan").disabled = false;
   document.getElementById("btnNota").disabled = true;
   document.getElementById("btnWA").disabled = true;
-
   window.angsuranTerakhirId = null;
+
+  updateInfoBayar();
 }
 
 document.getElementById("pinjamanSelect").onchange = function(){
@@ -736,103 +628,158 @@ document.getElementById("pinjamanSelect").onchange = function(){
   pilihPinjaman();
 };
 
-    // otomatis hitung total bayar
 function updateInfoBayar(){
 
-  let pokok = getNumber(
-    document.getElementById("jumlah").value
-  );
+  let pokok = getNumber(document.getElementById("jumlah").value);
+  let jasa = getNumber(document.getElementById("jasa").value);
+  let lain = getNumber(document.getElementById("lain").value);
 
-  let jasa = getNumber(
-    document.getElementById("jasa").value
-  );
+  let total = pokok + jasa + lain;
 
-  let total = pokok + jasa;
+  let kelebihan = 0;
+  let progress = 0;
 
-  document.getElementById("totalBayar").innerText =
-    rupiah(total);
+  if(pinIdAktif && dataPinjaman[pinIdAktif]){
+
+    let info = getSisaPinjaman(pinIdAktif);
+
+    let pokokYangDibayar = Math.min(pokok, info.sisa);
+
+    if(info.pinjaman > 0){
+      progress = Math.round(
+        ((info.angsuran + pokokYangDibayar) / info.pinjaman) * 100
+      );
+
+      if(progress > 100) progress = 100;
+    }
+  }
+
+  document.getElementById("totalBayar").innerText = rupiah(total);
+
+  document.getElementById("kelebihanBayar").innerText = rupiah(lain);
+
+  document.getElementById("progressBayar").innerText = progress + "%";
 }
-
-document.getElementById("jumlah")
-  .addEventListener("input", updateInfoBayar);
-
-document.getElementById("jasa")
-  .addEventListener("input", updateInfoBayar);
     
-/* INPUT FORMAT */
-["jumlah","jasa"].forEach(id=>{
-  document.getElementById(id).addEventListener("input",function(){
-    this.value = formatRupiahInput(this.value);
-  });
-});
-
-/* SIMPAN ANGSURAN */
+    
 document.getElementById("btnSimpan").onclick = async function(){
-  if(role!=="admin"){ showToast("Hanya admin yang bisa menambah angsuran", true); return; }
-  if(!pinIdAktif) return showToast("Pilih peminjam!", true);
+
+  if(role!=="admin"){
+    showToast("Hanya admin yang bisa menambah angsuran", true);
+    return;
+  }
+
+  if(!pinIdAktif){
+    return showToast("Pilih peminjam!", true);
+  }
 
   try {
+
     let tanggalInput = document.getElementById("tanggal").value;
-    let jumlah = getNumber(document.getElementById("jumlah").value);
+
+    let pokok = getNumber(document.getElementById("jumlah").value);
+
     let jasa = getNumber(document.getElementById("jasa").value) || 0;
+
+    let lain = getNumber(document.getElementById("lain").value) || 0;
+
     let metode = document.getElementById("metode").value;
 
     if (!tanggalInput) return showToast("Isi tanggal!", true);
+
     if (!metode) return showToast("Pilih metode!", true);
-    if (!jumlah || jumlah <= 0) return showToast("Jumlah harus > 0!", true);
+
+    if (!pokok || pokok <= 0){
+      return showToast("Pokok harus > 0!", true);
+    }
 
     let p = dataPinjaman[pinIdAktif];
+
     let info = getSisaPinjaman(pinIdAktif);
 
-    if(jumlah > info.sisa){
-      showToast("Jumlah angsuran melebihi sisa pinjaman!", true);
-      return;
+    let totalBayar = pokok + jasa + lain;
+
+    if(pokok > info.sisa){
+      return showToast("Pokok melebihi sisa pinjaman!", true);
     }
 
     let tanggal = new Date(tanggalInput).getTime();
-    let totalKas = jumlah + jasa;
 
-    // PUSH KE /kas/transaksi BUKAN /kas
-    let kasPush = await push(kasRef, {
-      tanggal,
-      keterangan: "Angsuran " + p.nama + " (" + p.nomor + ")",
-      tipe: "masuk",
-      sumberKas: metode,
-      jumlah: totalKas,
-      rincian: { pokok: jumlah, jasa: jasa }
-    });
+    /* KAS POKOK */
+let kasPush = await push(kasRef, {
+  tanggal,
+  keterangan: "Angsuran Pokok " + p.nama + " (" + p.nomor + ")",
+  tipe: "masuk",
+  sumberKas: metode,
+  jumlah: pokok,
+  kategori: "pokok"
+});
 
+/* KAS JASA */
+if(jasa > 0){
+
+  await push(kasRef, {
+    tanggal,
+    keterangan: "Jasa Pinjaman " + p.nama + " (" + p.nomor + ")",
+    tipe: "masuk",
+    sumberKas: metode,
+    jumlah: jasa,
+    kategori: "jasa"
+  });
+
+}
+
+/* KAS PENDAPATAN LAIN */
+if(lain > 0){
+
+  await push(kasRef, {
+    tanggal,
+    keterangan: "Pendapatan Lain " + p.nama + " (" + p.nomor + ")",
+    tipe: "masuk",
+    sumberKas: metode,
+    jumlah: lain,
+    kategori: "pendapatan_lain"
+  });
+
+}
     let angPush = await push(angsuranRef, {
       pinjamanId: pinIdAktif,
       nama: p.nama,
       tanggal,
-      jumlah,
+      pokok,
       jasa,
+      kelebihanBayar: lain,
+      jumlahBayar: totalBayar,
       metode,
       kasId: kasPush.key
     });
 
     window.angsuranTerakhirId = angPush.key;
+
     document.getElementById("btnNota").disabled = false;
     document.getElementById("btnWA").disabled = false;
-    showToast("Berhasil ✅ Klik 'Cetak Nota' atau 'Kirim WA'");
+
+    showToast("Berhasil ✅");
 
     document.getElementById("jumlah").value = "";
     document.getElementById("jasa").value = "";
+    document.getElementById("lain").value = "";
+
+    updateInfoBayar();
 
   } catch (err) {
+
     showToast("Gagal: " + err.message, true);
+
   }
 };
 
-/* CETAK NOTA */
 document.getElementById("btnNota").onclick = function(){
   if(!window.angsuranTerakhirId) return showToast("Simpan angsuran dulu!", true);
   cetakNotaAngsuran(window.angsuranTerakhirId);
   showToast("Nota berhasil dicetak");
 };
 
-/* KIRIM WA */
 document.getElementById("btnWA").onclick = function(){
   if(!window.angsuranTerakhirId) return showToast("Simpan angsuran dulu!", true);
   const a = dataAngsuran[window.angsuranTerakhirId];
@@ -842,17 +789,23 @@ document.getElementById("btnWA").onclick = function(){
   if(!p) return showToast("Data pinjaman tidak ditemukan", true);
 
   const tgl = new Date(a.tanggal).toLocaleDateString("id-ID");
-  const total = (a.jumlah || 0) + (a.jasa || 0);
+  const total = (a.pokok || 0) + (a.jasa || 0) + (a.kelebihanBayar || 0);
   const info = getSisaPinjaman(a.pinjamanId);
 
-  const pesan = `*BUKTI ANGSURAN*\nKoperasi ARFA DRIVER\n\nNama: ${p.nama}\nNo: ${p.nomor}\nTanggal: ${tgl}\n\nPokok: ${rupiah(a.jumlah)}\nJasa: ${rupiah(a.jasa||0)}\nTotal: ${rupiah(total)}\n\nSisa Pinjaman: ${rupiah(info.sisa)}\n\nTerima kasih 🙏`;
+  const pesan = `*BUKTI ANGSURAN*\nKoperasi ARFA DRIVER\nNama: ${p.nama}\nNo: ${p.nomor}\nTanggal: ${tgl}\n\nPokok: ${rupiah(a.pokok)}\nJasa: ${rupiah(a.jasa||0)}\nLain-lain: ${rupiah(a.kelebihanBayar||0)}\nTotal: ${rupiah(total)}\n\nSisa Pinjaman: ${rupiah(info.sisa)}\n\nTerima kasih 🙏`;
 
-  const url = "https://wa.me/?text=" + encodeURIComponent(pesan);
-  window.open(url, "_blank");
-  showToast("Link WA berhasil dibuka");
-};
-
-/* CETAK PDF */
+  const nomorWA = (p.noHp || p.hp || p.telepon || "")
+  .replace(/^0/, "62")
+  .replace(/[^0-9]/g, "");
+const url =
+  "https://wa.me/" +
+  nomorWA +
+  "?text=" +
+  encodeURIComponent(pesan);
+window.open(url, "_blank");
+showToast("Link WA berhasil dibuka");
+  };
+    
 window.cetakNotaAngsuran = function(id){
   const a = dataAngsuran[id];
   if(!a) return showToast("Data tidak ditemukan", true);
@@ -864,7 +817,7 @@ window.cetakNotaAngsuran = function(id){
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" });
 
   const tglBayar = new Date(Number(a.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
-  const total = Number(a.jumlah) + Number(a.jasa || 0);
+  const total = Number(a.pokok) + Number(a.jasa || 0) + Number(a.kelebihanBayar || 0);
   const info = getSisaPinjaman(a.pinjamanId);
 
   doc.setFontSize(14);
@@ -872,7 +825,7 @@ window.cetakNotaAngsuran = function(id){
   doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"});
   doc.setFontSize(9);
   doc.setFont("helvetica","normal");
-  doc.text("Jl.Tentara Pelajar,Parigi Baru Tangsel ", 74, 21, {align:"center"});
+  doc.text("Jl.Tentara Pelajar, Parigi Baru Tangsel", 74, 21, {align:"center"});
   doc.line(10, 25, 138, 25);
 
   doc.setFontSize(12);
@@ -882,6 +835,7 @@ window.cetakNotaAngsuran = function(id){
   doc.setFontSize(10);
   doc.setFont("helvetica","normal");
   let y = 45;
+
   doc.text("No. Pinjaman", 15, y);
   doc.setFont("helvetica","bold");
   doc.text(": " + p.nomor, 55, y);
@@ -906,11 +860,15 @@ window.cetakNotaAngsuran = function(id){
   y += 8;
 
   doc.text("Angsuran Pokok", 15, y);
-  doc.text(": " + rupiah(a.jumlah||0), 55, y);
+  doc.text(": " + rupiah(a.pokok||0), 55, y);
 
   y += 7;
   doc.text("Jasa", 15, y);
   doc.text(": " + rupiah(a.jasa||0), 55, y);
+
+  y += 7;
+  doc.text("Pendapatan Lain", 15, y);
+  doc.text(": " + rupiah(a.kelebihanBayar||0), 55, y);
 
   y += 7;
   doc.setFont("helvetica","bold");
@@ -941,7 +899,6 @@ window.cetakNotaAngsuran = function(id){
   doc.save(`Nota_Angsuran_${p.nomor}_${tglBayar.replace(/ /g,"-")}.pdf`);
 };
 
-/* TOGGLE RIWAYAT */
 let riwayatVisible = false;
 window.toggleRiwayat = function(){
   const listEl = document.getElementById("listTransaksi");
@@ -958,7 +915,6 @@ window.toggleRiwayat = function(){
   }
 }
 
-/* RENDER RIWAYAT */
 function renderRiwayat(){
   const listEl = document.getElementById("listTransaksi");
   let list = Object.entries(dataAngsuran).sort((a,b)=>(b[1].tanggal||0)-(a[1].tanggal||0));
@@ -970,7 +926,7 @@ function renderRiwayat(){
 
   let html = "";
   list.forEach(([id,a])=>{
-    const total = Number(a.jumlah||0) + Number(a.jasa||0);
+    const total = Number(a.pokok||0) + Number(a.jasa||0) + Number(a.kelebihanBayar||0);
     html += `
       <div class="item">
         <div class="item-top">
@@ -978,8 +934,9 @@ function renderRiwayat(){
           <span class="item-jumlah">${rupiah(total)}</span>
         </div>
         <div class="item-ket"><strong>${a.nama || "-"}</strong></div>
-        <div class="item-ket">Pokok : ${rupiah(a.jumlah || 0)}</div>
+        <div class="item-ket">Pokok : ${rupiah(a.pokok || 0)}</div>
         <div class="item-ket">Jasa : ${rupiah(a.jasa || 0)}</div>
+        ${a.kelebihanBayar > 0? `<div class="item-ket">Lain-lain : ${rupiah(a.kelebihanBayar)}</div>` : ''}
         <div class="item-ket">
           <span class="badge ${a.metode==="bank"?"bank":"cash"}">${(a.metode || "cash").toUpperCase()}</span>
         </div>
@@ -990,10 +947,19 @@ function renderRiwayat(){
   listEl.innerHTML = html;
 }
 
-/* MODAL */
+
 window.tutupModal = function(){
   document.getElementById("modalData").classList.remove("show");
 }
+
+/* FORMAT INPUT RUPIAH */
+["jumlah","jasa","lain"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", function(){
+    this.value = formatRupiahInput(this.value);
+    updateInfoBayar();
+  });
+});
+
 
 window.onload = function () {
   document.getElementById("tanggal").value = new Date().toISOString().split("T")[0];
