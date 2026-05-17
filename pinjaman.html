@@ -203,8 +203,14 @@ header{
     <div class="form-grid">
       <div class="form-group">
         <label>Anggota</label>
-        <select id="anggota"></select>
+        <select id="anggota" onchange="isiTelepon()"></select>
       </div>
+      <div class="form-group">
+  <label>No Telepon</label>
+  <input type="text" id="telepon" readonly>
+</div>
+      
+      
       <div class="form-group">
         <label>No Pinjaman</label>
         <input type="text" id="noPinjaman" value="Loading..." disabled>
@@ -512,6 +518,18 @@ onValue(anggotaRef, snap => {
   });
   loadDropdownEdit();
 });
+  
+  window.isiTelepon = function(){
+  let idAnggota = document.getElementById("anggota").value;
+  let anggota = dataAnggota[idAnggota];
+
+  if(anggota){
+    let noTelp = anggota.telepon || anggota.hp || anggota.noHp || anggota.nohp || anggota.whatsapp || anggota.wa || "";
+    document.getElementById("telepon").value = noTelp;
+  } else {
+    document.getElementById("telepon").value = "";
+  }
+}
 
 // LOAD DATA
 onValue(pinjamanRef, snap => {
