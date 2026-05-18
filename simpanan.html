@@ -357,7 +357,15 @@ button:hover {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { 
+  getDatabase, 
+  ref, 
+  onValue, 
+  push, 
+  set,
+  update, 
+  remove 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
@@ -381,7 +389,7 @@ if(role!== "admin"){
 /* ================= REF ================= */
 const anggotaRef = ref(db,"/anggota");
 const simpananRef = ref(db,"/simpanan");
-const kasRef = ref(db,"/kas");
+const kasRef = ref(db,"/kas/transaksi");
 
 let anggotaMap = {};
 let anggotaData = {};
@@ -415,38 +423,58 @@ window.kembali = () => {
 /* ================= LOAD KAS ================= */
 onValue(kasRef, snapshot => {
   kasList = [];
+
   snapshot.forEach(child=>{
     kasList.push({
       id: child.key,
-     ...child.val()
+      ...child.val()
     });
   });
 });
 
 /* ================= LOAD SIMPANAN ================= */
 onValue(simpananRef, snapshot => {
-  if(Object.keys(anggotaMap).length === 0) return;
+
   const container = document.getElementById("cardContainer");
   container.innerHTML = "";
+
+  if (!snapshot.exists()) {
+    container.innerHTML = `
+      <div style="text-align:center;color:#6b7280;padding:20px">
+        Belum ada data
+      </div>
+    `;
+    document.getElementById("totalSimpanan").innerText = "0";
+    return;
+  }
+
   let total = 0;
   let rekap = {};
+
   snapshot.forEach(child => {
+
     const data = child.val();
     const jumlah = Number(data.jumlah) || 0;
+
     total += jumlah;
+
     const anggotaId = data.anggotaId || data.nama;
-    if(!rekap[anggotaId]){
+
+    if (!rekap[anggotaId]) {
+
       let idAnggota = data.idAnggota || "-";
-      let nama = data.nama;
-      if(!data.idAnggota){
-        for(const key in anggotaMap){
-          if(anggotaMap[key].nama === data.nama){
+      let nama = data.nama || "-";
+
+      if (!data.idAnggota) {
+        for (const key in anggotaMap) {
+          if (anggotaMap[key].nama === data.nama) {
             idAnggota = anggotaMap[key].id;
             nama = anggotaMap[key].nama;
             break;
           }
         }
       }
+
       rekap[anggotaId] = {
         nama,
         id: idAnggota,
@@ -456,88 +484,166 @@ onValue(simpananRef, snapshot => {
         list: []
       };
     }
-    rekap[anggotaId][data.jenis] += jumlah;
+
+    if (data.jenis === "pokok") {
+      rekap[anggotaId].pokok += jumlah;
+    }
+
+    if (data.jenis === "wajib") {
+      rekap[anggotaId].wajib += jumlah;
+    }
+
+    if (data.jenis === "sukarela") {
+      rekap[anggotaId].sukarela += jumlah;
+    }
+
     rekap[anggotaId].list.push({
       id: child.key,
-     ...data
+      ...data
     });
+
   });
+
   anggotaData = rekap;
-  const sorted = Object.entries(rekap).sort((a,b)=>{
-    return String(a[1].id).localeCompare(String(b[1].id),'id',{numeric:true});
+
+  const sorted = Object.entries(rekap).sort((a, b) => {
+    return String(a[1].id).localeCompare(
+      String(b[1].id),
+      'id',
+      { numeric: true }
+    );
   });
-  if(sorted.length === 0){
-    container.innerHTML = `<div style="text-align:center;color:#6b7280;padding:20px">Belum ada data</div>`;
-  }
+
   sorted.forEach(([anggotaId, data]) => {
-    const totalAnggota = data.pokok + data.wajib + data.sukarela;
+
+    const totalAnggota =
+      data.pokok +
+      data.wajib +
+      data.sukarela;
+
     const card = document.createElement("div");
+
     card.className = "anggota-card";
+
     card.innerHTML = `
       <div class="anggota-card-row">
         <b>${data.nama}</b>
         <span>ID: ${data.id}</span>
       </div>
+
       <div class="anggota-card-row">
         <span>Pokok</span>
         <span>Rp ${data.pokok.toLocaleString("id-ID")}</span>
       </div>
+
       <div class="anggota-card-row">
         <span>Wajib</span>
         <span>Rp ${data.wajib.toLocaleString("id-ID")}</span>
       </div>
+
       <div class="anggota-card-row">
         <span>Sukarela</span>
         <span>Rp ${data.sukarela.toLocaleString("id-ID")}</span>
       </div>
+
       <div class="anggota-card-row">
         <b>Total</b>
         <b>Rp ${totalAnggota.toLocaleString("id-ID")}</b>
       </div>
     `;
-    if(role === "admin"){
-  card.onclick = () => bukaDetail(anggotaId);
-} else {
-  card.style.cursor = "default"; // ga bisa diklik
-}
-       container.appendChild(card);
-  });
-  document.getElementById("totalSimpanan").innerText = total.toLocaleString("id-ID");
-});
 
+    if (role === "admin") {
+      card.onclick = () => bukaDetail(anggotaId);
+    } else {
+      card.style.cursor = "default";
+    }
+
+    container.appendChild(card);
+
+  });
+
+  document.getElementById("totalSimpanan").innerText =
+    total.toLocaleString("id-ID");
+
+});
+/* ================= TAMBAH ================= */
 /* ================= TAMBAH ================= */
 document.getElementById("btnSimpan").addEventListener("click", async () => {
-  const select = document.getElementById("anggotaSelect");
-  if(!select.value) return alert("Pilih anggota");
-  const anggota = anggotaMap[select.value];
-  const jumlah = Number(document.getElementById("jumlah").value);
-  if(!jumlah || jumlah <= 0) return alert("Jumlah tidak valid");
-  const jenis = document.getElementById("jenis").value;
-  const ket = document.getElementById("keterangan").value;
-  const metode = document.getElementById("metode").value;
-  const newSimpanan = push(simpananRef);
-  await newSimpanan.set({
-    anggotaId: select.value,
-    idAnggota: anggota.id,
-    nama: anggota.nama,
-    jenis,
-    jumlah,
-    keterangan: ket,
-    metode,
-    tanggal: Date.now()
-  });
-  await push(kasRef,{
-    simpananId: newSimpanan.key,
-    tanggal: Date.now(),
-    keterangan: `Simpanan ${jenis} (${anggota.nama})`,
-    tipe: "masuk",
-    sumberKas: metode,
-    jumlah
-  });
-  document.getElementById("jumlah").value = "";
-  document.getElementById("keterangan").value = "";
+
+  try {
+
+    const select = document.getElementById("anggotaSelect");
+
+    if (!select.value) {
+      alert("Pilih anggota");
+      return;
+    }
+
+    const anggota = anggotaMap[select.value];
+
+    if (!anggota) {
+      alert("Data anggota tidak ditemukan");
+      return;
+    }
+
+    const jumlah = Number(document.getElementById("jumlah").value);
+
+    if (!jumlah || jumlah <= 0) {
+      alert("Jumlah tidak valid");
+      return;
+    }
+
+    const jenis = document.getElementById("jenis").value;
+    const metode = document.getElementById("metode").value;
+    const ket = document.getElementById("keterangan").value || "-";
+
+    const waktu = Date.now();
+
+   /* ================= SIMPAN SIMPANAN ================= */
+
+const simpananBaru = push(ref(db, "/simpanan"));
+
+await set(simpananBaru, {
+  anggotaId: select.value,
+  idAnggota: anggota.id || "-",
+  nama: anggota.nama || "-",
+  jenis,
+  jumlah,
+  metode,
+  keterangan: ket,
+  tanggal: waktu
 });
 
+/* ================= SIMPAN KAS ================= */
+
+const kasBaru = push(ref(db, "/kas/transaksi"));
+
+await set(kasBaru, {
+  simpananId: simpananBaru.key,
+  tanggal: waktu,
+  tipe: "masuk",
+  kategori: `simpanan ${jenis}`,
+  sumberKas: metode,
+  jumlah: Number(jumlah),
+  keterangan: `Simpanan ${jenis} - ${anggota.nama}`
+});
+
+
+    /* ================= RESET ================= */
+
+    document.getElementById("jumlah").value = "";
+    document.getElementById("keterangan").value = "";
+
+    alert("Simpanan berhasil disimpan");
+
+  } catch (err) {
+
+    console.error(err);
+    alert("Gagal menyimpan data : " + err.message);
+
+  }
+
+});
 /* ================= DETAIL ================= */
 window.bukaDetail = function(id){
   const data = anggotaData[id];
@@ -597,47 +703,114 @@ window.editItem = function(id,jenis,jumlah,metode){
 };
 
 window.simpanEdit = async function(id){
-  if(role!== "admin") return alert("Akses ditolak!");
-  const jenis = document.getElementById("eJenis").value;
-  const jumlah = Number(document.getElementById("eJumlah").value);
-  const metode = document.getElementById("eMetode").value;
-  if(!jumlah || jumlah <= 0) return alert("Jumlah tidak valid");
-  await update(ref(db,"/simpanan/" + id),{
-    jenis,
-    jumlah,
-    metode
-  });
-  const kasItem = kasList.find(k => k.simpananId === id);
-  if(kasItem){
-    await update(ref(db,"/kas/" + kasItem.id),{
-      jumlah,
-      sumberKas: metode,
-      keterangan: `Simpanan ${jenis}`
-    });
+
+  if(role !== "admin"){
+    return alert("Akses ditolak!");
   }
-  alert("Berhasil diupdate");
-  tutupModal();
+
+  const jenis = document.getElementById("eJenis").value;
+
+  const jumlah =
+    Number(document.getElementById("eJumlah").value);
+
+  const metode =
+    document.getElementById("eMetode").value;
+
+  if(!jumlah || jumlah <= 0){
+    return alert("Jumlah tidak valid");
+  }
+
+  try{
+
+    // UPDATE DATA SIMPANAN
+    await update(ref(db, "/simpanan/" + id), {
+      jenis,
+      jumlah,
+      metode,
+      tanggal: Date.now()
+    });
+
+    // CARI DATA KAS TERKAIT
+    const kasItem =
+      kasList.find(k => k.simpananId === id);
+
+    // UPDATE KAS
+    if(kasItem){
+
+      await update(
+        ref(db, "/kas/transaksi/" + kasItem.id),
+        {
+          jumlah,
+          sumberKas: metode,
+          kategori: `simpanan ${jenis}`,
+          keterangan: `Simpanan ${jenis}`,
+          tanggal: Date.now()
+        }
+      );
+
+    }
+
+    alert("Berhasil diupdate");
+
+    tutupModal();
+
+  }catch(err){
+
+    console.error(err);
+
+    alert("Gagal update : " + err.message);
+
+  }
+
 };
 
 window.hapusItem = async function(id){
-  if(role!== "admin") return alert("Akses ditolak!");
-  if(!confirm("Yakin hapus data?")) return;
-  await remove(ref(db,"/simpanan/" + id));
-  const kasItem = kasList.find(k => k.simpananId === id);
-  if(kasItem){
-    await remove(ref(db,"/kas/" + kasItem.id));
+
+  if(role !== "admin"){
+    return alert("Akses ditolak!");
   }
-  tutupModal();
+
+  if(!confirm("Yakin hapus data?")){
+    return;
+  }
+
+  try{
+
+    // HAPUS DATA SIMPANAN
+    await remove(ref(db, "/simpanan/" + id));
+
+    // CARI DATA KAS TERKAIT
+    const kasItem = kasList.find(
+      k => k.simpananId === id
+    );
+
+    // HAPUS DATA KAS
+    if(kasItem){
+      await remove(
+        ref(db, "/kas/transaksi/" + kasItem.id)
+      );
+    }
+
+    alert("Berhasil dihapus");
+
+    tutupModal();
+
+  }catch(err){
+
+    console.error(err);
+
+    alert("Gagal hapus : " + err.message);
+
+  }
+
 };
-
-
 /* ================= MODAL ================= */
 window.tutupModal = function(){
   document.getElementById("modalForm").style.display = "none";
 };
 
 /* ================= EXPORT PDF ================= */
-document.getElementById("btnPDF").onclick = exportPDF;
+
 window.exportPDF = function(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -689,7 +862,12 @@ window.logout = () => {
 window.kembali = () => {
   window.location.href = "dash.html";
 }
-
+window.onclick = function(e){
+  const modal = document.getElementById("modalForm");
+  if(e.target === modal){
+    modal.style.display = "none";
+  }
+}
 </script>
 
 </body>

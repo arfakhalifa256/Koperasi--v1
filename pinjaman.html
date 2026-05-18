@@ -11,7 +11,8 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
+
+  :root{
   --primary:#3b82f6;
   --primary-dark:#2563eb;
   --card:#ffffff;
@@ -24,7 +25,11 @@
   --success:#10b981;
   --danger:#dc2626;
   --warning:#f59e0b;
+
+  --gray-50:#f8fafc;
+  --gray-200:#e5e7eb;
 }
+  
 html,body{margin:0;padding:0;overflow-x:hidden}
 body{
   font-family:'Poppins',sans-serif;
@@ -108,14 +113,18 @@ header{
 .loading{text-align:center;padding:40px;color:var(--muted)}
 .alert{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;margin-top:10px}
 .alert.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
+
+
 @media(max-width:768px){
   body{font-size:12px}
-.container{padding:10px}
-.card{padding:14px;border-radius:12px}
-.summary-grid{grid-template-columns:1fr}
-.form-grid{grid-template-columns:1fr}
-.pinjaman-row{font-size:11px}
-.header-actions button{padding:5px 8px;font-size:10px}
+  .container{padding:10px}
+  .card{padding:14px;border-radius:12px}
+  .summary-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .pinjaman-row{font-size:11px}
+  .header-actions button{padding:5px 8px;font-size:10px}
+}
+
 .custom-alert{
   position:fixed;
   inset:0;
@@ -127,6 +136,7 @@ header{
   padding:20px;
   animation:fadeIn.2s ease;
 }
+
 .custom-alert-box{
   width:100%;
   max-width:320px;
@@ -333,19 +343,24 @@ if(role!=="admin"){
 
 const anggotaRef = ref(db, "anggota");
 const pinjamanRef = ref(db, "pinjaman");
-const kasRef = ref(db, "kas");
+const kasRef = ref(db, "kas/transaksi");
 const angsuranRef = ref(db, "angsuran");
 
 let dataPinjaman = {};
 let dataAnggota = {};
 let dataAngsuran = {};
 let editId = null;
-
+window.dataPinjaman = dataPinjaman;
+window.dataAnggota = dataAnggota;
+window.dataAngsuran = dataAngsuran;
 const anggotaSelect = document.getElementById("anggota");
 const tabel = document.getElementById("tabelPinjaman");
 
 const format = x => new Intl.NumberFormat("id-ID").format(x || 0);
-const inputDate = t => new Date(t).toISOString().split("T")[0];
+const inputDate = t => {
+  if(!t) return "";
+  return new Date(t).toISOString().split("T")[0];
+}
 const formatTanggal = t => {
   if(!t) return "-";
   const d = new Date(t);
@@ -480,14 +495,16 @@ window.tutupAlert = function(){
   document.body.appendChild(div);
 
   document.getElementById("btnBukaWA").onclick = () => {
-    let a = document.createElement("a");
-a.href = url;
-a.target = "_blank";
-a.rel = "noopener";
 
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
+    let a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener";
+
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
     div.remove();
   };
 
@@ -659,7 +676,7 @@ function hitungSummary(){
   document.getElementById("totalPinjaman").innerText = format(totalPinjaman);
 }
 
-onValue(kasRef, snap=>{
+onValue(ref(db,"kas/transaksi"), snap=>{
   let saldo = 0;
   snap.forEach(d=>{
     let k = d.val();
@@ -681,8 +698,11 @@ async function getNoPinjaman(){
 }
 
 window.onload = async function(){
-  document.getElementById("tanggal").value = new Date().toISOString().split("T")[0];
-  document.getElementById("noPinjaman").value = await getNoPinjaman();
+  document.getElementById("tanggal").value =
+    new Date().toISOString().split("T")[0];
+
+  document.getElementById("noPinjaman").value =
+    await getNoPinjaman();
 }
 
 window.simpanPinjaman = async function(){
@@ -703,27 +723,55 @@ window.simpanPinjaman = async function(){
 
   let masihAdaPinjaman = false;
   Object.values(dataPinjaman).forEach(p => {
-    if(p.idAnggota!== idAnggota) return;
-    let totalPinjaman = Number(p.jumlah || 0) + Number(p.jasa || 0);
-    let totalAngsuran = 0;
-    Object.values(dataAngsuran).forEach(a => {
-      if(a.pinjamanId === p.id){
-        totalAngsuran += Number(a.jumlah || 0) + Number(a.jasa || 0);
-      }
-    });
-    if(totalAngsuran < totalPinjaman){ masihAdaPinjaman = true; }
+  if(p.idAnggota !== idAnggota) return;
+
+  let totalPinjaman =
+    Number(p.jumlah || 0) +
+    Number(p.jasa || 0);
+
+  let totalAngsuran = 0;
+
+  Object.values(dataAngsuran).forEach(a => {
+    if(a.pinjamanId === p.id){
+      totalAngsuran +=
+        Number(a.jumlah || 0) +
+        Number(a.jasa || 0);
+    }
   });
 
-  if(masihAdaPinjaman){
-    return showAlert("Anggota masih memiliki pinjaman yang belum lunas!", "danger");
+  if(totalAngsuran < totalPinjaman){
+    masihAdaPinjaman = true;
   }
+});
+let saldoKas = 0;
 
-  let nomor = document.getElementById("noPinjaman").value;
+const kasSnap = await get(ref(db, "kas/transaksi"));
+
+if(kasSnap.exists()){
+  kasSnap.forEach(d => {
+    let k = d.val();
+    let jumlahKas = Number(k.jumlah || 0);
+
+    if((k.tipe || "") === "masuk") saldoKas += jumlahKas;
+    if((k.tipe || "") === "keluar") saldoKas -= jumlahKas;
+  });
+}
+
+if(saldoKas < jumlah){
+  return showAlert("Saldo kas tidak mencukupi!", "danger");
+}
+  let nomor = await getNoPinjaman();
+document.getElementById("noPinjaman").value = nomor;
   let tanggal = new Date(tanggalInput).getTime();
 
   let kas = await push(kasRef,{
-    tanggal, keterangan:`Pinjaman ${nama} (${nomor})`, tipe:"keluar", sumberKas:metode, jumlah: jumlah
-  });
+  tanggal,
+  keterangan:`Pinjaman ${nama} (${nomor})`,
+  tipe:"keluar",
+  kategori:"pinjaman",
+  sumberKas:metode,
+  jumlah: jumlah
+});
 
   await push(pinjamanRef,{
     nomor,
@@ -779,14 +827,8 @@ Terima kasih 🙏
 KOPERASI ARFA DRIVER`;
 
     let url = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
-let a = document.createElement("a");
-a.href = url;
-a.target = "_blank";
-a.rel = "noopener";
+showAlertWA(url);
 
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
   }
 }
     // ===== END WA =====
@@ -826,8 +868,12 @@ window.editPinjaman = function(id){
 
 window.updatePinjaman = async function(){
   if(!editId) return;
+
   let p = dataPinjaman[editId];
-  let nama = document.getElementById("editAnggota").options[document.getElementById("editAnggota").selectedIndex]?.text || "";
+  let nama = document.getElementById("editAnggota").options[
+    document.getElementById("editAnggota").selectedIndex
+  ]?.text || "";
+
   let tanggalInput = document.getElementById("editTanggal").value;
   let jumlah = Number(document.getElementById("editJumlah").value);
   let jasa = Number(document.getElementById("editJasa").value) || 0;
@@ -836,11 +882,38 @@ window.updatePinjaman = async function(){
 
   if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
   if(!metode) return showAlert("Pilih metode!", "warning");
-  if(!jumlah || jumlah<=0) return showAlert("Jumlah harus > 0!", "warning");
+  if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
 
   let tanggal = new Date(tanggalInput).getTime();
+let selisih = jumlah - Number(p.jumlah || 0);
 
+if(selisih > 0){
+
+  let saldoKas = 0;
+
+  const kasSnap = await get(ref(db, "kas/transaksi"));
+
+  if(kasSnap.exists()){
+    kasSnap.forEach(d=>{
+      let k = d.val();
+      let jumlahKas = Number(k.jumlah || 0);
+
+      if((k.tipe || "") === "masuk"){
+        saldoKas += jumlahKas;
+      }
+
+      if((k.tipe || "") === "keluar"){
+        saldoKas -= jumlahKas;
+      }
+    });
+  }
+
+  if(saldoKas < selisih){
+    return showAlert("Saldo kas tidak mencukupi!", "danger");
+  }
+}
   const updates = {};
+
   updates[`/pinjaman/${editId}/tanggal`] = tanggal;
   updates[`/pinjaman/${editId}/jumlah`] = jumlah;
   updates[`/pinjaman/${editId}/jasa`] = jasa;
@@ -850,27 +923,37 @@ window.updatePinjaman = async function(){
   updates[`/pinjaman/${editId}/idAnggota`] = document.getElementById("editAnggota").value;
 
   if(p.kasId){
-    updates[`/kas/${p.kasId}/tanggal`] = tanggal;
-    updates[`/kas/${p.kasId}/jumlah`] = jumlah + jasa;
-    updates[`/kas/${p.kasId}/sumberKas`] = metode;
+    updates[`/kas/transaksi/${p.kasId}/tanggal`] = tanggal;
+        updates[`/kas/transaksi/${p.kasId}/jumlah`] = jumlah;
+    updates[`/kas/transaksi/${p.kasId}/sumberKas`] = metode;
+    updates[`/kas/transaksi/${p.kasId}/kategori`] = "pinjaman";
+    updates[`/kas/transaksi/${p.kasId}/keterangan`] = `Pinjaman ${nama} (${p.nomor})`;
   }
 
   await update(ref(db), updates);
+
   tutupPopup();
   showAlert("Update berhasil ✅", "success");
 }
-
 window.hapusPinjaman = async function(id){
-  if(role!=="admin") return;
-  if(!confirm("Hapus pinjaman ini? Kas juga ikut kehapus!")) return;
-  let p = dataPinjaman[id];
-  const updates = {};
-  updates[`/pinjaman/${id}`] = null;
-  if(p.kasId){ updates[`/kas/${p.kasId}`] = null; }
-  await update(ref(db), updates);
-  showAlert("Hapus berhasil ✅", "success");
-}
+  if(role !== "admin") return;
 
+  if(!confirm("Hapus pinjaman ini? Kas juga ikut terhapus!")) return;
+
+  let p = dataPinjaman[id];
+
+  const updates = {};
+
+  updates[`/pinjaman/${id}`] = null;
+
+  if(p.kasId){
+    updates[`/kas/transaksi/${p.kasId}`] = null;
+  }
+
+  await update(ref(db), updates);
+
+  showAlert("Pinjaman berhasil dihapus ✅", "success");
+}
 window.tutupPopup = function(){
   document.getElementById("popupEdit").style.display = "none";
   editId = null;

@@ -299,7 +299,8 @@
       if(!a) return;
       let tgl = typeof a.tanggal === "number" ? a.tanggal : new Date(a.tanggal).getTime();
       if(tgl > cutoff) return;
-      totalPendapatan += Number(a.jasa) || 0;
+      const jasa = Number(a.jasa) || 0;
+totalPendapatan += jasa;
     });
     
     Object.values(transaksi).forEach(t => {
@@ -311,20 +312,29 @@
 
   if(tgl > cutoff) return;
 
-  const kategori = (t.kategori || "").toLowerCase();
+  const kategori = (t.kategori || "").toLowerCase().trim();
   const jumlah = Number(t.jumlah) || 0;
 
-  // Pendapatan lain-lain
-  if(t.tipe === "masuk" && (
-      kategori.includes("lain") ||
-      kategori.includes("pendapatan")
-    )){
+  // PENDAPATAN LAIN
+  if(
+    t.tipe === "masuk" &&
+    (
+      kategori.includes("pendapatan") ||
+      kategori.includes("lain")
+    ) &&
+    !kategori.includes("simpanan") &&
+    !kategori.includes("angsuran") &&
+    !kategori.includes("pinjaman")
+  ){
     pendapatanLain += jumlah;
   }
 });
     
+    
     const totalSimpanan = pokok + wajib + sukarela;
-    const shuBerjalan = totalPendapatan + pendapatanLain;
+    const shuBerjalan =
+  Number(totalPendapatan || 0) +
+  Number(pendapatanLain || 0);
     const shuDitahan = Number(dataGlobal.shuDitahan || 0);
     const totalPasiva = modalAwal + totalSimpanan + shuDitahan + shuBerjalan;
 
@@ -367,7 +377,10 @@
     document.getElementById("dbgSelisih").innerText = rupiah(selisih);
     
     document.getElementById("dbgPendapatan").innerText =
-  rupiah(totalPendapatan + pendapatanLain);
+  rupiah(
+    Number(totalPendapatan || 0) +
+    Number(pendapatanLain || 0)
+  );
     const balanceBox = document.getElementById("balanceCheck");
     if(Math.abs(selisih) < 1){
       balanceBox.className = "balance-box success";
