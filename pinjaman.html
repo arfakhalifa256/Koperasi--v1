@@ -572,6 +572,7 @@ onValue(angsuranRef, snap => {
 
 function renderPinjaman(){
   tabel.innerHTML = "";
+
   let filterMetode = document.getElementById("filterMetode").value;
   let listPinjaman = Object.values(dataPinjaman);
 
@@ -579,40 +580,81 @@ function renderPinjaman(){
     listPinjaman = listPinjaman.filter(p => p.sumberKas === filterMetode);
   }
 
-  listPinjaman.sort((a,b)=> Number(b.tanggal || 0) - Number(a.tanggal || 0));
+  listPinjaman.sort((a,b)=>
+    Number(b.tanggal || 0) - Number(a.tanggal || 0)
+  );
 
   if(listPinjaman.length === 0){
-    tabel.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Tidak ada data</div>`;
+    tabel.innerHTML = `
+      <div style="text-align:center;padding:20px;color:#6b7280">
+        Tidak ada data
+      </div>
+    `;
     return;
   }
 
   listPinjaman.forEach(p=>{
-    let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
-    let total = Number(p.jumlah || 0) + jasaOtomatis;
+
+    let jasaOtomatis =
+      Number(p.jasa ?? Math.round(Number(p.jumlah || 0) * 0.2));
+
+    let total =
+      Number(p.jumlah || 0) + jasaOtomatis;
 
     let totalAngsuran = 0;
-    Object.values(dataAngsuran).forEach(a => {
-      if(a.pinjamanId === p.id){
-        totalAngsuran += Number(a.jumlah || 0) + Number(a.jasa || 0);
-      }
-    });
 
+    Object.values(dataAngsuran).forEach(a => {
+
+  if(a.pinjamanId !== p.id) return;
+
+  let pokok = Number(a.pokok || 0);
+  let jasa = Number(a.jasa || 0);
+
+  // fallback ambil dari jumlah jika pokok kosong
+  if(pokok === 0){
+    pokok = Number(a.jumlah || 0);
+  }
+
+  totalAngsuran += pokok + jasa;
+
+});
+    
     let lunas = totalAngsuran >= total;
-    let status = lunas? "LUNAS" : "BELUM LUNAS";
-    let warnaStatus = lunas? "#10b981" : "#ef4444";
+
+    let status = lunas
+      ? "LUNAS"
+      : "BELUM LUNAS";
+
+    let warnaStatus = lunas
+      ? "#10b981"
+      : "#ef4444";
 
     let card = document.createElement("div");
+
     card.className = "pinjaman-card";
 
     card.innerHTML = `
       <div class="pinjaman-header">
         <div>
           <div class="pinjaman-no">${p.nomor || "-"}</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:2px">${p.nama || "-"}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">
+            ${p.nama || "-"}
+          </div>
         </div>
+
         <div style="display:flex;flex-direction:column;gap:6px;align-items:end">
-          <div class="pinjaman-badge">${(p.sumberKas || "-").toUpperCase()}</div>
-          <div style="background:${warnaStatus};color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700">
+          <div class="pinjaman-badge">
+            ${(p.sumberKas || "-").toUpperCase()}
+          </div>
+
+          <div style="
+            background:${warnaStatus};
+            color:white;
+            padding:4px 10px;
+            border-radius:20px;
+            font-size:10px;
+            font-weight:700;
+          ">
             ${status}
           </div>
         </div>
@@ -620,51 +662,86 @@ function renderPinjaman(){
 
       <div class="pinjaman-row">
         <span class="label">Sudah Bayar</span>
-        <span class="value">Rp ${format(totalAngsuran)}</span>
+        <span class="value">
+          Rp ${format(totalAngsuran)}
+        </span>
       </div>
 
       <div class="pinjaman-row">
         <span class="label">Sisa</span>
-        <span class="value" style="color:${lunas? '#10b981' : '#ef4444'};font-weight:700">
+        <span class="value" style="
+          color:${lunas ? '#10b981' : '#ef4444'};
+          font-weight:700;
+        ">
           Rp ${format(Math.max(total - totalAngsuran,0))}
         </span>
       </div>
 
       <div class="pinjaman-row">
         <span class="label">Tanggal</span>
-        <span class="value">${formatTanggal(p.tanggal)}</span>
+        <span class="value">
+          ${formatTanggal(p.tanggal)}
+        </span>
       </div>
 
       <div class="pinjaman-row">
         <span class="label">Pokok</span>
-        <span class="value">Rp ${format(p.jumlah)}</span>
+        <span class="value">
+          Rp ${format(p.jumlah)}
+        </span>
       </div>
 
       <div class="pinjaman-row">
         <span class="label">Jasa (20%)</span>
-        <span class="value">Rp ${format(jasaOtomatis)}</span>
+        <span class="value">
+          Rp ${format(jasaOtomatis)}
+        </span>
       </div>
 
       <div class="pinjaman-row">
         <span class="label">Total</span>
-        <span class="value" style="color:var(--primary);font-weight:700">Rp ${format(total)}</span>
+        <span class="value" style="
+          color:var(--primary);
+          font-weight:700;
+        ">
+          Rp ${format(total)}
+        </span>
       </div>
 
       <div class="pinjaman-row">
         <span class="label">Ket</span>
-        <span class="value">${p.ket || "-"}</span>
+        <span class="value">
+          ${p.ket || "-"}
+        </span>
       </div>
 
       <div class="pinjaman-actions">
-        <button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>
-        <button class="btn-wa" onclick="kirimWA('${p.id}')">WA</button>
-        ${role==="admin"? `
-        <button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button>
-        <button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>
+        <button class="btn-nota"
+          onclick="cetakNota('${p.id}')">
+          Nota
+        </button>
+
+        <button class="btn-wa"
+          onclick="kirimWA('${p.id}')">
+          WA
+        </button>
+
+        ${role==="admin" ? `
+          <button class="btn-edit"
+            onclick="editPinjaman('${p.id}')">
+            Edit
+          </button>
+
+          <button class="btn-delete"
+            onclick="hapusPinjaman('${p.id}')">
+            Hapus
+          </button>
         ` : ''}
       </div>
     `;
+
     tabel.appendChild(card);
+
   });
 }
 
@@ -722,7 +799,9 @@ window.simpanPinjaman = async function(){
   if(!jumlah || jumlah <= 0){ return showAlert("Jumlah harus > 0!", "warning"); }
 
   let masihAdaPinjaman = false;
-  Object.values(dataPinjaman).forEach(p => {
+
+Object.values(dataPinjaman).forEach(p => {
+
   if(p.idAnggota !== idAnggota) return;
 
   let totalPinjaman =
@@ -732,17 +811,26 @@ window.simpanPinjaman = async function(){
   let totalAngsuran = 0;
 
   Object.values(dataAngsuran).forEach(a => {
-    if(a.pinjamanId === p.id){
-      totalAngsuran +=
-        Number(a.jumlah || 0) +
-        Number(a.jasa || 0);
+
+    if(a.pinjamanId !== p.id) return;
+
+    let pokok = Number(a.pokok || 0);
+    let jasa = Number(a.jasa || 0);
+
+    if(pokok === 0){
+      pokok = Number(a.jumlah || 0);
     }
+
+    totalAngsuran += pokok + jasa;
+
   });
 
   if(totalAngsuran < totalPinjaman){
     masihAdaPinjaman = true;
   }
+
 });
+    
 let saldoKas = 0;
 
 const kasSnap = await get(ref(db, "kas/transaksi"));
