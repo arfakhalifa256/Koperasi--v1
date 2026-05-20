@@ -5,185 +5,59 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Dashboard Koperasi</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+* {box-sizing:border-box;margin:0;padding:0;}
 :root {
-  --primary: #1e90ff;
-  --primary-dark: #0f3057;
-  --card: #ffffff;
-  --bg: #f4f6f9;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --shadow: 0 3px 10px rgba(0,0,0,0.08);
-  --radius: 12px;
+  --primary:#1e90ff;--primary-dark:#0f3057;--card:#fff;--bg:#f4f6f9;
+  --text:#1f2937;--muted:#6b7280;--shadow:0 3px 10px rgba(0,0,0,0.08);
+  --radius:12px;--border:#e5e7eb;
 }
+html,body{margin:0;padding:0;overflow-x:hidden;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);}
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+header{
+  background:linear-gradient(to right,var(--primary),var(--primary-dark));
+  color:white;padding:14px 16px;font-size:17px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 3px 8px rgba(0,0,0,0.15);position:sticky;top:0;z-index:100;
 }
+.menu-btn{background:transparent;border:none;color:white;font-size:20px;cursor:pointer;padding:2px 4px;margin-right:8px;}
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: var(--bg);
-  color: var(--text);
+.container{padding:16px;max-width:1100px;margin:0 auto;}
+.card{
+  background:var(--card);padding:12px;border-radius:var(--radius);
+  box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;
 }
+.card h3{margin:0 0 14px 0;font-size:14px;font-weight:600;color:var(--text);}
 
-/* ===== HEADER ===== */
-header {
-  background: linear-gradient(to right, var(--primary), var(--primary-dark));
-  color: white;
-  padding: 14px 16px;
-  font-size: 17px;
-  font-weight: 600;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+.saldo-card{display:flex;flex-direction:column;gap:8px;}
+.saldo-item{
+  background:#f1f5f9;padding:14px;border-radius:10px;
+  display:flex;justify-content:space-between;align-items:center;font-size:12px;
 }
+.saldo-item h2{margin:0;font-size:14px;color:var(--primary);}
+.saldo-total{
+  font-size:12px;background:linear-gradient(135deg,#1e90ff,#0f3057);
+  color:white;padding:18px;border-radius:6px;text-align:center;
+}
+.saldo-total h1{margin-top:4px;font-size:16px;}
 
-header button {
-  background: #ffc107;
-  color: #1f2937;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  transition: 0.2s;
+.top-item{
+  display:flex;align-items:center;gap:10px;padding:6px 0;
+  border-bottom:1px solid var(--border);font-size:13px;
 }
+.top-item:last-child{border-bottom:none;}
+.top-rank{
+  width:24px;height:24px;background:var(--primary);color:white;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;
+}
+.top-name{flex:1;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.top-amount{color:var(--primary);font-weight:600;white-space:nowrap;}
+.top-empty{text-align:center;padding:20px;color:var(--muted);font-size:13px;}
 
-header button:hover {
-  background: #ffb300;
-  transform: scale(1.05);
-}
-
-.menu-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 2px 4px;
-  margin-right: 8px;
-}
-
-/* ===== CONTAINER ===== */
-.container {
-  padding: 16px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* ===== GRID ===== */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-
-@media (min-width: 700px) {
-  .grid { grid-template-columns: 1fr 1fr; }
-  .container { padding: 10px; }
-}
-
-/* ===== CARD ===== */
-.card {
-  background: var(--card);
-  padding: 10px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  border: 1px solid #e5e7eb;
-}
-
-.card h3 {
-  margin: 0 0 14px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-}
-/* ===== TOP PEMINJAM LIST ===== */
-.top-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 0; /* 🔥 dari default 12px jadi 6px */
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-
-.top-item:last-child {
-  border-bottom: none;
-}
-
-.top-rank {
-  width: 24px;
-  height: 24px;
-  background: var(--primary);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.top-name {
-  flex: 1;
-  color: var(--text);
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.top-amount {
-  color: var(--primary);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.top-empty {
-  text-align: center;
-  padding: 20px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-/* ===== MOBILE ===== */
-@media (max-width:480px){
-  .top-item {
-    padding: 5px 0; /* 🔥 lebih rapet di HP */
-    font-size: 12px;
-  }
-
-  .top-rank {
-    width: 22px;
-    height: 22px;
-    font-size: 10px;
-  }
-}
-/* ===== CANVAS ===== */
-canvas {
-  max-width: 100% !important;
-  height: auto !important;
-  display: block;
-}
-  /* ===== SIDEBAR ===== */
 .sidebar{
   position:fixed;top:0;left:-240px;width:220px;height:100%;background:#0d47a1;
   padding:16px;transition:.3s;z-index:99999;overflow-y:auto;
@@ -194,251 +68,87 @@ canvas {
   display:block;color:#fff;text-decoration:none;padding:10px 0;
   border-bottom:1px solid rgba(255,255,.1);font-size:13px;
 }
-.sidebar a:hover{color:#90caf9;}
-.divider{height:12px;}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9999;}
 .overlay.active{display:block;}
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 240px;
-  height: 100%;
-  background: var(--primary-dark);
-  color: white;
-  padding: 20px 16px;
-  transform: translateX(-100%);
-  transition: 0.3s;
-  z-index: 1000;
-  overflow-y: auto;
+.user-badge{
+  background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.25);color:#fff;padding:6px 12px;
+  border-radius:20px;font-size:12px;font-weight:500;max-width:160px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-
-.sidebar.open {
-  transform: translateX(0);
-}
-
-.sidebar h3 {
-  margin-bottom: 16px;
-  font-size: 15px;
-}
-
-.sidebar a {
-  display: block;
-  color: white;
-  text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 8px;
-  margin-bottom: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.sidebar a:hover {
-  background: rgba(255,255,255,0.15);
-  transform: translateX(4px);
-}
-
-
-
-
-  /* ===== HEADER RIGHT ===== */
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-/* ===== USER BADGE ===== */
-.user-badge {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #fff;
-  padding: 7px 14px;
-  border-radius: 20px;
-  font-size: 10px;
-  font-weight: 500;
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-badge:hover {
-  background: rgba(255,255,255,0.25);
-  transform: translateY(-1px);
-}
-
-.user-badge::before {
-  content: "👋 ";
-  margin-right: 4px;
-}
-
-/* ===== MOBILE ===== */
-@media (max-width:480px){
-  
-
-  .title {
-    font-size: 12px;
-  }
-
-  .header-right {
-    gap: 6px;
-  }
-
-  .user-badge {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.user-badge b {
-  font-weight: 700;
-}
-
-@media (max-width:480px){
-  .user-badge {
-    font-size: 11px;
-    padding: 5px 10px;
-    max-width: 110px;
-    background: rgba(255,255,255,0.2);
-  }
-}
-
-  
-  .overlay{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: none;
-  z-index: 999;
-}
-  /* ===== SALDO ===== */
-.saldo-card{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.saldo-item{
-  background:#f1f5f9;
-  padding:14px;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:12px;
-}
-
-.saldo-item h2{
-  margin:0;
-  font-size:12px;
-  color:var(--primary);
-}
-
-.saldo-total{
-  font-size:12px;
-  background:linear-gradient(135deg,#1e90ff,#0f3057);
-  color:white;
-  padding:18px;
-  border-radius:6px;
-  text-align:center;
-}
-
-.saldo-total h1{
-  margin-top:4px;
-  font-size:12px;
-}
-  </style>
+canvas{max-width:100%!important;height:auto!important;display:block;}
+</style>
 </head>
 <body>
-  
-<!-- SIDEBAR -->
-  <div id="sidebar" class="sidebar">
+
+<div id="sidebar" class="sidebar">
   <h3>Menu Koperasi</h3>
-    
-<a href="anggota.html" class="menu-admin">👤anggota</a>
-<a href="main.html" class="menu-admin">💰 kas</a>
-<a href="simpanan.html" class="menu-admin">📄 Simpanan</a>
-<a href="pinjaman.html" class="menu-admin">💰 Pinjaman</a>
-<a href="angsuran.html" class="menu-admin">📄 Angsuran</a>
-<a href="cair.html" class="menu-admin">💰Pencairan simpanan</a>
-<div class="divider"></div>
-<a href="laporan.html">📊 Laporan</a>
-<a href="backup.html" class="menu-admin">📊 backup Kas</a>
-<a href="saldoawal.html" id="menuUser" class="menu-admin">👤 Saldo awal</a>
-<a href="labarugi.html" id="menuUser" class="menu-admin">👤 Rugilaba</a>
-<a href="neraca.html" id="menuUser" class="menu-admin">👤 Neraca</a>
-<a href="user.html" id="menuUser" class="menu-admin">👤 Kelola User</a>
-<div class="divider"></div>
-<a href="#" id="btnLogoutSide">🚪 Logout</a>
+  <a href="anggota.html" class="menu-admin">👤 Anggota</a>
+  <a href="kas.html" class="menu-admin">💰 Kas</a>
+  <a href="simpanan.html" class="menu-admin">📄 Simpanan</a>
+  <a href="pinjaman.html" class="menu-admin">💰 Pinjaman</a>
+  <a href="angsuran.html" class="menu-admin">📄 Angsuran</a>
+  <a href="cair.html" class="menu-admin">💰 Pencairan Simpanan</a>
+  <div class="divider"></div>
+  <a href="laporan.html">📊 Laporan</a>
+  <a href="backup.html" class="menu-admin">📊 Backup Kas</a>
+  <a href="saldoawal.html" class="menu-admin">👤 Saldo Awal</a>
+  <a href="labarugi.html" class="menu-admin">👤 Rugi Laba</a>
+  <a href="neraca.html" class="menu-admin">👤 Neraca</a>
+  <a href="user.html" class="menu-admin">👤 Kelola User</a>
+  <div class="divider"></div>
+  <a href="#" id="btnLogoutSide">🚪 Logout</a>
 </div>
 
-
-<!-- OVERLAY -->
 <div id="overlay" class="overlay"></div>
 
-  <header>
-    <div class="header-right">
+<header>
+  <div class="header-right">
     <div id="userDisplay" class="user-badge">Halo</div>
-    </div>
-    <span class="title">DASHBOARD</span>
-
+  </div>
+  <span class="title">DASHBOARD</span>
   <div style="display:flex;align-items:center;">
     <span onclick="toggleSidebar()" class="menu-btn">☰</span>
-      </div>
-  
+  </div>
 </header>
-  
+
+<div class="container">
   <div class="card saldo-card">
-  <div class="saldo-item">
-    <span>💵 Cash</span>
-    <h2 id="saldoCash">Rp 0</h2>
+    <div class="saldo-item">
+      <span>💵 Cash</span>
+      <h2 id="saldoCash">Rp 0</h2>
+    </div>
+    <div class="saldo-item">
+      <span>🏦 Bank</span>
+      <h2 id="saldoBank">Rp 0</h2>
+    </div>
+    <div class="saldo-total">
+      <span>💰 Total Saldo</span>
+      <h1 id="saldoTotal">Rp 0</h1>
+    </div>
+    <div class="saldo-total">
+  <span>💰 Total Pinjaman</span>
+  <h1 id="totalPinjaman">Rp 0</h1>
+</div>
   </div>
 
-  <div class="saldo-item">
-    <span>🏦 Bank</span>
-    <h2 id="saldoBank">Rp 0</h2>
+  <div class="card">
+    <h3>Grafik Angsuran per Bulan</h3>
+    <canvas id="chartAngsuran"></canvas>
   </div>
 
-  <div class="saldo-total">
-    <span>💰 Total Saldo</span>
-    <h1 id="saldoTotal">Rp 0</h1>
+  <div class="card">
+    <h3>Grafik Pelunasan Pinjaman</h3>
+    <canvas id="chartPelunasan"></canvas>
   </div>
-     <div class="saldo-total">
-    <span>💰 Saldo Kas</span>
-    <h1 id="saldoKas">Rp 0</h1>
+
+  <div class="card">
+    <h3>Top Peminjam</h3>
+    <div id="topPeminjam" class="top-list"></div>
   </div>
 </div>
-  
 
-
-<div class="card">
-<h3>Grafik Angsuran per Bulan</h3>
-<canvas id="chartAngsuran"></canvas>
-</div>
-
-<div class="card">
-<h3>Grafik Pelunasan Pinjaman</h3>
-<canvas id="chartPelunasan"></canvas>
-</div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -447,157 +157,118 @@ const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
   authDomain: "arfa-c7dee.firebaseapp.com",
   databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
-  projectId: "arfa-c7dee",
-  storageBucket: "arfa-c7dee.appspot.com",
-  messagingSenderId: "468058520812",
-  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+  projectId: "arfa-c7dee"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 /* ===== REF ===== */
-const kasRef = ref(db, "kas");
+const kasTransaksiRef = ref(db, "kas/transaksi");
+const kasSaldoAwalRef = ref(db, "kas/saldoAwal");
 const pinjamanRef = ref(db, "pinjaman");
 const angsuranRef = ref(db, "angsuran");
-const simpananRef = ref(db, "simpanan");
-const cairRef = ref(db, "cair");
 
 /* ===== STATE ===== */
 let saldoCash = 0, saldoBank = 0;
-let totalMasuk = 0, totalKeluar = 0;
-
-let dataKas = {};
 let dataPinjaman = {};
 let dataAngsuran = {};
-let dataSimpanan = {};
-let dataCair = {};
+let dataTransaksi = {};
+let dataSaldoAwal = {};
 
-/* ===== FORMAT RUPIAH ===== */
-const rupiah = n =>
-  Number(n || 0).toLocaleString("id-ID");
-/* ===== LISTEN SEMUA DATA ===== */
-onValue(kasRef, snap => {
-  dataKas = snap.val() || {};
-  hitungSaldo();
+let chartAngsuran;
+let chartPelunasan;
+
+/* ===== FORMAT ===== */
+const rupiah = n => Number(n || 0).toLocaleString("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+});
+/* ===== LISTEN DATA ===== */
+let loaded = {kas: false, pinjaman: false, angsuran: false};
+
+onValue(kasSaldoAwalRef, snap => {
+  dataSaldoAwal = snap.val() || {};
+  loaded.kas = true;
+  cekRender();
+});
+
+onValue(kasTransaksiRef, snap => {
+  dataTransaksi = snap.val() || {};
+  loaded.kas = true;
+  cekRender();
 });
 
 onValue(pinjamanRef, snap => {
-  dataPinjaman = snap.val() || {};
-  hitungSaldo();
+  dataPinjaman = {};
+  snap.forEach(d => { dataPinjaman[d.key] = d.val(); });
+  loaded.pinjaman = true;
+  cekRender();
 });
 
 onValue(angsuranRef, snap => {
-  dataAngsuran = snap.val() || {};
-  hitungSaldo();
+  dataAngsuran = {};
+  snap.forEach(d => { dataAngsuran[d.key] = d.val(); });
+  loaded.angsuran = true;
+  cekRender();
 });
 
-onValue(simpananRef, snap => {
-  dataSimpanan = snap.val() || {};
-  hitungSaldo();
+function cekRender(){
+  // tunggu kas, pinjaman, angsuran semua selesai load
+  if(loaded.kas && loaded.pinjaman && loaded.angsuran){
+    hitungSaldo();
+    renderDashboard();
+  }
+}
+onValue(angsuranRef, snap => {
+  dataAngsuran = {};
+  snap.forEach(d => { dataAngsuran[d.key] = d.val(); });
+  renderDashboard();
 });
 
-onValue(cairRef, snap => {
-  dataCair = snap.val() || {};
-  hitungSaldo();
-});
-
-/* ===== LOGIKA PERHITUNGAN SAMA PERSIS KAS.HTML ===== */
-
-  /* ===== HITUNG HANYA DARI KAS ===== */
+/* ===== HITUNG SALDO ===== */
 function hitungSaldo(){
+  saldoCash = Number(dataSaldoAwal.cash || 0);
+  saldoBank = Number(dataSaldoAwal.bank || 0);
 
-  saldoCash = 0;
-  saldoBank = 0;
+  Object.values(dataTransaksi).forEach(i => {
+    const jumlah = Number(i.jumlah || 0);
+    let tipe = String(i.tipe || i.jenis || "").toLowerCase();
+    const sumber = String(i.sumberKas || "cash").toLowerCase();
 
-  // saldo awal
-  const saldoAwal = dataKas.saldoAwal || {};
+    if(tipe === "biaya") tipe = "keluar";
 
-  saldoCash = Number(saldoAwal.cash || 0);
-  saldoBank = Number(saldoAwal.bank || 0);
-
-  // transaksi
-  const transaksi = dataKas.transaksi || {};
-
-  Object.values(transaksi).forEach(i => {
-
-    const jumlah =
-      Number(i.jumlah || 0);
-
-    let tipe =
-      String(
-        i.tipe ||
-        i.jenis ||
-        ""
-      ).toLowerCase();
-
-    const sumber =
-      String(
-        i.sumberKas || "cash"
-      ).toLowerCase();
-
-    // normalisasi
-    if(tipe === "biaya"){
-      tipe = "keluar";
-    }
-
-    // cash
     if(sumber === "cash"){
-
-      if(tipe === "masuk"){
-        saldoCash += jumlah;
-      }
-      else{
-        saldoCash -= jumlah;
-      }
-
+      saldoCash += tipe === "masuk"? jumlah : -jumlah;
     }
-
-    // bank
     if(sumber === "bank"){
-
-      if(tipe === "masuk"){
-        saldoBank += jumlah;
-      }
-      else{
-        saldoBank -= jumlah;
-      }
-
+      saldoBank += tipe === "masuk"? jumlah : -jumlah;
     }
-
   });
 
   updateDOM();
-
 }
-/* ===== UPDATE TAMPILAN ===== */
-/* ===== UPDATE TAMPILAN ===== */
+
 function updateDOM(){
-
   const totalSaldo = saldoCash + saldoBank;
+  
+  // Hitung total pinjaman dari dataPinjaman.jumlah
+  let totalPinjaman = 0;
+  Object.values(dataPinjaman).forEach(p => {
+    totalPinjaman += Number(p.jumlah || 0);
+  });
 
-  document.getElementById("saldoCash").innerText =
-    "Rp " + rupiah(saldoCash);
-
-  document.getElementById("saldoBank").innerText =
-    "Rp " + rupiah(saldoBank);
-
-  document.getElementById("saldoTotal").innerText =
-    "Rp " + rupiah(totalSaldo);
-
-  // SALDO KAS = TOTAL SALDO - SALDO AWAL
-  const saldoAwal =
-    Number(dataKas?.saldoAwal?.cash || 0) +
-    Number(dataKas?.saldoAwal?.bank || 0);
-
-  document.getElementById("saldoKas").innerText =
-    "Rp " + rupiah(totalSaldo - saldoAwal);
-
+  document.getElementById("saldoCash").innerText = rupiah(saldoCash);
+  document.getElementById("saldoBank").innerText = rupiah(saldoBank);
+  document.getElementById("saldoTotal").innerText = rupiah(totalSaldo);
+  document.getElementById("totalPinjaman").innerText = rupiah(totalPinjaman);
 }
 
 /* ===== ROLE MENU ===== */
 const role = localStorage.getItem("role");
-if(role !== "admin"){
+if(role!== "admin"){
   document.querySelectorAll(".menu-admin").forEach(el => {
     el.style.display = "none";
   });
@@ -607,18 +278,15 @@ if(role !== "admin"){
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username") || "User";
   const jam = new Date().getHours();
-  let salam = jam < 11 ? "Pagi" : jam < 15 ? "Siang" : jam < 18 ? "Sore" : "Malam";
-  
-  const el = document.getElementById("userDisplay");
-  if(el) el.innerHTML = `${salam}, <b>${username}</b>`;
+  let salam = jam < 11? "Pagi" : jam < 15? "Siang" : jam < 18? "Sore" : "Malam";
+  document.getElementById("userDisplay").innerHTML = `${salam}, <b>${username}</b>`;
 });
 
 /* ===== SIDEBAR ===== */
 window.toggleSidebar = function(){
-  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("sidebar").classList.toggle("active");
   document.getElementById("overlay").classList.toggle("active");
 };
-
 document.getElementById("overlay").addEventListener("click", toggleSidebar);
 
 /* ===== LOGOUT ===== */
@@ -628,364 +296,103 @@ document.getElementById("btnLogoutSide").addEventListener("click", () => {
     window.location.href = "index.html";
   }
 });
-</script>
-<div class="card">
-<h3>Top Peminjam</h3>
-<div id="topPeminjam" class="top-list"></div>
-</div>
 
-</div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getDatabase,
-  ref,
-  onValue
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-/* =========================
-   FIREBASE
-========================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
-  authDomain: "arfa-c7dee.firebaseapp.com",
-  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
-  projectId: "arfa-c7dee",
-  storageBucket: "arfa-c7dee.appspot.com",
-  messagingSenderId: "468058520812",
-  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-/* =========================
-   REF
-========================= */
-const kasRef = ref(db, "/kas");
-const pinjamanRef = ref(db, "/pinjaman");
-const angsuranRef = ref(db, "/angsuran");
-
-/* =========================
-   GLOBAL
-========================= */
-let dataPinjaman = {};
-let dataAngsuran = {};
-
-let chartAngsuran;
-let chartPelunasan;
-
-/* =========================
-   FORMAT RUPIAH
-========================= */
-function rupiah(n){
-  return Number(n || 0).toLocaleString(
-    "id-ID",
-    {
-      style: "currency",
-      currency: "IDR"
-    }
-  );
-}
-
-/* =========================
-   ROLE MENU
-========================= */
-const role = localStorage.getItem("role");
-
-if(role !== "admin"){
-  document.querySelectorAll(".menu-admin")
-    .forEach(el => {
-      el.style.display = "none";
-    });
-}
-
-if(role === "admin"){
-  document.getElementById("menuUser").style.display = "block";
-}
-
-/* =========================
-   USER DISPLAY
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-
-  const username =
-    localStorage.getItem("username");
-
-  const el =
-    document.getElementById("userDisplay");
-
-  const jam =
-    new Date().getHours();
-
-  let salam = "Halo";
-
-  if(jam < 11){
-    salam = "Pagi";
-  }
-  else if(jam < 15){
-    salam = "Siang";
-  }
-  else if(jam < 18){
-    salam = "Sore";
-  }
-  else{
-    salam = "Malam";
-  }
-
-  const isMobile =
-    window.innerWidth < 480;
-
-  if(isMobile){
-    el.innerHTML =
-      `👤 <b>${username || "User"}</b>`;
-  } else {
-    el.innerHTML =
-      `${salam}, <b>${username || "User"}</b>`;
-  }
-
-});
-
-
-/* =========================
-   LOGOUT
-========================= */
-document
-  .getElementById("btnLogoutSide")
-  .addEventListener(
-    "click",
-    logout
-  );
-
-function logout(){
-
-  if(confirm("Yakin ingin logout?")){
-
-    document.body.style.opacity = "0.5";
-
-    setTimeout(() => {
-
-      localStorage.removeItem("login");
-      localStorage.removeItem("username");
-      localStorage.removeItem("role");
-
-      window.location.href =
-        "index.html";
-
-    }, 300);
-
-  }
-
-}
-
-/* =========================
-   LOAD PINJAMAN
-========================= */
-onValue(pinjamanRef, snap => {
-
-  dataPinjaman = {};
-
-  snap.forEach(d => {
-    dataPinjaman[d.key] = d.val();
-  });
-
-  renderDashboard();
-
-});
-
-/* =========================
-   LOAD ANGSURAN
-========================= */
-onValue(angsuranRef, snap => {
-
-  dataAngsuran = {};
-
-  snap.forEach(d => {
-    dataAngsuran[d.key] = d.val();
-  });
-
-  renderDashboard();
-
-});
-
-/* =========================
-   RENDER DASHBOARD
-========================= */
+/* ===== RENDER DASHBOARD ===== */
 function renderDashboard(){
-
   grafikAngsuran();
   grafikPelunasan();
   topPeminjam();
-
 }
 
-/* =========================
-   GRAFIK ANGSURAN
-========================= */
+/* ===== GRAFIK ANGSURAN ===== */
 function grafikAngsuran(){
-
   let bulan = {};
+  Object.values(dataAngsuran).forEach(a => {
+    if(!a.tanggal) return;
+    const t = new Date(Number(a.tanggal));
+    const key = t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0");
+    bulan[key] = (bulan[key] || 0) + Number(a.jumlahBayar || a.pokok || 0);
+  });
 
-  Object.values(dataAngsuran)
-    .forEach(a => {
+  const labels = Object.keys(bulan).sort();
+  const data = labels.map(k => bulan[k]);
 
-      if(!a.tanggal) return;
-
-      const t =
-        new Date(a.tanggal);
-
-      const key =
-        t.getFullYear() +
-        "-" +
-        String(
-          t.getMonth() + 1
-        ).padStart(2, "0");
-
-      bulan[key] =
-        (bulan[key] || 0) +
-        Number(a.jumlah || 0);
-
-    });
-
-  const labels =
-    Object.keys(bulan);
-
-  const data =
-    Object.values(bulan);
-
-  if(chartAngsuran){
-    chartAngsuran.destroy();
-  }
-
-  chartAngsuran = new Chart(
-    document.getElementById("chartAngsuran"),
-    {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [{
-          label: "Angsuran",
-          data
-        }]
-      }
-    }
-  );
-
+  if(chartAngsuran) chartAngsuran.destroy();
+  chartAngsuran = new Chart(document.getElementById("chartAngsuran"),{
+    type:"bar",
+    data:{
+      labels,
+      datasets:[{
+        label:"Angsuran",
+        data,
+        backgroundColor:"#1e90ff"
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:true}
+  });
 }
 
-/* =========================
-   GRAFIK PELUNASAN
-========================= */
+/* ===== GRAFIK PELUNASAN ===== */
 function grafikPelunasan(){
-
   let labels = [];
   let data = [];
 
-  Object.entries(dataPinjaman)
-    .forEach(([pinId, p]) => {
+  Object.entries(dataPinjaman).forEach(([pinId,p])=>{
+    let totalPinjaman = Number(p.jumlah || 0) + Number(p.jasa || 0);
+    let totalAngsuran = 0;
 
-      let totalPinjaman =
-        Number(p.jumlah || 0);
-
-      let totalAngsuran = 0;
-
-      Object.values(dataAngsuran)
-        .forEach(a => {
-
-          if(a.pinjamanId === pinId){
-
-            totalAngsuran +=
-              Number(a.jumlah || 0);
-
-          }
-
-        });
-
-      const persen =
-        totalPinjaman
-        ? (totalAngsuran / totalPinjaman) * 100
-        : 0;
-
-      labels.push(p.nama || "-");
-      data.push(persen);
-
+    Object.values(dataAngsuran).forEach(a=>{
+      if(a.pinjamanId === pinId){
+        totalAngsuran += Number(a.jumlahBayar || a.pokok || 0);
+      }
     });
 
-  if(chartPelunasan){
-    chartPelunasan.destroy();
-  }
+    const persen = totalPinjaman? (totalAngsuran / totalPinjaman) * 100 : 0;
+    labels.push(p.nama || "-");
+    data.push(persen.toFixed(1));
+  });
 
-  chartPelunasan = new Chart(
-    document.getElementById("chartPelunasan"),
-    {
-      type: "line",
-      data: {
-        labels,
-        datasets: [{
-          label: "% Pelunasan",
-          data
-        }]
-      }
-    }
-  );
-
+  if(chartPelunasan) chartPelunasan.destroy();
+  chartPelunasan = new Chart(document.getElementById("chartPelunasan"),{
+    type:"line",
+    data:{
+      labels,
+      datasets:[{
+        label:"% Pelunasan",
+        data,
+        borderColor:"#0f3057",
+        tension:0.3
+      }]
+    },
+    options:{responsive:true,maintainAspectRatio:true}
+  });
 }
 
-/* =========================
-   TOP PEMINJAM
-========================= */
+/* ===== TOP PEMINJAM ===== */
 function topPeminjam(){
-
   let map = {};
+  Object.values(dataPinjaman).forEach(p=>{
+    const nama = p.nama || "Tanpa Nama";
+    map[nama] = (map[nama] || 0) + Number(p.jumlah || 0);
+  });
 
-  Object.values(dataPinjaman)
-    .forEach(p => {
+  const arr = Object.entries(map)
+   .map(([nama,jumlah])=>({nama,jumlah}))
+   .sort((a,b)=>b.jumlah - a.jumlah)
+   .slice(0,10);
 
-      const nama =
-        p.nama || "Tanpa Nama";
-
-      map[nama] =
-        (map[nama] || 0) +
-        Number(p.jumlah || 0);
-
-    });
-
-  const arr =
-    Object.entries(map)
-      .map(([nama, jumlah]) => ({
-        nama,
-        jumlah
-      }))
-      .sort((a,b) =>
-        b.jumlah - a.jumlah
-      )
-      .slice(0, 10);
-
-  let html =
-    arr.map((p,i) => `
-      <div class="top-item">
-        <span class="top-rank">${i+1}</span>
-        <span class="top-name">${p.nama}</span>
-        <span class="top-amount">
-          ${rupiah(p.jumlah)}
-        </span>
-      </div>
-    `).join("");
+  let html = arr.map((p,i)=>`
+    <div class="top-item">
+      <span class="top-rank">${i+1}</span>
+      <span class="top-name">${p.nama}</span>
+      <span class="top-amount">${rupiah(p.jumlah)}</span>
+    </div>
+  `).join("");
 
   if(!html){
-    html = `
-      <div class="top-empty">
-        Tidak ada anggota
-      </div>
-    `;
+    html = `<div class="top-empty">Tidak ada anggota</div>`;
   }
-
-  document.getElementById(
-    "topPeminjam"
-  ).innerHTML = html;
-
+  document.getElementById("topPeminjam").innerHTML = html;
 }
 </script>
 </body>

@@ -1,20 +1,21 @@
-<!DOCTYPE html>  
-<html lang="id">    
-<head>    
-<meta charset="UTF-8">    
-<meta name="viewport" content="width=device-width, initial-scale=1.0">    
-<title>Angsuran Pinjaman</title>  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  <style>    
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angsuran Pinjaman</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 :root{
 --primary:#1e88e5;--text:#333;--muted:#666;--border:#e0e0e0;
 --bg:#f5f7fb;--card:#fff;--success:#43a047;--danger:#e53935;
 --warning:#f59e0b;
 }
-
 html,body{margin:0;padding:0;overflow-x:hidden;}
 body{background:var(--bg);color:var(--text);font-size:12px;padding-bottom:15px;}
-
-/* ===== HEADER ===== */
 header{
 background:var(--primary);color:white;padding:10px 14px;display:flex;
 justify-content:space-between;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,0.1);
@@ -25,8 +26,6 @@ position:sticky;top:0;z-index:1000;
 .brand-text.subtitle{font-size:9px;opacity:0.9;}
 .brand-text.title{font-size:12px;font-weight:700;}
 .menu-btn{font-size:22px;cursor:pointer;background:transparent;border:none;color:#fff;padding:0;}
-
-/* ===== SIDEBAR ===== */
 .sidebar{
 position:fixed;top:0;left:-240px;width:220px;height:100%;background:#0d47a1;
 padding:16px;transition:.3s;z-index:99999;overflow-y:auto;
@@ -41,30 +40,19 @@ border-bottom:1px solid rgba(255,255,.1);font-size:13px;
 .divider{height:12px;}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9999;}
 .overlay.active{display:block;}
-
-/* ===== CONTAINER ===== */
 .container{padding:12px;max-width:1200px;margin:0 auto;}
 .page-title{margin-bottom:12px;color:#0d47a1;font-size:14px;font-weight:700;text-align:center;}
-
-/* ===== CARD ===== */
 .card{
 background:var(--card);padding:12px;border-radius:12px;margin-bottom:12px;
 box-shadow:0 2px 6px rgba(0,0,0,0.06);border:1px solid var(--border);
 }
 .header{display:flex;align-items:center;gap:6px;margin-bottom:12px;color:var(--primary);}
 .header h2{font-size:13px;font-weight:700;}
-
-/* ===== SALDO GRID ===== */
 .saldo-container{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
 .saldo-box{padding:12px;border-radius:10px;color:#fff;text-align:center;}
 .saldo-box h3{font-size:11px;margin-bottom:6px;font-weight:500;}
 .saldo-box p{font-size:16px;font-weight:700;}
 .bg-awal{background:#1e88e5;}
-.bg-masuk{background:#1e88e5;}
-.bg-keluar{background:#1e88e5;}
-.bg-akhir{background:#1e88e5;}
-
-/* ===== FORM ===== */
 .form-group{margin-bottom:10px;}
 .form-group label{display:block;margin-bottom:4px;font-size:11px;font-weight:600;color:var(--muted);}
 input,select{
@@ -72,70 +60,23 @@ width:100%;padding:9px;border:1px solid var(--border);border-radius:8px;
 outline:none;font-size:12px;font-family:'Poppins',sans-serif;
 }
 input:focus,select:focus{border-color:var(--primary);}
-input:disabled{background:#f5;color:var(--muted);cursor:not-allowed;}
-
-/* ===== INFO BOX ===== */
+input:disabled{background:#f5f5f5;color:var(--muted);cursor:not-allowed;}
 .info-box{
 background:#e3f2fd;border:1px solid #bbdefb;border-radius:8px;
 padding:10px;margin-bottom:10px;display:none;
 }
 .info-box.active{display:block;}
-.info-box h4{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:6px;}
 .info-row{display:flex;justify-content:space-between;margin-bottom:6px;font-size:11px;}
-.info-row:last-child{margin-bottom:0;}
-.info-row .label{
-color:var(--muted);
-}
-
-.info-row .value{
-font-weight:700;
-color:var(--text);
-}
-/* ===== BUTTON ===== /
-/ ===== BUTTON ===== */
-.btn-group{
-display:flex;
-gap:8px;
-margin-top:10px;
-flex-wrap:wrap;
-}
-
-.btn-group button{
-flex:1;
-min-width:110px;
-}
+.info-row.label{color:var(--muted);}
+.info-row.value{font-weight:700;color:var(--text);}
+.btn-group{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.btn-group button{flex:1;min-width:110px;padding:9px;border-radius:8px;border:1px solid;background:transparent;cursor:pointer;font-weight:600;}
 button:active{transform:scale(0.97);}
 button:disabled{border-color:#e0e0e0!important;color:#bdbd!important;cursor:not-allowed;opacity:0.5;}
-
-#btnSimpan{
-border-color:var(--success);color:var(--success);
-}
-#btnSimpan:hover:not(:disabled){
-background:rgba(67,160,71,0.08);
-}
-
-#btnNota{
-border-color:var(--warning);color:var(--warning);
-}
-#btnNota:hover:not(:disabled){
-background:rgba(245,158,11,0.08);
-}
-
-#btnWA{
-border-color:#25d366;color:#25d366;
-}
-#btnWA:hover:not(:disabled){
-background:rgba(37,211,102,0.08);
-}
-
-.btn-tampil{
-border-color:#673ab7;color:#673ab7;width:100%;margin-top:8px;
-background:transparent;
-}
-.btn-tampil:hover{
-background:rgba(103,58,183,0.08);
-}
-/* ===== LIST ===== */
+#btnSimpan{border-color:var(--success);color:var(--success);}
+#btnNota{border-color:var(--warning);color:var(--warning);}
+#btnWA{border-color:#25d366;color:#25d366;}
+.btn-tampil{border-color:#673ab7;color:#673ab7;width:100%;margin-top:8px;background:transparent;padding:9px;border-radius:8px;cursor:pointer;font-weight:600;}
 .list{display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto;}
 .item{border:1px solid var(--border);border-radius:8px;padding:10px;background:#fafafa;}
 .item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
@@ -144,245 +85,228 @@ background:rgba(103,58,183,0.08);
 .item-jumlah{font-weight:700;color:var(--success);font-size:13px;}
 .item-ket{font-size:11px;margin-bottom:3px;color:var(--text);}
 .item-waktu{font-size:10px;color:var(--muted);}
-
-/* ===== MODAL ===== */
-.modal{
-position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;
-justify-content:center;align-items:center;z-index:99999;
-}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:99999;}
 .modal.show{display:flex;}
-.modal-content{
-background:#fff;width:95%;max-width:700px;border-radius:12px;overflow:hidden;
-max-height:85vh;display:flex;flex-direction:column;
-}
-.modal-header{
-background:var(--primary);color:#fff;padding:12px;display:flex;
-justify-content:space-between;align-items:center;
-}
+.modal-header{background:var(--primary);color:#fff;padding:12px;display:flex;justify-content:space-between;align-items:center;}
 .modal-header h3{font-size:14px;}
-.btn-close{
-background:none;color:#fff;padding:0;width:28px;height:28px;
-display:flex;align-items:center;justify-content:center;border-radius:6px;
-}
+.btn-close{background:none;color:#fff;padding:0;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px;border:none;cursor:pointer;}
 .table-wrap{overflow:auto;padding:12px;}
 table{width:100%;border-collapse:collapse;font-size:11px;}
 th{background:var(--primary);color:#fff;padding:8px;text-align:left;font-weight:600;}
 td{border:1px solid var(--border);padding:8px;text-align:center;}
 tbody tr:nth-child(even){background:#f8fafc;}
-
-/* ===== TOAST ===== */
 .toast{
 position:fixed;bottom:15px;right:15px;background:var(--success);color:#fff;
 padding:10px 14px;border-radius:8px;opacity:0;transform:translateY(15px);
-transition:.3s;z-index:999999;font-size:12px;font-weight:600;
+transition:.3s;z-index:999;font-size:12px;font-weight:600;
 box-shadow:0 3px 10px rgba(0,0,0,0.15);
 }
-
 .toast.show{opacity:1;transform:translateY(0);}
 .toast.error{background:var(--danger);}
-
-/* ===== MOBILE ===== */
-
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:10px;color:#fff;margin-top:4px;}
+.badge.cash{background:#43a047;}
+.badge.bank{background:#1e88e5;}
 @media(max-width:768px){
 body{font-size:11px;}
 .saldo-container{grid-template-columns:1fr;}
-.btn-group{grid-template-columns:1fr;}
-.brand img{width:28px;height:28px;}
-.brand-text.title{font-size:11px;}
-.brand-text.subtitle{font-size:8px;}
-.page-title{font-size:13px;}
-.header h2{font-size:12px;}
-.saldo-box p{font-size:15px;}
-.saldo-box h3{font-size:10px;}
-button{font-size:11px;padding:9px;}
-table{font-size:10px;}
-th,td{padding:6px 4px;}
-input,select{font-size:11px;padding:8px;}
-.form-group label{font-size:10px;}
+.btn-group{flex-direction:column;}
 }
-#pinjamanSelect{font-size:11px;}
-.badge{
-display:inline-block;
-padding:3px 8px;
-border-radius:20px;
-font-size:10px;
-color:#fff;
-margin-top:4px;
+  .modal-content{
+  background:#fff;
+  width:95%;
+  max-width:700px;
+  border-radius:12px;
+  overflow:hidden; /* biar sudutnya ttp bulat */
+  max-height:85vh;
+  display:flex;
+  flex-direction:column;
 }
 
-.badge.cash{
-background:#43a047;
+.modal-content > div[style*="padding:12px"]{
+  overflow-y:auto;
+  -webkit-overflow-scrolling: touch; /* biar smooth di iOS/Android */
 }
-
-.badge.bank{
-background:#1e88e5;
-}
-
-  </style>    
-</head>    
-<body>   
-  <!-- SIDEBAR -->    
-  <div id="sidebar" class="sidebar">    
-  <h3>Menu</h3>    
-    
-    <a href="anggota.html">👤 Anggota</a>  
-<a href="main.html">💰 Kas</a>  
-<a href="simpanan.html">📄 Simpanan</a>  
-<a href="pinjaman.html">💳 Pinjaman</a>  
-<a href="angsuran.html">📑 Angsuran</a>    <div class="divider"></div>  <a href="backup.html">📦 Backup</a>  
-<a href="laporan.html">📊 Laporan</a>    <div class="divider"></div>  <a href="user.html">👤 Kelola User</a>  
-<a href="dash.html">🚪 Logout</a>  
-</div>      
-  <div id="overlay" class="overlay"></div> 
-  
-  <header>    
-    <div class="brand">    
-    <img src="img/icon-192.png">  
-    <div class="brand-text">    
-  <div class="subtitle">Koperasi</div>    
-  <div class="title">ARFA</div>    
-</div>    
-  <h3>ANGSURAN</h3>    
-<span class="menu-btn" onclick="toggleSidebar()">☰</span>  
-</header>  
-
-    <!-- RIWAYAT -->    
-<button class="btn-tampil" onclick="toggleRiwayat()" id="btnTampil">    
-  <span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:6px;">visibility</span>    
-  Lihat Riwayat Angsuran    
-</button>    <div class="list" id="listTransaksi" style="display:none;margin-top:12px;"></div> 
-    
-    <!-- STAT -->
-
-<div class="card">    
-    <div class="saldo-container">  <div class="saldo-box bg-awal">    
-    <h3>Angsuran Aktif</h3>    
-    <p id="statAktif">0</p>    
-  </div>     
-      
-      <div class="saldo-box bg-masuk">    
-    <h3>Total Pinjaman</h3>   
-        
-    <p id="statPinjaman">Rp0</p>    
-  </div>     
-      
-      <div class="saldo-box bg-keluar">    
-    <h3>Total Sisa</h3>    
-    <p id="statSisa">Rp0</p>    
-  </div>      
-      
-      <div class="saldo-box bg-akhir">    
-  <h3>Pendapatan Lain</h3>    
-  <p id="statLain">Rp0</p>    
+</style>
+</head>
+<body>
+<div id="sidebar" class="sidebar">
+<h3>Menu</h3>
+<a href="anggota.html">👤 Anggota</a>
+<a href="kas.html">💰 Kas</a>
+<a href="simpanan.html">📄 Simpanan</a>
+<a href="pinjaman.html">💳 Pinjaman</a>
+<a href="angsuran.html">📑 Angsuran</a>
+<div class="divider"></div>
+<a href="backup.html">📦 Backup</a>
+<a href="laporan.html">📊 Laporan</a>
+<div class="divider"></div>
+<a href="user.html">👤 Kelola User</a>
+<a href="dash.html">🚪 Logout</a>
 </div>
-      
-      <div class="saldo-box bg-akhir">    
-    <h3>Total Jasa</h3>    
-    <p id="statJasa">Rp0</p>    
-  </div>    
-</div>  
-  </div>      
-<!-- FORM -->      
-<div class="card">    
-  <div class="header">    
-  <span class="material-icons">receipt_long</span>    
-  <h2>Input Angsuran</h2>    
-</div>    
-  
-  <div class="form-group">    
-  <label>Pilih Peminjam</label>    
-  <select id="pinjamanSelect"></select>    
-</div>    
-  
-  <div class="form-group">    
-  <label>Tanggal Bayar</label>    
-  <input type="date" id="tanggal">    
-</div>   
-  
-  <div class="form-group">    
-  <label>Metode</label>      <select id="metode">    
-    <option value="cash">Cash</option>    
-    <option value="bank">Bank</option>    
-  </select>    
-</div>   
-  
-  <div class="form-group">    
-  <label>Bayar Pokok</label>    
-  <input type="text" id="jumlah" placeholder="Rp 0">    
-</div>   
-  
-  <div class="form-group">    
-  <label>Bayar Jasa</label>    
-  <input type="text" id="jasa" placeholder="Rp 0">    
-</div>  
-  
-  <div class="form-group">    
-  <label>Pendapatan Lain</label>    
-  <input type="text" id="lain" placeholder="Rp 0">    
+<div id="overlay" class="overlay"></div>
+
+<header>
+<div class="brand">
+<img src="img/icon-192.png">
+<div class="brand-text">
+<div class="subtitle">Koperasi</div>
+<div class="title">ARFA</div>
 </div>
-  <div id="infoBox" class="info-box">
-
-    
-  <div class="info-row">
-    <span class="label">Total Dibayar</span>
-    <span class="value" id="totalBayar">Rp0</span>
-  </div>
-
-  <div class="info-row">
-    <span class="label">Kelebihan Bayar</span>
-    <span class="value" id="kelebihanBayar">Rp0</span>
-  </div>
-
-  <div class="info-row">
-    <span class="label">Progress</span>
-    <span class="value" id="progressBayar">0%</span>
-  </div>
-
+<h3>ANGSURAN</h3>
 </div>
-  <div class="btn-group">    
-  <button id="btnSimpan">Simpan Angsuran</button>    
-  <button id="btnNota" disabled>Cetak Nota</button>    
-  <button id="btnWA" disabled>Kirim WA</button>    
-</div>  
-<!-- RIWAYAT -->   
-  
-  <!-- MODAL -->   
-  
-  <div id="modalData" class="modal">    <div class="modal-content">  <div class="modal-header">      <h3>Data Angsuran</h3>      <button class="btn-close" onclick="tutupModal()">    
-    <span class="material-icons">close</span>    
-  </button>   
-    </div>   
-    
-    <div class="table-wrap">      <table>    <thead>    
-  <tr>    
-    <th>Tanggal</th>    
-    <th>Pokok</th>    
-    <th>Jasa</th>    
-    <th>Total</th>    
-    <th>Metode</th>    
-  </tr>    
-</thead>    
+<span class="menu-btn" onclick="toggleSidebar()">☰</span>
+</header>
 
-<tbody id="tableDataAngsuran"></tbody>
+<button class="btn-tampil" onclick="toggleRiwayat()" id="btnTampil">
+<span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:6px;">visibility</span>
+Lihat Riwayat Angsuran
+</button>
+<div class="list" id="listTransaksi" style="display:none;margin-top:12px;"></div>
 
-  </table>   
-    </div>    
-</div>    
-</div>  
-  <div id="toast" class="toast"></div>    
-  </body>    
-</html>  <script type="module">
+<div class="card">
+<div class="saldo-container">
+<div class="saldo-box bg-awal">
+<h3>Angsuran Aktif</h3>
+<p id="statAktif">0</p>
+</div>
+<div class="saldo-box bg-awal">
+<h3>Total Pinjaman</h3>
+<p id="statPinjaman">Rp0</p>
+</div>
+<div class="saldo-box bg-awal">
+<h3>Total Sisa</h3>
+<p id="statSisa">Rp0</p>
+</div>
+<div class="saldo-box bg-awal">
+<h3>Sisa jasa</h3>
+<p id="statLain">Rp0</p>
+</div>
+<div class="saldo-box bg-awal">
+<h3>Total Jasa</h3>
+<p id="statJasa">Rp0</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="header">
+<span class="material-icons">receipt_long</span>
+<h2>Input Angsuran</h2>
+</div>
+
+<div class="form-group">
+<label>Pilih Peminjam</label>
+<select id="pinjamanSelect"></select>
+</div>
+
+<div class="form-group">
+<label>Tanggal Bayar</label>
+<input type="date" id="tanggal">
+</div>
+
+<div class="form-group">
+<label>Metode</label>
+<select id="metode">
+<option value="" disabled selected>Pilih metode</option>
+<option value="cash">Cash</option>
+<option value="bank">Bank</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Bayar Pokok</label>
+<input type="text" id="jumlah" placeholder="Rp 0">
+</div>
+
+<div class="form-group">
+<label>Bayar Jasa</label>
+<input type="text" id="jasa" placeholder="Rp 0">
+</div>
+
+<div class="form-group">
+<label>Sisa Jasa</label>
+<input type="text" id="lain" placeholder="Rp 0">
+</div>
+
+<div id="infoBox" class="info-box">
+<div class="info-row">
+<span class="label">Total Dibayar</span>
+<span class="value" id="totalBayar">Rp0</span>
+</div>
+<div class="info-row">
+<span class="label">Kelebihan Bayar</span>
+<span class="value" id="kelebihanBayar">Rp0</span>
+</div>
+<div class="info-row">
+<span class="label">Progress</span>
+<span class="value" id="progressBayar">0%</span>
+</div>
+</div>
+
+<div class="btn-group">
+<button id="btnSimpan">Simpan Angsuran</button>
+<button id="btnNota" disabled>Cetak Nota</button>
+<button id="btnWA" disabled>Kirim WA</button>
+</div>
+</div>
+
+<div id="modalEditAngsuran" class="modal">
+<div class="modal-content">
+<div class="modal-header">
+<h3>Edit Angsuran</h3>
+<button class="btn-close" onclick="tutupEditAngsuran()">
+<span class="material-icons">close</span>
+</button>
+</div>
+<div style="padding:12px;">
+<input type="hidden" id="editAngsuranId">
+<div class="form-group">
+<label>Nama Anggota</label>
+<input type="text" id="editAngsuranNama" disabled>
+</div>
+<div class="form-group">
+<label>Tanggal Bayar</label>
+<input type="date" id="editAngsuranTanggal">
+</div>
+<div class="form-group">
+<label>Metode</label>
+<select id="editAngsuranMetode">
+<option value="cash">Cash</option>
+<option value="bank">Bank</option>
+</select>
+</div>
+<div class="form-group">
+<label>Bayar Pokok</label>
+<input type="text" id="editAngsuranPokok" placeholder="Rp 0">
+</div>
+<div class="form-group">
+<label>Bayar Jasa</label>
+<input type="text" id="editAngsuranJasa" placeholder="Rp 0">
+</div>
+<div class="form-group">
+<label>Sisa Jasa</label>
+<input type="text" id="editAngsuranLain" placeholder="Rp 0">
+</div>
+<div class="btn-group">
+<button id="btnUpdateAngsuran" style="border-color:var(--primary);color:var(--primary);">Update</button>
+<button id="btnHapusAngsuran" style="border-color:var(--danger);color:var(--danger);">Hapus</button>
+<button onclick="tutupEditAngsuran()">Batal</button>
+</div>
+</div>
+</div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
   authDomain: "arfa-c7dee.firebaseapp.com",
   databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
-  projectId: "arfa-c7dee",
-  storageBucket: "arfa-c7dee.firebasestorage.app",
-  messagingSenderId: "468058520812",
-  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+  projectId: "arfa-c7dee"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -400,23 +324,15 @@ window.toggleSidebar = function(){
 }
 document.getElementById("overlay").onclick = toggleSidebar;
 
-if(role!== "admin"){
-  document.querySelectorAll(".menu-admin").forEach(el=>el.style.display="none");
-}
-
-window.logout = function(){
-  if(confirm("Yakin ingin logout?")){
-    localStorage.clear();
-    window.location.href = "index.html";
-  }
-}
-
 const pinjamanRef = ref(db,"/pinjaman");
 const angsuranRef = ref(db,"/angsuran");
 const kasRef = ref(db,"/kas/transaksi");
+const saldoAwalRef = ref(db,"/kas/saldoAwal");
 
 let dataPinjaman = {};
 let dataAngsuran = {};
+let dataSaldoAwal = {};
+let dataTransaksi = {};
 let pinIdAktif = null;
 window.angsuranTerakhirId = null;
 
@@ -450,6 +366,19 @@ function formatRupiahInput(v){
   return rupiah? 'Rp ' + rupiah : '';
 }
 
+function formatRupiahInputNoRp(v){
+  let number_string = v.replace(/[^,\d]/g, '').toString();
+  let split = number_string.split(',');
+  let sisa = split[0].length % 3;
+  let rupiah = split[0].substr(0, sisa);
+  let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+  if(ribuan){
+    let separator = sisa? '.' : '';
+    rupiah += separator + ribuan.join('.');
+  }
+  return rupiah;
+}
+
 function showToast(msg,error=false){
   const toast = document.getElementById("toast");
   toast.innerText = msg;
@@ -460,7 +389,9 @@ function showToast(msg,error=false){
 onValue(pinjamanRef,snap=>{
   dataPinjaman = {};
   snap.forEach(d=>{
-    dataPinjaman[d.key] = d.val();
+    let p = d.val();
+    p.id = d.key;
+    dataPinjaman[d.key] = p;
   });
   pinjamanLoaded = true;
   if(pinjamanLoaded && angsuranLoaded){
@@ -474,16 +405,15 @@ onValue(angsuranRef,snap=>{
   dataAngsuran = {};
   snap.forEach(d=>{
     let a = d.val();
+    a.id = d.key;
     a.pokok = Number(a.pokok || a.jumlah || 0);
     a.jasa = Number(a.jasa || 0);
     a.kelebihanBayar = Number(a.kelebihanBayar || 0);
-
     if(a.tanggal && typeof a.tanggal === "string"){
       let t = new Date(a.tanggal);
       if(!isNaN(t)) a.tanggal = t.getTime();
     }
     if(!a.tanggal) a.tanggal = Date.now();
-
     dataAngsuran[d.key] = a;
   });
   angsuranLoaded = true;
@@ -495,11 +425,58 @@ onValue(angsuranRef,snap=>{
   }
 });
 
+onValue(saldoAwalRef, snap => {
+  dataSaldoAwal = snap.val() || {};
+  hitungSaldoKas();
+});
+
+onValue(ref(db, "kas/transaksi"), snap => {
+  dataTransaksi = snap.val() || {};
+  hitungSaldoKas();
+});
+
+function hitungSaldoKas(){
+  let saldoCash = Number(dataSaldoAwal.cash || 0);
+  let saldoBank = Number(dataSaldoAwal.bank || 0);
+  Object.values(dataTransaksi).forEach(k => {
+    let jumlah = Number(k.jumlah || 0);
+    let tipe = (k.tipe || "").toLowerCase();
+    let sumber = (k.sumberKas || "cash").toLowerCase();
+    if(tipe === "biaya") tipe = "keluar";
+    if(sumber === "cash"){
+      if(tipe === "masuk") saldoCash += jumlah;
+      else saldoCash -= jumlah;
+    }
+    if(sumber === "bank"){
+      if(tipe === "masuk") saldoBank += jumlah;
+      else saldoBank -= jumlah;
+    }
+  });
+}
+
+function getSisaPinjaman(pinjamanId){
+  let p = dataPinjaman[pinjamanId];
+  if(!p) return {pinjaman:0,angsuran:0,sisa:0};
+  let jasa = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
+  let totalPinjaman = Number(p.jumlah || 0) + jasa;
+  let totalAngsuran = 0;
+  Object.values(dataAngsuran).forEach(a=>{
+    if(a.pinjamanId === pinjamanId){
+      totalAngsuran += Number(a.jumlahBayar || a.pokok || 0);
+    }
+  });
+  let sisa = totalPinjaman - totalAngsuran;
+  return {
+    pinjaman : totalPinjaman,
+    angsuran : totalAngsuran,
+    sisa : sisa > 0? sisa : 0
+  };
+}
+
 function loadPinjaman(){
   const select = document.getElementById("pinjamanSelect");
   let html = `<option value="">Pilih Peminjam</option>`;
   const listAktif = [];
-
   Object.entries(dataPinjaman).forEach(([id,p])=>{
     let info = getSisaPinjaman(id);
     if(info.sisa > 0){
@@ -511,9 +488,7 @@ function loadPinjaman(){
       });
     }
   });
-
   listAktif.sort((a,b)=> a.nama.localeCompare(b.nama));
-
   if(listAktif.length === 0){
     html += `<option value="">Semua pinjaman sudah lunas</option>`;
   } else {
@@ -521,29 +496,7 @@ function loadPinjaman(){
       html += `<option value="${item.id}">${item.nama} - ${item.nomor} • Sisa: ${rupiah(item.sisa)}</option>`;
     });
   }
-
   select.innerHTML = html;
-}
-
-function getSisaPinjaman(pinjamanId){
-  let p = dataPinjaman[pinjamanId];
-  if(!p) return {pinjaman:0,angsuran:0,sisa:0};
-
-  let totalPinjaman = Number(p.totalPinjaman || p.nominal || p.pinjaman || p.jumlah || p.total || 0);
-  let totalAngsuran = 0;
-
-  Object.values(dataAngsuran).forEach(a=>{
-    if(a.pinjamanId === pinjamanId){
-      totalAngsuran += Number(a.pokok || 0);
-    }
-  });
-
-  let sisa = totalPinjaman - totalAngsuran;
-  return {
-    pinjaman : totalPinjaman,
-    angsuran : totalAngsuran,
-    sisa : sisa > 0? sisa : 0
-  };
 }
 
 function hitungStatistik(){
@@ -552,7 +505,6 @@ function hitungStatistik(){
   let totalSisa = 0;
   let totalJasa = 0;
   let totalLain = 0;
-
   Object.keys(dataPinjaman).forEach(pinId=>{
     let info = getSisaPinjaman(pinId);
     if(Math.round(info.sisa) > 0){
@@ -561,12 +513,10 @@ function hitungStatistik(){
       totalSisa += info.sisa;
     }
   });
-
   Object.values(dataAngsuran).forEach(a=>{
     totalJasa += Number(a.jasa || 0);
     totalLain += Number(a.kelebihanBayar || 0);
   });
-
   document.getElementById("statAktif").innerText = aktif;
   document.getElementById("statPinjaman").innerText = rupiah(totalPinjamanAktif);
   document.getElementById("statSisa").innerText = rupiah(totalSisa);
@@ -585,41 +535,23 @@ function pilihPinjaman(){
     document.getElementById("lain").value = "";
     return;
   }
-
   const p = dataPinjaman[pinIdAktif];
   let info = getSisaPinjaman(pinIdAktif);
-
-  let pokokDefault = Number(p.angsuranPokok || p.pokok || p.cicilan || p.angsuran || 0);
-  if(pokokDefault <= 0) pokokDefault = info.sisa;
-
+  let pokokDefault = info.sisa;
   document.getElementById("jumlah").value = pokokDefault > 0? formatRupiahInput(String(pokokDefault)) : "";
-
-  let jasaDefault = Number(p.jasa || p.besarJasa || p.nilaiJasa || p.jasaBulanan || 0);
-  document.getElementById("jasa").value = jasaDefault > 0? formatRupiahInput(String(jasaDefault)) : "";
-
+  document.getElementById("jasa").value = "";
   if(Math.round(info.sisa) <= 0){
-  showToast("Pinjaman " + p.nama + " sudah LUNAS", true);
-  document.getElementById("btnSimpan").disabled = true;
-  document.getElementById("btnNota").disabled = true;
-  document.getElementById("btnWA").disabled = true;
-  document.getElementById("infoBox").classList.add("active");
-
-  const totalEl = document.getElementById("totalBayar");
-  const progressEl = document.getElementById("progressBayar");
-  const kelebihanEl = document.getElementById("kelebihanBayar");
-
-  if(totalEl) totalEl.innerText = rupiah(info.angsuran);
-  if(progressEl) progressEl.innerText = "100% - LUNAS";
-  if(kelebihanEl) kelebihanEl.innerText = rupiah(0);
-  return;
-}
-
+    showToast("Pinjaman " + p.nama + " sudah LUNAS", true);
+    document.getElementById("btnSimpan").disabled = true;
+    document.getElementById("btnNota").disabled = true;
+    document.getElementById("btnWA").disabled = true;
+    return;
+  }
   document.getElementById("infoBox").classList.add("active");
   document.getElementById("btnSimpan").disabled = false;
   document.getElementById("btnNota").disabled = true;
   document.getElementById("btnWA").disabled = true;
   window.angsuranTerakhirId = null;
-
   updateInfoBayar();
 }
 
@@ -629,119 +561,82 @@ document.getElementById("pinjamanSelect").onchange = function(){
 };
 
 function updateInfoBayar(){
-
   let pokok = getNumber(document.getElementById("jumlah").value);
   let jasa = getNumber(document.getElementById("jasa").value);
   let lain = getNumber(document.getElementById("lain").value);
-
   let total = pokok + jasa + lain;
-
-  let kelebihan = 0;
   let progress = 0;
-
   if(pinIdAktif && dataPinjaman[pinIdAktif]){
-
     let info = getSisaPinjaman(pinIdAktif);
-
     let pokokYangDibayar = Math.min(pokok, info.sisa);
-
     if(info.pinjaman > 0){
-      progress = Math.round(
-        ((info.angsuran + pokokYangDibayar) / info.pinjaman) * 100
-      );
-
+      progress = Math.round(((info.angsuran + pokokYangDibayar) / info.pinjaman) * 100);
       if(progress > 100) progress = 100;
     }
   }
-
   document.getElementById("totalBayar").innerText = rupiah(total);
-
   document.getElementById("kelebihanBayar").innerText = rupiah(lain);
-
   document.getElementById("progressBayar").innerText = progress + "%";
 }
-    
-    
-document.getElementById("btnSimpan").onclick = async function(){
 
+document.getElementById("btnSimpan").onclick = async function(){
   if(role!=="admin"){
     showToast("Hanya admin yang bisa menambah angsuran", true);
     return;
   }
-
   if(!pinIdAktif){
     return showToast("Pilih peminjam!", true);
   }
-
   try {
-
     let tanggalInput = document.getElementById("tanggal").value;
-
     let pokok = getNumber(document.getElementById("jumlah").value);
-
     let jasa = getNumber(document.getElementById("jasa").value) || 0;
-
     let lain = getNumber(document.getElementById("lain").value) || 0;
-
     let metode = document.getElementById("metode").value;
-
     if (!tanggalInput) return showToast("Isi tanggal!", true);
-
-    if (!metode) return showToast("Pilih metode!", true);
-
+    if (!metode) return showToast("Pilih metode pembayaran!", true);
     if (!pokok || pokok <= 0){
       return showToast("Pokok harus > 0!", true);
     }
-
     let p = dataPinjaman[pinIdAktif];
-
     let info = getSisaPinjaman(pinIdAktif);
-
     let totalBayar = pokok + jasa + lain;
-
     if(pokok > info.sisa){
       return showToast("Pokok melebihi sisa pinjaman!", true);
     }
-
     let tanggal = new Date(tanggalInput).getTime();
-
-    /* KAS POKOK */
-let kasPush = await push(kasRef, {
-  tanggal,
-  keterangan: "Angsuran Pokok " + p.nama + " (" + p.nomor + ")",
-  tipe: "masuk",
-  sumberKas: metode,
-  jumlah: pokok,
-  kategori: "pokok"
-});
-
-/* KAS JASA */
-if(jasa > 0){
-
-  await push(kasRef, {
-    tanggal,
-    keterangan: "Jasa Pinjaman " + p.nama + " (" + p.nomor + ")",
-    tipe: "masuk",
-    sumberKas: metode,
-    jumlah: jasa,
-    kategori: "jasa"
-  });
-
-}
-
-/* KAS PENDAPATAN LAIN */
-if(lain > 0){
-
-  await push(kasRef, {
-    tanggal,
-    keterangan: "Pendapatan Lain " + p.nama + " (" + p.nomor + ")",
-    tipe: "masuk",
-    sumberKas: metode,
-    jumlah: lain,
-    kategori: "pendapatan_lain"
-  });
-
-}
+    let kasPush = await push(kasRef, {
+      tanggal,
+      keterangan: "Angsuran Pokok " + p.nama + " (" + p.nomor + ")",
+      tipe: "masuk",
+      sumberKas: metode,
+      jumlah: pokok,
+      kategori: "pokok"
+    });
+    let kasJasaKey = null;
+    let kasLainKey = null;
+    if(jasa > 0){
+      let kasJasa = await push(kasRef, {
+        tanggal,
+        keterangan: "Jasa Pinjaman " + p.nama + " (" + p.nomor + ")",
+        tipe: "masuk",
+        sumberKas: metode,
+        jumlah: jasa,
+        kategori: "jasa"
+      });
+      kasJasaKey = kasJasa.key;
+    }
+    if(lain > 0){
+      let kasLain = await push(kasRef, {
+        tanggal,
+        keterangan: "Pendapatan Lain " + p.nama + " (" + p.nomor + ")",
+        tipe: "masuk",
+        sumberKas: metode,
+        jumlah: lain,
+        kategori: "pendapatan_lain"
+      });
+      kasLainKey = kasLain.key;
+    }
     let angPush = await push(angsuranRef, {
       pinjamanId: pinIdAktif,
       nama: p.nama,
@@ -751,160 +646,167 @@ if(lain > 0){
       kelebihanBayar: lain,
       jumlahBayar: totalBayar,
       metode,
-      kasId: kasPush.key
+      kasId: kasPush.key,
+      kasIdJasa: kasJasaKey,
+      kasIdLain: kasLainKey
     });
-
     window.angsuranTerakhirId = angPush.key;
-
     document.getElementById("btnNota").disabled = false;
     document.getElementById("btnWA").disabled = false;
-
     showToast("Berhasil ✅");
-
     document.getElementById("jumlah").value = "";
     document.getElementById("jasa").value = "";
     document.getElementById("lain").value = "";
-
     updateInfoBayar();
-
   } catch (err) {
-
     showToast("Gagal: " + err.message, true);
-
+    console.error(err);
   }
 };
 
-document.getElementById("btnNota").onclick = function(){
-  if(!window.angsuranTerakhirId) return showToast("Simpan angsuran dulu!", true);
-  cetakNotaAngsuran(window.angsuranTerakhirId);
-  showToast("Nota berhasil dicetak");
-};
-
-document.getElementById("btnWA").onclick = function(){
-  if(!window.angsuranTerakhirId) return showToast("Simpan angsuran dulu!", true);
-  const a = dataAngsuran[window.angsuranTerakhirId];
-  if(!a) return showToast("Data tidak ditemukan", true);
-
-  const p = dataPinjaman[a.pinjamanId];
-  if(!p) return showToast("Data pinjaman tidak ditemukan", true);
-
-  const tgl = new Date(a.tanggal).toLocaleDateString("id-ID");
-  const total = (a.pokok || 0) + (a.jasa || 0) + (a.kelebihanBayar || 0);
-  const info = getSisaPinjaman(a.pinjamanId);
-
-  const pesan = `*BUKTI ANGSURAN*\nKoperasi ARFA DRIVER\nNama: ${p.nama}\nNo: ${p.nomor}\nTanggal: ${tgl}\n\nPokok: ${rupiah(a.pokok)}\nJasa: ${rupiah(a.jasa||0)}\nLain-lain: ${rupiah(a.kelebihanBayar||0)}\nTotal: ${rupiah(total)}\n\nSisa Pinjaman: ${rupiah(info.sisa)}\n\nTerima kasih 🙏`;
-
-  const nomorWA = (p.noHp || p.hp || p.telepon || "")
-  .replace(/^0/, "62")
-  .replace(/[^0-9]/g, "");
-const url =
-  "https://wa.me/" +
-  nomorWA +
-  "?text=" +
-  encodeURIComponent(pesan);
-window.open(url, "_blank");
-showToast("Link WA berhasil dibuka");
-  };
-    
-window.cetakNotaAngsuran = function(id){
+window.editAngsuran = function(id){
+  if(role!=="admin") return showToast("Hanya admin!", true);
   const a = dataAngsuran[id];
   if(!a) return showToast("Data tidak ditemukan", true);
+  document.getElementById("editAngsuranId").value = id;
+  document.getElementById("editAngsuranNama").value = a.nama || "-";
+  if(a.tanggal){
+    const t = new Date(Number(a.tanggal));
+    const iso = new Date(t.getTime()-t.getTimezoneOffset()*60000).toISOString().split("T")[0];
+    document.getElementById("editAngsuranTanggal").value = iso;
+  }
+  document.getElementById("editAngsuranMetode").value = a.metode || "cash";
+  document.getElementById("editAngsuranPokok").value = a.pokok? formatRupiahInputNoRp(String(a.pokok)) : "";
+  document.getElementById("editAngsuranJasa").value = a.jasa? formatRupiahInputNoRp(String(a.jasa)) : "";
+  document.getElementById("editAngsuranLain").value = a.kelebihanBayar? formatRupiahInputNoRp(String(a.kelebihanBayar)) : "";
+  document.getElementById("modalEditAngsuran").classList.add("show");
+}
 
+window.tutupEditAngsuran = function(){
+  document.getElementById("modalEditAngsuran").classList.remove("show");
+}
+
+document.getElementById("btnUpdateAngsuran").onclick = async function(){
+  const id = document.getElementById("editAngsuranId").value;
+  const a = dataAngsuran[id];
+  if(!a) return showToast("Data tidak ditemukan", true);
+  const tanggalInput = document.getElementById("editAngsuranTanggal").value;
+  const metode = document.getElementById("editAngsuranMetode").value;
+  const pokok = getNumber(document.getElementById("editAngsuranPokok").value);
+  const jasa = getNumber(document.getElementById("editAngsuranJasa").value) || 0;
+  const lain = getNumber(document.getElementById("editAngsuranLain").value) || 0;
+  if(!tanggalInput) return showToast("Isi tanggal!", true);
+  if(!pokok || pokok <= 0) return showToast("Pokok harus > 0!", true);
+  const tanggal = new Date(tanggalInput).getTime();
+  const totalBayar = pokok + jasa + lain;
   const p = dataPinjaman[a.pinjamanId];
-  if(!p) return showToast("Data pinjaman tidak ditemukan", true);
+  try{
+    await update(ref(db, "angsuran/"+id), {
+      tanggal,
+      pokok,
+      jasa,
+      kelebihanBayar: lain,
+      jumlahBayar: totalBayar,
+      metode
+    });
+    if(a.kasId){
+      await update(ref(db, "kas/transaksi/"+a.kasId), {
+        tanggal,
+        keterangan: "Angsuran Pokok " + p.nama + " (" + p.nomor + ")",
+        tipe: "masuk",
+        sumberKas: metode,
+        jumlah: pokok,
+        kategori: "pokok"
+      });
+    }
+    if(a.kasIdJasa){
+      if(jasa > 0){
+        await update(ref(db, "kas/transaksi/"+a.kasIdJasa), {
+          tanggal,
+          keterangan: "Jasa Pinjaman " + p.nama + " (" + p.nomor + ")",
+          tipe: "masuk",
+          sumberKas: metode,
+          jumlah: jasa,
+          kategori: "jasa"
+        });
+      } else {
+        await remove(ref(db, "kas/transaksi/"+a.kasIdJasa));
+        await update(ref(db, "angsuran/"+id), {kasIdJasa: null});
+      }
+    } else if(jasa > 0){
+      const kasJasa = await push(ref(db, "kas/transaksi"), {
+        tanggal,
+        keterangan: "Jasa Pinjaman " + p.nama + " (" + p.nomor + ")",
+        tipe: "masuk",
+        sumberKas: metode,
+        jumlah: jasa,
+        kategori: "jasa"
+      });
+      await update(ref(db, "angsuran/"+id), {kasIdJasa: kasJasa.key});
+    }
+    if(a.kasIdLain){
+      if(lain > 0){
+        await update(ref(db, "kas/transaksi/"+a.kasIdLain), {
+          tanggal,
+          keterangan: "Pendapatan Lain " + p.nama + " (" + p.nomor + ")",
+          tipe: "masuk",
+          sumberKas: metode,
+          jumlah: lain,
+          kategori: "pendapatan_lain"
+        });
+      } else {
+        await remove(ref(db, "kas/transaksi/"+a.kasIdLain));
+        await update(ref(db, "angsuran/"+id), {kasIdLain: null});
+      }
+    } else if(lain > 0){
+      const kasLain = await push(ref(db, "kas/transaksi"), {
+        tanggal,
+        keterangan: "Pendapatan Lain " + p.nama + " (" + p.nomor + ")",
+        tipe: "masuk",
+        sumberKas: metode,
+        jumlah: lain,
+        kategori: "pendapatan_lain"
+      });
+      await update(ref(db, "angsuran/"+id), {kasIdLain: kasLain.key});
+    }
+    window.angsuranTerakhirId = id;
+    showToast("Data berhasil diupdate");
+    renderRiwayat();
+    hitungStatistik();
+    tutupEditAngsuran();
+  } catch(err){
+    showToast("Gagal update: "+err.message, true);
+    console.error(err);
+  }
+}
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" });
-
-  const tglBayar = new Date(Number(a.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
-  const total = Number(a.pokok) + Number(a.jasa || 0) + Number(a.kelebihanBayar || 0);
-  const info = getSisaPinjaman(a.pinjamanId);
-
-  doc.setFontSize(14);
-  doc.setFont("helvetica","bold");
-  doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"});
-  doc.setFontSize(9);
-  doc.setFont("helvetica","normal");
-  doc.text("Jl.Tentara Pelajar, Parigi Baru Tangsel", 74, 21, {align:"center"});
-  doc.line(10, 25, 138, 25);
-
-  doc.setFontSize(12);
-  doc.setFont("helvetica","bold");
-  doc.text("BUKTI ANGSURAN PINJAMAN", 74, 33, {align:"center"});
-
-  doc.setFontSize(10);
-  doc.setFont("helvetica","normal");
-  let y = 45;
-
-  doc.text("No. Pinjaman", 15, y);
-  doc.setFont("helvetica","bold");
-  doc.text(": " + p.nomor, 55, y);
-  doc.setFont("helvetica","normal");
-
-  y += 7;
-  doc.text("Nama Anggota", 15, y);
-  doc.setFont("helvetica","bold");
-  doc.text(": " + p.nama, 55, y);
-  doc.setFont("helvetica","normal");
-
-  y += 7;
-  doc.text("Tanggal Bayar", 15, y);
-  doc.text(": " + tglBayar, 55, y);
-
-  y += 7;
-  doc.text("Metode", 15, y);
-  doc.text(": " + (a.metode || "CASH").toUpperCase(), 55, y);
-
-  y += 10;
-  doc.line(15, y, 133, y);
-  y += 8;
-
-  doc.text("Angsuran Pokok", 15, y);
-  doc.text(": " + rupiah(a.pokok||0), 55, y);
-
-  y += 7;
-  doc.text("Jasa", 15, y);
-  doc.text(": " + rupiah(a.jasa||0), 55, y);
-
-  y += 7;
-  doc.text("Pendapatan Lain", 15, y);
-  doc.text(": " + rupiah(a.kelebihanBayar||0), 55, y);
-
-  y += 7;
-  doc.setFont("helvetica","bold");
-  doc.text("Total Dibayar", 15, y);
-  doc.text(": " + rupiah(total), 55, y);
-
-  y += 10;
-  doc.setFont("helvetica","normal");
-  doc.line(15, y, 133, y);
-  y += 8;
-
-  doc.text("Sisa Pinjaman", 15, y);
-  doc.setFont("helvetica","bold");
-  doc.text(": " + rupiah(info.sisa), 55, y);
-  doc.setFont("helvetica","normal");
-
-  y += 20;
-  doc.text("Penerima,", 15, y);
-  doc.text("Admin Koperasi,", 90, y);
-
-  y += 25;
-  doc.text("( " + p.nama + " )", 15, y);
-  doc.text("( Admin )", 95, y);
-
-  doc.setFontSize(8);
-  doc.text("Dicetak: " + new Date().toLocaleString("id-ID"), 15, 195);
-
-  doc.save(`Nota_Angsuran_${p.nomor}_${tglBayar.replace(/ /g,"-")}.pdf`);
-};
+window.hapusAngsuran = async function(id){
+  if(role!=="admin") return showToast("Hanya admin!", true);
+  if(!confirm("Yakin hapus angsuran ini? Data kas juga akan terhapus!")) return;
+  const a = dataAngsuran[id];
+  if(!a) return showToast("Data tidak ditemukan", true);
+  try{
+    const hapusKas = [];
+    if(a.kasId) hapusKas.push(remove(ref(db, "kas/transaksi/"+a.kasId)));
+    if(a.kasIdJasa) hapusKas.push(remove(ref(db, "kas/transaksi/"+a.kasIdJasa)));
+    if(a.kasIdLain) hapusKas.push(remove(ref(db, "kas/transaksi/"+a.kasIdLain)));
+    await Promise.all(hapusKas);
+    await remove(ref(db, "angsuran/"+id));
+    showToast("Data berhasil dihapus");
+    renderRiwayat();
+    hitungStatistik();
+    tutupEditAngsuran();
+  } catch(err){
+    showToast("Gagal hapus: " + err.message, true);
+    console.error(err);
+  }
+}
 
 let riwayatVisible = false;
 window.toggleRiwayat = function(){
   const listEl = document.getElementById("listTransaksi");
   const btnEl = document.getElementById("btnTampil");
   riwayatVisible =!riwayatVisible;
-
   if(riwayatVisible){
     listEl.style.display = "flex";
     btnEl.innerHTML = `<span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:6px;">visibility_off</span>Sembunyikan Riwayat`;
@@ -918,12 +820,10 @@ window.toggleRiwayat = function(){
 function renderRiwayat(){
   const listEl = document.getElementById("listTransaksi");
   let list = Object.entries(dataAngsuran).sort((a,b)=>(b[1].tanggal||0)-(a[1].tanggal||0));
-
   if(list.length===0){
     listEl.innerHTML = `<div class="item"><div class="item-ket">Belum ada data angsuran</div></div>`;
     return;
   }
-
   let html = "";
   list.forEach(([id,a])=>{
     const total = Number(a.pokok||0) + Number(a.jasa||0) + Number(a.kelebihanBayar||0);
@@ -941,18 +841,34 @@ function renderRiwayat(){
           <span class="badge ${a.metode==="bank"?"bank":"cash"}">${(a.metode || "cash").toUpperCase()}</span>
         </div>
         <div class="item-waktu">${formatTanggal(a.tanggal)}</div>
+        ${role==="admin"? `
+        <div style="margin-top:8px;display:flex;gap:6px;">
+          <button
+            onclick="editAngsuran('${id}')"
+            style="flex:1;padding:6px;border:1px solid var(--primary);color:var(--primary);border-radius:6px;font-size:11px;background:transparent;">
+            Edit
+          </button>
+          <button
+            onclick="hapusAngsuran('${id}')"
+            style="flex:1;padding:6px;border:1px solid var(--danger);color:var(--danger);border-radius:6px;font-size:11px;background:transparent;">
+            Hapus
+          </button>
+        </div>` : ''}
       </div>
     `;
   });
   listEl.innerHTML = html;
 }
 
+["editAngsuranPokok","editAngsuranJasa","editAngsuranLain"].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el){
+    el.addEventListener("input", function(){
+      this.value = formatRupiahInputNoRp(this.value);
+    });
+  }
+});
 
-window.tutupModal = function(){
-  document.getElementById("modalData").classList.remove("show");
-}
-
-/* FORMAT INPUT RUPIAH */
 ["jumlah","jasa","lain"].forEach(id=>{
   document.getElementById(id).addEventListener("input", function(){
     this.value = formatRupiahInput(this.value);
@@ -960,8 +876,82 @@ window.tutupModal = function(){
   });
 });
 
-
 window.onload = function () {
   document.getElementById("tanggal").value = new Date().toISOString().split("T")[0];
 };
+
+window.cetakNotaAngsuran = function(id){
+  const a = dataAngsuran[id];
+  if(!a) return showToast("Data tidak ditemukan", true);
+  const p = dataPinjaman[a.pinjamanId];
+  if(!p) return showToast("Data pinjaman tidak ditemukan", true);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" });
+  const tglBayar = new Date(Number(a.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+  const total = Number(a.pokok) + Number(a.jasa || 0) + Number(a.kelebihanBayar || 0);
+  const info = getSisaPinjaman(a.pinjamanId);
+  doc.setFontSize(14);
+  doc.setFont("helvetica","bold");
+  doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"});
+  doc.setFontSize(9);
+  doc.setFont("helvetica","normal");
+  doc.text("Jl.Tentara Pelajar, Parigi Baru Tangsel", 74, 21, {align:"center"});
+  doc.line(10, 25, 138, 25);
+  doc.setFontSize(12);
+  doc.setFont("helvetica","bold");
+  doc.text("BUKTI ANGSURAN PINJAMAN", 74, 33, {align:"center"});
+  doc.setFontSize(10);
+  doc.setFont("helvetica","normal");
+  let y = 45;
+  doc.text("No. Pinjaman", 15, y);
+  doc.setFont("helvetica","bold");
+  doc.text(": " + p.nomor, 55, y);
+  doc.setFont("helvetica","normal");
+  y += 7;
+  doc.text("Nama Anggota", 15, y);
+  doc.setFont("helvetica","bold");
+  doc.text(": " + p.nama, 55, y);
+  doc.setFont("helvetica","normal");
+  y += 7;
+  doc.text("Tanggal Bayar", 15, y);
+  doc.text(": " + tglBayar, 55, y);
+  y += 7;
+  doc.text("Metode", 15, y);
+  doc.text(": " + (a.metode || "CASH").toUpperCase(), 55, y);
+  y += 10;
+  doc.line(15, y, 133, y);
+  y += 8;
+  doc.text("Angsuran Pokok", 15, y);
+  doc.text(": " + rupiah(a.pokok||0), 55, y);
+  y += 7;
+  doc.text("Jasa", 15, y);
+  doc.text(": " + rupiah(a.jasa||0), 55, y);
+  y += 7;
+  doc.text("Pendapatan Lain", 15, y);
+  doc.text(": " + rupiah(a.kelebihanBayar||0), 55, y);
+  y += 7;
+  doc.setFont("helvetica","bold");
+  doc.text("Total Dibayar", 15, y);
+  doc.text(": " + rupiah(total), 55, y);
+  y += 10;
+  doc.setFont("helvetica","normal");
+  doc.line(15, y, 133, y);
+  y += 8;
+  doc.text("Sisa Pinjaman", 15, y);
+  doc.setFont("helvetica","bold");
+  doc.text(": " + rupiah(info.sisa), 55, y);
+  doc.setFont("helvetica","normal");
+  y += 20;
+  doc.text("Penerima,", 15, y);
+  doc.text("Admin Koperasi,", 90, y);
+  y += 25;
+  doc.text("( " + p.nama + " )", 15, y);
+  doc.text("( Admin )", 95, y);
+  doc.setFontSize(8);
+  doc.text("Dicetak: " + new Date().toLocaleString("id-ID"), 15, 195);
+  doc.save(`Nota_Angsuran_${p.nomor}_${tglBayar.replace(/ /g,"-")}.pdf`);
+};
+
 </script>
+</body>
+</html>

@@ -466,6 +466,39 @@ function loadFilter(){
   [...set].sort().forEach(n=>sel.innerHTML += `<option value="${n}">${n}</option>`);
 }
 
+function hitungPinjaman(p){
+  const pin = Number(p.jumlah || 0);
+const jasa = Math.round(pin * 0.2); // 20.000 pas
+const totalTagihan = pin + jasa; // 120.000 pas
+
+console.log(pin, jasa, totalTagihan); // cek di console
+  let angs = 0;
+  let lastAngsuran = null;
+
+  Object.values(dataAngsuran).forEach(a => {
+    const idAngsuran = String(a.pinjamanId || a.idPinjaman || "");
+    const idPinjaman = String(p.id || p.key || "");
+
+    if(idAngsuran === idPinjaman){
+      const bayar = Number(a.jumlahBayar?? a.jumlah?? a.pokok?? 0);
+      angs += bayar;
+
+      if(a.tanggal && (!lastAngsuran || Number(a.tanggal) > Number(lastAngsuran))){
+        lastAngsuran = a.tanggal;
+      }
+    }
+  });
+
+  let sisa = totalTagihan - angs;
+  if(sisa < 0) sisa = 0;
+
+  const status = sisa <= 0? "LUNAS" : "BELUM";
+  const tglPinjam = p.tanggal? new Date(Number(p.tanggal)).toLocaleDateString("id-ID") : "-";
+  const tglAngsuran = lastAngsuran? new Date(Number(lastAngsuran)).toLocaleDateString("id-ID") : "-";
+
+  return {pin, jasa, totalTagihan, angs, sisa, status, tglPinjam, tglAngsuran};
+}
+
 window.render = function(){
   const filterNama = document.getElementById("filterAnggota").value;
   const filterStatus = document.getElementById("filterStatus").value;
@@ -476,8 +509,10 @@ window.render = function(){
   const group = {};
 
   Object.entries(dataPinjaman).forEach(([id,p])=>{
+    p.id = id;
+    p.key = id;
     if(!group[p.nama]) group[p.nama] = [];
-    group[p.nama].push({id,...p});
+    group[p.nama].push(p);
   });
 
   for(const nama in group){
@@ -488,68 +523,32 @@ window.render = function(){
 
     group[nama].sort((a,b) => (b.tanggal || 0) - (a.tanggal || 0));
 
-    group[nama].forEach(p=>{
-      let angs = 0;
-      let lastAngsuran = null;
+    group[nama].forEach(p => {
+      const hitung = hitungPinjaman(p);
 
-      Object.values(dataAngsuran).forEach(a=>{
-        if(a.pinjamanId === p.id){
-          angs += Number(a.jumlah||0);
-          if (!lastAngsuran || a.tanggal > lastAngsuran) {
-            lastAngsuran = a.tanggal;
-          }
-        }
-      });
+      if(filterStatus!== "all" && filterStatus!== hitung.status) return;
 
-      const pin = Number(p.jumlah||0);
-      let sisa = pin - angs;
-if(sisa < 0) sisa = 0;
-      const status = sisa <= 0? "LUNAS" : "BELUM";
+      tp += hitung.pin;
+      ta += hitung.angs;
+      ts += hitung.sisa;
 
-      if(filterStatus!== "all" && filterStatus!== status) return;
+      const badgeClass = hitung.status === "LUNAS"? "badge-lunas" : "badge-belum";
 
-      tp += pin;
-      ta += angs;
-      ts += sisa;
-
-      const tglPinjam = p.tanggal? new Date(Number(p.tanggal)).toLocaleDateString("id-ID") : "-";
-      const tglAngsuran = lastAngsuran? new Date(lastAngsuran).toLocaleDateString("id-ID") : "-";
-
-      const badgeClass = status === "LUNAS"? "badge-lunas" : "badge-belum";
-
-      let jasa20 = sisa * 0.2;
-let totalTagihan = sisa + jasa20;
-
-rows += `
-<tr>
-  <td>${p.nomor||"-"}</td>
-  <td>${tglPinjam}</td>
-
-  <td class="text-right">
-    Rp ${formatRp(pin)}
-  </td>
-
-  <td>${tglAngsuran}</td>
-
-  <td class="text-right">
-    Rp ${formatRp(angs)}
-  </td>
-
-  
-<td class="text-right">
-  <div style="font-weight:700;color:#dc2626">
-    Rp ${formatRp(totalTagihan)}
-  </div>
-
-  <div style="font-size:10px;color:#666">
-    Pokok: Rp ${formatRp(sisa)}
-  </div>
-
-  <div style="font-size:10px;color:#f59e0b">
-    Jasa 20%: Rp ${formatRp(jasa20)}
-  </div>
-</td> <td><span class="badge-status ${badgeClass}">${status}</span></td>
-        </tr>`;
+      rows += `
+      <tr>
+        <td>${p.nomor || "-"}</td>
+        <td>${hitung.tglPinjam}</td>
+        <td>Rp ${formatRp(hitung.pin)}</td>
+        <td>${hitung.tglAngsuran}</td>
+        <td>Rp ${formatRp(hitung.angs)}</td>
+        <td class="text-right">
+          <div style="font-weight:700;color:#dc2626">Rp ${formatRp(hitung.totalTagihan)}</div>
+          <div style="font-size:10px;color:#666">Total: Rp ${formatRp(hitung.totalTagihan)}</div>
+          <div style="font-size:10px;color:#16a34a">Sudah Bayar: Rp ${formatRp(hitung.angs)}</div>
+          <div style="font-size:10px;color:#dc2626">Sisa: Rp ${formatRp(hitung.sisa)}</div>
+        </td>
+        <td><span class="badge-status ${badgeClass}">${hitung.status}</span></td>
+      </tr>`;
     });
 
     if(rows === "") continue;
@@ -572,7 +571,7 @@ rows += `
                 <th>Pinjaman</th>
                 <th>Tgl Angsur</th>
                 <th>Angsuran</th>
-                <th>Sisa</th>
+                <th>Sisa Tagihan</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -580,26 +579,17 @@ rows += `
           </table>
         </div>
         <div class="card-footer">
-          <div>
-            <span>Total Pinjaman</span>
-            Rp ${formatRp(tp)}
-          </div>
-          <div>
-            <span>Total Angsuran</span>
-            Rp ${formatRp(ta)}
-          </div>
-          <div>
-            <span>Total Tagihan</span>
-Rp ${formatRp(ts + (ts*0.2))}
-    </div>
+          <div><span>Total Pinjaman</span>Rp ${formatRp(tp)}</div>
+          <div><span>Total Angsuran</span>Rp ${formatRp(ta)}</div>
+          <div><span>Total Tagihan</span>Rp ${formatRp(ts)}</div>
         </div>
       </div>`;
   }
 
   document.getElementById("totalPinjaman").innerText = formatRp(totalPin);
   document.getElementById("totalAngsuran").innerText = formatRp(totalAng);
-  document.getElementById("totalSisa").innerText =
-  formatRp(totalSisa + (totalSisa * 0.2));};
+  document.getElementById("totalSisa").innerText = formatRp(totalSisa);
+}
 
 onValue(pinjamanRef,s=>{
   dataPinjaman = s.exists()?s.val():{};
@@ -622,8 +612,10 @@ window.exportPDF = function () {
 
   const group = {};
   Object.entries(dataPinjaman).forEach(([id, p]) => {
+    p.id = id;
+    p.key = id;
     if (!group[p.nama]) group[p.nama] = [];
-    group[p.nama].push({ id,...p });
+    group[p.nama].push(p);
   });
 
   let first = true;
@@ -636,42 +628,22 @@ window.exportPDF = function () {
     let tp = 0, ta = 0, ts = 0;
 
     group[nama].forEach(p => {
-      let angs = 0;
-      let lastAngsuran = null;
+      const hitung = hitungPinjaman(p);
+      if (filterStatus!== "all" && filterStatus!== hitung.status) return;
 
-      Object.values(dataAngsuran).forEach(a => {
-        if (a.pinjamanId === p.id) {
-          angs += Number(a.jumlah || 0);
-          if (!lastAngsuran || a.tanggal > lastAngsuran) {
-            lastAngsuran = a.tanggal;
-          }
-        }
-      });
-
-      const pin = Number(p.jumlah || 0);
-      let sisa = pin - angs;
-if(sisa < 0) sisa = 0;
-
-const jasa20 = sisa * 0.2;
-const totalTagihan = sisa + jasa20;
-      const status = sisa <= 0? "LUNAS" : "BELUM";
-
-      if (filterStatus!== "all" && filterStatus!== status) return;
-
-      tp += pin;
-      ta += angs;
-      ts += sisa;
-
-      const tglPinjam = p.tanggal? new Date(Number(p.tanggal)).toLocaleDateString("id-ID") : "-";
-      const tglAngsuran = lastAngsuran? new Date(lastAngsuran).toLocaleDateString("id-ID") : "-";
+      tp += hitung.pin;
+      ta += hitung.angs;
+      ts += hitung.sisa;
 
       rows.push([
         p.nomor || "-",
-        tglPinjam,
-        "Rp " + formatRp(pin),
-        tglAngsuran,
-        "Rp " + formatRp(angs),
-       "Rp " + formatRp(totalTagihan), status
+        hitung.tglPinjam,
+        "Rp " + formatRp(hitung.pin),
+        hitung.tglAngsuran,
+        "Rp " + formatRp(hitung.angs),
+        "Rp " + formatRp(hitung.totalTagihan),
+        "Rp " + formatRp(hitung.sisa),
+        hitung.status
       ]);
     });
 
@@ -707,16 +679,18 @@ const totalTagihan = sisa + jasa20;
 
     doc.autoTable({
       startY: 50,
-      head: [["No", "Tgl Pinjam", "Pinjaman", "Tgl Angsur", "Angsuran", "Tagihan +20%", "Status"]],  body: rows,
+      head: [["No","Tgl Pinjam","Pinjaman","Tgl Angsur","Angsuran","Tagihan","Sisa","Status"]],
+      body: rows,
       styles: { fontSize: 8, cellPadding: 2 },
       headStyles: { fillColor: [30, 144, 255], textColor: 255, fontStyle: 'bold' },
       columnStyles: {
         2: { halign: 'right' },
         4: { halign: 'right' },
-        5: { halign: 'right' }
+        5: { halign: 'right' },
+        6: { halign: 'right' }
       },
       didParseCell: function (data) {
-        if (data.column.index === 6) {
+        if (data.column.index === 7) {
           if (data.cell.raw === "LUNAS") {
             data.cell.styles.textColor = [0, 128, 0];
             data.cell.styles.fontStyle = 'bold';
@@ -729,8 +703,6 @@ const totalTagihan = sisa + jasa20;
     });
   }
 
-
-  // Download
   let fileName = "Laporan_Angsuran";
   if (filterNama!== "all") {
     const namaClean = filterNama.trim().replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
@@ -744,18 +716,10 @@ const totalTagihan = sisa + jasa20;
     document.getElementById("toastPDF").style.display = "none";
   }, 2000);
 
-  const pdfBlob = doc.output("blob");
-  const url = URL.createObjectURL(pdfBlob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    URL.revokeObjectURL(url);
-    a.remove();
-  }, 1000);
+  doc.save(fileName);
 };
 </script>
+
+</script>
 </body>
-</html>
+</html
