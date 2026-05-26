@@ -188,7 +188,8 @@ header{
       </button>  
       <h1>DATA PINJAMAN</h1>  
     </div>  
-  </header>  <div class="container">  
+  </header> 
+  <div class="container">  
   <div class="card">  
     <div class="summary-grid">  
       <div class="summary-item">  
@@ -560,12 +561,13 @@ function renderPinjaman(){
 }
 
 function hitungSummary(){
-  let totalPinjaman = 0;
+  let totalPokok = 0;
+
   Object.values(dataPinjaman).forEach(p=>{
-    let jasa = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
-    totalPinjaman += Number(p.jumlah || 0) + jasa;
+    totalPokok += Number(p.jumlah || 0); // cuma pokok
   });
-  document.getElementById("totalPinjaman").innerText = format(totalPinjaman);
+
+  document.getElementById("totalPinjaman").innerText = format(totalPokok);
 }
 
 async function previewNoPinjaman(){
@@ -603,19 +605,7 @@ window.simpanPinjaman = async () => {
   if(!metode) return showAlert("Pilih metode!", "warning");
   if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
 
-    // Cek pinjaman belum lunas
-let masihAdaPinjaman = Object.values(dataPinjaman).some(p => {
-  if(p.idAnggota!== idAnggota) return false;
-  let totalPinjaman = Number(p.jumlah || 0) + Number(p.jasa || 0);
-  let totalAngsuran = 0;
-  Object.values(dataAngsuran).forEach(a => {
-    if(a.pinjamanId === p.id) totalAngsuran += Number(a.pokok || a.jumlah || 0) + Number(a.jasa || 0);
-  });
-  return totalAngsuran < totalPinjaman;
-});
 
-if(masihAdaPinjaman) return showAlert("Anggota masih memiliki pinjaman belum lunas!", "warning");
-    
   // Cek saldo kas
   let saldoCash = Number(dataSaldoAwal.cash || 0);
   let saldoBank = Number(dataSaldoAwal.bank || 0);
