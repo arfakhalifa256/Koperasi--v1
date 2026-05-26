@@ -1,0 +1,1103 @@
+{
+  "anggota": {
+    "-Osy0a3poHdK3tD5btG4": {
+      "alamat": "",
+      "id": "AG001",
+      "nama": "Nur ali",
+      "rekening": "",
+      "telepon": "081219718713"
+    },
+    "-Osy0fEqa0QVjLKp9h8P": {
+      "alamat": "",
+      "id": "AG002",
+      "nama": "Robby",
+      "rekening": "",
+      "telepon": "+62 897-8352-938"
+    },
+    "-Osy0oJS-zqNHt0RZFOI": {
+      "alamat": "",
+      "id": "AG003",
+      "nama": "Sujiono",
+      "rekening": "",
+      "telepon": "+62 878-0858-7057"
+    },
+    "-Osy0veDoC2MzQewZiNJ": {
+      "alamat": "",
+      "id": "AG004",
+      "nama": "Hendra",
+      "rekening": "",
+      "telepon": "+62 856-9278-5655"
+    },
+    "-Osy12T2va98KYoNymJA": {
+      "alamat": "",
+      "id": "AG005",
+      "nama": "Suaeb boro",
+      "rekening": "",
+      "telepon": "+62 812-1341-9712"
+    },
+    "-Osy1B5R4C1ogI-jbyFY": {
+      "alamat": "",
+      "id": "AG006",
+      "nama": "Ferry",
+      "rekening": "",
+      "telepon": "+62 822-6033-3755"
+    },
+    "-Osy1ItVJ4Xv349uZKZl": {
+      "alamat": "",
+      "id": "AG007",
+      "nama": "Dharmono",
+      "rekening": "",
+      "telepon": "+62 858-1114-1622"
+    },
+    "-Osy1P6BZbYAF0Em2Lk3": {
+      "alamat": "",
+      "id": "AG008",
+      "nama": "Yulianto",
+      "rekening": "",
+      "telepon": "+62 812-9543-2548"
+    },
+    "-Osy1YkrmPJCsj7LtuOC": {
+      "alamat": "",
+      "id": "AG009",
+      "nama": "Djodi Ramadhan",
+      "rekening": "",
+      "telepon": "+62 858-8168-2511"
+    }
+  },
+  "angsuran": {
+    "-OtKjRoTHTVSaH8P8lz_": {
+      "jasa": 0,
+      "jumlahBayar": 50000,
+      "kasId": "-OtKjRfV045s8U3gv4y9",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Ferry",
+      "pinjamanId": "-OtKgkAwFHolhlrQoYBM",
+      "pokok": 50000,
+      "tanggal": 1770595200000
+    },
+    "-OtNMTwTVZZume_BjO5-": {
+      "jasa": 0,
+      "jumlahBayar": 100000,
+      "kasId": "-OtNMTgMBQ64iVMMkPCt",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Suaeb boro",
+      "pinjamanId": "-OtKhvwpkl5lBi2ZrvOh",
+      "pokok": 100000,
+      "tanggal": 1773187200000
+    },
+    "-OtNMqP6W-Pg6720QoQi": {
+      "jasa": 50000,
+      "jumlahBayar": 250000,
+      "kasId": "-OtNMqEoDlHpjsBuTK8T",
+      "kasIdJasa": "-OtNMqI8ynpO9RJoW5kd",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Suaeb boro",
+      "pinjamanId": "-OtKhUqk_3OHjytPolwp",
+      "pokok": 200000,
+      "tanggal": 1773187200000
+    },
+    "-OtNO0moRkTk8zgAax6k": {
+      "jasa": 50000,
+      "jumlahBayar": 250000,
+      "kasId": "-OtNO0eEqPp_FjkL-p3I",
+      "kasIdJasa": "-OtNO0jPgueyGS0OIMMK",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Hendra",
+      "pinjamanId": "-OtKh7kJTiD5_LSJxQPM",
+      "pokok": 200000,
+      "tanggal": 1771200000000
+    },
+    "-OtNOIl8onFE8-slV9z4": {
+      "jasa": 50000,
+      "jumlahBayar": 250000,
+      "kasId": "-OtNOI_0kmUWEwUUI72a",
+      "kasIdJasa": "-OtNOIhm86Jr65-23XYN",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Hendra",
+      "pinjamanId": "-OtKhG8vADKC8TbHldk5",
+      "pokok": 200000,
+      "tanggal": 1771545600000
+    },
+    "-OtNOUTjymJmnq5ogPXr": {
+      "jasa": 50000,
+      "jumlahBayar": 250000,
+      "kasId": "-OtNOUN3QVh4W3lLtD_F",
+      "kasIdJasa": "-OtNOUQOIFA8l6O9vL58",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Hendra",
+      "pinjamanId": "-OtKiEJvlFMHRJi_dzzQ",
+      "pokok": 200000,
+      "tanggal": 1775088000000
+    },
+    "-OtNRCnkP_-MGir6BmLW": {
+      "jasa": 0,
+      "jumlahBayar": 200000,
+      "kasId": "-OtNRCk4zrqoiyaLwi0o",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Hendra",
+      "pinjamanId": "-OtNQdIwZYgcAsvheeHA",
+      "pokok": 200000,
+      "tanggal": 1774483200000
+    },
+    "-OtNbUEFOF17AnVJq8Js": {
+      "idPinjaman": "PJ010",
+      "jasa": 50000,
+      "jumlahBayar": 150000,
+      "kasId": "-OtNbUM-jiMBHWj-BOgc",
+      "kasIdJasa": "-OtPHJk2_RqXGMHwjFb9",
+      "kelebihanBayar": 0,
+      "metode": "cash",
+      "nama": "Nur ali",
+      "pinjamanId": "-OtNaG7jRLnrm_IwWx7A",
+      "pokok": 100000,
+      "tanggal": 1773100800000
+    },
+    "-OtPFL7Va7IXxm5lAUly": {
+      "jasa": 20000,
+      "jumlahBayar": 40000,
+      "kasId": "-OtPFKmTvrWw8Qm32np1",
+      "kasIdJasa": "-OtPFL3fAPurNUjJnKob",
+      "kelebihanBayar": 0,
+      "metode": "cash",
+      "nama": "Suaeb boro",
+      "pinjamanId": "-OtKhvwpkl5lBi2ZrvOh",
+      "pokok": 20000,
+      "tanggal": 1773100800000
+    },
+    "-OtPFT101xA3wnS7OOBu": {
+      "jasa": 50000,
+      "jumlahBayar": 300000,
+      "kasId": "-OtPFStCOTxseQHba-7V",
+      "kasIdJasa": "-OtPFSyDdNckP-km0vPC",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Suaeb boro",
+      "pinjamanId": "-OtN_uhkAaWPteNdEdnL",
+      "pokok": 250000,
+      "tanggal": 1773100800000
+    },
+    "-OtPIHm3O4wKBY3SMTNU": {
+      "jasa": 50000,
+      "jumlahBayar": 250000,
+      "kasId": "-OtPIHeCmbQxl2cL7U7r",
+      "kasIdJasa": "-OtPIHiiHoIYDkhtRL8s",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Dharmono",
+      "pinjamanId": "-OtPGNmUucERxiD3Sok8",
+      "pokok": 200000,
+      "tanggal": 1777939200000
+    },
+    "-OtPIW-OVRP97yG9hBQQ": {
+      "jasa": 25000,
+      "jumlahBayar": 125000,
+      "kasId": "-OtPIVoXrpPtX-Nk14LF",
+      "kasIdJasa": "-OtPIVx4xIPSUdU4nRqQ",
+      "kelebihanBayar": 0,
+      "metode": "bank",
+      "nama": "Yulianto",
+      "pinjamanId": "-OtPGWYVbczjOhgbrtXa",
+      "pokok": 100000,
+      "tanggal": 1778457600000
+    },
+    "-OtPIu8g4Nl62AZFW8pM": {
+      "jasa": 0,
+      "jumlahBayar": 50000,
+      "kasId": "-OtPItTgWyW_jDljaraS",
+      "kelebihanBayar": 0,
+      "metode": "cash",
+      "nama": "Ferry",
+      "pinjamanId": "-OtKgkAwFHolhlrQoYBM",
+      "pokok": 50000,
+      "tanggal": 1775692800000
+    },
+    "-OtX0ybT3I3zjqodf4N6": {
+      "idPinjaman": "PJ012",
+      "jasa": 0,
+      "jumlahBayar": 200000,
+      "kasId": "-OtX0yiWNEXKdWMf-C7P",
+      "metode": "bank",
+      "nama": "Hendra",
+      "pinjamanId": "-OtNb-tCTbTrarM5LJxl",
+      "pokok": 200000,
+      "tanggal": 1779753600000
+    }
+  },
+  "counter": {
+    "pinjaman": 19
+  },
+  "kas": {
+    "saldoAwal": {
+      "bank": 820000,
+      "cash": 500000,
+      "tanggal": 1767838920000,
+      "updatedAt": 1779553075497
+    },
+    "transaksi": {
+      "-Osy29pUos7JQA04YVKN": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-Osy29l_JDN1FBxBn9Lf",
+        "sumberKas": "bank",
+        "tanggal": 1770249600000,
+        "tipe": "masuk"
+      },
+      "-Osy2DydJ04pbQ5l5aC1": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-Osy2DuCEu9uiz6KHKZR",
+        "sumberKas": "bank",
+        "tanggal": 1770249600000,
+        "tipe": "masuk"
+      },
+      "-Osy2LErjHa2HnC-hl4Y": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-Osy2L9KAmCICC6Vps73",
+        "sumberKas": "bank",
+        "tanggal": 1770595200000,
+        "tipe": "masuk"
+      },
+      "-Osy2NtjYl4jrPWjzqgZ": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-Osy2NpYYPqIVM8KaMnS",
+        "sumberKas": "bank",
+        "tanggal": 1770595200000,
+        "tipe": "masuk"
+      },
+      "-Osy2S4b-6vxvnhjm0cm": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-Osy2RyoeV-lnvK1-YYV",
+        "sumberKas": "bank",
+        "tanggal": 1770595200000,
+        "tipe": "masuk"
+      },
+      "-Osy2WFAhP7N7OTWbSK2": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-Osy2WAwXd3nDjU5VUCN",
+        "sumberKas": "cash",
+        "tanggal": 1770595200000,
+        "tipe": "masuk"
+      },
+      "-Osy2Z3WkCvmEfqHomSW": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-Osy2Z-PMG6kXSmjowAD",
+        "sumberKas": "cash",
+        "tanggal": 1770768000000,
+        "tipe": "masuk"
+      },
+      "-Osy2bbLXRmFJkJ-C0HA": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-Osy2bXvpf67uizB7ni3",
+        "sumberKas": "cash",
+        "tanggal": 1770768000000,
+        "tipe": "masuk"
+      },
+      "-OtKgk3kZMiidKWofNGS": {
+        "jumlah": 185000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Ferry (PJ001)",
+        "sumberKas": "bank",
+        "tanggal": 1770249600000,
+        "tipe": "keluar"
+      },
+      "-OtKh7fnruJddwocKhPo": {
+        "jumlah": 200000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Hendra (PJ002)",
+        "sumberKas": "bank",
+        "tanggal": 1770940800000,
+        "tipe": "keluar"
+      },
+      "-OtKhG5ZqPYuRPiispV8": {
+        "jumlah": 200000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Hendra (PJ003)",
+        "sumberKas": "bank",
+        "tanggal": 1771200000000,
+        "tipe": "keluar"
+      },
+      "-OtKhUjoSCdt_Csl0N6g": {
+        "jumlah": 200000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Suaeb boro (PJ004)",
+        "sumberKas": "bank",
+        "tanggal": 1770768000000,
+        "tipe": "keluar"
+      },
+      "-OtKhvpsyCALkDREaP0y": {
+        "jumlah": 100000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Suaeb boro (PJ005)",
+        "sumberKas": "cash",
+        "tanggal": 1770768000000,
+        "tipe": "keluar"
+      },
+      "-OtKiECNzxePG9fEbREk": {
+        "jumlah": 200000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Hendra (PJ006)",
+        "sumberKas": "bank",
+        "tanggal": 1771804800000,
+        "tipe": "keluar"
+      },
+      "-OtKjRfV045s8U3gv4y9": {
+        "jumlah": 50000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Ferry (PJ001)",
+        "sumberKas": "bank",
+        "tanggal": 1770595200000,
+        "tipe": "masuk"
+      },
+      "-OtKkH_ymA6QKKVzbXUY": {
+        "jumlah": 50000,
+        "kategori": "simpanan wajib",
+        "keterangan": "Simpanan wajib",
+        "simpananId": "-OtKkHWeEzVFxhwoJvoI",
+        "sumberKas": "bank",
+        "tanggal": 1770249600000,
+        "tipe": "masuk"
+      },
+      "-OtNMTgMBQ64iVMMkPCt": {
+        "jumlah": 100000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Suaeb boro (PJ005)",
+        "sumberKas": "bank",
+        "tanggal": 1773187200000,
+        "tipe": "masuk"
+      },
+      "-OtNMqEoDlHpjsBuTK8T": {
+        "jumlah": 200000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Suaeb boro (PJ004)",
+        "sumberKas": "bank",
+        "tanggal": 1773187200000,
+        "tipe": "masuk"
+      },
+      "-OtNMqI8ynpO9RJoW5kd": {
+        "jumlah": 50000,
+        "kategori": "jasa",
+        "keterangan": "Jasa Pinjaman Suaeb boro (PJ004)",
+        "sumberKas": "bank",
+        "tanggal": 1773187200000,
+        "tipe": "masuk"
+      },
+      "-OtNO0eEqPp_FjkL-p3I": {
+        "jumlah": 200000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Hendra (PJ002)",
+        "sumberKas": "bank",
+        "tanggal": 1771200000000,
+        "tipe": "masuk"
+      },
+      "-OtNO0jPgueyGS0OIMMK": {
+        "jumlah": 50000,
+        "kategori": "jasa",
+        "keterangan": "Jasa Pinjaman Hendra (PJ002)",
+        "sumberKas": "bank",
+        "tanggal": 1771200000000,
+        "tipe": "masuk"
+      },
+      "-OtNOI_0kmUWEwUUI72a": {
+        "jumlah": 200000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Hendra (PJ003)",
+        "sumberKas": "bank",
+        "tanggal": 1771545600000,
+        "tipe": "masuk"
+      },
+      "-OtNOIhm86Jr65-23XYN": {
+        "jumlah": 50000,
+        "kategori": "jasa",
+        "keterangan": "Jasa Pinjaman Hendra (PJ003)",
+        "sumberKas": "bank",
+        "tanggal": 1771545600000,
+        "tipe": "masuk"
+      },
+      "-OtNOUN3QVh4W3lLtD_F": {
+        "jumlah": 200000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Hendra (PJ006)",
+        "sumberKas": "bank",
+        "tanggal": 1775088000000,
+        "tipe": "masuk"
+      },
+      "-OtNOUQOIFA8l6O9vL58": {
+        "jumlah": 50000,
+        "kategori": "jasa",
+        "keterangan": "Jasa Pinjaman Hendra (PJ006)",
+        "sumberKas": "bank",
+        "tanggal": 1775088000000,
+        "tipe": "masuk"
+      },
+      "-OtNQdFFQd37og5twSgf": {
+        "jumlah": 300000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Hendra (PJ007)",
+        "sumberKas": "bank",
+        "tanggal": 1773619200000,
+        "tipe": "keluar"
+      },
+      "-OtNRCk4zrqoiyaLwi0o": {
+        "jumlah": 200000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Hendra (PJ007)",
+        "sumberKas": "bank",
+        "tanggal": 1774483200000,
+        "tipe": "masuk"
+      },
+      "-OtN_ab8gi5_bOjCUYIy": {
+        "jumlah": 100000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Hendra (PJ008)",
+        "sumberKas": "bank",
+        "tanggal": 1775088000000,
+        "tipe": "keluar"
+      },
+      "-OtN_uXxtjz094rktsFk": {
+        "jumlah": 250000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Suaeb boro (PJ009)",
+        "sumberKas": "bank",
+        "tanggal": 1771200000000,
+        "tipe": "keluar"
+      },
+      "-OtNaFxkaJCt-Ixtj41O": {
+        "jumlah": 100000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Nur ali (PJ010)",
+        "sumberKas": "cash",
+        "tanggal": 1771545600000,
+        "tipe": "keluar"
+      },
+      "-OtNacP2uvCIRAA5yjvB": {
+        "id": "-OtNacbjgmdWUiBSTRtw",
+        "idAnggota": "-Osy12T2va98KYoNymJA",
+        "jasa": 40000,
+        "jumlah": 250000,
+        "kasId": "-OtNacP2uvCIRAA5yjvB",
+        "ket": "",
+        "keterangan": "Pinjaman Suaeb boro (PJ011)",
+        "nama": "Suaeb boro",
+        "nomor": "PJ011",
+        "status": "belum",
+        "sumberKas": "bank",
+        "tanggal": 1774396800000
+      },
+      "-OtNb-gcAJnIs0jttCpy": {
+        "jumlah": 200000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Hendra (PJ012)",
+        "sumberKas": "bank",
+        "tanggal": 1775779200000,
+        "tipe": "keluar"
+      },
+      "-OtNbUM-jiMBHWj-BOgc": {
+        "angsuranId": "-OtNbUEFOF17AnVJq8Js",
+        "jasa": 50000,
+        "jumlah": 100000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Nur ali (PJ010)",
+        "pokok": 100000,
+        "sumberKas": "cash",
+        "tanggal": 1773100800000,
+        "tipe": "masuk"
+      },
+      "-OtPFKmTvrWw8Qm32np1": {
+        "jumlah": 20000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Suaeb boro (PJ005)",
+        "sumberKas": "bank",
+        "tanggal": 1773100800000,
+        "tipe": "masuk"
+      },
+      "-OtPFStCOTxseQHba-7V": {
+        "jumlah": 250000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Suaeb boro (PJ009)",
+        "sumberKas": "bank",
+        "tanggal": 1773100800000,
+        "tipe": "masuk"
+      },
+      "-OtPFSyDdNckP-km0vPC": {
+        "jumlah": 50000,
+        "kategori": "jasa",
+        "keterangan": "Jasa Pinjaman Suaeb boro (PJ009)",
+        "sumberKas": "bank",
+        "tanggal": 1773100800000,
+        "tipe": "masuk"
+      },
+      "-OtPGAlPukyGrdbGZYNo": {
+        "jumlah": 100000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Hendra (PJ013)",
+        "sumberKas": "bank",
+        "tanggal": 1776384000000,
+        "tipe": "keluar"
+      },
+      "-OtPGNZjt37vRF0oBEGm": {
+        "jumlah": 200000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Dharmono (PJ014)",
+        "sumberKas": "bank",
+        "tanggal": 1776038400000,
+        "tipe": "keluar"
+      },
+      "-OtPGWKbkjrtqSYG-oX8": {
+        "jumlah": 100000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Yulianto (PJ015)",
+        "sumberKas": "bank",
+        "tanggal": 1776384000000,
+        "tipe": "keluar"
+      },
+      "-OtPHJk2_RqXGMHwjFb9": {
+        "jumlah": 50000,
+        "kategori": "jasa",
+        "keterangan": "Jasa Pinjaman Nur ali (PJ010)",
+        "sumberKas": "cash",
+        "tanggal": 1773100800000,
+        "tipe": "masuk"
+      },
+      "-OtPIHeCmbQxl2cL7U7r": {
+        "jumlah": 200000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Dharmono (PJ014)",
+        "sumberKas": "bank",
+        "tanggal": 1777939200000,
+        "tipe": "masuk"
+      },
+      "-OtPIHiiHoIYDkhtRL8s": {
+        "jumlah": 50000,
+        "kategori": "jasa",
+        "keterangan": "Jasa Pinjaman Dharmono (PJ014)",
+        "sumberKas": "bank",
+        "tanggal": 1777939200000,
+        "tipe": "masuk"
+      },
+      "-OtPIVoXrpPtX-Nk14LF": {
+        "jumlah": 100000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Yulianto (PJ015)",
+        "sumberKas": "bank",
+        "tanggal": 1778457600000,
+        "tipe": "masuk"
+      },
+      "-OtPIVx4xIPSUdU4nRqQ": {
+        "jumlah": 25000,
+        "kategori": "jasa",
+        "keterangan": "Jasa Pinjaman Yulianto (PJ015)",
+        "sumberKas": "bank",
+        "tanggal": 1778457600000,
+        "tipe": "masuk"
+      },
+      "-OtPItTgWyW_jDljaraS": {
+        "jumlah": 50000,
+        "kategori": "pokok",
+        "keterangan": "Angsuran Pokok Ferry (PJ001)",
+        "sumberKas": "cash",
+        "tanggal": 1775692800000,
+        "tipe": "masuk"
+      },
+      "-OtPLm_U0ijwiJLT2Ddk": {
+        "jumlah": 100000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Hendra (PJ018)",
+        "sumberKas": "bank",
+        "tanggal": 1776729600000,
+        "tipe": "keluar"
+      },
+      "-OtPM68A8NuGDjQrKuXd": {
+        "jumlah": 200000,
+        "kategori": "pinjaman",
+        "keterangan": "Pinjaman Suaeb boro (PJ019)",
+        "sumberKas": "cash",
+        "tanggal": 1779235200000,
+        "tipe": "keluar"
+      },
+      "-OtPN6Lr6wINxvKODEuf": {
+        "jumlah": 100000,
+        "kategori": "simpanan sukarela",
+        "keterangan": "Simpanan sukarela Yulianto ",
+        "simpananId": "-OtPN6GtEE-geoJXj_4T",
+        "sumberKas": "bank",
+        "tanggal": 1774016820000,
+        "tipe": "masuk"
+      },
+      "-OtPPM02DfwDPn2d_Q1-": {
+        "jumlah": 100000,
+        "kategori": "biaya operasional",
+        "keterangan": "Meeting sm bos ",
+        "sumberKas": "cash",
+        "tanggal": 1777948320000,
+        "tipe": "keluar"
+      },
+      "-OtX0yiWNEXKdWMf-C7P": {
+        "angsuranId": "-OtX0ybT3I3zjqodf4N6",
+        "jasa": 0,
+        "jumlah": 200000,
+        "kategori": "angsuran",
+        "keterangan": "Angsuran Hendra (PJ012)",
+        "pokok": 200000,
+        "sumberKas": "bank",
+        "tanggal": 1779753600000,
+        "tipe": "masuk"
+      }
+    }
+  },
+  "log": {
+    "1779156995075": {
+      "aksi": "Reset semua data",
+      "user": "admin",
+      "waktu": "2026-05-19T02:16:35.075Z"
+    },
+    "1779157635041": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-19T02:27:15.041Z"
+    },
+    "1779158359552": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-19T02:39:19.552Z"
+    },
+    "1779552808006": {
+      "aksi": "Restore data",
+      "user": "admin",
+      "waktu": "2026-05-23T16:13:28.006Z"
+    },
+    "1779760965438": {
+      "aksi": "Restore data",
+      "user": "admin",
+      "waktu": "2026-05-26T02:02:45.438Z"
+    },
+    "1779781481647": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:41.647Z"
+    },
+    "1779781482580": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:42.580Z"
+    },
+    "1779781487437": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:47.437Z"
+    },
+    "1779781490055": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:50.055Z"
+    },
+    "1779781491375": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:51.375Z"
+    },
+    "1779781492742": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:52.742Z"
+    },
+    "1779781494095": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:54.095Z"
+    },
+    "1779781496296": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:56.296Z"
+    },
+    "1779781498197": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:44:58.197Z"
+    },
+    "1779781501385": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:45:01.385Z"
+    },
+    "1779781505390": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:45:05.390Z"
+    },
+    "1779781508103": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:45:08.104Z"
+    },
+    "1779781508964": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:45:08.964Z"
+    },
+    "1779781509625": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:45:09.625Z"
+    },
+    "1779781522409": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:45:22.409Z"
+    },
+    "1779781531215": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:45:31.216Z"
+    },
+    "1779781659948": {
+      "aksi": "Backup data",
+      "user": "admin",
+      "waktu": "2026-05-26T07:47:39.948Z"
+    }
+  },
+  "pinjaman": {
+    "-OtKgkAwFHolhlrQoYBM": {
+      "idAnggota": "-Osy1B5R4C1ogI-jbyFY",
+      "jasa": 37000,
+      "jumlah": 185000,
+      "kasId": "-OtKgk3kZMiidKWofNGS",
+      "ket": "",
+      "nama": "Ferry",
+      "nomor": "PJ001",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1770595200000
+    },
+    "-OtKh7kJTiD5_LSJxQPM": {
+      "idAnggota": "-Osy0veDoC2MzQewZiNJ",
+      "jasa": 40000,
+      "jumlah": 200000,
+      "kasId": "-OtKh7fnruJddwocKhPo",
+      "ket": "",
+      "nama": "Hendra",
+      "nomor": "PJ002",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1770940800000
+    },
+    "-OtKhG8vADKC8TbHldk5": {
+      "idAnggota": "-Osy0veDoC2MzQewZiNJ",
+      "jasa": 40000,
+      "jumlah": 200000,
+      "kasId": "-OtKhG5ZqPYuRPiispV8",
+      "ket": "",
+      "nama": "Hendra",
+      "nomor": "PJ003",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1771200000000
+    },
+    "-OtKhUqk_3OHjytPolwp": {
+      "idAnggota": "-Osy12T2va98KYoNymJA",
+      "jasa": 40000,
+      "jumlah": 200000,
+      "kasId": "-OtKhUjoSCdt_Csl0N6g",
+      "ket": "",
+      "nama": "Suaeb boro",
+      "nomor": "PJ004",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1770768000000
+    },
+    "-OtKhvwpkl5lBi2ZrvOh": {
+      "idAnggota": "-Osy12T2va98KYoNymJA",
+      "jasa": 20000,
+      "jumlah": 100000,
+      "kasId": "-OtKhvpsyCALkDREaP0y",
+      "ket": "",
+      "nama": "Suaeb boro",
+      "nomor": "PJ005",
+      "status": "belum",
+      "sumberKas": "cash",
+      "tanggal": 1770768000000
+    },
+    "-OtKiEJvlFMHRJi_dzzQ": {
+      "idAnggota": "-Osy0veDoC2MzQewZiNJ",
+      "jasa": 40000,
+      "jumlah": 200000,
+      "kasId": "-OtKiECNzxePG9fEbREk",
+      "ket": "",
+      "nama": "Hendra",
+      "nomor": "PJ006",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1771804800000
+    },
+    "-OtNQdIwZYgcAsvheeHA": {
+      "idAnggota": "-Osy0veDoC2MzQewZiNJ",
+      "jasa": 60000,
+      "jumlah": 300000,
+      "kasId": "-OtNQdFFQd37og5twSgf",
+      "ket": "",
+      "nama": "Hendra",
+      "nomor": "PJ007",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1773619200000
+    },
+    "-OtN_alHByNLwkNlkKBc": {
+      "idAnggota": "-Osy0veDoC2MzQewZiNJ",
+      "jasa": 20000,
+      "jumlah": 100000,
+      "kasId": "-OtN_ab8gi5_bOjCUYIy",
+      "ket": "",
+      "nama": "Hendra",
+      "nomor": "PJ008",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1775088000000
+    },
+    "-OtN_uhkAaWPteNdEdnL": {
+      "idAnggota": "-Osy12T2va98KYoNymJA",
+      "jasa": 50000,
+      "jumlah": 250000,
+      "kasId": "-OtN_uXxtjz094rktsFk",
+      "ket": "",
+      "nama": "Suaeb boro",
+      "nomor": "PJ009",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1771200000000
+    },
+    "-OtNaG7jRLnrm_IwWx7A": {
+      "idAnggota": "-Osy0a3poHdK3tD5btG4",
+      "jasa": 20000,
+      "jumlah": 100000,
+      "kasId": "-OtNaFxkaJCt-Ixtj41O",
+      "ket": "",
+      "nama": "Nur ali",
+      "nomor": "PJ010",
+      "status": "belum",
+      "sumberKas": "cash",
+      "tanggal": 1771545600000
+    },
+    "-OtNacbjgmdWUiBSTRtw": {
+      "id": "-OtNacbjgmdWUiBSTRtw",
+      "idAnggota": "-Osy12T2va98KYoNymJA",
+      "jasa": 50000,
+      "jumlah": 250000,
+      "kasId": "-OtNacP2uvCIRAA5yjvB",
+      "ket": "",
+      "nama": "Suaeb boro",
+      "nomor": "PJ011",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1774396800000
+    },
+    "-OtNb-tCTbTrarM5LJxl": {
+      "idAnggota": "-Osy0veDoC2MzQewZiNJ",
+      "jasa": 40000,
+      "jumlah": 200000,
+      "kasId": "-OtNb-gcAJnIs0jttCpy",
+      "ket": "",
+      "nama": "Hendra",
+      "nomor": "PJ012",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1775779200000
+    },
+    "-OtPGB3wrSj_bc-HQYz3": {
+      "idAnggota": "-Osy0veDoC2MzQewZiNJ",
+      "jasa": 20000,
+      "jumlah": 100000,
+      "kasId": "-OtPGAlPukyGrdbGZYNo",
+      "ket": "",
+      "nama": "Hendra",
+      "nomor": "PJ013",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1776384000000
+    },
+    "-OtPGNmUucERxiD3Sok8": {
+      "idAnggota": "-Osy1ItVJ4Xv349uZKZl",
+      "jasa": 40000,
+      "jumlah": 200000,
+      "kasId": "-OtPGNZjt37vRF0oBEGm",
+      "ket": "",
+      "nama": "Dharmono",
+      "nomor": "PJ014",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1776038400000
+    },
+    "-OtPGWYVbczjOhgbrtXa": {
+      "idAnggota": "-Osy1P6BZbYAF0Em2Lk3",
+      "jasa": 20000,
+      "jumlah": 100000,
+      "kasId": "-OtPGWKbkjrtqSYG-oX8",
+      "ket": "",
+      "nama": "Yulianto",
+      "nomor": "PJ015",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1776384000000
+    },
+    "-OtPLml0qRjHZbvxfVz5": {
+      "idAnggota": "-Osy0veDoC2MzQewZiNJ",
+      "jasa": 20000,
+      "jumlah": 100000,
+      "kasId": "-OtPLm_U0ijwiJLT2Ddk",
+      "ket": "",
+      "nama": "Hendra",
+      "nomor": "PJ018",
+      "status": "belum",
+      "sumberKas": "bank",
+      "tanggal": 1776729600000
+    },
+    "-OtPM6OWRcK3KPkkJoPP": {
+      "idAnggota": "-Osy12T2va98KYoNymJA",
+      "jasa": 40000,
+      "jumlah": 200000,
+      "kasId": "-OtPM68A8NuGDjQrKuXd",
+      "ket": "",
+      "nama": "Suaeb boro",
+      "nomor": "PJ019",
+      "status": "belum",
+      "sumberKas": "cash",
+      "tanggal": 1779235200000
+    }
+  },
+  "simpanan": {
+    "-Osy29l_JDN1FBxBn9Lf": {
+      "anggotaId": "-Osy0fEqa0QVjLKp9h8P",
+      "idAnggota": "AG002",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "bank",
+      "nama": "Robby",
+      "tanggal": 1770249600000
+    },
+    "-Osy2DuCEu9uiz6KHKZR": {
+      "anggotaId": "-Osy0oJS-zqNHt0RZFOI",
+      "idAnggota": "AG003",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "bank",
+      "nama": "Sujiono",
+      "tanggal": 1770249600000
+    },
+    "-Osy2L9KAmCICC6Vps73": {
+      "anggotaId": "-Osy0veDoC2MzQewZiNJ",
+      "idAnggota": "AG004",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "bank",
+      "nama": "Hendra",
+      "tanggal": 1770595200000
+    },
+    "-Osy2NpYYPqIVM8KaMnS": {
+      "anggotaId": "-Osy12T2va98KYoNymJA",
+      "idAnggota": "AG005",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "bank",
+      "nama": "Suaeb boro",
+      "tanggal": 1770595200000
+    },
+    "-Osy2RyoeV-lnvK1-YYV": {
+      "anggotaId": "-Osy1B5R4C1ogI-jbyFY",
+      "idAnggota": "AG006",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "bank",
+      "nama": "Ferry",
+      "tanggal": 1770595200000
+    },
+    "-Osy2WAwXd3nDjU5VUCN": {
+      "anggotaId": "-Osy1ItVJ4Xv349uZKZl",
+      "idAnggota": "AG007",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "cash",
+      "nama": "Dharmono",
+      "tanggal": 1770595200000
+    },
+    "-Osy2Z-PMG6kXSmjowAD": {
+      "anggotaId": "-Osy1P6BZbYAF0Em2Lk3",
+      "idAnggota": "AG008",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "cash",
+      "nama": "Yulianto",
+      "tanggal": 1770768000000
+    },
+    "-Osy2bXvpf67uizB7ni3": {
+      "anggotaId": "-Osy1YkrmPJCsj7LtuOC",
+      "idAnggota": "AG009",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "cash",
+      "nama": "Djodi Ramadhan",
+      "tanggal": 1770768000000
+    },
+    "-OtKkHWeEzVFxhwoJvoI": {
+      "anggotaId": "-Osy0a3poHdK3tD5btG4",
+      "idAnggota": "AG001",
+      "jenis": "wajib",
+      "jumlah": 50000,
+      "keterangan": "-",
+      "metode": "bank",
+      "nama": "Nur ali",
+      "tanggal": 1770249600000
+    },
+    "-OtPN6GtEE-geoJXj_4T": {
+      "anggotaId": "-Osy1P6BZbYAF0Em2Lk3",
+      "idAnggota": "AG008",
+      "jenis": "sukarela",
+      "jumlah": 100000,
+      "keterangan": "-",
+      "metode": "cash",
+      "nama": "Yulianto",
+      "tanggal": 1779632825465
+    }
+  },
+  "users": {
+    "admin": {
+      "createdAt": 1779598342195,
+      "password": "789",
+      "role": "admin",
+      "username": "admin"
+    },
+    "robbi": {
+      "createdAt": 1779671302611,
+      "password": "123",
+      "role": "admin",
+      "username": "robbi"
+    }
+  }
+}
