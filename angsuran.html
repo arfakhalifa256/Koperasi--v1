@@ -381,7 +381,82 @@ function showToast(msg,error=false){
   toast.className = "toast show" + (error? " error" : "");
   setTimeout(()=>{ toast.className = "toast"; },2500);
 }
+async function kirimNotaWA(pinjamanId, angsuranData){
+  const p = dataPinjaman[pinjamanId];
+  if(!p){
+    showToast("Data pinjaman tidak ditemukan", true);
+    return;
+  }
 
+  try{
+    // Cari anggota berdasarkan nama
+    let anggotaData = null;
+    const anggotaSnap = await new Promise((resolve) => {
+      onValue(ref(db,"anggota"), (snap) => {
+        const semuaAnggota = snap.val() || {};
+        for(let key in semuaAnggota){
+          if(semuaAnggota[key].nama && semuaAnggota[key].nama.toLowerCase() === p.nama.toLowerCase()){
+            anggotaData = {id: key,...semuaAnggota[key]};
+            break;
+          }
+        }
+        resolve(anggotaData);
+      }, { onlyOnce: true });
+    });
+
+    if(!anggotaData){
+      showToast("Data anggota tidak ditemukan. Cek nama di /anggota", true);
+      return;
+    }
+
+    if(!anggotaData.telepon){
+      showToast("Nomor telepon anggota belum diisi di data anggota", true);
+      return;
+    }
+
+    let nohp = String(anggotaData.telepon).replace(/[^0-9]/g, '');
+    if(nohp.startsWith('0')){
+      nohp = '62' + nohp.slice(1);
+    }
+
+    const tanggal = new Date(angsuranData.tanggal).toLocaleDateString('id-ID');
+    const pesan = `*BUKTI ANGSURAN*
+Koperasi ARFA DRIVER
+
+Nama: ${anggotaData.nama}
+ID: ${anggotaData.id || '-'}
+Tanggal: ${tanggal}
+Bayar Pokok: ${rupiah(angsuranData.pokok)}
+Bayar Jasa: ${rupiah(angsuranData.jasa)}
+Total: ${rupiah(angsuranData.jumlahBayar)}
+Metode: ${(angsuranData.metode || 'cash').toUpperCase()}
+
+Terima kasih.`;
+
+    const url = `https://wa.me/${nohp}?text=${encodeURIComponent(pesan)}`;
+    window.open(url, '_blank');
+
+  }catch(err){
+    console.error(err);
+    showToast("Gagal ambil nomor WA: " + err.message, true);
+  }
+}
+  window.kirimNotaRiwayat = async function(angsuranId){
+  const a = dataAngsuran[angsuranId];
+  if(!a){
+    showToast("Data angsuran tidak ditemukan", true);
+    return;
+  }
+
+  // Panggil fungsi kirim WA yang udah ada
+  await kirimNotaWA(a.pinjamanId, {
+    tanggal: a.tanggal,
+    pokok: a.pokok,
+    jasa: a.jasa,
+    jumlahBayar: a.jumlahBayar,
+    metode: a.metode
+  });
+}
 /* HITUNG SISA & TAGIHAN */
 function getSisaPinjaman(id){
   const p = dataPinjaman[id];
@@ -449,7 +524,11 @@ function renderRiwayat(){
     html += `
     <div class="item">
       <div class="item-top">
-        <div><b>${a.nama || '-'}</b><br>${tanggal}</div>
+        <div>
+          <b>${a.nama || '-'}</b><br>
+          <small style="color:#666;">${a.idPinjaman || '-'}</small><br>
+          ${tanggal}
+        </div>
         <div class="badge ${a.metode || 'cash'}">${(a.metode || 'cash').toUpperCase()}</div>
       </div>
       <div>Pokok : ${rupiah(a.pokok)}</div>
@@ -457,12 +536,12 @@ function renderRiwayat(){
       <div><b>Total : ${rupiah(a.jumlahBayar)}</b></div>
       <div class="btn-group">
         <button type="button" class="btn-warning" onclick="window.editAngsuran('${id}')">Edit</button>
+        <button type="button" class="btn-primary" onclick="window.kirimNotaRiwayat('${id}')">Kirim WA</button>
       </div>
     </div>`;
   });
   list.innerHTML = html;
 }
-
 /* TOGGLE RIWAYAT */
 document.getElementById("btnRiwayat").onclick = ()=>{
   const list = document.getElementById("listTransaksi");
@@ -586,25 +665,21 @@ document.getElementById("btnSimpan").onclick = async ()=>{
   const tanggal = new Date(tanggalEl.value).getTime();
 
   try{
-
-    // SIMPAN ANGSURAN
     const angsuranBaru = push(angsuranRef);
-
     await set(angsuranBaru,{
-      pinjamanId: pinIdAktif,
-      nama: p.nama,
-      idPinjaman: p.nomor,
-      tanggal,
-      pokok,
-      jasa,
-      jumlahBayar: totalBayar,
-      metode
-    });
+  pinjamanId: pinIdAktif,
+  anggotaId: p.anggotaId || pinIdAktif, // ambil dari data pinjaman
+  nama: p.nama,
+  idPinjaman: p.nomor,
+  tanggal,
+  pokok,
+  jasa,
+  jumlahBayar: totalBayar,
+  metode
+});
 
-    // SIMPAN KE KAS
     const kasRef = ref(db,"kas/transaksi");
     const kasBaru = push(kasRef);
-
     await set(kasBaru,{
       jumlah: totalBayar,
       kategori: "angsuran",
@@ -617,22 +692,23 @@ document.getElementById("btnSimpan").onclick = async ()=>{
       angsuranId: angsuranBaru.key
     });
 
-    // simpan id kas di angsuran
-    await updateData(
-      ref(db,"angsuran/" + angsuranBaru.key),
-      {
-        kasId: kasBaru.key
-      }
-    );
+    await updateData(ref(db,"angsuran/" + angsuranBaru.key),{kasId: kasBaru.key});
 
     angsuranTerakhirId = angsuranBaru.key;
-
     showToast("Angsuran berhasil disimpan");
     btnNota.disabled = false;
 
+    // Kirim WA otomatis
+    kirimNotaWA(pinIdAktif, {
+      tanggal,
+      pokok,
+      jasa,
+      jumlahBayar: totalBayar,
+      metode
+    });
+
     pokokEl.value = "";
     jasaEl.value = "";
-
     updateInfo();
 
   }catch(err){
