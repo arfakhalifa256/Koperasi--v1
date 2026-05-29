@@ -1,316 +1,310 @@
-<!DOCTYPE html>  <html lang="id">  
-<head>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>Data Pinjaman</title>  
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>  <style>  
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');  
-*{box-sizing:border-box;margin:0;padding:0}  
-  
-  :root{  
-  --primary:#3b82f6;  
-  --primary-dark:#2563eb;  
-  --card:#ffffff;  
-  --bg:#f1f5f9;  
-  --text:#1f2937;  
-  --muted:#6b7280;  
-  --border:#e2e8f0;  
-  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);  
-  --radius:12px;  
-  --success:#10b981;  
-  --danger:#dc2626;  
-  --warning:#f59e0b;  
-  
-  --gray-50:#f8fafc;  
-  --gray-200:#e5e7eb;  
-}  
-    
-html,body{margin:0;padding:0;overflow-x:hidden}  
-body{  
-  font-family:'Poppins',sans-serif;  
-  background:var(--bg);  
-  color:var(--text);  
-  font-size:13px;  
-  padding-bottom:20px  
-}  
-header{  
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));  
-  color:white;  
-  padding:14px 16px;  
-  display:flex;  
-  justify-content:space-between;  
-  align-items:center;  
-  box-shadow:0 2px 12px rgba(59,130,246,.25);  
-  position:sticky;  
-  top:0;  
-  z-index:100  
-}  
-.header-left{display:flex;align-items:center;gap:12px}  
-.header-left h1{font-size:16px;font-weight:600}  
-.btn-back{  
-  background:rgba(255,255,255,.2);  
-  backdrop-filter:blur(10px);  
-  border:1px solid rgba(255,255,255,.3);  
-  color:#fff;  
-  width:36px;  
-  height:36px;  
-  border-radius:10px;  
-  display:flex;  
-  align-items:center;  
-  justify-content:center;  
-  cursor:pointer;  
-  transition:.2s;  
-  padding:0  
-}  
-.btn-back:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}  
-.container{padding:14px;max-width:1200px;margin:0 auto}  
-.page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark);letter-spacing:.5px}  
-.card{background:var(--card);padding:16px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid var(--border)}  
-.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700;color:var(--text)}  
-.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}  
-.summary-item{background:var(--gray-50);padding:12px;border-radius:10px;border:1px solid var(--border);text-align:center}  
-.summary-item b{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500}  
-.summary-item span{font-size:16px;font-weight:700;color:var(--text)}  
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}  
-.form-group{display:flex;flex-direction:column;gap:4px}  
-.form-group.full{grid-column:1/-1}  
-.form-group label{font-size:11px;font-weight:600;color:var(--muted)}  
-.form-group input,.form-group select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:'Poppins',sans-serif}  
-.form-group select:focus,.form-group input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.1)}  
-.form-group input:disabled{background:#f8fafc;color:var(--muted)}  
-.btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;transition:.2s;margin-top:4px}  
-.btn-primary:hover{background:var(--primary-dark)}  
-.btn-primary:disabled{background:#cbd5e1;cursor:not-allowed}  
-.filter-wrap{display:flex;gap:8px;align-items:end}  
-.filter-wrap select{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:'Poppins',sans-serif}  
-.pinjaman-card{background:var(--gray-50);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:.2s}  
-.pinjaman-card:hover{border-color:var(--primary);box-shadow:0 4px 12px rgba(59,130,246,.12)}  
-.pinjaman-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}  
-.pinjaman-no{font-size:14px;font-weight:700;color:var(--primary)}  
-.pinjaman-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#dbeafe;color:var(--primary);text-transform:uppercase}  
-.pinjaman-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}  
-.pinjaman-row.label{color:var(--muted)}  
-.pinjaman-row.value{font-weight:600}  
-.pinjaman-total{margin-top:10px;padding-top:10px;border-top:2px solid var(--border);font-size:14px;font-weight:700;color:var(--text)}  
-.pinjaman-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}  
-.pinjaman-actions button{flex:1;padding:7px 12px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:.2s}  
-.btn-edit{background:var(--warning);color:white}  
-.btn-delete{background:var(--danger);color:white}  
-.btn-nota{background:var(--success);color:white}  
-.btn-wa{background:#25d366;color:white}  
-.popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:999;padding:10px}  
-.popup-box{background:white;padding:20px;border-radius:16px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,.3)}  
-.popup-box h3{margin:0 0 16px 0;font-size:16px;font-weight:700}  
-.popup-btns{display:flex;gap:8px;margin-top:16px}  
-.popup-btns button{flex:1;padding:9px 12px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}  
-.btn-update{background:var(--primary);color:white}  
-.btn-cancel{background:var(--gray-200);color:var(--text)}  
-.loading{text-align:center;padding:40px;color:var(--muted)}  
-.alert{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;margin-top:10px}  
-.alert.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}  
-  
-  
-@media(max-width:768px){  
-  body{font-size:12px}  
-  .container{padding:10px}  
-  .card{padding:14px;border-radius:12px}  
-  .summary-grid{grid-template-columns:1fr}  
-  .form-grid{grid-template-columns:1fr}  
-  .pinjaman-row{font-size:11px}  
-  .header-actions button{padding:5px 8px;font-size:10px}  
-}  
-  
-.custom-alert{  
-  position:fixed;  
-  inset:0;  
-  background:rgba(0,0,0,.45);  
-  display:none;  
-  align-items:center;  
-  justify-content:center;  
-  z-index:99999;  
-  padding:20px;  
-  animation:fadeIn.2s ease;  
-}  
-  
-.custom-alert-box{  
-  width:100%;  
-  max-width:320px;  
-  background:#fff;  
-  border-radius:18px;  
-  padding:24px 20px;  
-  text-align:center;  
-  box-shadow:0 10px 35px rgba(0,0,0,.25);  
-  animation:zoomIn.2s ease;  
-}  
-.alert-icon{  
-  width:70px;  
-  height:70px;  
-  border-radius:50%;  
-  margin:auto;  
-  display:flex;  
-  align-items:center;  
-  justify-content:center;  
-  font-size:34px;  
-  margin-bottom:14px;  
-  color:white;  
-  font-weight:bold;  
-}  
-.alert-text{  
-  font-size:14px;  
-  font-weight:600;  
-  color:#1f2937;  
-  line-height:1.5;  
-  margin-bottom:18px;  
-}  
-.custom-alert button{  
-  border:none;  
-  padding:10px 18px;  
-  border-radius:10px;  
-  color:white;  
-  font-weight:700;  
-  cursor:pointer;  
-  width:100%;  
-  font-family:'Poppins',sans-serif;  
-}  
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}  
-@keyframes zoomIn{from{opacity:0;transform:scale(.85);}to{opacity:1;transform:scale(1);}}  
-</style> 
-</head>  
-<body>  
-  <header>  
-    <div class="header-left">  
-      <button class="btn-back" onclick="kembali()">  
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">  
-          <path d="M19 12H5M12 19l-7-7 7-7"/>  
-        </svg>  
-      </button>  
-      <h1>DATA PINJAMAN</h1>  
-    </div>  
-  </header> 
-  <div class="container">  
-  <div class="card">  
-    <div class="summary-grid">  
-      <div class="summary-item">  
-        <b>Total Pinjaman</b>  
-        <span>Rp <span id="totalPinjaman">0</span></span>  
-      </div>  
-      <div class="summary-item">  
-        <b>Saldo Kas</b>  
-        <span>Rp <span id="saldoKas">0</span></span>  
-      </div>  
-    </div>  
-  </div>    <div class="card" id="formPinjaman">  
-    <h3>Tambah Pinjaman</h3>  
-    <div class="form-grid">  
-      <div class="form-group">  
-        <label>Anggota</label>  
-        <select id="anggota" onchange="isiTelepon()"></select>  
-      </div>  
-      <div class="form-group">  
-  <label>No Telepon</label>  
-  <input type="text" id="telepon" readonly>  
-</div>  <div class="form-group">  
-    <label>No Pinjaman</label>  
-    <input type="text" id="noPinjaman" value="Loading..." disabled>  
-  </div>  
-  <div class="form-group">  
-    <label>Tanggal</label>  
-    <input type="date" id="tanggal">  
-  </div>  
-  <div class="form-group">  
-    <label>Metode</label>  
-    <select id="metode">  
-      <option value="">Pilih metode</option>  
-      <option value="cash">Cash</option>  
-      <option value="bank">Bank</option>  
-      <option value="e-wallet">E-Wallet</option>  
-      <option value="lainnya">Lainnya</option>  
-    </select>  
-  </div>  
-  <div class="form-group">  
-    <label>Jumlah</label>  
-    <input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()">  
-  </div>  
-  <div class="form-group">  
-    <label>Jasa (20% otomatis)</label>  
-    <input type="number" id="jasa" min="0" value="0" readonly>  
-  </div>  
-  <div class="form-group full">  
-    <label>Keterangan</label>  
-    <input type="text" id="ket" placeholder="Keterangan opsional">  
-  </div>  
-  <div class="form-group full">  
-    <button class="btn-primary" onclick="simpanPinjaman()">Simpan Pinjaman</button>  
-    <div id="notif"></div>  
-  </div>  
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Pinjaman</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --primary:#3b82f6;
+  --primary-dark:#2563eb;
+  --card:#ffffff;
+  --bg:#f1f5f9;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e2e8f0;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);
+  --radius:12px;
+  --success:#10b981;
+  --danger:#dc2626;
+  --warning:#f59e0b;
+  --gray-50:#f8fafc;
+  --gray-200:#e5e7eb;
+}
+
+html,body{margin:0;padding:0;overflow-x:hidden}
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:13px;
+  padding-bottom:20px
+}
+header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 12px rgba(59,130,246,.25);
+  position:sticky;
+  top:0;
+  z-index:100
+}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-left h1{font-size:16px;font-weight:600}
+.btn-back{
+  background:rgba(255,255,255,.2);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.3);
+  color:#fff;
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:.2s;
+  padding:0
+}
+.btn-back:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}
+.container{padding:14px;max-width:1200px;margin:0 auto}
+.page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark);letter-spacing:.5px}
+.card{background:var(--card);padding:16px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid var(--border)}
+.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700;color:var(--text)}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.summary-item{background:var(--gray-50);padding:12px;border-radius:10px;border:1px solid var(--border);text-align:center}
+.summary-item b{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500}
+.summary-item span{font-size:16px;font-weight:700;color:var(--text)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:11px;font-weight:600;color:var(--muted)}
+.form-group input,.form-group select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:'Poppins',sans-serif}
+.form-group select:focus,.form-group input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.form-group input:disabled{background:#f8fafc;color:var(--muted)}
+.btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;transition:.2s;margin-top:4px}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-primary:disabled{background:#cbd5e1;cursor:not-allowed}
+.pinjaman-card{background:var(--gray-50);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:.2s}
+.pinjaman-card:hover{border-color:var(--primary);box-shadow:0 4px 12px rgba(59,130,246,.12)}
+.pinjaman-header{display:flex;justify-content:space-between;align-items:start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.pinjaman-no{font-size:14px;font-weight:700;color:var(--primary)}
+.pinjaman-badge{font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:#dbeafe;color:var(--primary);text-transform:uppercase}
+.pinjaman-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.pinjaman-row.label{color:var(--muted)}
+.pinjaman-row.value{font-weight:600}
+.pinjaman-total{margin-top:10px;padding-top:10px;border-top:2px solid var(--border);font-size:14px;font-weight:700;color:var(--text)}
+.pinjaman-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.pinjaman-actions button{flex:1;padding:7px 12px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:.2s}
+.btn-edit{background:var(--warning);color:white}
+.btn-delete{background:var(--danger);color:white}
+.btn-nota{background:var(--success);color:white}
+.btn-wa{background:#25d366;color:white}
+.popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:999;padding:10px}
+.popup-box{background:white;padding:20px;border-radius:16px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.popup-box h3{margin:0 0 16px 0;font-size:16px;font-weight:700}
+.popup-btns{display:flex;gap:8px;margin-top:16px}
+.popup-btns button{flex:1;padding:9px 12px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
+.btn-update{background:var(--primary);color:white}
+.btn-cancel{background:var(--gray-200);color:var(--text)}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+.alert{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;margin-top:10px}
+.alert.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
+
+@media(max-width:768px){
+  body{font-size:12px}
+ .container{padding:10px}
+ .card{padding:14px;border-radius:12px}
+ .summary-grid{grid-template-columns:1fr}
+ .form-grid{grid-template-columns:1fr}
+ .pinjaman-row{font-size:11px}
+ .header-actions button{padding:5px 8px;font-size:10px}
+}
+
+.custom-alert{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+  padding:20px;
+  animation:fadeIn.2s ease;
+}
+.custom-alert-box{
+  width:100%;
+  max-width:320px;
+  background:#fff;
+  border-radius:18px;
+  padding:24px 20px;
+  text-align:center;
+  box-shadow:0 10px 35px rgba(0,0,0,.25);
+  animation:zoomIn.2s ease;
+}
+.alert-icon{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  margin-bottom:14px;
+  color:white;
+  font-weight:bold;
+}
+.alert-text{
+  font-size:14px;
+  font-weight:600;
+  color:#1f2937;
+  line-height:1.5;
+  margin-bottom:18px;
+}
+.custom-alert button{
+  border:none;
+  padding:10px 18px;
+  border-radius:10px;
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+  width:100%;
+  font-family:'Poppins',sans-serif;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes zoomIn{from{opacity:0;transform:scale(.85);}to{opacity:1;transform:scale(1);}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <h1>DATA PINJAMAN</h1>
+  </div>
+</header>
+
+<div class="container">
+  <div class="card">
+    <div class="summary-grid">
+      <div class="summary-item">
+        <b>Total Pinjaman</b>
+        <span>Rp <span id="totalPinjaman">0</span></span>
+      </div>
+      <div class="summary-item">
+        <b>Saldo Cash</b>
+        <span>Rp <span id="saldoCash">0</span></span>
+      </div>
+      <div class="summary-item">
+        <b>Saldo Bank</b>
+        <span>Rp <span id="saldoBank">0</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="formPinjaman">
+    <h3>Tambah Pinjaman</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Anggota</label>
+        <select id="anggota" onchange="isiTelepon()"></select>
+      </div>
+      <div class="form-group">
+        <label>No Telepon</label>
+        <input type="text" id="telepon" readonly>
+      </div>
+      <div class="form-group">
+        <label>No Pinjaman</label>
+        <input type="text" id="noPinjaman" value="Loading..." disabled>
+      </div>
+      <div class="form-group">
+        <label>Tanggal</label>
+        <input type="date" id="tanggal">
+      </div>
+      <div class="form-group">
+        <label>Metode</label>
+        <select id="metode">
+          <option value="">Pilih metode</option>
+          <option value="cash">Cash</option>
+          <option value="bank">Bank</option>
+          <option value="e-wallet">E-Wallet</option>
+          <option value="lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Jumlah</label>
+        <input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()">
+      </div>
+      <div class="form-group">
+        <label>Jasa (20% otomatis)</label>
+        <input type="number" id="jasa" min="0" value="0" readonly>
+      </div>
+      <div class="form-group full">
+        <label>Keterangan</label>
+        <input type="text" id="ket" placeholder="Keterangan opsional">
+      </div>
+      <div class="form-group full">
+        <button class="btn-primary" onclick="simpanPinjaman()">Simpan Pinjaman</button>
+        <div id="notif"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Daftar Pinjaman</h3>
+    <div id="tabelPinjaman"><div class="loading">Loading data...</div></div>
+  </div>
 </div>
 
-  </div>   
-    <div class="card">  
-    <h3>Filter Data</h3>  
-    <div class="filter-wrap">  
-      <select id="filterMetode" onchange="renderPinjaman()">  
-        <option value="">Semua Metode</option>  
-        <option value="cash">Cash</option>  
-        <option value="bank">Bank</option>  
-        <option value="e-wallet">E-Wallet</option>  
-        <option value="lainnya">Lainnya</option>  
-      </select>  
-    </div>  
-  </div>    
-    <div class="card">  
-    <h3>Daftar Pinjaman</h3>  
-    <div id="tabelPinjaman"><div class="loading">Loading data...</div></div>  
-  </div>  
-</div>  
-  <div id="popupEdit" class="popup">  
-  <div class="popup-box">  
-    <h3>Edit Pinjaman</h3>  
-    <div class="form-grid">  
-      <div class="form-group">  
-        <label>No Pinjaman</label>  
-        <input type="text" id="editNoPinjaman" disabled>  
-      </div>  
-      <div class="form-group">  
-        <label>Anggota</label>  
-        <select id="editAnggota"></select>  
-      </div>  
-      <div class="form-group">  
-        <label>Tanggal</label>  
-        <input type="date" id="editTanggal">  
-      </div>  
-      <div class="form-group">  
-        <label>Metode</label>  
-        <select id="editMetode">  
-          <option value="cash">Cash</option>  
-          <option value="bank">Bank</option>  
-          <option value="e-wallet">E-Wallet</option>  
-          <option value="lainnya">Lainnya</option>  
-        </select>  
-      </div>  
-      <div class="form-group">  
-        <label>Jumlah</label>  
-        <input type="number" id="editJumlah" oninput="hitungJasaEdit()">  
-      </div>  
-      <div class="form-group">  
-        <label>Jasa (20% otomatis)</label>  
-        <input type="number" id="editJasa" readonly>  
-      </div>  
-      <div class="form-group full">  
-        <label>Keterangan</label>  
-        <input type="text" id="editKet">  
-      </div>  
-    </div>  
-    <div class="popup-btns">  
-      <button class="btn-update" onclick="updatePinjaman()">Update</button>  
-      <button class="btn-cancel" onclick="tutupPopup()">Batal</button>  
-    </div>  
-  </div>  
-</div>  
+<div id="popupEdit" class="popup">
+  <div class="popup-box">
+    <h3>Edit Pinjaman</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>No Pinjaman</label>
+        <input type="text" id="editNoPinjaman" disabled>
+      </div>
+      <div class="form-group">
+        <label>Anggota</label>
+        <select id="editAnggota"></select>
+      </div>
+      <div class="form-group">
+        <label>Tanggal</label>
+        <input type="date" id="editTanggal">
+      </div>
+      <div class="form-group">
+        <label>Metode</label>
+        <select id="editMetode">
+          <option value="cash">Cash</option>
+          <option value="bank">Bank</option>
+          <option value="e-wallet">E-Wallet</option>
+          <option value="lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Jumlah</label>
+        <input type="number" id="editJumlah" oninput="hitungJasaEdit()">
+      </div>
+      <div class="form-group">
+        <label>Jasa (20% otomatis)</label>
+        <input type="number" id="editJasa" readonly>
+      </div>
+      <div class="form-group full">
+        <label>Keterangan</label>
+        <input type="text" id="editKet">
+      </div>
+    </div>
+    <div class="popup-btns">
+      <button class="btn-update" onclick="updatePinjaman()">Update</button>
+      <button class="btn-cancel" onclick="tutupPopup()">Batal</button>
+    </div>
+  </div>
+</div>
 
-  <script type="module">
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, onValue, update, remove, get, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
@@ -339,7 +333,7 @@ const saldoAwalRef = ref(db, "kas/saldoAwal");
 let dataPinjaman = {};
 let dataAnggota = {};
 let dataAngsuran = {};
-  let dataSaldoAwal = {};
+let dataSaldoAwal = {};
 let dataTransaksi = {};
 let editId = null;
 
@@ -360,31 +354,30 @@ const formatTanggal = t => {
 
 function showAlert(msg, type = "info") {
   const alertBox = document.getElementById("customAlert");
-  if(!alertBox) return alert(msg); // fallback kalau element ga ada
-  
+  if(!alertBox) return alert(msg);
+
   const icon = document.getElementById("alertIcon");
   const text = document.getElementById("alertText");
-  
-  text.innerText = msg; // isi pesan
-  
-  // ganti warna & icon berdasarkan type
-  icon.style.background = type === "danger"? "var(--danger)" 
-                       : type === "success"? "var(--success)" 
-                       : type === "warning"? "var(--warning)" 
+
+  text.innerText = msg;
+
+  icon.style.background = type === "danger"? "var(--danger)"
+                       : type === "success"? "var(--success)"
+                       : type === "warning"? "var(--warning)"
                        : "var(--primary)";
-  
-  icon.innerHTML = type === "danger"? "✕" 
-                 : type === "success"? "✓" 
-                 : type === "warning"? "!" 
+
+  icon.innerHTML = type === "danger"? "✕"
+                 : type === "success"? "✓"
+                 : type === "warning"? "!"
                  : "i";
-  
-  alertBox.style.display = "flex"; // munculin popup
+
+  alertBox.style.display = "flex";
 }
-  
+
 window.tutupAlert = () => document.getElementById("customAlert").style.display = "none";
 window.kembali = () => window.location.href = "dash.html";
 
-  window.showAlertWA = function(url){
+window.showAlertWA = function(url){
   const old = document.getElementById("waNotifPopup");
   if(old) old.remove();
 
@@ -411,7 +404,7 @@ window.kembali = () => window.location.href = "dash.html";
     div.remove();
   };
 }
-  
+
 window.hitungJasa = () => {
   const jumlah = Number(document.getElementById("jumlah").value) || 0;
   document.getElementById("jasa").value = Math.round(jumlah * 0.2);
@@ -426,8 +419,8 @@ onValue(anggotaRef, snap => {
   dataAnggota = snap.val() || {};
   anggotaSelect.innerHTML = "<option value=''>Pilih anggota</option>";
   Object.entries(dataAnggota)
-   .sort((a,b)=> a[1].nama.localeCompare(b[1].nama))
-   .forEach(([id,a])=>{
+  .sort((a,b)=> a[1].nama.localeCompare(b[1].nama))
+  .forEach(([id,a])=>{
       anggotaSelect.innerHTML += `<option value="${id}">${a.nama}</option>`;
     });
   loadDropdownEdit();
@@ -454,7 +447,7 @@ onValue(pinjamanRef, snap => {
   });
   renderPinjaman();
   hitungSummary();
-  hitungSaldoKas(); // update saldo kas juga
+  hitungSaldo();
 }, err => console.error("Error pinjaman:", err));
 
 // Load Angsuran
@@ -466,15 +459,15 @@ onValue(angsuranRef, snap => {
 // Load Kas untuk saldo
 onValue(saldoAwalRef, snap => {
   dataSaldoAwal = snap.val() || {};
-  hitungSaldoKas();
+  hitungSaldo();
 });
 
 onValue(kasTransaksiRef, snap => {
   dataTransaksi = snap.val() || {};
-  hitungSaldoKas();
+  hitungSaldo();
 });
 
-function hitungSaldoKas(){
+function hitungSaldo(){
   let saldoCash = Number(dataSaldoAwal.cash || 0);
   let saldoBank = Number(dataSaldoAwal.bank || 0);
 
@@ -495,19 +488,13 @@ function hitungSaldoKas(){
     }
   });
 
-  let totalSaldo = saldoCash + saldoBank;
-  document.getElementById("saldoKas").innerText = format(totalSaldo);
+  document.getElementById("saldoCash").innerText = format(saldoCash);
+  document.getElementById("saldoBank").innerText = format(saldoBank);
 }
 
 function renderPinjaman(){
   tabel.innerHTML = "";
-  let filterMetode = document.getElementById("filterMetode").value;
   let listPinjaman = Object.values(dataPinjaman);
-
-  if(filterMetode){
-    listPinjaman = listPinjaman.filter(p => p.sumberKas === filterMetode);
-  }
-
   listPinjaman.sort((a,b)=> Number(b.tanggal || 0) - Number(a.tanggal || 0));
 
   if(listPinjaman.length === 0){
@@ -562,11 +549,9 @@ function renderPinjaman(){
 
 function hitungSummary(){
   let totalPokok = 0;
-
   Object.values(dataPinjaman).forEach(p=>{
-    totalPokok += Number(p.jumlah || 0); // cuma pokok
+    totalPokok += Number(p.jumlah || 0);
   });
-
   document.getElementById("totalPinjaman").innerText = format(totalPokok);
 }
 
@@ -586,7 +571,7 @@ async function generateNoPinjaman(){
 window.onload = async () => {
   document.getElementById("tanggal").value = new Date().toISOString().split("T")[0];
   document.getElementById("noPinjaman").value = await previewNoPinjaman();
-  hitungSaldoKas();
+  hitungSaldo();
 }
 
 window.simpanPinjaman = async () => {
@@ -605,8 +590,6 @@ window.simpanPinjaman = async () => {
   if(!metode) return showAlert("Pilih metode!", "warning");
   if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
 
-
-  // Cek saldo kas
   let saldoCash = Number(dataSaldoAwal.cash || 0);
   let saldoBank = Number(dataSaldoAwal.bank || 0);
 
@@ -631,12 +614,10 @@ window.simpanPinjaman = async () => {
     return showAlert(`Saldo ${metode.toUpperCase()} tidak mencukupi! Tersedia: Rp ${format(saldoTerpilih)}`, "danger");
   }
 
-  // Generate nomor & simpan
   let nomor = await generateNoPinjaman();
   document.getElementById("noPinjaman").value = nomor;
   let tanggal = new Date(tanggalInput).getTime();
 
-  // 1. Simpan ke kas dulu
   let kas = await push(kasTransaksiRef,{
     tanggal,
     keterangan:`Pinjaman ${nama} (${nomor})`,
@@ -646,13 +627,11 @@ window.simpanPinjaman = async () => {
     jumlah: jumlah
   });
 
-  // 2. Simpan ke pinjaman
   await push(pinjamanRef,{
     nomor, idAnggota, nama, tanggal, jumlah, jasa,
     sumberKas:metode, ket, kasId: kas.key, status:"belum"
   });
 
-  // 3. WA OTOMATIS
   let anggota = dataAnggota[idAnggota];
   if(anggota){
     let nomorWA = anggota.telepon || anggota.hp || anggota.noHp || anggota.nohp || anggota.whatsapp || anggota.wa || "";
@@ -662,23 +641,7 @@ window.simpanPinjaman = async () => {
       if(nomorWA.startsWith("8")) nomorWA = "62" + nomorWA;
 
       let total = jumlah + jasa;
-      let pesan = `*KOPERASI ARFA DRIVER*
-
-Halo ${nama},
-
-Pinjaman Anda berhasil dibuat ✅
-
-*No Pinjaman*: ${nomor}
-*Tanggal*: ${formatTanggal(tanggal)}
-*Jumlah Pinjaman*: Rp ${format(jumlah)}
-*Jasa 20%*: Rp ${format(jasa)}
-*Total Tagihan*: Rp ${format(total)}
-*Metode*: ${metode.toUpperCase()}
-
-Terima kasih 🙏
-
-KOPERASI ARFA DRIVER`;
-
+      let pesan = `*KOPERASI ARFA DRIVER*\n\nHalo ${nama},\n\nPinjaman Anda berhasil dibuat ✅\n\n*No Pinjaman*: ${nomor}\n*Tanggal*: ${formatTanggal(tanggal)}\n*Jumlah Pinjaman*: Rp ${format(jumlah)}\n*Jasa 20%*: Rp ${format(jasa)}\n*Total Tagihan*: Rp ${format(total)}\n*Metode*: ${metode.toUpperCase()}\n\nTerima kasih 🙏\n\nKOPERASI ARFA DRIVER`;
       let url = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
       showAlertWA(url);
     }
@@ -744,44 +707,26 @@ window.updatePinjaman = async () => {
 }
 
 window.hapusPinjaman = async id => {
-
-  if(role !== "admin") return;
-
-  if(!confirm("Hapus pinjaman ini?\nTransaksi kas juga akan dikurangi!"))
-    return;
+  if(role!== "admin") return;
+  if(!confirm("Hapus pinjaman ini?\nTransaksi kas juga akan dikurangi!")) return;
 
   let p = dataPinjaman[id];
 
   try{
-
-    // hapus data pinjaman
     await remove(ref(db, `pinjaman/${id}`));
-
-    // hapus transaksi kas terkait
     if(p.kasId){
       await remove(ref(db, `kas/transaksi/${p.kasId}`));
     }
 
-    // refresh tampilan
     delete dataPinjaman[id];
-
     renderPinjaman();
     hitungSummary();
-    hitungSaldoKas();
+    hitungSaldo();
 
-    showAlert(
-      "Pinjaman & saldo kas berhasil diperbarui ✅",
-      "success"
-    );
-
+    showAlert("Pinjaman & saldo kas berhasil diperbarui ✅", "success");
   }catch(err){
-
     console.error(err);
-
-    showAlert(
-      "Gagal menghapus data",
-      "danger"
-    );
+    showAlert("Gagal menghapus data", "danger");
   }
 }
 
@@ -810,7 +755,8 @@ window.cetakNota = id => {
   doc.save(`Nota_${p.nomor}.pdf`);
 }
 </script>
-  <!-- CUSTOM ALERT -->
+
+<!-- CUSTOM ALERT -->
 <div id="customAlert" class="custom-alert">
   <div class="custom-alert-box">
     <div class="alert-icon" id="alertIcon">✓</div>
@@ -818,5 +764,5 @@ window.cetakNota = id => {
     <button onclick="tutupAlert()" id="alertBtn">OK</button>
   </div>
 </div>
-</body>  
+</body>
 </html>
