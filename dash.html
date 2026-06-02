@@ -78,12 +78,42 @@ header{
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
 canvas{max-width:100%!important;height:auto!important;display:block;}
-</style>
+  .sidebar-logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:16px;
+  border-bottom:1px solid #fff;
+  margin-bottom:10px;
+}
+
+.sidebar-logo img{
+  width:40px;
+  height:40px;
+  border-radius:50%; /* bikin bulat */
+  object-fit:cover; /* biar nggak gepeng */
+  flex-shrink:0;
+}
+
+.sidebar-logo h3{
+  font-size:15px;
+  font-weight:600;
+  color:#fff;
+  margin:0;
+  line-height:1.2;
+}
+  
+  
+  </style>
 </head>
 <body>
-
 <div id="sidebar" class="sidebar">
-  <h3>Menu Koperasi</h3>
+  <div class="sidebar-logo">
+    <img src="img/icon-192.png" alt="Logo Koperasi">
+    <h3>Menu Koperasi</h3>
+  </div>
+ 
+  
   <a href="anggota.html" class="menu-admin">👤 Anggota</a>
   <a href="kas.html" class="menu-admin">💰 Kas</a>
   <a href="simpanan.html" class="menu-admin">📄 Simpanan</a>
@@ -127,11 +157,19 @@ canvas{max-width:100%!important;height:auto!important;display:block;}
       <span>💰 Total Saldo</span>
       <h1 id="saldoTotal">Rp 0</h1>
     </div>
-    <div class="saldo-total">
+   
+  <div class="saldo-total">
   <span>💰 Total Pinjaman</span>
   <h1 id="totalPinjaman">Rp 0</h1>
 </div>
-  </div>
+<div class="saldo-total">
+  <span>💳 Total Angsuran Masuk</span>
+  <h1 id="totalAngsuran">Rp 0</h1>
+</div>
+<div class="saldo-total">
+  <span>📉 Sisa Pinjaman</span>
+  <h1 id="sisaPinjaman">Rp 0</h1>
+</div>
 
   <div class="card">
     <h3>Grafik Angsuran per Bulan</h3>
@@ -168,14 +206,14 @@ const kasTransaksiRef = ref(db, "kas/transaksi");
 const kasSaldoAwalRef = ref(db, "kas/saldoAwal");
 const pinjamanRef = ref(db, "pinjaman");
 const angsuranRef = ref(db, "angsuran");
-
 /* ===== STATE ===== */
 let saldoCash = 0, saldoBank = 0;
+let totalPinjaman = 0; // tambah ini
+let totalAngsuran = 0; // tambah ini
 let dataPinjaman = {};
 let dataAngsuran = {};
 let dataTransaksi = {};
 let dataSaldoAwal = {};
-
 let chartAngsuran;
 let chartPelunasan;
 
@@ -253,17 +291,28 @@ function hitungSaldo(){
 
 function updateDOM(){
   const totalSaldo = saldoCash + saldoBank;
-  
-  // Hitung total pinjaman dari dataPinjaman.jumlah
-  let totalPinjaman = 0;
+
+  // Hitung total pinjaman dari dataPinjaman.jumlah + jasa
+  totalPinjaman = 0;
   Object.values(dataPinjaman).forEach(p => {
-    totalPinjaman += Number(p.jumlah || 0);
+    totalPinjaman += Number(p.jumlah || 0) + Number(p.jasa || 0);
   });
+
+  // Hitung total angsuran masuk
+  totalAngsuran = 0;
+  Object.values(dataAngsuran).forEach(a => {
+    totalAngsuran += Number(a.jumlahBayar || a.pokok || 0);
+  });
+
+  // Hitung sisa pinjaman
+  const sisaPinjaman = totalPinjaman - totalAngsuran;
 
   document.getElementById("saldoCash").innerText = rupiah(saldoCash);
   document.getElementById("saldoBank").innerText = rupiah(saldoBank);
   document.getElementById("saldoTotal").innerText = rupiah(totalSaldo);
   document.getElementById("totalPinjaman").innerText = rupiah(totalPinjaman);
+  document.getElementById("totalAngsuran").innerText = rupiah(totalAngsuran);
+  document.getElementById("sisaPinjaman").innerText = rupiah(sisaPinjaman < 0? 0 : sisaPinjaman);
 }
 
 /* ===== ROLE MENU ===== */

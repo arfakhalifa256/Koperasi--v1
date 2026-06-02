@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Simpanan, Pinjaman, Angsuran</title>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #1e90ff;
+  --primary-dark: #0f3057;
+  --card: #ffffff;
+  --bg: #f1f5f9;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e2e8f0;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #f59e0b;
+  --info: #8b5cf6;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  padding-bottom: 20px;
+}
+
+header {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left { display: flex; align-items: center; gap: 10px; }
+.btn-back {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.btn-back:hover { background: rgba(255,255,255,0.25); }
+
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand img { width: 36px; height: 36px; border-radius: 50%; background: #fff; padding: 2px; }
+.brand-text.title { font-size: 14px; font-weight: 700; }
+
+.container { padding: 14px; max-width: 1200px; margin: 0 auto; }
+.page-title { text-align: center; margin: 8px 0 16px; font-size: 16px; font-weight: 700; color: var(--primary-dark); }
+
+.card {
+  background: var(--card);
+  padding: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+
+.filter-group { display: flex; flex-direction: column; gap: 4px; }
+.filter-group label { font-size: 11px; font-weight: 600; color: var(--muted); }
+.filter-group select,
+.filter-group input {
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.filter-btns { display: flex; gap: 6px; grid-column: 1 / -1; }
+.filter-btns button {
+  flex: 1;
+  padding: 7px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.summary-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+}
+
+.summary-item {
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+}
+
+.summary-item .label { font-size: 11px; color: var(--muted); }
+.summary-item .value { font-size: 15px; font-weight: 700; }
+.value.simpanan { color: var(--info); }
+.value.pinjaman { color: var(--danger); }
+.value.angsuran { color: var(--success); }
+
+.table-wrap { overflow-x: auto; margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 700px; }
+th {
+  background: #f8fafc;
+  padding: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  border-bottom: 2px solid var(--border);
+}
+td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
+tr:hover { background: #f8fafc; }
+.text-right { text-align: right; }
+
+.badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  display: inline-block;
+}
+.badge-simpanan { background: #e0e7ff; color: #3730a3; }
+.badge-pinjaman { background: #fee2e2; color: #991b1b; }
+.badge-angsuran { background: #dcfce7; color: #166534; }
+.badge-cash { background: #dcfce7; color: #166534; }
+.badge-bank { background: #dbeafe; color: #1e40af; }
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+}
+.tab {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--muted);
+  border-bottom: 3px solid transparent;
+}
+.tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+@media (max-width:768px){
+  table { font-size: 10px; }
+  th,td { padding: 6px; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="header-left">
+    <button class="btn-back" onclick="history.back()">←</button>
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text title">LAPORAN TRANSAKSI</div>
+    </div>
+  </div>
+  <button onclick="exportPDF()" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:white; padding:6px 12px; border-radius:8px; cursor:pointer;">PDF</button>
+</header>
+
+<div class="container">
+  <h3 class="page-title">LAPORAN SIMPANAN, PINJAMAN, ANGSURAN</h3>
+
+  <div class="card">
+    <div class="filter-grid">
+      <div class="filter-group">
+        <label>Dari Tanggal</label>
+        <input type="date" id="tglAwal">
+      </div>
+      <div class="filter-group">
+        <label>Sampai Tanggal</label>
+        <input type="date" id="tglAkhir">
+      </div>
+      <div class="filter-group">
+        <label>Jenis</label>
+        <select id="jenisFilter">
+          <option value="semua">Semua</option>
+          <option value="simpanan">Simpanan</option>
+          <option value="pinjaman">Pinjaman</option>
+          <option value="angsuran">Angsuran</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Sumber Kas</label>
+        <select id="sumberFilter">
+          <option value="semua">Semua</option>
+          <option value="cash">Cash</option>
+          <option value="bank">Bank</option>
+        </select>
+      </div>
+      <div class="filter-btns">
+        <button onclick="filterData()">Filter</button>
+        <button onclick="resetFilter()" style="background:#e2e8f0; color:var(--text);">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="label">Total Simpanan</div>
+        <div class="value simpanan" id="totalSimpanan">Rp 0</div>
+      </div>
+      <div class="summary-item">
+        <div class="label">Total Pinjaman</div>
+        <div class="value pinjaman" id="totalPinjaman">Rp 0</div>
+      </div>
+      <div class="summary-item">
+        <div class="label">Total Angsuran</div>
+        <div class="value angsuran" id="totalAngsuran">Rp 0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('semua')">Semua</div>
+    <div class="tab" onclick="switchTab('simpanan')">Simpanan</div>
+    <div class="tab" onclick="switchTab('pinjaman')">Pinjaman</div>
+    <div class="tab" onclick="switchTab('angsuran')">Angsuran</div>
+  </div>
+
+  <div id="tab-semua" class="tab-content active">
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Jenis</th>
+              <th>Sumber</th>
+              <th>Anggota</th>
+              <th>Ket</th>
+              <th class="text-right">Jumlah</th>
+            </tr>
+          </thead>
+          <tbody id="tbodySemua"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-simpanan" class="tab-content">
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Sumber</th>
+              <th>Anggota</th>
+              <th>Jenis Simpanan</th>
+              <th class="text-right">Jumlah</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="tbodySimpanan"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-pinjaman" class="tab-content">
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Sumber</th>
+              <th>Anggota</th>
+              <th>Tenor</th>
+              <th class="text-right">Jumlah Pinjaman</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyPinjaman"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-angsuran" class="tab-content">
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Sumber</th>
+              <th>Anggota</th>
+              <th class="text-right">Pokok</th>
+              <th class="text-right">Jasa</th>
+              <th class="text-right">Total</th>
+              <th>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyAngsuran"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let dataSimpanan = [];
+let dataPinjaman = [];
+let dataAngsuran = [];
+let dataKas = [];
+let currentTab = 'semua';
+
+window.addEventListener("DOMContentLoaded", ()=>{
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  document.getElementById("tglAwal").valueAsDate = firstDay;
+  document.getElementById("tglAkhir").valueAsDate = now;
+  loadData();
+});
+
+function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
+function formatTanggal(t){
+  if(!t) return "-";
+  const d = new Date(t);
+  if(isNaN(d)) return "-";
+  return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});
+}
+
+// Load kas/transaksi
+onValue(ref(db,"/kas/transaksi"), snap => {
+  dataKas = [];
+  if(snap.exists()){
+    Object.entries(snap.val()).forEach(([key, item]) => {
+      dataKas.push({
+        id: key,
+        tanggal: item.tanggal ? new Date(item.tanggal) : new Date(),
+        tipe: item.tipe,
+        kategori: item.kategori,
+        sumberKas: (item.sumberKas || 'cash').toLowerCase(),
+        simpananId: item.simpananId || null,
+        pinjamanId: item.pinjamanId || null,
+        angsuranId: item.angsuranId || null,
+        jumlah: Number(item.jumlah || 0),
+        keterangan: item.keterangan || ''
+      });
+    });
+  }
+  render();
+});
+
+function loadData(){
+  // Simpanan - pake simpananId, fallback ke jumlah+kategori kalau data lama
+  onValue(ref(db,"/simpanan"), snap => {
+    dataSimpanan = [];
+    if(snap.exists()){
+      Object.entries(snap.val()).forEach(([key, item]) => {
+        const kas = dataKas.find(k => 
+          k.simpananId === key || // data baru
+          (k.kategori && k.kategori.includes('simpanan') && k.jumlah === Number(item.jumlah || 0)) // fallback data lama
+        );
+        dataSimpanan.push({
+          id: key,
+          tanggal: item.tanggal? new Date(item.tanggal) : new Date(),
+          nama: item.nama || '-',
+          jenis: item.jenis || '-',
+          jumlah: Number(item.jumlah || 0),
+          sumberKas: kas? kas.sumberKas : 'cash',
+          keterangan: item.keterangan || '-'
+        });
+      });
+    }
+    render();
+  });
+
+  // Pinjaman - pake pinjamanId, fallback ke nomor
+  onValue(ref(db,"/pinjaman"), snap => {
+    dataPinjaman = [];
+    if(snap.exists()){
+      Object.entries(snap.val()).forEach(([key, item]) => {
+        const kas = dataKas.find(k => 
+          k.pinjamanId === key ||
+          (k.kategori === 'pinjaman' && k.keterangan && k.keterangan.includes(item.nomor))
+        );
+        dataPinjaman.push({
+          id: key,
+          tanggal: item.tanggal? new Date(item.tanggal) : new Date(),
+          nama: item.nama || '-',
+          nomor: item.nomor || '-',
+          tenor: item.tenor || '-',
+          jumlah: Number(item.jumlah || 0),
+          sumberKas: kas? kas.sumberKas : 'cash',
+          keterangan: item.keterangan || '-'
+        });
+      });
+    }
+    render();
+  });
+
+  // Angsuran
+  onValue(ref(db,"/angsuran"), snap => {
+    dataAngsuran = [];
+    if(snap.exists()){
+      Object.entries(snap.val()).forEach(([key, item]) => {
+        const kas = dataKas.find(k => k.angsuranId === key);
+        dataAngsuran.push({
+          id: key,
+          tanggal: item.tanggal ? new Date(item.tanggal) : new Date(),
+          nama: item.nama || '-',
+          pokok: Number(item.pokok || 0),
+          jasa: Number(item.jasa || 0),
+          total: Number(item.pokok || 0) + Number(item.jasa || 0),
+          sumberKas: kas? kas.sumberKas : (item.metode || 'cash').toLowerCase(),
+          keterangan: item.keterangan || '-'
+        });
+      });
+    }
+    render();
+  });
+}
+
+function applyFilter(data){
+  const awal = document.getElementById("tglAwal").value;
+  const akhir = document.getElementById("tglAkhir").value;
+  const sumber = document.getElementById("sumberFilter").value;
+
+  return data.filter(i => {
+    if(awal && i.tanggal < new Date(awal)) return false;
+    if(akhir) {
+      const b = new Date(akhir);
+      b.setHours(23,59,59,999);
+      if(i.tanggal > b) return false;
+    }
+    if(sumber !== 'semua' && i.sumberKas !== sumber) return false;
+    return true;
+  });
+}
+
+function render(){
+  const jenis = document.getElementById("jenisFilter").value;
+  
+  let s = applyFilter(dataSimpanan);
+  let p = applyFilter(dataPinjaman);
+  let a = applyFilter(dataAngsuran);
+
+  const totalS = s.reduce((sum, i) => sum + i.jumlah, 0);
+  const totalP = p.reduce((sum, i) => sum + i.jumlah, 0);
+  const totalA = a.reduce((sum, i) => sum + i.total, 0);
+  
+  document.getElementById("totalSimpanan").innerText = "Rp " + formatRp(totalS);
+  document.getElementById("totalPinjaman").innerText = "Rp " + formatRp(totalP);
+  document.getElementById("totalAngsuran").innerText = "Rp " + formatRp(totalA);
+
+  let allData = [];
+  if(jenis === 'semua' || jenis === 'simpanan'){ s.forEach(i => allData.push({...i, type: 'simpanan'})); }
+  if(jenis === 'semua' || jenis === 'pinjaman'){ p.forEach(i => allData.push({...i, type: 'pinjaman'})); }
+  if(jenis === 'semua' || jenis === 'angsuran'){ a.forEach(i => allData.push({...i, type: 'angsuran'})); }
+  
+  allData.sort((a,b) => b.tanggal - a.tanggal);
+  renderSemua(allData);
+  renderSimpanan(s);
+  renderPinjaman(p);
+  renderAngsuran(a);
+}
+
+function renderSemua(data){
+  const tbody = document.getElementById("tbodySemua");
+  tbody.innerHTML = "";
+  if(data.length === 0){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">Tidak ada data</td></tr>`;
+    return;
+  }
+  data.forEach(i => {
+    let badgeClass = i.type === 'simpanan'? 'badge-simpanan' : i.type === 'pinjaman'? 'badge-pinjaman' : 'badge-angsuran';
+    let badgeSumber = i.sumberKas === 'bank'? 'badge-bank' : 'badge-cash';
+    let jumlah = i.type === 'angsuran'? i.total : i.jumlah;
+    tbody.innerHTML += `
+      <tr>
+        <td>${formatTanggal(i.tanggal)}</td>
+        <td><span class="badge ${badgeClass}">${i.type}</span></td>
+        <td><span class="badge ${badgeSumber}">${i.sumberKas.toUpperCase()}</span></td>
+        <td>${i.nama}</td>
+        <td>${i.jenis || i.tenor || '-'}</td>
+        <td class="text-right">Rp ${formatRp(jumlah)}</td>
+      </tr>
+    `;
+  });
+}
+
+function renderSimpanan(data){
+  const tbody = document.getElementById("tbodySimpanan");
+  tbody.innerHTML = "";
+  if(data.length === 0){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">Tidak ada data</td></tr>`;
+    return;
+  }
+  data.sort((a,b) => b.tanggal - a.tanggal);
+  data.forEach(i => {
+    let badgeSumber = i.sumberKas === 'bank'? 'badge-bank' : 'badge-cash';
+    tbody.innerHTML += `
+      <tr>
+        <td>${formatTanggal(i.tanggal)}</td>
+        <td><span class="badge ${badgeSumber}">${i.sumberKas.toUpperCase()}</span></td>
+        <td>${i.nama}</td>
+        <td>${i.jenis}</td>
+        <td class="text-right">Rp ${formatRp(i.jumlah)}</td>
+        <td>${i.keterangan}</td>
+      </tr>
+    `;
+  });
+}
+
+function renderPinjaman(data){
+  const tbody = document.getElementById("tbodyPinjaman");
+  tbody.innerHTML = "";
+  if(data.length === 0){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">Tidak ada data</td></tr>`;
+    return;
+  }
+  data.sort((a,b) => b.tanggal - a.tanggal);
+  data.forEach(i => {
+    let badgeSumber = i.sumberKas === 'bank'? 'badge-bank' : 'badge-cash';
+    tbody.innerHTML += `
+      <tr>
+        <td>${formatTanggal(i.tanggal)}</td>
+        <td><span class="badge ${badgeSumber}">${i.sumberKas.toUpperCase()}</span></td>
+        <td>${i.nama}</td>
+        <td>${i.tenor}</td>
+        <td class="text-right">Rp ${formatRp(i.jumlah)}</td>
+        <td>${i.keterangan}</td>
+      </tr>
+    `;
+  });
+}
+
+function renderAngsuran(data){
+  const tbody = document.getElementById("tbodyAngsuran");
+  tbody.innerHTML = "";
+  if(data.length === 0){
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:30px;color:#6b7280">Tidak ada data</td></tr>`;
+    return;
+  }
+  data.sort((a,b) => b.tanggal - a.tanggal);
+  data.forEach(i => {
+    let badgeSumber = i.sumberKas === 'bank'? 'badge-bank' : 'badge-cash';
+    tbody.innerHTML += `
+      <tr>
+        <td>${formatTanggal(i.tanggal)}</td>
+        <td><span class="badge ${badgeSumber}">${i.sumberKas.toUpperCase()}</span></td>
+        <td>${i.nama}</td>
+        <td class="text-right">Rp ${formatRp(i.pokok)}</td>
+        <td class="text-right">Rp ${formatRp(i.jasa)}</td>
+        <td class="text-right">Rp ${formatRp(i.total)}</td>
+        <td>${i.keterangan}</td>
+      </tr>
+    `;
+  });
+}
+
+window.switchTab = function(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+window.filterData = function(){ render(); }
+
+window.resetFilter = function(){
+  document.getElementById("tglAwal").value = "";
+  document.getElementById("tglAkhir").value = "";
+  document.getElementById("jenisFilter").value = "semua";
+  document.getElementById("sumberFilter").value = "semua";
+  render();
+}
+
+window.exportPDF = function(){
+  const jenis = document.getElementById("jenisFilter").value;
+  const data = applyFilter(
+    currentTab === 'semua'? 
+    [...dataSimpanan.map(i=>({...i,type:'simpanan'})), 
+     ...dataPinjaman.map(i=>({...i,type:'pinjaman'})), 
+     ...dataAngsuran.map(i=>({...i,type:'angsuran'}))] :
+    currentTab === 'simpanan'? dataSimpanan :
+    currentTab === 'pinjaman'? dataPinjaman :
+    dataAngsuran
+  );
+
+  if(!data.length){
+    alert("Tidak ada data");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(14);
+  doc.text("KOPERASI ARFA DRIVER", 105, 15, { align: "center" });
+  doc.setFontSize(11);
+  doc.text(`LAPORAN ${currentTab.toUpperCase()}`, 105, 22, { align: "center" });
+
+  let rows = data.map(i => [
+    formatTanggal(i.tanggal),
+    i.sumberKas.toUpperCase(),
+    i.nama,
+    i.type || i.jenis || i.tenor || '-',
+    "Rp " + formatRp(i.type === 'angsuran'? i.total : i.jumlah)
+  ]);
+
+  doc.autoTable({
+    startY: 30,
+    head: [["Tanggal", "Sumber", "Anggota", "Ket", "Jumlah"]],
+    body: rows,
+    styles: { fontSize: 8 },
+    headStyles: { fillColor: [30, 144, 255] },
+    columnStyles: { 4: { halign: "right" } }
+  });
+
+  const today = new Date().toLocaleDateString("id-ID").replace(/\//g, "-");
+  doc.save(`laporan_${currentTab}_${today}.pdf`);
+};
+
+</script>
+</body>
+</html>
