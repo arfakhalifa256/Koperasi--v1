@@ -15,133 +15,213 @@
   --radius:12px;--border:#e5e7eb;
 }
 html,body{margin:0;padding:0;overflow-x:hidden;}
-body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;}
 
+/* ===== HEADER ===== */
 header{
   background:linear-gradient(to right,var(--primary),var(--primary-dark));
-  color:white;padding:14px 16px;font-size:17px;font-weight:600;
+  color:white;padding:12px 16px;font-size:14px;font-weight:600;
   display:flex;justify-content:space-between;align-items:center;
   box-shadow:0 3px 8px rgba(0,0,0,0.15);position:sticky;top:0;z-index:100;
 }
-.menu-btn{background:transparent;border:none;color:white;font-size:20px;cursor:pointer;padding:2px 4px;margin-right:8px;}
+.header-left{display:flex;align-items:center;gap:10px;}
+.header-right{display:flex;align-items:center;gap:8px;}
 
+.brand{display:flex;align-items:center;gap:10px;}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
+.brand-text .subtitle{font-size:10px;opacity:0.9;line-height:1;}
+.brand-text .title{font-size:14px;font-weight:700;line-height:1.2;}
+
+.menu-btn{
+  background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.25);color:white;
+  width:36px;height:36px;border-radius:8px;font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:0.2s;
+}
+.menu-btn:hover{background:rgba(255,255,255,0.25);transform:scale(1.05);}
+/* ===== CONTAINER ===== */
 .container{padding:16px;max-width:1100px;margin:0 auto;}
 .card{
-  background:var(--card);padding:12px;border-radius:var(--radius);
+  background:var(--card);padding:14px;border-radius:var(--radius);
   box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;
 }
-.card h3{margin:0 0 14px 0;font-size:14px;font-weight:600;color:var(--text);}
+.card h3{margin:0 0 12px 0;font-size:12px;font-weight:700;color:var(--text);}
 
-.saldo-card{display:flex;flex-direction:column;gap:8px;}
+/* ===== SALDO CARD ===== */
+.saldo-card{display:flex;flex-direction:column;gap:10px;}
 .saldo-item{
-  background:#f1f5f9;padding:14px;border-radius:10px;
+  background:#f8fafc;padding:12px;border-radius:8px;
   display:flex;justify-content:space-between;align-items:center;font-size:12px;
+  border:1px solid var(--border);
 }
-.saldo-item h2{margin:0;font-size:14px;color:var(--primary);}
+.saldo-item h2{margin:0;font-size:12px;font-weight:700;color:var(--primary);}
 .saldo-total{
   font-size:12px;background:linear-gradient(135deg,#1e90ff,#0f3057);
-  color:white;padding:18px;border-radius:6px;text-align:center;
+  color:white;padding:16px;border-radius:10px;text-align:center;
 }
-.saldo-total h1{margin-top:4px;font-size:16px;}
+.saldo-total h1{margin-top:4px;font-size:12px;font-weight:700;}
 
+/* ===== TOP LIST ===== */
 .top-item{
-  display:flex;align-items:center;gap:10px;padding:6px 0;
-  border-bottom:1px solid var(--border);font-size:13px;
+  display:flex;align-items:center;gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--border);font-size:1px;
 }
 .top-item:last-child{border-bottom:none;}
 .top-rank{
-  width:24px;height:24px;background:var(--primary);color:white;
+  width:28px;height:28px;background:var(--primary);color:white;
   border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;flex-shrink:0;
+  font-size:12px;font-weight:700;flex-shrink:0;
 }
 .top-name{flex:1;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .top-amount{color:var(--primary);font-weight:600;white-space:nowrap;}
-.top-empty{text-align:center;padding:20px;color:var(--muted);font-size:13px;}
+.top-empty{text-align:center;padding:20px;color:var(--muted);font-size:12px;}
 
+/* ===== SIDEBAR ===== */
 .sidebar{
-  position:fixed;top:0;left:-240px;width:220px;height:100%;background:#0d47a1;
-  padding:16px;transition:.3s;z-index:99999;overflow-y:auto;
+  position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;
+  padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;
+  box-shadow:2px 0 10px rgba(0,0,0,0.2);
 }
-.sidebar.active{left:0;}
-.sidebar h3{color:#fff;margin-bottom:16px;font-size:16px;}
-.sidebar a{
-  display:block;color:#fff;text-decoration:none;padding:10px 0;
-  border-bottom:1px solid rgba(255,255,.1);font-size:13px;
-}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9999;}
-.overlay.active{display:block;}
+.sidebar.open{left:0;}
 
-.user-badge{
-  background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,0.25);color:#fff;padding:6px 12px;
-  border-radius:20px;font-size:12px;font-weight:500;max-width:160px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+.sidebar-logo{
+  display:flex;align-items:center;gap:12px;
+  padding-bottom:16px;margin-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,0.2);
 }
-canvas{max-width:100%!important;height:auto!important;display:block;}
-  .sidebar-logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:16px;
-  border-bottom:1px solid #fff;
-  margin-bottom:10px;
-}
-
 .sidebar-logo img{
-  width:40px;
-  height:40px;
-  border-radius:50%; /* bikin bulat */
-  object-fit:cover; /* biar nggak gepeng */
-  flex-shrink:0;
+  width:40px;height:40px;border-radius:50%;object-fit:cover;
+  background:#fff;padding:2px;
+}
+.sidebar-logo h3{
+  color:#fff;margin:0;font-size:15px;font-weight:600;
 }
 
-.sidebar-logo h3{
-  font-size:15px;
+.sidebar-section{
+  color:rgba(255,255,255,0.6);
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:1px;margin:16px 0 8px 12px;
+}
+
+.sidebar a{
+  display:flex;align-items:center;gap:10px;
+  color:#fff;text-decoration:none;padding:11px 12px;
+  border-radius:8px;margin-bottom:4px;font-size:13px;
+  font-weight:500;transition:0.2s;
+}
+.sidebar a:hover{
+  background:rgba(255,255,255,0.15);transform:translateX(4px);
+}
+.sidebar a.active{background:rgba(255,255,255,0.2);}
+
+.overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,.4);display:none;z-index:999;
+}
+.overlay.active{display:block;}
+/* ===== TOP LIST ===== */
+.top-item{
+  display:flex;align-items:center;gap:10px;padding:10px 0;
+  border-bottom:1px solid var(--border);font-size:12px; /* fix: dari 1px */
+}
+.top-item:last-child{border-bottom:none;}
+.top-rank{
+  width:28px;height:28px;background:var(--primary);color:white;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.top-name{flex:1;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.top-amount{color:var(--primary);font-weight:600;white-space:nowrap;}
+.top-empty{text-align:center;padding:20px;color:var(--muted);font-size:12px;}
+
+
+/* ===== FOOTER ===== */
+.footer{
+  text-align:center;padding:20px;font-size:11px;
+  color:var(--muted);margin-top:40px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width:768px){
+  body{font-size:12px;}
+  .container{padding:12px;}
+  .saldo-item h2{font-size:14px;}
+  .saldo-total h1{font-size:16px;}
+  .brand img{width:32px;height:32px;}
+  .brand-text .title{font-size:13px;}
+}
+  .user-info{
+  text-align:right;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+#userDisplay{
+  font-size:11px;
   font-weight:600;
-  color:#fff;
-  margin:0;
   line-height:1.2;
 }
-  
-  
-  </style>
+.role-badge{
+  font-size:9px;
+  background:rgba(255,255,255,0.2);
+  padding:2px 6px;
+  border-radius:12px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+</style>
 </head>
 <body>
 <div id="sidebar" class="sidebar">
   <div class="sidebar-logo">
-    <img src="img/icon-192.png" alt="Logo Koperasi">
+    <img src="img/icon-192.png" alt="Logo">
     <h3>Menu Koperasi</h3>
   </div>
- 
-  
-  <a href="anggota.html" class="menu-admin">👤 Anggota</a>
-  <a href="kas.html" class="menu-admin">💰 Kas</a>
-  <a href="simpanan.html" class="menu-admin">📄 Simpanan</a>
-  <a href="pinjaman.html" class="menu-admin">💰 Pinjaman</a>
-  <a href="angsuran.html" class="menu-admin">📄 Angsuran</a>
-  <a href="cair.html" class="menu-admin">💰 Pencairan Simpanan</a>
-  <div class="divider"></div>
-  <a href="laporan.html">📊 Laporan</a>
-  <a href="backup.html" class="menu-admin">📊 Backup Kas</a>
-  <a href="saldoawal.html" class="menu-admin">👤 Saldo Awal</a>
-  <a href="labarugi.html" class="menu-admin">👤 Rugi Laba</a>
-  <a href="neraca.html" class="menu-admin">👤 Neraca</a>
-  <a href="user.html" class="menu-admin">👤 Kelola User</a>
-  <div class="divider"></div>
-  <a href="#" id="btnLogoutSide">🚪 Logout</a>
-</div>
 
+  <div class="sidebar-section">Data Master</div>
+  <a href="anggota.html">👤 Data Anggota</a>
+  <a href="pinjaman.html">💰 Pinjaman</a>
+  <a href="angsuran.html">📄 Angsuran</a>
+  <a href="simpanan.html">📊 Simpanan</a>
+  <a href="cair.html">💸 Pencairan Simpanan</a>
+
+  <div class="sidebar-section">Keuangan</div>
+  <a href="kas.html">💵 Kas</a>
+  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <a href="neraca.html">📖 Jurnal Umum</a>
+
+  <div class="sidebar-section">Laporan</div>
+  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
+  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
+  <a href="labarugi.html">📊 Laba Rugi</a>
+  <a href="backup.html">💾 Backup Data</a>
+
+  <div class="sidebar-section">Pengaturan</div>
+  <a href="user.html">⚙️ Kelola User</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
+</div>
 <div id="overlay" class="overlay"></div>
 
-<header>
-  <div class="header-right">
-    <div id="userDisplay" class="user-badge">Halo</div>
+  <header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA DRIVER</div>
+      </div>
+    </div>
   </div>
-  <span class="title">DASHBOARD</span>
-  <div style="display:flex;align-items:center;">
-    <span onclick="toggleSidebar()" class="menu-btn">☰</span>
+  <div class="header-right">
+    <div class="user-info">
+      <div id="userDisplay">Halo, User</div>
+      <div id="roleBadge" class="role-badge">user</div>
+    </div>
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
   </div>
 </header>
+
+
 
 <div class="container">
   <div class="card saldo-card">
@@ -170,22 +250,18 @@ canvas{max-width:100%!important;height:auto!important;display:block;}
   <span>📉 Sisa Pinjaman</span>
   <h1 id="sisaPinjaman">Rp 0</h1>
 </div>
-
-  <div class="card">
-    <h3>Grafik Angsuran per Bulan</h3>
-    <canvas id="chartAngsuran"></canvas>
-  </div>
-
-  <div class="card">
-    <h3>Grafik Pelunasan Pinjaman</h3>
-    <canvas id="chartPelunasan"></canvas>
-  </div>
-
-  <div class="card">
-    <h3>Top Peminjam</h3>
-    <div id="topPeminjam" class="top-list"></div>
-  </div>
+<div class="saldo-total">
+  <span>💸 Total Jasa Masuk</span>
+  <h1 id="totalJasa">Rp 0</h1>
 </div>
+<div class="saldo-total">
+  <span>🏦 Total Simpanan</span>
+  <h1 id="totalSimpanan">Rp 0</h1>
+</div>
+
+
+
+  
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -206,26 +282,21 @@ const kasTransaksiRef = ref(db, "kas/transaksi");
 const kasSaldoAwalRef = ref(db, "kas/saldoAwal");
 const pinjamanRef = ref(db, "pinjaman");
 const angsuranRef = ref(db, "angsuran");
+const simpananRef = ref(db, "simpanan");
+
 /* ===== STATE ===== */
 let saldoCash = 0, saldoBank = 0;
-let totalPinjaman = 0; // tambah ini
-let totalAngsuran = 0; // tambah ini
-let dataPinjaman = {};
-let dataAngsuran = {};
-let dataTransaksi = {};
-let dataSaldoAwal = {};
-let chartAngsuran;
-let chartPelunasan;
+let totalPinjaman = 0, totalAngsuran = 0, totalJasa = 0, totalSimpanan = 0;
+let dataPinjaman = {}, dataAngsuran = {}, dataTransaksi = {}, dataSaldoAwal = {}, dataSimpanan = {};
+let chartAngsuran, chartPelunasan;
 
 /* ===== FORMAT ===== */
 const rupiah = n => Number(n || 0).toLocaleString("id-ID", {
-  style: "currency",
-  currency: "IDR",
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0
+  style: "currency", currency: "IDR", minimumFractionDigits: 0, maximumFractionDigits: 0
 });
+
 /* ===== LISTEN DATA ===== */
-let loaded = {kas: false, pinjaman: false, angsuran: false};
+let loaded = {kas: false, pinjaman: false, angsuran: false, simpanan: false};
 
 onValue(kasSaldoAwalRef, snap => {
   dataSaldoAwal = snap.val() || {};
@@ -253,18 +324,19 @@ onValue(angsuranRef, snap => {
   cekRender();
 });
 
+onValue(simpananRef, snap => {
+  dataSimpanan = {};
+  snap.forEach(d => { dataSimpanan[d.key] = d.val(); });
+  loaded.simpanan = true;
+  cekRender();
+});
+
 function cekRender(){
-  // tunggu kas, pinjaman, angsuran semua selesai load
-  if(loaded.kas && loaded.pinjaman && loaded.angsuran){
+  if(loaded.kas && loaded.pinjaman && loaded.angsuran && loaded.simpanan){
     hitungSaldo();
     renderDashboard();
   }
 }
-onValue(angsuranRef, snap => {
-  dataAngsuran = {};
-  snap.forEach(d => { dataAngsuran[d.key] = d.val(); });
-  renderDashboard();
-});
 
 /* ===== HITUNG SALDO ===== */
 function hitungSaldo(){
@@ -275,9 +347,7 @@ function hitungSaldo(){
     const jumlah = Number(i.jumlah || 0);
     let tipe = String(i.tipe || i.jenis || "").toLowerCase();
     const sumber = String(i.sumberKas || "cash").toLowerCase();
-
     if(tipe === "biaya") tipe = "keluar";
-
     if(sumber === "cash"){
       saldoCash += tipe === "masuk"? jumlah : -jumlah;
     }
@@ -285,26 +355,29 @@ function hitungSaldo(){
       saldoBank += tipe === "masuk"? jumlah : -jumlah;
     }
   });
-
   updateDOM();
 }
 
 function updateDOM(){
   const totalSaldo = saldoCash + saldoBank;
 
-  // Hitung total pinjaman dari dataPinjaman.jumlah + jasa
   totalPinjaman = 0;
   Object.values(dataPinjaman).forEach(p => {
     totalPinjaman += Number(p.jumlah || 0) + Number(p.jasa || 0);
   });
 
-  // Hitung total angsuran masuk
   totalAngsuran = 0;
+  totalJasa = 0;
   Object.values(dataAngsuran).forEach(a => {
     totalAngsuran += Number(a.jumlahBayar || a.pokok || 0);
+    totalJasa += Number(a.jasa || 0);
   });
 
-  // Hitung sisa pinjaman
+  totalSimpanan = 0;
+  Object.values(dataSimpanan).forEach(s => {
+    totalSimpanan += Number(s.jumlah || 0);
+  });
+
   const sisaPinjaman = totalPinjaman - totalAngsuran;
 
   document.getElementById("saldoCash").innerText = rupiah(saldoCash);
@@ -313,36 +386,37 @@ function updateDOM(){
   document.getElementById("totalPinjaman").innerText = rupiah(totalPinjaman);
   document.getElementById("totalAngsuran").innerText = rupiah(totalAngsuran);
   document.getElementById("sisaPinjaman").innerText = rupiah(sisaPinjaman < 0? 0 : sisaPinjaman);
+  document.getElementById("totalJasa").innerText = rupiah(totalJasa);
+  document.getElementById("totalSimpanan").innerText = rupiah(totalSimpanan);
 }
 
-/* ===== ROLE MENU ===== */
-const role = localStorage.getItem("role");
-if(role!== "admin"){
-  document.querySelectorAll(".menu-admin").forEach(el => {
-    el.style.display = "none";
-  });
-}
-
-/* ===== USER DISPLAY ===== */
+/* ===== USER DISPLAY + ROLE ===== */
 document.addEventListener("DOMContentLoaded", () => {
   const username = localStorage.getItem("username") || "User";
+  const role = localStorage.getItem("role") || "user";
   const jam = new Date().getHours();
   let salam = jam < 11? "Pagi" : jam < 15? "Siang" : jam < 18? "Sore" : "Malam";
   document.getElementById("userDisplay").innerHTML = `${salam}, <b>${username}</b>`;
+  document.getElementById("roleBadge").innerText = role;
+
+  if(role!== "admin"){
+    document.querySelectorAll(".menu-admin").forEach(el => {
+      el.style.display = "none";
+    });
+  }
 });
 
 /* ===== SIDEBAR ===== */
 window.toggleSidebar = function(){
-  document.getElementById("sidebar").classList.toggle("active");
+  document.getElementById("sidebar").classList.toggle("open");
   document.getElementById("overlay").classList.toggle("active");
 };
 document.getElementById("overlay").addEventListener("click", toggleSidebar);
-
-/* ===== LOGOUT ===== */
-document.getElementById("btnLogoutSide").addEventListener("click", () => {
-  if(confirm("Yakin ingin logout?")){
+document.getElementById("btnLogout").addEventListener("click", (e)=>{
+  e.preventDefault();
+  if(confirm("Yakin mau logout?")){
     localStorage.clear();
-    window.location.href = "index.html";
+    location.href = "index.html";
   }
 });
 
@@ -355,6 +429,9 @@ function renderDashboard(){
 
 /* ===== GRAFIK ANGSURAN ===== */
 function grafikAngsuran(){
+  const canvas = document.getElementById("chartAngsuran");
+  if(!canvas) return; // amanin kalau canvas nggak ada
+
   let bulan = {};
   Object.values(dataAngsuran).forEach(a => {
     if(!a.tanggal) return;
@@ -363,57 +440,101 @@ function grafikAngsuran(){
     bulan[key] = (bulan[key] || 0) + Number(a.jumlahBayar || a.pokok || 0);
   });
 
-  const labels = Object.keys(bulan).sort();
-  const data = labels.map(k => bulan[k]);
+  const keys = Object.keys(bulan).sort();
+  const labels = keys.map(k => {
+    const [y,m] = k.split("-");
+    return new Date(y, m-1).toLocaleDateString("id-ID", {month:"short", year:"2digit"});
+  });
+  const data = keys.map(k => bulan[k]);
+
+  const ctx = canvas.getContext("2d");
+  const gradient = ctx.createLinearGradient(0, 0, 0, 240);
+  gradient.addColorStop(0, "#1e90ff");
+  gradient.addColorStop(1, "#0ea5e9");
 
   if(chartAngsuran) chartAngsuran.destroy();
-  chartAngsuran = new Chart(document.getElementById("chartAngsuran"),{
+  chartAngsuran = new Chart(ctx,{
     type:"bar",
     data:{
-      labels,
+      labels: labels.length? labels : ["-"],
       datasets:[{
         label:"Angsuran",
-        data,
-        backgroundColor:"#1e90ff"
+        data: data.length? data : [0],
+        backgroundColor: gradient,
+        borderRadius: 6
       }]
     },
-    options:{responsive:true,maintainAspectRatio:true}
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:"#0f3057",
+          callbacks:{label: ctx => "Rp " + Number(ctx.raw).toLocaleString("id-ID")}
+        }
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:9}}},
+        y:{beginAtZero:true,ticks:{font:{size:9},callback: v => v>=1000000? "Rp"+(v/1000000).toFixed(1)+"jt" : "Rp"+(v/1000)+"rb"}}
+      }
+    }
   });
 }
 
 /* ===== GRAFIK PELUNASAN ===== */
 function grafikPelunasan(){
+  const canvas = document.getElementById("chartPelunasan");
+  if(!canvas) return;
+
+  let dataSet = [];
   let labels = [];
-  let data = [];
 
   Object.entries(dataPinjaman).forEach(([pinId,p])=>{
     let totalPinjaman = Number(p.jumlah || 0) + Number(p.jasa || 0);
     let totalAngsuran = 0;
-
     Object.values(dataAngsuran).forEach(a=>{
       if(a.pinjamanId === pinId){
         totalAngsuran += Number(a.jumlahBayar || a.pokok || 0);
       }
     });
-
-    const persen = totalPinjaman? (totalAngsuran / totalPinjaman) * 100 : 0;
+    const persen = totalPinjaman? Math.min(100, (totalAngsuran / totalPinjaman) * 100) : 0;
     labels.push(p.nama || "-");
-    data.push(persen.toFixed(1));
+    dataSet.push(persen.toFixed(1));
   });
 
+  const ctx = canvas.getContext("2d");
+  const gradient = ctx.createLinearGradient(0, 0, 0, 240);
+  gradient.addColorStop(0, "#0f3057");
+  gradient.addColorStop(1, "#1e90ff");
+
   if(chartPelunasan) chartPelunasan.destroy();
-  chartPelunasan = new Chart(document.getElementById("chartPelunasan"),{
+  chartPelunasan = new Chart(ctx,{
     type:"line",
     data:{
-      labels,
+      labels: labels.length? labels : ["-"],
       datasets:[{
-        label:"% Pelunasan",
-        data,
+        label:"% Lunas",
+        data: dataSet.length? dataSet : [0],
         borderColor:"#0f3057",
-        tension:0.3
+        backgroundColor: gradient,
+        fill:true,
+        tension:0.4,
+        pointRadius:3
       }]
     },
-    options:{responsive:true,maintainAspectRatio:true}
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:"#0f3057",callbacks:{label: ctx => ctx.raw + "%"}}
+      },
+      scales:{
+        x:{ticks:{font:{size:8},maxRotation:45,minRotation:45}},
+        y:{beginAtZero:true,max:100,ticks:{font:{size:9},callback: v => v + "%"}}
+      }
+    }
   });
 }
 
@@ -426,9 +547,9 @@ function topPeminjam(){
   });
 
   const arr = Object.entries(map)
-   .map(([nama,jumlah])=>({nama,jumlah}))
-   .sort((a,b)=>b.jumlah - a.jumlah)
-   .slice(0,10);
+  .map(([nama,jumlah])=>({nama,jumlah}))
+  .sort((a,b)=>b.jumlah - a.jumlah)
+  .slice(0,10);
 
   let html = arr.map((p,i)=>`
     <div class="top-item">
