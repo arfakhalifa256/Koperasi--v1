@@ -6,7 +6,6 @@
 <title>Angsuran Pinjaman</title>
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
@@ -19,10 +18,122 @@ box-sizing:border-box;
 font-family:'Poppins',sans-serif;
 }
 
+:root{
+  --primary:#3b82f6;
+  --primary-dark:#2563eb;
+  --card:#ffffff;
+  --bg:#f1f5f9;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e2e8f0;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);
+  --radius:12px;
+  --success:#10b981;
+  --danger:#dc2626;
+  --warning:#f59e0b;
+}
+
 body{
-background:#f5f7fb;
-padding:15px;
-font-size:12px;
+background:var(--bg);
+color:var(--text);
+font-size:13px;
+padding-bottom:20px;
+}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 2px 12px rgba(59,130,246,.25);
+  position:sticky;
+  top:0;
+  z-index:100
+}
+.header-left{display:flex;align-items:center;gap:12px}
+.header-right{display:flex;align-items:center;gap:10px}
+.header-left h1{font-size:16px;font-weight:600}
+
+.menu-btn{
+  cursor: pointer;
+  font-size: 22px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  transition: 0.2s;
+}
+.menu-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 240px;
+  height: 100%;
+  background: #0f3057;
+  padding: 16px;
+  transition: 0.3s ease;
+  z-index: 9999;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+.sidebar.open { left: 0; }
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 2px;
+}
+.sidebar-logo h3 { color: #fff; font-size: 15px; font-weight: 600; }
+.sidebar-section {
+  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 16px 0 8px 12px;
+}
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  padding: 11px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+.sidebar a:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+.sidebar a.active { background: rgba(255,255,255,0.2); }
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.4);
+  display: none;
+  z-index: 999;
 }
 
 .card{
@@ -176,75 +287,57 @@ padding:10px;
 border-radius:10px;
 margin-top:10px;
 }
- :root{
-  --primary:#3b82f6;
-  --primary-dark:#2563eb;
-  --card:#ffffff;
-  --bg:#f1f5f9;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --border:#e2e8f0;
-  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);
-  --radius:12px;
-  --success:#10b981;
-  --danger:#dc2626;
-  --warning:#f59e0b;
-  --gray-50:#f8fafc;
-  --gray-200:#e5e7eb;
-}
 
-html,body{margin:0;padding:0;overflow-x:hidden}
-body{
-  font-family:'Poppins',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  font-size:13px;
-  padding-bottom:20px
-}
-header{
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  color:white;
-  padding:14px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  box-shadow:0 2px 12px rgba(59,130,246,.25);
-  position:sticky;
-  top:0;
-  z-index:100
-}
-.header-left{display:flex;align-items:center;gap:12px}
-.header-left h1{font-size:16px;font-weight:600}
-.btn-back{
-  background:rgba(255,255,255,.2);
-  backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,.3);
-  color:#fff;
-  width:36px;
-  height:36px;
-  border-radius:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  transition:.2s;
-  padding:0
+.container{
+padding:15px;
+max-width:900px;
+margin:0 auto;
 }
 </style>
 </head>
-  <body>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-logo">
+    <img src="img/icon-192.png" alt="Logo">
+    <h3>Menu Koperasi</h3>
+  </div>
+
+  <div class="sidebar-section">Data Master</div>
+  <a href="anggota.html">👤 Data Anggota</a>
+  <a href="pinjaman.html">💰 Pinjaman</a>
+  <a href="angsuran.html" class="active">📄 Angsuran</a>
+  <a href="simpanan.html">📊 Simpanan</a>
+  <a href="cair.html">💸 Pencairan Simpanan</a>
+
+  <div class="sidebar-section">Keuangan</div>
+  <a href="kas.html">💵 Kas</a>
+  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <a href="neraca.html">📖 Neraca</a>
+
+  <div class="sidebar-section">Laporan</div>
+  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
+  <a href="labarugi.html">📊 Laba Rugi</a>
+  <a href="backup.html">💾 Backup Data</a>
+
+  <div class="sidebar-section">Pengaturan</div>
+  <a href="user.html">⚙️ Kelola User</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
+</div>
+
+<div id="overlay" class="overlay"></div>
+
 <header>
   <div class="header-left">
-    <button class="btn-back" onclick="kembali()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
-      </svg>
-    </button>
     <h1>DATA ANGSURAN</h1>
   </div>
+  <div class="header-right">
+    <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+  </div>
 </header>
-</body>
 
+<div class="container">
 <div class="card">
 
 <h2>Input Angsuran</h2>
@@ -273,24 +366,21 @@ header{
 <input type="text" id="tagihan" disabled>
 </div>
 
- <div class="form-group">
+<div class="form-group">
 <label>Bayar Pokok <small style="color:#f59e0b">(bisa diubah)</small></label>
 <input type="text" id="pokok">
 </div>
 
 <div class="form-group">
 <label>Bayar Jasa <small style="color:#10b981">(auto 20%)</small></label>
- <input type="text" id="jasa">
+<input type="text" id="jasa">
 </div>
 
-<!-- TAMBAH INI -->
 <div class="form-group">
 <label>Masuk Simpanan Sukarela <small style="color:#10b981">(auto dari kelebihan)</small></label>
 <input type="text" id="simpanan" disabled>
 </div>
- 
- 
- 
+
 <div class="info-box">
 <div>Total Bayar : <b id="totalBayar">Rp0</b></div>
 <div>Sisa Pokok : <b id="sisaPokok">Rp0</b></div>
@@ -298,45 +388,25 @@ header{
 </div>
 
 <div class="btn-group">
-
-<button type="button" class="btn-primary" id="btnSimpan">
-Simpan
-</button>
-
-<button type="button" class="btn-warning" id="btnNota" disabled>
-Cetak Nota
-</button>
-
+<button type="button" class="btn-primary" id="btnSimpan">Simpan</button>
+<button type="button" class="btn-warning" id="btnNota" disabled>Cetak Nota</button>
 </div>
 
 </div>
 
 <div class="card">
-
-<button type="button" class="btn-success" id="btnRiwayat">
-Lihat Riwayat
-</button>
-
+<button type="button" class="btn-success" id="btnRiwayat">Lihat Riwayat</button>
 <div class="list" id="listTransaksi" style="display:none;"></div>
-
 </div>
 
 <!-- MODAL -->
-
 <div id="modalEditAngsuran" class="modal">
-
 <div class="modal-content">
-
 <div style="text-align:right;">
-<button
-onclick="window.tutupEditAngsuran()"
-style="background:#e53935;color:#fff;padding:5px 10px;border:none;border-radius:6px;">
-✕
-</button>
+<button onclick="tutupEditAngsuran()" style="background:#e53935;color:#fff;padding:5px 10px;border:none;border-radius:6px;">✕</button>
 </div>
 
 <h2>Edit Angsuran</h2>
-
 <input type="hidden" id="editAngsuranId">
 
 <div class="form-group">
@@ -366,33 +436,23 @@ style="background:#e53935;color:#fff;padding:5px 10px;border:none;border-radius:
 <label>Jasa</label>
 <input type="text" id="editAngsuranJasa">
 </div>
- 
- <div class="form-group">
+
+<div class="form-group">
 <label>Simpanan Sukarela</label>
 <input type="text" id="editAngsuranSimpanan">
 </div>
- 
 
 <div class="btn-group">
-<button type="button" class="btn-primary" id="btnUpdateAngsuran">
-Update
-</button>
-
-<button type="button" class="btn-danger" id="btnHapusAngsuran">
-Hapus
-</button>
-
-<button type="button" onclick="window.tutupEditAngsuran()">
-Batal
-</button>
+<button type="button" class="btn-primary" id="btnUpdateAngsuran">Update</button>
+<button type="button" class="btn-danger" id="btnHapusAngsuran">Hapus</button>
+<button type="button" onclick="tutupEditAngsuran()">Batal</button>
 </div>
 
 </div>
-
 </div>
-
 
 <div id="toast" class="toast"></div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -410,6 +470,24 @@ let dataAngsuran = {};
 let pinIdAktif = null;
 let angsuranTerakhirId = null;
 
+// SIDEBAR TOGGLE
+window.toggleSidebar = function(){
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  sidebar.classList.toggle("open");
+  overlay.style.display = sidebar.classList.contains("open")? "block" : "none";
+}
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
+
+// LOGOUT
+document.getElementById("btnLogout").addEventListener("click", (e)=>{
+  e.preventDefault();
+  if(confirm("Yakin ingin logout?")){
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+});
+
 // DOM
 const pokokEl = document.getElementById("pokok");
 const jasaEl = document.getElementById("jasa");
@@ -424,8 +502,6 @@ const btnNota = document.getElementById("btnNota");
   el.style.background = "#f3f4f6";
   el.style.cursor = "not-allowed";
 });
-
-window.kembali = () => window.location.href = "dash.html";
 
 function rupiah(n){ return Number(n || 0).toLocaleString("id-ID", {style:"currency", currency:"IDR"}); }
 function getNumber(v){ return parseInt(String(v).replace(/\D/g,'')) || 0; }
@@ -547,8 +623,8 @@ function renderRiwayat(){
       ${simpanan > 0? `<div style="color:#10b981;">Simpanan : ${rupiah(simpanan)}</div>` : ''}
       <div><b>Total : ${rupiah(total)}</b></div>
       <div class="btn-group">
-        <button type="button" class="btn-warning" onclick="window.editAngsuran('${id}')">Edit</button>
-        <button type="button" class="btn-primary" onclick="window.kirimNotaRiwayat('${id}')">Kirim WA</button>
+        <button type="button" class="btn-warning" onclick="editAngsuran('${id}')">Edit</button>
+        <button type="button" class="btn-primary" onclick="kirimNotaRiwayat('${id}')">Kirim WA</button>
       </div>
     </div>`;
   });
@@ -752,7 +828,7 @@ document.getElementById("editAngsuranPokok").addEventListener("input",function()
   hitungSimpananEdit();
 });
 
-// UPDATE
+  // UPDATE
 document.getElementById("btnUpdateAngsuran").onclick = async ()=>{
   const id = document.getElementById("editAngsuranId").value;
   if(!id) return showToast("ID tidak ditemukan",true);
@@ -857,5 +933,6 @@ document.getElementById("btnHapusAngsuran").onclick = async ()=>{
 
 tanggalEl.value = new Date().toISOString().split("T")[0];
 </script>
+ 
 </body>
 </html>
