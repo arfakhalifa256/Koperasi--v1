@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Restore Backup Koperasi</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 * {
   box-sizing: border-box;
@@ -22,8 +22,8 @@
   --text: #1f2937;
   --muted: #6b7280;
   --border: #e2e8f0;
-  --shadow: 0 1px 3px rgba(0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
-  --radius: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  --radius: 16px;
   --success: #16a34a;
   --danger: #dc2626;
   --warning: #f59e0b;
@@ -41,6 +41,7 @@ body {
   color: var(--text);
   font-size: 13px;
   padding-bottom: 20px;
+  min-height: 100vh;
 }
 
 /* ===== HEADER ===== */
@@ -63,23 +64,31 @@ header {
   gap: 10px;
 }
 
-.btn-back {
+.header-right,h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-back, .btn-menu {
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.25);
   color: #fff;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
-  padding: 0;
+  font-size: 12px;
 }
 
-.btn-back:hover {
+.btn-back:hover, .btn-menu:hover {
   background: rgba(255,255,255,0.25);
   transform: translateX(-2px);
 }
@@ -99,21 +108,103 @@ header {
   padding: 2px;
 }
 
-.brand-text.subtitle {
+.brand-text .subtitle {
   font-size: 10px;
   opacity: 0.9;
   line-height: 1;
 }
 
-.brand-text.title {
-  font-size: 14px;
+.brand-text .title {
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.2;
 }
 
-.header-right {
-  font-size: 13px;
+/* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 240px;
+  height: 100%;
+  background: #0f3057;
+  padding: 16px;
+  transition: 0.3s ease;
+  z-index: 9999;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 2px;
+}
+
+.sidebar-logo h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 15px;
   font-weight: 600;
+}
+
+.sidebar-section {
+  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 16px 0 8px 12px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  padding: 11px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+
+.sidebar a.active {
+  background: rgba(255,255,255,0.2);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.4);
+  display: none;
+  z-index: 999;
 }
 
 /* ===== CONTAINER ===== */
@@ -135,7 +226,7 @@ header {
 
 .card h3 {
   margin: 0 0 14px 0;
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text);
   display: flex;
@@ -156,7 +247,7 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
   transition: all 0.2s;
@@ -254,7 +345,7 @@ input[type=file]::file-selector-button {
   padding: 10px 12px;
   border-radius: 8px;
   margin-bottom: 12px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   display: flex;
   align-items: start;
@@ -273,37 +364,93 @@ input[type=file]::file-selector-button {
   border: 1px solid #bfdbfe;
 }
 
+/* ===== WELCOME CARD ===== */
+.welcome-card {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 20px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.welcome-card h2 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.welcome-card p {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 40px;
+}
+
 /* ===== MOBILE ===== */
 @media (max-width:768px){
   body { font-size: 12px; }
-.container { padding: 12px; }
-.card { padding: 14px; }
-.brand img { width: 32px; height: 32px; }
-.brand-text.title { font-size: 13px; }
+  .container { padding: 12px; }
+  .card { padding: 14px; }
+  .brand img { width: 32px; height: 32px; }
+  .brand-text .title { font-size: 13px; }
 }
-</style>
+  </style>
 </head>
 <body>
-
-<header>
-  <div class="header-left">
-    <div class="brand">
-      <img src="img/icon-192.png">
-      <div class="brand-text">
-        <div class="subtitle">Koperasi</div>
-        <div class="title">ARFA DRIVER</div>
-      </div>
-    </div>
+  
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-logo">
+    <img src="img/icon-192.png" alt="Logo">
+    <h3>Menu Koperasi</h3>
   </div>
-  <div class="header-actions">
-      <button class="btn-back" onclick="kembali()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
-      </svg>
-    </button>
+
+  <div class="sidebar-section">Data Master</div>
+  <a href="anggota.html">👤 Data Anggota</a>
+  <a href="pinjaman.html">💰 Pinjaman</a>
+  <a href="angsuran.html">📄 Angsuran</a>
+  <a href="simpanan.html">📊 Simpanan</a>
+  <a href="cair.html">💸 Pencairan Simpanan</a>
+
+  <div class="sidebar-section">Keuangan</div>
+  <a href="kas.html">💵 Kas</a>
+  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <a href="neraca.html">📖 Jurnal Umum</a>
+
+  <div class="sidebar-section">Laporan</div>
+  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
+  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
+  <a href="labarugi.html">📊 Laba Rugi</a>
+  <a href="backup.html">💾 Backup Data</a>
+
+  <div class="sidebar-section">Pengaturan</div>
+  <a href="user.html">⚙️ Kelola User</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
+</div>
+
+<div id="overlay" class="overlay"></div>
+  
+ <header>
+  <div class="header-left">
+    <h1>Backup Data</h1>
+  </div>
+  <div class="header-right">
+    <span class="menu-btn" onclick="toggleSidebar()">☰</span>
   </div>
 </header>
-
+  
+  <button class="btn-menu" onclick="toggleSidebar()">☰</button>
+  
+    </div>
+  </div>
+</header>
 <div class="container">
 
   <div class="card">
@@ -374,6 +521,23 @@ const firebaseConfig = {
 /* INIT */
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+// Sidebar toggle
+window.toggleSidebar = function(){
+  const s = document.getElementById("sidebar");
+  const o = document.getElementById("overlay");
+  s.classList.toggle("open");
+  o.style.display = s.classList.contains("open") ? "block" : "none";
+}
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
+
+// Logout
+document.getElementById("btnLogout").addEventListener("click", (e)=>{
+  e.preventDefault();
+  if(confirm("Yakin mau logout?")){
+    localStorage.clear();
+    location.href = "index.html";
+  }
+});
 
 /* LOGIN */
 const username = localStorage.getItem("username");

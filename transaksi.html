@@ -49,25 +49,49 @@ header {
   z-index: 100;
 }
 
-.header-left { display: flex; align-items: center; gap: 10px; }
-.btn-back {
+.btn-menu {
   background: rgba(255,255,255,0.15);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.25);
   color: #fff;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-size: 20px;
 }
-.btn-back:hover { background: rgba(255,255,255,0.25); }
 
 .brand { display: flex; align-items: center; gap: 10px; }
 .brand img { width: 36px; height: 36px; border-radius: 50%; background: #fff; padding: 2px; }
-.brand-text.title { font-size: 14px; font-weight: 700; }
+.brand-text .subtitle { font-size: 10px; opacity: 0.9; }
+.brand-text .title { font-size: 14px; font-weight: 700; }
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 240px;
+  height: 100%;
+  background: #0f3057;
+  padding: 16px;
+  transition: 0.3s;
+  z-index: 9999;
+  overflow-y: auto;
+}
+.sidebar.open { left: 0; }
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.4);
+  display: none;
+  z-index: 999;
+}
 
 .container { padding: 14px; max-width: 1200px; margin: 0 auto; }
 .page-title { text-align: center; margin: 8px 0 16px; font-size: 16px; font-weight: 700; color: var(--primary-dark); }
@@ -111,6 +135,8 @@ header {
   font-size: 12px;
   font-weight: 600;
 }
+.btn-pdf { background: var(--danger) !important; }
+.btn-wa { background: #25d366 !important; }
 
 .summary-grid {
   display:grid;
@@ -172,6 +198,7 @@ tr:hover { background: #f8fafc; }
   font-size: 13px;
   color: var(--muted);
   border-bottom: 3px solid transparent;
+  white-space: nowrap;
 }
 .tab.active {
   color: var(--primary);
@@ -181,35 +208,191 @@ tr:hover { background: #f8fafc; }
 .tab-content.active { display: block; }
 
 @media (max-width:768px){
-  table { font-size: 10px; }
+  table { font-size: 10px; min-width: 600px; }
   th,td { padding: 6px; }
+}
+  header {
+  background: linear-gradient(to right, var(--primary), var(--primary-dark));
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between; /* ini kunci biar kiri-kanan */
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-menu {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.2s;
+}
+.btn-menu:hover {
+  background: rgba(255,255,255,0.25);
+}
+  /* ===== SIDEBAR ===== */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 240px;
+  height: 100%;
+  background: #0f3057;
+  padding: 16px;
+  transition: 0.3s ease;
+  z-index: 9999;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 2px;
+}
+
+.sidebar-logo h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.sidebar-section {
+  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 16px 0 8px 12px;
+}
+
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  padding: 11px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.sidebar a:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+
+.sidebar a.active {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Overlay gelap pas sidebar kebuka */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.4);
+  display: none;
+  z-index: 999;
 }
 </style>
 </head>
-
 <body>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-logo">
+    <img src="img/icon-192.png" alt="Logo">
+    <h3>Menu Koperasi</h3>
+  </div>
+
+  <div class="sidebar-section">Data Master</div>
+  <a href="anggota.html">👤 Data Anggota</a>
+  <a href="pinjaman.html">💰 Pinjaman</a>
+  <a href="angsuran.html">📄 Angsuran</a>
+  <a href="simpanan.html">📊 Simpanan</a>
+  <a href="cair.html">💸 Pencairan Simpanan</a>
+
+  <div class="sidebar-section">Keuangan</div>
+  <a href="kas.html">💵 Kas</a>
+  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <a href="neraca.html">📖 Neraca</a>
+
+  <div class="sidebar-section">Laporan</div>
+  <a href="laporan-anggota.html" class="active">📋 Pinjaman & Angsuran</a>
+  <a href="labarugi.html">📊 Laba Rugi</a>
+  <a href="backup.html">💾 Backup Data</a>
+
+  <div class="sidebar-section">Pengaturan</div>
+  <a href="user.html">⚙️ Kelola User</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
+</div>
+
+<div id="overlay" class="overlay" onclick="toggleSidebar()"></div>
+
 <header>
   <div class="header-left">
-    <button class="btn-back" onclick="history.back()">←</button>
     <div class="brand">
       <img src="img/icon-192.png">
-      <div class="brand-text title">LAPORAN TRANSAKSI</div>
+      <div class="brand-text">
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA DRIVER</div>
+      </div>
     </div>
   </div>
-  <button onclick="exportPDF()" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:white; padding:6px 12px; border-radius:8px; cursor:pointer;">PDF</button>
+  <button class="btn-menu" onclick="toggleSidebar()">☰</button>
 </header>
 
 <div class="container">
-  <h3 class="page-title">LAPORAN SIMPANAN, PINJAMAN, ANGSURAN</h3>
+  <h2 class="page-title">Laporan Simpanan, Pinjaman & Angsuran</h2>
 
   <div class="card">
     <div class="filter-grid">
       <div class="filter-group">
-        <label>Dari Tanggal</label>
+        <label>Tanggal Awal</label>
         <input type="date" id="tglAwal">
       </div>
       <div class="filter-group">
-        <label>Sampai Tanggal</label>
+        <label>Tanggal Akhir</label>
         <input type="date" id="tglAkhir">
       </div>
       <div class="filter-group">
@@ -232,6 +415,8 @@ tr:hover { background: #f8fafc; }
       <div class="filter-btns">
         <button onclick="filterData()">Filter</button>
         <button onclick="resetFilter()" style="background:#e2e8f0; color:var(--text);">Reset</button>
+        <button onclick="exportPDF()" class="btn-pdf">PDF</button>
+        <button onclick="shareWA()" class="btn-wa">WA</button>
       </div>
     </div>
   </div>
@@ -378,6 +563,13 @@ function formatTanggal(t){
   return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});
 }
 
+// Sidebar toggle
+window.toggleSidebar = function(){
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("overlay").style.display = 
+    document.getElementById("sidebar").classList.contains("open") ? "block" : "none";
+}
+
 // Load kas/transaksi
 onValue(ref(db,"/kas/transaksi"), snap => {
   dataKas = [];
@@ -401,14 +593,13 @@ onValue(ref(db,"/kas/transaksi"), snap => {
 });
 
 function loadData(){
-  // Simpanan - pake simpananId, fallback ke jumlah+kategori kalau data lama
   onValue(ref(db,"/simpanan"), snap => {
     dataSimpanan = [];
     if(snap.exists()){
       Object.entries(snap.val()).forEach(([key, item]) => {
         const kas = dataKas.find(k => 
-          k.simpananId === key || // data baru
-          (k.kategori && k.kategori.includes('simpanan') && k.jumlah === Number(item.jumlah || 0)) // fallback data lama
+          k.simpananId === key ||
+          (k.kategori && k.kategori.includes('simpanan') && k.jumlah === Number(item.jumlah || 0))
         );
         dataSimpanan.push({
           id: key,
@@ -424,7 +615,6 @@ function loadData(){
     render();
   });
 
-  // Pinjaman - pake pinjamanId, fallback ke nomor
   onValue(ref(db,"/pinjaman"), snap => {
     dataPinjaman = [];
     if(snap.exists()){
@@ -448,7 +638,6 @@ function loadData(){
     render();
   });
 
-  // Angsuran
   onValue(ref(db,"/angsuran"), snap => {
     dataAngsuran = [];
     if(snap.exists()){
@@ -525,13 +714,14 @@ function renderSemua(data){
     let badgeClass = i.type === 'simpanan'? 'badge-simpanan' : i.type === 'pinjaman'? 'badge-pinjaman' : 'badge-angsuran';
     let badgeSumber = i.sumberKas === 'bank'? 'badge-bank' : 'badge-cash';
     let jumlah = i.type === 'angsuran'? i.total : i.jumlah;
+    let ket = i.type === 'simpanan'? i.jenis : i.type === 'pinjaman'? i.tenor : 'Angsuran';
     tbody.innerHTML += `
       <tr>
         <td>${formatTanggal(i.tanggal)}</td>
         <td><span class="badge ${badgeClass}">${i.type}</span></td>
         <td><span class="badge ${badgeSumber}">${i.sumberKas.toUpperCase()}</span></td>
         <td>${i.nama}</td>
-        <td>${i.jenis || i.tenor || '-'}</td>
+        <td>${ket}</td>
         <td class="text-right">Rp ${formatRp(jumlah)}</td>
       </tr>
     `;
@@ -619,8 +809,10 @@ window.switchTab = function(tab){
 window.filterData = function(){ render(); }
 
 window.resetFilter = function(){
-  document.getElementById("tglAwal").value = "";
-  document.getElementById("tglAkhir").value = "";
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  document.getElementById("tglAwal").valueAsDate = firstDay;
+  document.getElementById("tglAkhir").valueAsDate = now;
   document.getElementById("jenisFilter").value = "semua";
   document.getElementById("sumberFilter").value = "semua";
   render();
@@ -654,7 +846,7 @@ window.exportPDF = function(){
     formatTanggal(i.tanggal),
     i.sumberKas.toUpperCase(),
     i.nama,
-    i.type || i.jenis || i.tenor || '-',
+    i.type === 'simpanan'? i.jenis : i.type === 'pinjaman'? i.tenor : 'Angsuran',
     "Rp " + formatRp(i.type === 'angsuran'? i.total : i.jumlah)
   ]);
 
@@ -670,6 +862,22 @@ window.exportPDF = function(){
   const today = new Date().toLocaleDateString("id-ID").replace(/\//g, "-");
   doc.save(`laporan_${currentTab}_${today}.pdf`);
 };
+
+window.shareWA = function(){
+  const jenis = document.getElementById("jenisFilter").value;
+  const totalS = document.getElementById("totalSimpanan").innerText;
+  const totalP = document.getElementById("totalPinjaman").innerText;
+  const totalA = document.getElementById("totalAngsuran").innerText;
+  
+  const pesan = `*LAPORAN KOPERASI ARFA DRIVER*\n\n` +
+    `Periode: ${formatTanggal(document.getElementById("tglAwal").value)} - ${formatTanggal(document.getElementById("tglAkhir").value)}\n\n` +
+    `💰 Total Simpanan: ${totalS}\n` +
+    `💸 Total Pinjaman: ${totalP}\n` +
+    `📄 Total Angsuran: ${totalA}\n\n` +
+    `Detail lengkap cek di aplikasi.`;
+  
+  window.open(`https://wa.me/?text=${encodeURIComponent(pesan)}`, '_blank');
+}
 
 </script>
 </body>

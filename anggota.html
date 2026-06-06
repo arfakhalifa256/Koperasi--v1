@@ -142,58 +142,89 @@ header {
 .sidebar {
   position: fixed;
   top: 0;
-  left: 0;
+  left: -260px;
   width: 240px;
-  height: 100vh;
-  background: var(--primary-dark);
-  color: white;
-  padding: 16px 12px;
-  transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1000;
+  height: 100%;
+  background: #0f3057;
+  padding: 16px;
+  transition: 0.3s ease;
+  z-index: 9999;
   overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
 }
 
 .sidebar.open {
-  transform: translateX(0);
-  box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+  left: 0;
 }
 
-.sidebar h3 {
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
   margin-bottom: 16px;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 8px 8px 12px 8px;
   border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  padding: 2px;
+}
+
+.sidebar-logo h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.sidebar-section {
+  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 16px 0 8px 12px;
 }
 
 .sidebar a {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #cbd5e1;
+  color: #fff;
   text-decoration: none;
-  padding: 10px 12px;
+  padding: 11px 12px;
   border-radius: 8px;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
   font-size: 13px;
   font-weight: 500;
-  transition: all 0.2s ease;
-  cursor: pointer;
+  transition: 0.2s;
 }
 
 .sidebar a:hover {
-  background: var(--primary);
-  color: white;
-  transform: translateX(3px);
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
 }
 
-.divider {
-  height: 1px;
-  background: rgba(255,255,255,0.1);
-  margin: 10px 8px;
+.sidebar a.active {
+  background: rgba(255,255,255,0.2);
 }
 
+/* Overlay gelap pas sidebar kebuka */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.4);
+  display: none;
+  z-index: 999;
+}
 /* ===== OVERLAY ===== */
 .overlay {
   position: fixed;
@@ -515,20 +546,33 @@ header {
 
 <!-- SIDEBAR -->
 <div id="sidebar" class="sidebar">
-  <h3>Menu</h3>
-  <a href="anggota.html">👤 Anggota</a>
-  <a href="kas.html">💰 Kas</a>
-  <a href="simpanan.html">📄 Simpanan</a>
-    <a href="pinjaman.html">💰 Pinjaman</a>
-  <a href="angsuran.html">📄 Angsuran</a>
-  <div class="divider"></div>
+  <div class="sidebar-logo">
+    <img src="img/icon-192.png" alt="Logo">
+    <h3>Menu Koperasi</h3>
+  </div>
 
-  <a href="backup.html">📊 Backup Data</a>
-  
-  <a href="laporan.html">📊 Laporan</a>
-   <div class="divider"></div>
-  <a href="user.html" id="menuUser">👤 Kelola User</a>
-  <a href="#" id="btnLogoutSide">🚪 Logout</a>
+  <div class="sidebar-section">Data Master</div>
+  <a href="anggota.html">👤 Data Anggota</a>
+  <a href="pinjaman.html">💰 Pinjaman</a>
+  <a href="angsuran.html">📄 Angsuran</a>
+  <a href="simpanan.html">📊 Simpanan</a>
+  <a href="cair.html">💸 Pencairan Simpanan</a>
+
+  <div class="sidebar-section">Keuangan</div>
+  <a href="kas.html">💵 Kas</a>
+  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <a href="neraca.html">📖 Neraca</a>
+
+  <div class="sidebar-section">Laporan</div>
+  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
+  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
+  <a href="labarugi.html">📊 Laba Rugi</a>
+  <a href="transaksi.html">📊 Lap transaksi</a>
+
+  <div class="sidebar-section">Pengaturan</div>
+     <a href="backup.html">💾 Backup Data</a>
+  <a href="user.html">⚙️ Kelola User</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 
 <!-- OVERLAY -->

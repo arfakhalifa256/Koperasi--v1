@@ -12,10 +12,10 @@
 :root {
   --primary:#1e90ff;--primary-dark:#0f3057;--card:#fff;--bg:#f4f6f9;
   --text:#1f2937;--muted:#6b7280;--shadow:0 3px 10px rgba(0,0,0,0.08);
-  --radius:12px;--border:#e5e7eb;
+  --radius:10px;--border:#e5e7eb;
 }
 html,body{margin:0;padding:0;overflow-x:hidden;}
-body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:10px;}
 
 /* ===== HEADER ===== */
 header{
@@ -40,31 +40,31 @@ header{
 }
 .menu-btn:hover{background:rgba(255,255,255,0.25);transform:scale(1.05);}
 /* ===== CONTAINER ===== */
-.container{padding:16px;max-width:1100px;margin:0 auto;}
+.container{padding:14px;max-width:1100px;margin:0 auto;}
 .card{
   background:var(--card);padding:14px;border-radius:var(--radius);
   box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;
 }
-.card h3{margin:0 0 12px 0;font-size:12px;font-weight:700;color:var(--text);}
+.card h3{margin:0 0 12px 0;font-size:10px;font-weight:700;color:var(--text);}
 
 /* ===== SALDO CARD ===== */
-.saldo-card{display:flex;flex-direction:column;gap:10px;}
+.saldo-card{display:flex;flex-direction:column;gap:6px;}
 .saldo-item{
   background:#f8fafc;padding:12px;border-radius:8px;
   display:flex;justify-content:space-between;align-items:center;font-size:12px;
   border:1px solid var(--border);
 }
-.saldo-item h2{margin:0;font-size:12px;font-weight:700;color:var(--primary);}
+.saldo-item h2{margin:0;font-size:10px;font-weight:700;color:var(--primary);}
 .saldo-total{
-  font-size:12px;background:linear-gradient(135deg,#1e90ff,#0f3057);
-  color:white;padding:16px;border-radius:10px;text-align:center;
+  font-size:10px;background:linear-gradient(135deg,#1e90ff,#0f3057);
+  color:white;padding:10px;border-radius:10px;text-align:center;
 }
-.saldo-total h1{margin-top:4px;font-size:12px;font-weight:700;}
+.saldo-total h1{margin-top:2px;font-size:10px;font-weight:700;}
 
 /* ===== TOP LIST ===== */
 .top-item{
   display:flex;align-items:center;gap:10px;padding:10px 0;
-  border-bottom:1px solid var(--border);font-size:1px;
+  border-bottom:1px solid var(--border);font-size:10px;
 }
 .top-item:last-child{border-bottom:none;}
 .top-rank{
@@ -105,8 +105,8 @@ header{
 
 .sidebar a{
   display:flex;align-items:center;gap:10px;
-  color:#fff;text-decoration:none;padding:11px 12px;
-  border-radius:8px;margin-bottom:4px;font-size:13px;
+  color:#fff;text-decoration:none;padding:10px 10px;
+  border-radius:10px;margin-bottom:2px;font-size:10px;
   font-weight:500;transition:0.2s;
 }
 .sidebar a:hover{
@@ -122,17 +122,17 @@ header{
 /* ===== TOP LIST ===== */
 .top-item{
   display:flex;align-items:center;gap:10px;padding:10px 0;
-  border-bottom:1px solid var(--border);font-size:12px; /* fix: dari 1px */
+  border-bottom:1px solid var(--border);font-size:10px; /* fix: dari 1px */
 }
 .top-item:last-child{border-bottom:none;}
 .top-rank{
   width:28px;height:28px;background:var(--primary);color:white;
   border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:12px;font-weight:700;flex-shrink:0;
+  font-size:10px;font-weight:700;flex-shrink:0;
 }
 .top-name{flex:1;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .top-amount{color:var(--primary);font-weight:600;white-space:nowrap;}
-.top-empty{text-align:center;padding:20px;color:var(--muted);font-size:12px;}
+.top-empty{text-align:center;padding:20px;color:var(--muted);font-size:10px;}
 
 
 /* ===== FOOTER ===== */
@@ -154,7 +154,7 @@ header{
   text-align:right;
   display:flex;
   flex-direction:column;
-  gap:2px;
+  gap:0px;
 }
 #userDisplay{
   font-size:11px;
@@ -188,15 +188,17 @@ header{
   <div class="sidebar-section">Keuangan</div>
   <a href="kas.html">💵 Kas</a>
   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
-  <a href="neraca.html">📖 Jurnal Umum</a>
+  <a href="neraca.html">📖 Neraca</a>
+<a href="bukukas.html">📖 Buku kas</a>
 
   <div class="sidebar-section">Laporan</div>
   <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
   <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
   <a href="labarugi.html">📊 Laba Rugi</a>
-  <a href="backup.html">💾 Backup Data</a>
+  <a href="transaksi.html">📊 Lap transaksi</a>
 
   <div class="sidebar-section">Pengaturan</div>
+     <a href="backup.html">💾 Backup Data</a>
   <a href="user.html">⚙️ Kelola User</a>
   <a href="#" id="btnLogout">🚪 Logout</a>
 </div>

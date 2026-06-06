@@ -428,7 +428,6 @@ tr:hover {
 </div>
 
 <div id="toastPDF">Membuat PDF...</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -451,27 +450,35 @@ const angsuranRef = ref(db,"angsuran");
 
 let dataPinjaman = {};
 let dataAngsuran = {};
+let loaded = {pinjaman: false, angsuran: false};
 
 const formatRp = n => Number(n||0).toLocaleString("id-ID");
 
-window.kembali = function(){
-  window.location.href="laporan.html";
+
+window.kembali = () => {
+  if(document.referrer && document.referrer.includes(window.location.hostname)){
+    window.history.back();
+  } else {
+    window.location.href = "dash.html";
+  }
 }
+
 
 function loadFilter(){
   const sel = document.getElementById("filterAnggota");
   sel.innerHTML = `<option value="all">Semua Anggota</option>`;
   const set = new Set();
-  Object.values(dataPinjaman).forEach(p=>set.add(p.nama));
+  Object.values(dataPinjaman).forEach(p=> {
+    if(p.nama) set.add(p.nama);
+  });
   [...set].sort().forEach(n=>sel.innerHTML += `<option value="${n}">${n}</option>`);
 }
 
 function hitungPinjaman(p){
   const pin = Number(p.jumlah || 0);
-const jasa = Math.round(pin * 0.2); // 20.000 pas
-const totalTagihan = pin + jasa; // 120.000 pas
+  const jasa = Math.round(pin * 0.2);
+  const totalTagihan = pin + jasa;
 
-console.log(pin, jasa, totalTagihan); // cek di console
   let angs = 0;
   let lastAngsuran = null;
 
@@ -511,9 +518,14 @@ window.render = function(){
   Object.entries(dataPinjaman).forEach(([id,p])=>{
     p.id = id;
     p.key = id;
-    if(!group[p.nama]) group[p.nama] = [];
-    group[p.nama].push(p);
+    if(p.nama && (!group[p.nama])) group[p.nama] = [];
+    if(p.nama) group[p.nama].push(p);
   });
+
+  if(Object.keys(group).length === 0){
+    container.innerHTML = `<div class="card" style="text-align:center;color:var(--muted)">Belum ada data pinjaman</div>`;
+    return;
+  }
 
   for(const nama in group){
     if(filterNama!== "all" && nama.trim().toLowerCase()!== filterNama.trim().toLowerCase()) continue;
@@ -591,15 +603,23 @@ window.render = function(){
   document.getElementById("totalSisa").innerText = formatRp(totalSisa);
 }
 
-onValue(pinjamanRef,s=>{
-  dataPinjaman = s.exists()?s.val():{};
-  loadFilter();
-  render();
+function cekRender(){
+  if(loaded.pinjaman && loaded.angsuran){
+    loadFilter();
+    render();
+  }
+}
+
+onValue(pinjamanRef, s=>{
+  dataPinjaman = s.exists()? s.val() : {};
+  loaded.pinjaman = true;
+  cekRender();
 });
 
-onValue(angsuranRef,s=>{
-  dataAngsuran = s.exists()?s.val():{};
-  render();
+onValue(angsuranRef, s=>{
+  dataAngsuran = s.exists()? s.val() : {};
+  loaded.angsuran = true;
+  cekRender();
 });
 
 window.exportPDF = function () {
@@ -720,6 +740,5 @@ window.exportPDF = function () {
 };
 </script>
 
-</script>
 </body>
 </html

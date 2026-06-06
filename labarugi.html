@@ -205,68 +205,95 @@
     const transaksi = kasData.transaksi || {};
 
     // ===== 1. PENDAPATAN =====
-    let totalJasa = 0, jmlTransaksiJasa = 0;
-    let pendapatanLain = 0;
+    // ===== PENDAPATAN JASA DARI ANGSURAN =====
+let totalJasa = 0;
+let jmlTransaksiJasa = 0;
 
-    // Ambil jasa dari angsuran
-    Object.values(dataGlobal.angsuran || {}).forEach(a=>{
-      if(!a) return;
-      let tgl = typeof a.tanggal === "number" ? a.tanggal : new Date(a.tanggal).getTime();
-      if(tgl < tglMulai || tgl > tglAkhir) return;
-      const jasa = Number(a.jasa) || 0;
-      if(jasa > 0){
-        totalJasa += jasa;
-        jmlTransaksiJasa++;
-      }
-    });
+Object.values(dataGlobal.angsuran || {}).forEach(a => {
+  if (!a) return;
 
-    // Ambil pendapatan lain dari kas.transaksi
-    Object.values(transaksi).forEach(t=>{
-      if(!t || t.tipe !== "masuk") return;
-      let tgl = typeof t.tanggal === "number" ? t.tanggal : new Date(t.tanggal).getTime();
-      if(tgl < tglMulai || tgl > tglAkhir) return;
-      
-      const kategori = (t.kategori || "").toLowerCase();
-      const keterangan = (t.keterangan || "").toLowerCase();
-      
-      // Jika kategori = pendapatan lain, atau keterangan mengandung "pendapatan lain"
-      if(kategori.includes("pendapatan lain") || keterangan.includes("pendapatan lain")){
-        pendapatanLain += Number(t.jumlah) || 0;
-      }
-    });
+  const tgl = Number(a.tanggal || 0);
+  if (tgl < tglMulai || tgl > tglAkhir) return;
 
-    const totalPendapatan = totalJasa + pendapatanLain;
+  const jasa = Number(a.jasa || 0);
 
-    // ===== 2. BEBAN OPERASIONAL =====
-    let bebanGaji = 0, bebanListrik = 0, bebanAtk = 0, bebanLain = 0;
+  if (jasa > 0) {
+    totalJasa += jasa;
+    jmlTransaksiJasa++;
+  }
+});
 
-    Object.values(transaksi).forEach(t=>{
-      if(!t || t.tipe !== "keluar") return;
-      let tgl = typeof t.tanggal === "number" ? t.tanggal : new Date(t.tanggal).getTime();
-      if(tgl < tglMulai || tgl > tglAkhir) return;
-      
-      const kategori = (t.kategori || "").toLowerCase();
-      const keterangan = (t.keterangan || "").toLowerCase();
-      const jumlah = Number(t.jumlah) || 0;
-      
-      // Skip jika ini pembayaran pinjaman/angsuran/simpanan
-      const isNotBeban = keterangan.includes("pinjam") || keterangan.includes("angsur") || keterangan.includes("simpanan");
-      if(isNotBeban) return;
-      
-      if(kategori.includes("gaji") || keterangan.includes("gaji") || keterangan.includes("honor")){
-        bebanGaji += jumlah;
-      } else if(kategori.includes("listrik") || kategori.includes("air") || keterangan.includes("listrik") || keterangan.includes("pdam")){
-        bebanListrik += jumlah;
-      } else if(kategori.includes("atk") || keterangan.includes("atk") || keterangan.includes("alat tulis")){
-        bebanAtk += jumlah;
-      } else if(kategori.includes("biaya operasional") || kategori.includes("operasional") || kategori.includes("biaya")){
-        bebanLain += jumlah;
-      }
-    });
 
-    const totalBeban = bebanGaji + bebanListrik + bebanAtk + bebanLain;
-    const shu = totalPendapatan - totalBeban;
+// ===== PENDAPATAN LAIN =====
+let pendapatanLain = 0;
 
+Object.values(transaksi).forEach(t => {
+  if (!t || t.tipe !== "masuk") return;
+
+  const tgl = Number(t.tanggal || 0);
+  if (tgl < tglMulai || tgl > tglAkhir) return;
+
+  const kategori = (t.kategori || "").toLowerCase();
+
+  if (
+    kategori.includes("pendapatan") ||
+    kategori.includes("lain")
+  ) {
+    pendapatanLain += Number(t.jumlah || 0);
+  }
+});
+
+const totalPendapatan = totalJasa + pendapatanLain;
+   // ===== BEBAN OPERASIONAL =====
+let bebanGaji = 0;
+let bebanListrik = 0;
+let bebanAtk = 0;
+let bebanLain = 0;
+
+Object.values(transaksi).forEach(t => {
+
+  if (!t || t.tipe !== "keluar") return;
+
+  const tgl = Number(t.tanggal || 0);
+  if (tgl < tglMulai || tgl > tglAkhir) return;
+
+  const kategori = (t.kategori || "").toLowerCase();
+  const jumlah = Number(t.jumlah || 0);
+
+  // Jangan hitung pencairan pinjaman
+  if (
+      kategori === "pinjaman" ||
+      kategori === "pokok" ||
+      kategori === "jasa" ||
+      kategori === "simpanan"
+  ) return;
+
+  if (kategori.includes("gaji")) {
+      bebanGaji += jumlah;
+  }
+  else if (
+      kategori.includes("listrik") ||
+      kategori.includes("air")
+  ) {
+      bebanListrik += jumlah;
+  }
+  else if (
+      kategori.includes("atk") ||
+      kategori.includes("alat tulis")
+  ) {
+      bebanAtk += jumlah;
+  }
+  else {
+      // biaya operasional, transport, konsumsi dll
+      bebanLain += jumlah;
+  }
+});
+
+const totalBeban =
+  bebanGaji +
+  bebanListrik +
+  bebanAtk +
+  bebanLain;
     // ===== 3. RENDER =====
     document.getElementById("pendapatanJasa").innerText = rupiah(totalJasa);
     document.getElementById("pendapatanLain").innerText = rupiah(pendapatanLain);
@@ -293,10 +320,15 @@
     document.getElementById("dbgShu").innerText = rupiah(shu);
   }
 
-  function kembali(){
-    if(document.referrer) history.back();
-    else window.location.href = 'dash.html';
+  
+window.kembali = () => {
+  if(document.referrer && document.referrer.includes(window.location.hostname)){
+    window.history.back();
+  } else {
+    window.location.href = "dash.html";
   }
+}
+
 
   function shareWA(){
     const periode = document.getElementById("periode").innerText;
