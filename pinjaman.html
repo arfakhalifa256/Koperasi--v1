@@ -36,6 +36,8 @@ body{
   font-size:13px;
   padding-bottom:20px
 }
+
+/* HEADER */
 header{
   background:linear-gradient(135deg,var(--primary),var(--primary-dark));
   color:white;
@@ -50,7 +52,7 @@ header{
 }
 .header-left{display:flex;align-items:center;gap:12px}
 .header-left h1{font-size:16px;font-weight:600}
-.btn-back{
+.btn-back,.btn-menu{
   background:rgba(255,255,255,.2);
   backdrop-filter:blur(10px);
   border:1px solid rgba(255,255,255,.3);
@@ -63,9 +65,80 @@ header{
   justify-content:center;
   cursor:pointer;
   transition:.2s;
-  padding:0
+  padding:0;
+  font-size:18px
 }
 .btn-back:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}
+.btn-menu:hover{background:rgba(255,255,255,.3)}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 240px;
+  height: 100%;
+  background: #0f3057;
+  padding: 16px;
+  transition: 0.3s ease;
+  z-index: 9999;
+  overflow-y: auto;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+}
+.sidebar.open { left: 0; }
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 2px;
+}
+.sidebar-logo h3 { color: #fff; font-size: 15px; font-weight: 600; }
+.sidebar-section {
+  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 16px 0 8px 12px;
+}
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  padding: 11px 12px;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+.sidebar a:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+.sidebar a.active { background: rgba(255,255,255,0.2); }
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,.4);
+  display: none;
+  z-index: 999;
+}
+
 .container{padding:14px;max-width:1200px;margin:0 auto}
 .page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark);letter-spacing:.5px}
 .card{background:var(--card);padding:16px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid var(--border)}
@@ -112,14 +185,14 @@ header{
 
 @media(max-width:768px){
   body{font-size:12px}
- .container{padding:10px}
- .card{padding:14px;border-radius:12px}
- .summary-grid{grid-template-columns:1fr}
- .form-grid{grid-template-columns:1fr}
- .pinjaman-row{font-size:11px}
- .header-actions button{padding:5px 8px;font-size:10px}
+.container{padding:10px}
+.card{padding:14px;border-radius:12px}
+.summary-grid{grid-template-columns:1fr}
+.form-grid{grid-template-columns:1fr}
+.pinjaman-row{font-size:11px}
 }
 
+/* CUSTOM ALERT */
 .custom-alert{
   position:fixed;
   inset:0;
@@ -129,7 +202,7 @@ header{
   justify-content:center;
   z-index:99999;
   padding:20px;
-  animation:fadeIn.2s ease;
+  animation:fadeIn 0.2s ease;
 }
 .custom-alert-box{
   width:100%;
@@ -139,7 +212,7 @@ header{
   padding:24px 20px;
   text-align:center;
   box-shadow:0 10px 35px rgba(0,0,0,.25);
-  animation:zoomIn.2s ease;
+  animation:zoomIn 0.2s ease;
 }
 .alert-icon{
   width:70px;
@@ -176,6 +249,26 @@ header{
 </style>
 </head>
 <body>
+
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-logo">
+    <img src="img/icon-192.png" alt="Logo">
+    <h3>Menu Koperasi</h3>
+  </div>
+  <div class="sidebar-section">Data Master</div>
+  <a href="anggota.html">👤 Data Anggota</a>
+  <a href="pinjaman.html" class="active">💰 Pinjaman</a>
+  <a href="angsuran.html">📄 Angsuran</a>
+  <a href="simpanan.html">📊 Simpanan</a>
+  <div class="sidebar-section">Keuangan</div>
+  <a href="kas.html">💵 Kas</a>
+  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <div class="sidebar-section">Pengaturan</div>
+  <a href="#" id="btnLogout">🚪 Logout</a>
+</div>
+<div id="overlay" class="overlay"></div>
+
 <header>
   <div class="header-left">
     <button class="btn-back" onclick="kembali()">
@@ -184,6 +277,9 @@ header{
       </svg>
     </button>
     <h1>DATA PINJAMAN</h1>
+  </div>
+  <div class="header-right">
+    <span class="btn-menu" onclick="toggleSidebar()">☰</span>
   </div>
 </header>
 
@@ -304,6 +400,15 @@ header{
   </div>
 </div>
 
+<!-- CUSTOM ALERT -->
+<div id="customAlert" class="custom-alert">
+  <div class="custom-alert-box">
+    <div class="alert-icon" id="alertIcon">✓</div>
+    <div class="alert-text" id="alertText">Pesan alert</div>
+    <button onclick="tutupAlert()" style="background:var(--primary)">OK</button>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, onValue, update, remove, get, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -318,10 +423,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const role = localStorage.getItem("role");
+const role = localStorage.getItem("role") || "user";
 if(role!== "admin"){
   document.getElementById("formPinjaman").style.display = "none";
 }
+
+// SIDEBAR TOGGLE
+window.toggleSidebar = function(){
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+  sidebar.classList.toggle("open");
+  overlay.style.display = sidebar.classList.contains("open")? "block" : "none";
+}
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
+document.getElementById("btnLogout").addEventListener("click", (e)=>{
+  e.preventDefault();
+  if(confirm("Yakin logout?")){
+    localStorage.clear();
+    window.location.href = "index.html";
+  }
+});
 
 // Refs
 const anggotaRef = ref(db, "anggota");
@@ -360,7 +481,6 @@ function showAlert(msg, type = "info") {
   const text = document.getElementById("alertText");
 
   text.innerText = msg;
-
   icon.style.background = type === "danger"? "var(--danger)"
                        : type === "success"? "var(--success)"
                        : type === "warning"? "var(--warning)"
@@ -414,13 +534,26 @@ window.hitungJasaEdit = () => {
   document.getElementById("editJasa").value = Math.round(jumlah * 0.2);
 }
 
+// Cek pinjaman belum lunas - pindah ke dalam fungsi simpan
+function cekPinjamanBelumLunas(idAnggota){
+  return Object.values(dataPinjaman).some(p => {
+    if(p.idAnggota!== idAnggota) return false;
+    let totalPinjaman = Number(p.jumlah || 0) + Number(p.jasa || 0);
+    let totalAngsuran = 0;
+    Object.values(dataAngsuran).forEach(a => {
+      if(a.pinjamanId === p.id) totalAngsuran += Number(a.pokok || a.jumlah || 0) + Number(a.jasa || 0);
+    });
+    return totalAngsuran < totalPinjaman;
+  });
+}
+
 // Load Anggota
 onValue(anggotaRef, snap => {
   dataAnggota = snap.val() || {};
   anggotaSelect.innerHTML = "<option value=''>Pilih anggota</option>";
   Object.entries(dataAnggota)
-  .sort((a,b)=> a[1].nama.localeCompare(b[1].nama))
-  .forEach(([id,a])=>{
+ .sort((a,b)=> a[1].nama.localeCompare(b[1].nama))
+ .forEach(([id,a])=>{
       anggotaSelect.innerHTML += `<option value="${id}">${a.nama}</option>`;
     });
   loadDropdownEdit();
@@ -429,7 +562,7 @@ onValue(anggotaRef, snap => {
 window.isiTelepon = () => {
   let idAnggota = document.getElementById("anggota").value;
   let anggota = dataAnggota[idAnggota];
-  document.getElementById("telepon").value = anggota? (anggota.telepon || anggota.hp || anggota.noHp || anggota.nohp || anggota.whatsapp || anggota.wa || "") : "";
+  document.getElementById("telepon").value = anggota? (anggota.telepon || anggota.hp || anggota.noHp || "") : "";
 }
 
 // Load Pinjaman
@@ -448,13 +581,13 @@ onValue(pinjamanRef, snap => {
   renderPinjaman();
   hitungSummary();
   hitungSaldo();
-}, err => console.error("Error pinjaman:", err));
+});
 
 // Load Angsuran
 onValue(angsuranRef, snap => {
   dataAngsuran = snap.val() || {};
   renderPinjaman();
-}, err => console.error("Error angsuran:", err));
+});
 
 // Load Kas untuk saldo
 onValue(saldoAwalRef, snap => {
@@ -582,13 +715,18 @@ window.simpanPinjaman = async () => {
   let tanggalInput = document.getElementById("tanggal").value;
   let jumlah = Number(document.getElementById("jumlah").value);
   let jasa = Number(document.getElementById("jasa").value) || 0;
-  let metode = document.getElementById("metode").value;
+  let metode = document.getElementById("metode").value; // FIX: pakai metode bukan sumberKas
   let ket = document.getElementById("ket").value;
 
   if(!idAnggota) return showAlert("Pilih anggota!", "warning");
   if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
   if(!metode) return showAlert("Pilih metode!", "warning");
   if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
+
+  // Cek pinjaman belum lunas
+  if(cekPinjamanBelumLunas(idAnggota)){
+    return showAlert("Anggota masih memiliki pinjaman belum lunas!", "warning");
+  }
 
   let saldoCash = Number(dataSaldoAwal.cash || 0);
   let saldoBank = Number(dataSaldoAwal.bank || 0);
@@ -627,7 +765,7 @@ window.simpanPinjaman = async () => {
     jumlah: jumlah
   });
 
-  await push(pinjamanRef,{
+    await push(pinjamanRef,{
     nomor, idAnggota, nama, tanggal, jumlah, jasa,
     sumberKas:metode, ket, kasId: kas.key, status:"belum"
   });
@@ -766,3 +904,5 @@ window.cetakNota = id => {
 </div>
 </body>
 </html>
+    
+  
