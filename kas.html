@@ -4,148 +4,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kas Koperasi</title>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --primary: #1e90ff;
-  --primary-dark: #0f3057;
-  --card: #ffffff;
-  --bg: #f1f5f9;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --border: #e2e8f0;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
-  --radius: 12px;
-  --success: #16a34a;
-  --danger: #dc2626;
-}
-
-body {
-  font-family: 'Poppins', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 13px;
-  padding-bottom: 20px;
-}
-
-header {
-  background: linear-gradient(to right, var(--primary), var(--primary-dark));
-  color: white;
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.header-left { display: flex; align-items: center; gap: 10px; }
-.brand { display: flex; align-items: center; gap: 10px; }
-.brand img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #fff; padding: 2px; }
-.brand-text.subtitle { font-size: 10px; opacity: 0.9; line-height: 1; }
-.brand-text.title { font-size: 12px; font-weight: 700; line-height: 1.2; }
-
-.container { padding: 14px; max-width: 1200px; margin: 0 auto; }
-.page-title { text-align: center; margin: 8px 0 16px; font-size: 16px; font-weight: 700; color: var(--primary-dark); }
-
-.card {
-  background: var(--card);
-  padding: 14px;
-  border-radius: var(--radius);
-  margin-bottom: 12px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-}
-.card h3 { margin: 0 0 12px 0; font-size: 14px; font-weight: 700; }
-
-.summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
-.summary-grid.total { grid-template-columns: 1fr; }
-.summary-item { background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
-.summary-item.label { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
-.summary-item.value { font-size: 15px; font-weight: 700; color: var(--text); }
-.summary-item.total.value { font-size: 18px; color: var(--primary); }
-
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.form-group { display: flex; flex-direction: column; gap: 4px; }
-.form-group.full { grid-column: 1 / -1; }
-.form-group label { font-size: 11px; font-weight: 600; color: var(--muted); }
-.form-group input,.form-group select {
-  width: 100%; padding: 8px 10px; border: 1.5px solid var(--border);
-  border-radius: 6px; font-size: 12px; font-family: 'Poppins', sans-serif;
-}
-.btn-primary {
-  width: 100%; padding: 9px 12px; border: none; border-radius: 8px;
-  background: var(--primary); color: white; cursor: pointer; font-size: 13px;
-  font-weight: 600; font-family: 'Poppins', sans-serif;
-}
-.btn-danger { background: var(--danger); }
-
-.table-wrap { overflow-x: auto; margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; }
-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 650px; }
-th {
-  background: #f8fafc; padding: 8px; text-align: left; font-weight: 600;
-  color: var(--muted); border-bottom: 2px solid var(--border); white-space: nowrap;
-}
-td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
-tr:hover { background: #f8fafc; cursor: pointer; }
-.text-right { text-align: right; }
-.masuk { color: var(--success); font-weight: 600; }
-.keluar { color: var(--danger); font-weight: 600; }
-
-/* Modal */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none; justify-content: center; align-items: center; z-index: 9999; }
-.modal.show { display: flex; }
-.modal-content { background: #fff; width: 95%; max-width: 450px; border-radius: 12px; padding: 15px; }
-.modal-content h3 { margin-bottom: 12px; }
-.modal-btns { display: flex; gap: 8px; margin-top: 15px; }
-.btn-save { flex: 1; padding: 10px; border: none; border-radius: 8px; background: var(--primary); color: #fff; font-weight: 600; cursor: pointer; }
-.btn-delete { flex: 1; padding: 10px; border: none; border-radius: 8px; background: var(--danger); color: #fff; font-weight: 600; cursor: pointer; }
-.btn-cancel { flex: 1; padding: 10px; border: none; border-radius: 8px; background: #6b7280; color: #fff; font-weight: 600; cursor: pointer; }
-
-/* SIDEBAR */
-.sidebar{
-  position:fixed;top:0;left:-240px;width:220px;height:100%;background:#0d47a1;
-  padding:16px;transition:.3s;z-index:99999;overflow-y:auto;
-}
-.sidebar.open { left:0; }
-.sidebar-logo{
-  display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;
-  border-bottom:1px solid rgba(255,255,255,0.2);
-}
-.sidebar-logo img{
-  width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#fff;padding:2px;
-}
-.sidebar-logo h3{ color:#fff;margin:0;font-size:15px; }
-.sidebar a{
-  display:block;color:#fff;text-decoration:none;padding:10px 12px;
-  border-radius:8px;margin-bottom:6px;font-size:13px;font-weight:500;transition:0.2s;
-}
-.sidebar a:hover{ background: rgba(255,255,255,0.15); transform: translateX(4px); }
-.overlay{ position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999; }
-.menu-btn { cursor: pointer; font-size: 22px; padding: 4px 8px; border-radius: 6px; }
-
-.note { font-size: 10px; color: var(--muted); margin-top: 5px; }
-
-@media (max-width:768px){
-  body { font-size: 12px; }
-.container { padding: 10px; }
-.summary-grid { grid-template-columns: 1fr; }
-.form-grid { grid-template-columns: 1fr; }
-}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--primary:#1e90ff;--primary-dark:#0f3057;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);--radius:12px;--success:#16a34a;--danger:#dc2626}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;padding-bottom:20px}
+header{background:linear-gradient(to right,var(--primary),var(--primary-dark));color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 3px 10px rgba(0,0,0,0.15);position:sticky;top:0;z-index:100}
+.header-left{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#fff;padding:2px}
+.brand-text.subtitle{font-size:10px;opacity:0.9;line-height:1}
+.brand-text.title{font-size:12px;font-weight:700;line-height:1.2}
+.container{padding:14px;max-width:1200px;margin:0 auto}
+.page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark)}
+.card{background:var(--card);padding:14px;border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+.summary-grid.total{grid-template-columns:1fr}
+.summary-item{background:#f8fafc;padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center}
+.summary-item.label{font-size:11px;color:var(--muted);margin-bottom:2px}
+.summary-item.value{font-size:15px;font-weight:700;color:var(--text)}
+.summary-item.total.value{font-size:18px;color:var(--primary)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:11px;font-weight:600;color:var(--muted)}
+.form-group input,.form-group select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Poppins',sans-serif}
+.btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif}
+.btn-danger{background:var(--danger)}
+.table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--border);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:650px}
+th{background:#f8fafc;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border);white-space:nowrap}
+td{padding:7px 8px;border-bottom:1px solid var(--border)}
+tr:hover{background:#f8fafc;cursor:pointer}
+.text-right{text-align:right}
+.masuk{color:var(--success);font-weight:600}
+.keluar{color:var(--danger);font-weight:600}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:9999}
+.modal.show{display:flex}
+.modal-content{background:#fff;width:95%;max-width:450px;border-radius:12px;padding:15px}
+.modal-content h3{margin-bottom:12px}
+.modal-btns{display:flex;gap:8px;margin-top:15px}
+.btn-save{flex:1;padding:10px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:600;cursor:pointer}
+.btn-delete{flex:1;padding:10px;border:none;border-radius:8px;background:var(--danger);color:#fff;font-weight:600;cursor:pointer}
+.btn-cancel{flex:1;padding:10px;border:none;border-radius:8px;background:#6b7280;color:#fff;font-weight:600;cursor:pointer}
+.sidebar{position:fixed;top:0;left:-240px;width:220px;height:100%;background:#0d47a1;padding:16px;transition:.3s;z-index:99999;overflow-y:auto}
+.sidebar.open{left:0}
+.sidebar-logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.2)}
+.sidebar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#fff;padding:2px}
+.sidebar-logo h3{color:#fff;margin:0;font-size:15px}
+.sidebar a{display:block;color:#fff;text-decoration:none;padding:10px 12px;border-radius:8px;margin-bottom:6px;font-size:13px;font-weight:500;transition:0.2s}
+.sidebar a:hover{background:rgba(255,255,255,0.15);transform:translateX(4px)}
+.sidebar-section{color:rgba(255,255,255,0.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999}
+.menu-btn{cursor:pointer;font-size:22px;padding:4px 8px;border-radius:6px}
+.note{font-size:10px;color:var(--muted);margin-top:5px}
+@media(max-width:768px){body{font-size:12px}.container{padding:10px}.summary-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div id="sidebar" class="sidebar">
   <div class="sidebar-logo">
     <img src="img/icon-192.png" alt="Logo">
@@ -157,22 +77,19 @@ tr:hover { background: #f8fafc; cursor: pointer; }
   <a href="angsuran.html">📄 Angsuran</a>
   <a href="simpanan.html">📊 Simpanan</a>
   <a href="cair.html">💸 Pencairan Simpanan</a>
-
   <div class="sidebar-section">Keuangan</div>
-  <a href="kas.html">💵 Kas</a>
+  <a href="kas.html" class="active">💵 Kas</a>
   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
   <a href="neraca.html">📖 Neraca</a>
-
   <div class="sidebar-section">Laporan</div>
   <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
   <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
   <a href="labarugi.html">📊 Laba Rugi</a>
   <a href="transaksi.html">📊 Lap transaksi</a>
-
   <div class="sidebar-section">Pengaturan</div>
-     <a href="backup.html">💾 Backup Data</a>
+  <a href="backup.html">💾 Backup Data</a>
   <a href="user.html">⚙️ Kelola User</a>
-  <a href="#" id="btnLogout">🚪 Logout</a>
+  <a href="#" id="btnLogout">🚪 Logout</a> <!-- 🔥 ID dibenerin -->
 </div>
 <div id="overlay" class="overlay"></div>
 
@@ -192,155 +109,59 @@ tr:hover { background: #f8fafc; cursor: pointer; }
 
 <div class="container">
   <h3 class="page-title">KAS</h3>
-
-  <!-- SALDO AWAL -->
   <div class="card" id="cardSaldoAwal">
     <h3>Set Saldo Awal Koperasi</h3>
     <div class="form-grid">
-      <div class="form-group">
-        <label>Tanggal Saldo Awal</label>
-        <input type="datetime-local" id="tanggalSaldoAwal">
-      </div>
-      <div class="form-group">
-        <label>Saldo Cash</label>
-        <input type="number" id="inputSaldoCash" placeholder="500000">
-      </div>
-      <div class="form-group">
-        <label>Saldo Bank</label>
-        <input type="number" id="inputSaldoBank" placeholder="820000">
-      </div>
-      <div class="form-group">
-        <label>Modal Awal</label>
-        <input type="text" id="inputModalAwal" disabled placeholder="Otomatis: Cash + Bank">
-      </div>
-      <div class="form-group full">
-        <button class="btn-primary" id="btnSimpanSaldo">Simpan Saldo Awal</button>
-        <div class="note">*Hanya bisa diisi 1x. Untuk koreksi pakai tombol Reset di bawah.</div>
-      </div>
-      <div class="form-group full" id="resetBtnWrap" style="display:none">
-        <button class="btn-primary btn-danger" id="btnResetSaldo">Reset Saldo Awal</button>
-      </div>
+      <div class="form-group"><label>Tanggal Saldo Awal</label><input type="datetime-local" id="tanggalSaldoAwal"></div>
+      <div class="form-group"><label>Saldo Cash</label><input type="number" id="inputSaldoCash" placeholder="500000"></div>
+      <div class="form-group"><label>Saldo Bank</label><input type="number" id="inputSaldoBank" placeholder="820000"></div>
+      <div class="form-group"><label>Modal Awal</label><input type="text" id="inputModalAwal" disabled placeholder="Otomatis: Cash + Bank"></div>
+      <div class="form-group full"><button class="btn-primary" id="btnSimpanSaldo">Simpan Saldo Awal</button><div class="note">*Hanya bisa diisi 1x. Untuk koreksi pakai tombol Reset di bawah.</div></div>
+      <div class="form-group full" id="resetBtnWrap" style="display:none"><button class="btn-primary btn-danger" id="btnResetSaldo">Reset Saldo Awal</button></div>
     </div>
   </div>
 
   <div class="card">
-    <div class="summary-grid total">
-      <div class="summary-item total">
-        <div class="label">Total Saldo</div>
-        <div class="value">Rp <span id="saldoTotal">0</span></div>
-      </div>
-    </div>
+    <div class="summary-grid total"><div class="summary-item total"><div class="label">Total Saldo</div><div class="value">Rp <span id="saldoTotal">0</span></div></div></div>
     <div class="summary-grid">
-      <div class="summary-item">
-        <div class="label">Cash</div>
-        <div class="value">Rp <span id="saldoCash">0</span></div>
-      </div>
-      <div class="summary-item">
-        <div class="label">Bank</div>
-        <div class="value">Rp <span id="saldoBank">0</span></div>
-      </div>
-      <div class="summary-item">
-        <div class="label">Kas Masuk</div>
-        <div class="value masuk">Rp <span id="totalMasuk">0</span></div>
-      </div>
-      <div class="summary-item">
-        <div class="label">Kas Keluar</div>
-        <div class="value keluar">Rp <span id="totalKeluar">0</span></div>
-      </div>
+      <div class="summary-item"><div class="label">Cash</div><div class="value">Rp <span id="saldoCash">0</span></div></div>
+      <div class="summary-item"><div class="label">Bank</div><div class="value">Rp <span id="saldoBank">0</span></div></div>
+      <div class="summary-item"><div class="label">Kas Masuk</div><div class="value masuk">Rp <span id="totalMasuk">0</span></div></div>
+      <div class="summary-item"><div class="label">Kas Keluar</div><div class="value keluar">Rp <span id="totalKeluar">0</span></div></div>
     </div>
   </div>
 
   <div class="card">
     <h3>Input Transaksi</h3>
     <div class="form-grid">
-      <div class="form-group">
-        <label>Sumber Kas</label>
-        <select id="sumberKas">
-          <option value="cash">Cash</option>
-          <option value="bank">Bank</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Tipe</label>
-        <select id="tipe" onchange="toggleKategori()">
-          <option value="masuk">Kas Masuk</option>
-          <option value="keluar">Kas Keluar</option>
-          <option value="biaya">Biaya Operasional</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Kategori</label>
-        <select id="kategori"></select>
-      </div>
-      <div class="form-group">
-        <label>Tanggal</label>
-        <input type="datetime-local" id="tanggal">
-      </div>
-      <div class="form-group">
-        <label>Jumlah</label>
-        <input type="number" id="jumlah" placeholder="0">
-      </div>
-      <div class="form-group full">
-        <label>Keterangan</label>
-        <input type="text" id="keterangan" placeholder="Contoh: Listrik Januari">
-      </div>
-      <div class="form-group full">
-        <button class="btn-primary" id="btnSimpan">Simpan Transaksi</button>
-      </div>
+      <div class="form-group"><label>Sumber Kas</label><select id="sumberKas"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
+      <div class="form-group"><label>Tipe</label><select id="tipe" onchange="toggleKategori()"><option value="masuk">Kas Masuk</option><option value="keluar">Kas Keluar</option><option value="biaya">Biaya Operasional</option></select></div>
+      <div class="form-group"><label>Kategori</label><select id="kategori"></select></div>
+      <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="tanggal"></div>
+      <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" placeholder="0"></div>
+      <div class="form-group full"><label>Keterangan</label><input type="text" id="keterangan" placeholder="Contoh: Listrik Januari"></div>
+      <div class="form-group full"><button class="btn-primary" id="btnSimpan">Simpan Transaksi</button></div>
     </div>
   </div>
 
   <div class="card">
     <h3>Riwayat Transaksi</h3>
     <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>Keterangan</th>
-            <th>Tipe</th>
-            <th class="text-right">Jumlah</th>
-            <th>Sumber</th>
-            <th>Kategori</th>
-          </tr>
-        </thead>
-        <tbody id="riwayat"></tbody>
-      </table>
+      <table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Tipe</th><th class="text-right">Jumlah</th><th>Sumber</th><th>Kategori</th></tr></thead><tbody id="riwayat"></tbody></table>
     </div>
   </div>
 </div>
 
-<!-- Modal Edit Kas -->
 <div class="modal" id="modalEditKas">
   <div class="modal-content">
     <h3>Edit Transaksi</h3>
     <input type="hidden" id="editKasKey">
-    <div class="form-group">
-      <label>Sumber Kas</label>
-      <select id="editKasSumber">
-        <option value="cash">Cash</option>
-        <option value="bank">Bank</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Tipe</label>
-      <select id="editKasTipe">
-        <option value="masuk">Kas Masuk</option>
-        <option value="keluar">Kas Keluar</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Jumlah</label>
-      <input type="number" id="editKasJumlah">
-    </div>
-    <div class="form-group">
-      <label>Tanggal</label>
-      <input type="datetime-local" id="editKasTanggal">
-    </div>
-    <div class="form-group">
-      <label>Keterangan</label>
-      <input type="text" id="editKasKeterangan">
-    </div>
+    <div class="form-group"><label>Sumber Kas</label><select id="editKasSumber"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
+    <div class="form-group"><label>Tipe</label><select id="editKasTipe" onchange="toggleEditKategori()"><option value="masuk">Kas Masuk</option><option value="keluar">Kas Keluar</option><option value="biaya">Biaya Operasional</option></select></div> <!-- 🔥 tambah biaya -->
+    <div class="form-group"><label>Kategori</label><select id="editKasKategori"></select></div> <!-- 🔥 tambah kategori -->
+    <div class="form-group"><label>Jumlah</label><input type="number" id="editKasJumlah"></div>
+    <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="editKasTanggal"></div>
+    <div class="form-group"><label>Keterangan</label><input type="text" id="editKasKeterangan"></div>
     <div class="modal-btns">
       <button class="btn-save" onclick="updateKas()">Simpan</button>
       <button class="btn-delete" onclick="hapusKasModal()">Hapus</button>
@@ -353,12 +174,7 @@ tr:hover { background: #f8fafc; cursor: pointer; }
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, onValue, update, remove, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
-  authDomain: "arfa-c7dee.firebaseapp.com",
-  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
-  projectId: "arfa-c7dee"
-};
+const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
@@ -386,7 +202,7 @@ window.toggleSidebar = function(){
   o.style.display = s.classList.contains("open")? "block" : "none";
 };
 document.getElementById("overlay").addEventListener("click", toggleSidebar);
-document.getElementById("btnLogoutSide").addEventListener("click", ()=>{
+document.getElementById("btnLogout").addEventListener("click", ()=>{ // 🔥 ID bener
   localStorage.clear();
   location.href="index.html";
 });
@@ -403,7 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.getElementById("inputSaldoCash").addEventListener("input", updateModalAwal);
 document.getElementById("inputSaldoBank").addEventListener("input", updateModalAwal);
-
 function updateModalAwal(){
   const cash = Number(document.getElementById("inputSaldoCash").value) || 0;
   const bank = Number(document.getElementById("inputSaldoBank").value) || 0;
@@ -430,25 +245,33 @@ document.getElementById("btnResetSaldo").onclick = async () => {
   location.reload();
 };
 
-window.toggleKategori = function(){
-  const tipe = document.getElementById("tipe").value;
-  const kategori = document.getElementById("kategori");
+function isiOpsiKategori(el, tipe, selected=""){
   let html = "";
   if(tipe === "masuk"){
-    html = `<option value="simpanan_pokok">Simpanan Pokok</option>
-    <option value="simpanan_wajib">Simpanan Wajib</option>
-    <option value="simpanan_sukarela">Simpanan Sukarela</option>
-    <option value="angsuran_pokok">Angsuran Pokok</option>
-    <option value="pendapatan_jasa">Pendapatan Jasa</option>
-    <option value="pendapatan_lain">Pendapatan Lain-lain</option>`;
+    html = `<option value="simpanan_pokok" ${selected==="simpanan_pokok"?"selected":""}>Simpanan Pokok</option>
+    <option value="simpanan_wajib" ${selected==="simpanan_wajib"?"selected":""}>Simpanan Wajib</option>
+    <option value="simpanan_sukarela" ${selected==="simpanan_sukarela"?"selected":""}>Simpanan Sukarela</option>
+    <option value="angsuran_pokok" ${selected==="angsuran_pokok"?"selected":""}>Angsuran Pokok</option>
+    <option value="pendapatan_jasa" ${selected==="pendapatan_jasa"?"selected":""}>Pendapatan Jasa</option>
+    <option value="pendapatan_lain" ${selected==="pendapatan_lain"?"selected":""}>Pendapatan Lain-lain</option>`;
   } else {
-    html = `<option value="konsumsi">Konsumsi</option>
-    <option value="biaya_operasional">Biaya Operasional</option>
-    <option value="pinjaman">Pinjaman</option>
-    <option value="pengambilan_simpanan">Pengambilan Simpanan</option>
-    <option value="transfer_bank">Transfer Bank</option>`;
+    html = `<option value="konsumsi" ${selected==="konsumsi"?"selected":""}>Konsumsi</option>
+    <option value="biaya_operasional" ${selected==="biaya_operasional"?"selected":""}>Biaya Operasional</option>
+    <option value="pinjaman" ${selected==="pinjaman"?"selected":""}>Pinjaman</option>
+    <option value="pengambilan_simpanan" ${selected==="pengambilan_simpanan"?"selected":""}>Pengambilan Simpanan</option>
+    <option value="transfer_bank" ${selected==="transfer_bank"?"selected":""}>Transfer Bank</option>`;
   }
-  kategori.innerHTML = html;
+  el.innerHTML = html;
+}
+
+window.toggleKategori = function(){
+  const tipe = document.getElementById("tipe").value;
+  isiOpsiKategori(document.getElementById("kategori"), tipe === "biaya" ? "keluar" : tipe);
+}
+
+window.toggleEditKategori = function(){ // 🔥 fungsi baru buat modal
+  const tipe = document.getElementById("editKasTipe").value;
+  isiOpsiKategori(document.getElementById("editKasKategori"), tipe === "biaya" ? "keluar" : tipe);
 }
 
 document.getElementById("btnSimpan").onclick = async()=>{
@@ -458,7 +281,6 @@ document.getElementById("btnSimpan").onclick = async()=>{
   const ket = document.getElementById("keterangan").value;
   const tanggalInput = document.getElementById("tanggal").value;
   const kategori = document.getElementById("kategori").value || "";
-
   if(!jumlah){ alert("Jumlah wajib diisi"); return; }
   if((tipe==="keluar" || tipe==="biaya")){
     let saldoSaatIni = sumberKas === "cash"? saldoCash : saldoBank;
@@ -468,7 +290,6 @@ document.getElementById("btnSimpan").onclick = async()=>{
     }
   }
   if(tipe === "biaya") tipe = "keluar";
-
   const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
   await push(kasTransaksiRef, { sumberKas, tipe, jumlah, kategori, keterangan: ket || kategori || "Transaksi Kas", tanggal });
   alert("Data berhasil disimpan");
@@ -502,14 +323,10 @@ onValue(kasTransaksiRef, snap => {
 function hitungDanRender(){
   saldoCash = Number(dataSaldoAwal.cash || 0);
   saldoBank = Number(dataSaldoAwal.bank || 0);
-  totalMasuk = 0;
-  totalKeluar = 0;
+  totalMasuk = 0; totalKeluar = 0;
   const riwayat = document.getElementById("riwayat");
   riwayat.innerHTML = "";
-  if (!dataTransaksi || Object.keys(dataTransaksi).length === 0) {
-    updateSummary();
-    return;
-  }
+  if (!dataTransaksi || Object.keys(dataTransaksi).length === 0) { updateSummary(); return; }
   const data = Object.entries(dataTransaksi).sort((a,b)=> Number(b[1].tanggal) - Number(a[1].tanggal));
   data.forEach(([key, i]) => {
     let jumlah = Number(i.jumlah) || 0;
@@ -522,26 +339,13 @@ function hitungDanRender(){
     if (sumber === "bank") { if (tipe === "masuk") saldoBank += jumlah; else saldoBank -= jumlah; }
     let className = tipe === "masuk"? "masuk" : "keluar";
     let labelTipe = tipe === "masuk"? "MASUK" : "KELUAR";
-
-    // Nama kategori biar readable
     const namaKategori = {
-      'angsuran_pokok': 'Angsuran Pokok',
-      'pendapatan_jasa': 'Pendapatan Jasa',
-      'simpanan_sukarela': 'Simpanan Sukarela',
-      'simpanan_pokok': 'Simpanan Pokok',
-      'simpanan_wajib': 'Simpanan Wajib',
-      'biaya_operasional': 'Biaya Operasional',
+      'angsuran_pokok': 'Angsuran Pokok','pendapatan_jasa': 'Pendapatan Jasa','simpanan_sukarela': 'Simpanan Sukarela',
+      'simpanan_pokok': 'Simpanan Pokok','simpanan_wajib': 'Simpanan Wajib','biaya_operasional': 'Biaya Operasional',
       'pengambilan_simpanan': 'Ambil Simpanan'
     }[i.kategori] || i.kategori || '-';
-
     const tr = document.createElement("tr");
-    tr.innerHTML = `
-    <td>${tanggal}</td>
-    <td>${i.keterangan || "-"}</td>
-    <td class="${className}">${labelTipe}</td>
-    <td class="text-right">Rp ${formatRp(jumlah)}</td>
-    <td>${sumber.toUpperCase()}</td>
-    <td>${namaKategori}</td>`;
+    tr.innerHTML = `<td>${tanggal}</td><td>${i.keterangan || "-"}</td><td class="${className}">${labelTipe}</td><td class="text-right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${namaKategori}</td>`;
     if (role === "admin") { tr.style.cursor = "pointer"; tr.addEventListener("click", () => editKas(key)); }
     riwayat.appendChild(tr);
   });
@@ -563,7 +367,9 @@ window.editKas = async function(key){
   editKey = key;
   document.getElementById("editKasKey").value = key;
   document.getElementById("editKasSumber").value = d.sumberKas || "cash";
-  document.getElementById("editKasTipe").value = d.tipe === "keluar"? "keluar" : "masuk";
+  document.getElementById("editKasTipe").value = d.tipe === "keluar"? "keluar" : "masuk"; // biaya tetap jadi keluar
+  toggleEditKategori(); // 🔥 isi opsi dulu
+  document.getElementById("editKasKategori").value = d.kategori || ""; // 🔥 set kategori lama
   document.getElementById("editKasJumlah").value = d.jumlah || 0;
   document.getElementById("editKasKeterangan").value = d.keterangan || "";
   if(d.tanggal){
@@ -580,11 +386,13 @@ window.updateKas = async function(){
   const key = document.getElementById("editKasKey").value;
   const sumber = document.getElementById("editKasSumber").value;
   let tipe = document.getElementById("editKasTipe").value;
+  const kategori = document.getElementById("editKasKategori").value || ""; // 🔥 ambil kategori
   const jumlah = Number(document.getElementById("editKasJumlah").value);
   const keterangan = document.getElementById("editKasKeterangan").value;
   const tanggalInput = document.getElementById("editKasTanggal").value;
   const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
-  await update(ref(db,"kas/transaksi/"+key), { sumberKas: sumber, tipe, jumlah, keterangan: keterangan||"Transaksi Kas", tanggal });
+  if(tipe === "biaya") tipe = "keluar";
+  await update(ref(db,"kas/transaksi/"+key), { sumberKas: sumber, tipe, kategori, jumlah, keterangan: keterangan||"Transaksi Kas", tanggal }); // 🔥 simpan kategori
   alert("Data berhasil diperbarui");
   tutupModalKas();
 }
