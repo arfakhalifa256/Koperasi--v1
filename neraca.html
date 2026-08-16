@@ -493,45 +493,7 @@ header{
     Perhitungan realtime dari Firebase
   </div>
 
-  <!-- RINGKASAN -->
-  <div class="card">
-
-    <h3>Ringkasan Keuangan</h3>
-
-    <div class="grid">
-
-      <div class="box">
-        <div class="box-title">Kas Cash</div>
-        <div class="box-value blue">
-          Rp <span id="kasCash">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Kas Bank</div>
-        <div class="box-value blue">
-          Rp <span id="kasBank">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Piutang Pokok</div>
-        <div class="box-value orange">
-          Rp <span id="piutangPokok">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Piutang Jasa</div>
-        <div class="box-value orange">
-          Rp <span id="piutangJasa">0</span>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
+  
   <!-- NERACA -->
   <div class="card">
 
@@ -668,6 +630,70 @@ header{
     </div>
 
   </div>
+  
+    <!-- BALANCE -->
+  <div class="card">
+
+    <div id="balanceBox" class="balance-box">
+
+      <div class="balance-title">
+        SELISIH AKTIVA - PASIVA
+      </div>
+
+      <div class="balance-value">
+        Rp <span id="selisih">0</span>
+      </div>
+
+      <div id="statusBalance"
+           style="font-size:11px;margin-top:4px">
+        NERACA SEIMBANG
+      </div>
+
+    </div>
+
+  </div>
+
+
+  
+  
+<!-- RINGKASAN -->
+  <div class="card">
+
+    <h3>Ringkasan Keuangan</h3>
+
+    <div class="grid">
+
+      <div class="box">
+        <div class="box-title">Kas Cash</div>
+        <div class="box-value blue">
+          Rp <span id="kasCash">0</span>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Kas Bank</div>
+        <div class="box-value blue">
+          Rp <span id="kasBank">0</span>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Piutang Pokok</div>
+        <div class="box-value orange">
+          Rp <span id="piutangPokok">0</span>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-title">Piutang Jasa</div>
+        <div class="box-value orange">
+          Rp <span id="piutangJasa">0</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
 
 
   <!-- PINJAMAN -->
@@ -775,28 +801,6 @@ header{
 
   </div>
 
-
-  <!-- BALANCE -->
-  <div class="card">
-
-    <div id="balanceBox" class="balance-box">
-
-      <div class="balance-title">
-        SELISIH AKTIVA - PASIVA
-      </div>
-
-      <div class="balance-value">
-        Rp <span id="selisih">0</span>
-      </div>
-
-      <div id="statusBalance"
-           style="font-size:11px;margin-top:4px">
-        NERACA SEIMBANG
-      </div>
-
-    </div>
-
-  </div>
 
 
   <!-- DEBUG -->
