@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kas Rinci - Koperasi ARFA</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--primary:#1e90ff;--primary-dark:#0f3057;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);--radius:12px;--success:#16a34a;--danger:#dc2626}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;padding-bottom:20px}
+header{background:linear-gradient(to right,var(--primary),var(--primary-dark));color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 3px 10px rgba(0,0,0,0.15);position:sticky;top:0;z-index:100}
+.container{padding:14px;max-width:1200px;margin:0 auto}
+.page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark)}
+.card{background:var(--card);padding:14px;border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px}
+.summary-item{background:#f8fafc;padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center}
+.summary-item.label{font-size:10px;color:var(--muted)}
+.summary-item.value{font-size:14px;font-weight:700}
+
+/* TABS */
+.tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;border-bottom:2px solid var(--border)}
+.tab-btn{padding:8px 14px;border:none;background:none;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent}
+.tab-btn.active{color:var(--primary);border-bottom:3px solid var(--primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:11px;font-weight:600;color:var(--muted)}
+.form-group input,.form-group select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Poppins',sans-serif}
+.btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600}
+.table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--border);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:600px}
+th{background:#f8fafc;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border)}
+td{padding:7px 8px;border-bottom:1px solid var(--border)}
+.text-right{text-align:right}
+.masuk{color:var(--success);font-weight:600}
+.keluar{color:var(--danger);font-weight:600}
+@media(max-width:768px){.summary-grid{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div><b>Kas Rinci</b></div>
+  <span onclick="history.back()">⬅️ Kembali</span>
+</header>
+
+<div class="container">
+  <h3 class="page-title">LAPORAN KAS PER KATEGORI</h3>
+
+  <!-- RINGKASAN -->
+  <!-- RINGKASAN -->
+  <div class="card">
+    <h3>Saldo Kas Saat Ini</h3>
+    <div class="summary-grid total">
+      <div class="summary-item total">
+        <div class="label">Total Saldo Kas + Bank</div>
+        <div class="value" id="saldoAkhir" style="font-size:20px;color:var(--primary)">Rp 0</div>
+      </div>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-item"><div class="label">Saldo Awal</div><div class="value" id="sumSaldo">Rp 0</div></div>
+      <div class="summary-item"><div class="label">Pinjaman Keluar</div><div class="value keluar" id="sumPinjaman">Rp 0</div></div>
+      <div class="summary-item"><div class="label">Angsuran Masuk</div><div class="value masuk" id="sumAngsuran">Rp 0</div></div>
+      <div class="summary-item"><div class="label">Jasa Masuk</div><div class="value masuk" id="sumJasa">Rp 0</div></div>
+      <div class="summary-item"><div class="label">Simpanan Masuk</div><div class="value masuk" id="sumSimpanan">Rp 0</div></div>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-item"><div class="label">Total Cash</div><div class="value" id="saldoCash">Rp 0</div></div>
+      <div class="summary-item"><div class="label">Total Bank</div><div class="value" id="saldoBank">Rp 0</div></div>
+    </div>
+  </div>
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="openTab('saldo')">Saldo Awal</button>
+    <button class="tab-btn" onclick="openTab('pinjaman')">Pinjaman</button>
+    <button class="tab-btn" onclick="openTab('angsuran')">Angsuran</button>
+    <button class="tab-btn" onclick="openTab('jasa')">Jasa</button>
+    <button class="tab-btn" onclick="openTab('simpanan')">Simpanan</button>
+  </div>
+
+  <!-- TAB 1: SALDO AWAL -->
+  <div id="tab-saldo" class="tab-content active">
+    <div class="card">
+      <h3>Set Saldo Awal</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="tglSaldo"></div>
+        <div class="form-group"><label>Cash</label><input type="number" id="cashAwal"></div>
+        <div class="form-group"><label>Bank</label><input type="number" id="bankAwal"></div>
+        <div class="form-group full"><button class="btn-primary" id="btnSimpanSaldo">Simpan Saldo Awal</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: PINJAMAN -->
+  <div id="tab-pinjaman" class="tab-content">
+    <div class="card">
+      <h3>Input Pinjaman Keluar</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Anggota</label><input type="text" id="pinjNama"></div>
+        <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="pinjTanggal"></div>
+        <div class="form-group"><label>Jumlah</label><input type="number" id="pinjJumlah"></div>
+        <div class="form-group"><label>Sumber</label><select id="pinjSumber"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
+        <div class="form-group full"><button class="btn-primary" id="btnSimpanPinjaman">Simpan Pinjaman</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Anggota</th><th class="text-right">Jumlah</th><th>Sumber</th></tr></thead><tbody id="tblPinjaman"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: ANGSURAN -->
+  <div id="tab-angsuran" class="tab-content">
+    <div class="card">
+      <h3>Input Angsuran Masuk</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Anggota</label><input type="text" id="angNama"></div>
+        <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="angTanggal"></div>
+        <div class="form-group"><label>Jumlah</label><input type="number" id="angJumlah"></div>
+        <div class="form-group"><label>Masuk Ke</label><select id="angSumber"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
+        <div class="form-group full"><button class="btn-primary" id="btnSimpanAngsuran">Simpan Angsuran</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Anggota</th><th class="text-right">Jumlah</th><th>Masuk Ke</th></tr></thead><tbody id="tblAngsuran"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- TAB 4: JASA -->
+  <div id="tab-jasa" class="tab-content">
+    <div class="card">
+      <h3>Input Pendapatan Jasa</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Keterangan</label><input type="text" id="jasaKet"></div>
+        <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="jasaTanggal"></div>
+        <div class="form-group"><label>Jumlah</label><input type="number" id="jasaJumlah"></div>
+        <div class="form-group"><label>Masuk Ke</label><select id="jasaSumber"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
+        <div class="form-group full"><button class="btn-primary" id="btnSimpanJasa">Simpan Jasa</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th class="text-right">Jumlah</th><th>Masuk Ke</th></tr></thead><tbody id="tblJasa"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- TAB 5: SIMPANAN -->
+  <div id="tab-simpanan" class="tab-content">
+    <div class="card">
+      <h3>Input Simpanan Masuk</h3>
+      <div class="form-grid">
+        <div class="form-group"><label>Anggota</label><input type="text" id="simpNama"></div>
+        <div class="form-group"><label>Tipe</label><select id="simpTipe"><option>Pokok</option><option>Wajib</option><option>Sukarela</option></select></div>
+        <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="simpTanggal"></div>
+        <div class="form-group"><label>Jumlah</label><input type="number" id="simpJumlah"></div>
+        <div class="form-group"><label>Masuk Ke</label><select id="simpSumber"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
+        <div class="form-group full"><button class="btn-primary" id="btnSimpanSimpanan">Simpan Simpanan</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Anggota</th><th>Tipe</th><th class="text-right">Jumlah</th><th>Masuk Ke</th></tr></thead><tbody id="tblSimpanan"></tbody></table></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const role = localStorage.getItem("role") || "user";
+if(role!== "admin"){ document.querySelectorAll("button.btn-primary").forEach(b=>b.style.display="none"); document.querySelectorAll("input,select").forEach(i=>i.disabled=true); }
+
+function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
+function formatTanggal(ts){ return ts? new Date(ts).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"}) : "-" }
+
+window.openTab = function(id){
+  document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab-"+id).classList.add("active");
+  event.target.classList.add("active");
+}
+
+// REFS TERPISAH
+const refSaldo = ref(db,"kas/saldoAwal");
+const refPinjaman = ref(db,"kas/pinjaman");
+const refAngsuran = ref(db,"kas/angsuran");
+const refJasa = ref(db,"kas/jasa");
+const refSimpanan = ref(db,"kas/simpanan");
+const refLama = ref(db,"kas/transaksi"); // 🔥 untuk migrasi
+
+let data = {saldo:{}, pinjaman:{}, angsuran:{}, jasa:{}, simpanan:{}}
+
+// 🔥 AUTO MIGRASI DATA LAMA 1X SAJA
+async function migrasiData(){
+  const snap = await get(refLama);
+  if(!snap.exists()) return;
+  const lama = snap.val();
+
+  for(let key in lama){
+    let d = lama[key];
+    let tipe = d.tipe;
+    let kat = d.kategori || "";
+
+    if(kat.includes("simpanan") || kat.includes("Simpanan")){
+      push(refSimpanan, {nama: d.keterangan || "Simpanan", tipe: kat, jumlah: d.jumlah, sumber: d.sumberKas, tanggal: d.tanggal});
+    }
+    else if(kat.includes("angsuran") || kat.includes("Angsuran")){
+      push(refAngsuran, {nama: d.keterangan || "Angsuran", jumlah: d.jumlah, sumber: d.sumberKas, tanggal: d.tanggal});
+    }
+    else if(kat.includes("jasa") || kat.includes("pendapatan")){
+      push(refJasa, {ket: d.keterangan || "Jasa", jumlah: d.jumlah, sumber: d.sumberKas, tanggal: d.tanggal});
+    }
+    else if(tipe === "keluar" && kat.includes("pinjaman")){
+      push(refPinjaman, {nama: d.keterangan || "Pinjaman", jumlah: d.jumlah, sumber: d.sumberKas, tanggal: d.tanggal});
+    }
+  }
+  alert("Migrasi data lama selesai. Silahkan refresh");
+}
+
+// LOAD SEMUA
+onValue(refSaldo, s=>{data.saldo=s.val()||{}; render();});
+onValue(refPinjaman, s=>{data.pinjaman=s.val()||{}; render();});
+onValue(refAngsuran, s=>{data.angsuran=s.val()||{}; render();});
+onValue(refJasa, s=>{data.jasa=s.val()||{}; render();});
+onValue(refSimpanan, s=>{data.simpanan=s.val()||{}; render();});
+
+// CEK APAKAH PERLU MIGRASI
+get(refPinjaman).then(s=>{ if(!s.exists()) migrasiData(); })
+
+// SIMPAN
+document.getElementById("btnSimpanSaldo").onclick=()=>set(refSaldo,{cash:Number(cashAwal.value)||0,bank:Number(bankAwal.value)||0,tanggal:Date.now()});
+document.getElementById("btnSimpanPinjaman").onclick=()=>push(refPinjaman,{nama:pinjNama.value,jumlah:Number(pinjJumlah.value)||0,sumber:pinjSumber.value,tanggal:new Date(pinjTanggal.value).getTime()});
+document.getElementById("btnSimpanAngsuran").onclick=()=>push(refAngsuran,{nama:angNama.value,jumlah:Number(angJumlah.value)||0,sumber:angSumber.value,tanggal:new Date(angTanggal.value).getTime()});
+document.getElementById("btnSimpanJasa").onclick=()=>push(refJasa,{ket:jasaKet.value,jumlah:Number(jasaJumlah.value)||0,sumber:jasaSumber.value,tanggal:new Date(jasaTanggal.value).getTime()});
+document.getElementById("btnSimpanSimpanan").onclick=()=>push(refSimpanan,{nama:simpNama.value,tipe:simpTipe.value,jumlah:Number(simpJumlah.value)||0,sumber:simpSumber.value,tanggal:new Date(simpTanggal.value).getTime()});
+
+function render(){
+  // HITUNG TOTAL PER KATEGORI
+  let sumPinjaman=0,sumAngsuran=0,sumJasa=0,sumSimpanan=0;
+  let saldoCash = Number(data.saldo.cash || 0);
+  let saldoBank = Number(data.saldo.bank || 0);
+
+  Object.values(data.pinjaman).forEach(i=>{
+    let jml = Number(i.jumlah||0);
+    sumPinjaman+=jml;
+    if(i.sumber==="cash") saldoCash -= jml; else saldoBank -= jml;
+  });
+  Object.values(data.angsuran).forEach(i=>{
+    let jml = Number(i.jumlah||0);
+    sumAngsuran+=jml;
+    if(i.sumber==="cash") saldoCash += jml; else saldoBank += jml;
+  });
+  Object.values(data.jasa).forEach(i=>{
+    let jml = Number(i.jumlah||0);
+    sumJasa+=jml;
+    if(i.sumber==="cash") saldoCash += jml; else saldoBank += jml;
+  });
+  Object.values(data.simpanan).forEach(i=>{
+    let jml = Number(i.jumlah||0);
+    sumSimpanan+=jml;
+    if(i.sumber==="cash") saldoCash += jml; else saldoBank += jml;
+  });
+
+  // TAMPILKAN RINGKASAN
+  document.getElementById("sumSaldo").innerText="Rp "+formatRp((data.saldo.cash||0)+(data.saldo.bank||0));
+  document.getElementById("sumPinjaman").innerText="Rp "+formatRp(sumPinjaman);
+  document.getElementById("sumAngsuran").innerText="Rp "+formatRp(sumAngsuran);
+  document.getElementById("sumJasa").innerText="Rp "+formatRp(sumJasa);
+  document.getElementById("sumSimpanan").innerText="Rp "+formatRp(sumSimpanan);
+  
+  document.getElementById("saldoCash").innerText="Rp "+formatRp(saldoCash);
+  document.getElementById("saldoBank").innerText="Rp "+formatRp(saldoBank);
+  document.getElementById("saldoAkhir").innerText="Rp "+formatRp(saldoCash + saldoBank);
+
+  // 🔥 SORT DULU BIAR DATA MUNCUL DARI BARU
+  const sortData = obj => Object.values(obj).sort((a,b)=>b.tanggal-a.tanggal);
+
+  tblPinjaman.innerHTML = sortData(data.pinjaman).map(i=>`<tr><td>${formatTanggal(i.tanggal)}</td><td>${i.nama}</td><td class="text-right keluar">Rp ${formatRp(i.jumlah)}</td><td>${i.sumber.toUpperCase()}</td></tr>`).join("") || "<tr><td colspan=4>Belum ada data</td></tr>";
+  tblAngsuran.innerHTML = sortData(data.angsuran).map(i=>`<tr><td>${formatTanggal(i.tanggal)}</td><td>${i.nama}</td><td class="text-right masuk">Rp ${formatRp(i.jumlah)}</td><td>${i.sumber.toUpperCase()}</td></tr>`).join("") || "<tr><td colspan=4>Belum ada data</td></tr>";
+  tblJasa.innerHTML = sortData(data.jasa).map(i=>`<tr><td>${formatTanggal(i.tanggal)}</td><td>${i.ket}</td><td class="text-right masuk">Rp ${formatRp(i.jumlah)}</td><td>${i.sumber.toUpperCase()}</td></tr>`).join("") || "<tr><td colspan=4>Belum ada data</td></tr>";
+  tblSimpanan.innerHTML = sortData(data.simpanan).map(i=>`<tr><td>${formatTanggal(i.tanggal)}</td><td>${i.nama}</td><td>${i.tipe}</td><td class="text-right masuk">Rp ${formatRp(i.jumlah)}</td><td>${i.sumber.toUpperCase()}</td></tr>`).join("") || "<tr><td colspan=5>Belum ada data</td></tr>";
+}
+// set default tanggal sekarang
+document.querySelectorAll('input[type="datetime-local"]').forEach(i=>i.value=new Date().toISOString().slice(0,16));
+</script>
+</body>
+</html>

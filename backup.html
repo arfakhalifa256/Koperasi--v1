@@ -412,31 +412,34 @@ input[type=file]::file-selector-button {
     <h3>Menu Koperasi</h3>
   </div>
 
+  <a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
+
   <div class="sidebar-section">Data Master</div>
   <a href="anggota.html">👤 Data Anggota</a>
-  <a href="pinjaman.html">💰 Pinjaman</a>
-  <a href="angsuran.html">📄 Angsuran</a>
+ <a href="kas.html">💵 Kas</a>
+ <a href="angsuran.html">📄 Angsuran</a>
   <a href="simpanan.html">📊 Simpanan</a>
-  <a href="cair.html">💸 Pencairan Simpanan</a>
-
+  
   <div class="sidebar-section">Keuangan</div>
-  <a href="kas.html">💵 Kas</a>
-  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
-  <a href="neraca.html">📖 Jurnal Umum</a>
+     <a href="pinjaman.html">💰 Pinjaman</a>
+     <a href="cair.html">💸 Pencairan Simpanan</a>
+    <a href="neraca.html">📖 Neraca</a>
+<a href="labarugi.html">📊 Laba Rugi</a>
 
+  
   <div class="sidebar-section">Laporan</div>
+   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
   <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
   <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
-  <a href="labarugi.html">📊 Laba Rugi</a>
-  <a href="backup.html">💾 Backup Data</a>
+    <a href="transaksi.html">📊 Lap transaksi</a>
 
   <div class="sidebar-section">Pengaturan</div>
+     <a href="backup.html">💾 Backup Data</a>
   <a href="user.html">⚙️ Kelola User</a>
   <a href="#" id="btnLogout">🚪 Logout</a>
 </div>
-
 <div id="overlay" class="overlay"></div>
-  
+
  <header>
   <div class="header-left">
     <h1>Backup Data</h1>
@@ -554,7 +557,7 @@ if(!username){
 
 if(role!== "admin"){
   alert("Akses ditolak! Hanya admin");
-  window.location.href = "dash.html";
+  window.location.href = "dashboard.html.html";
 }
 
 window.kembali = function(){

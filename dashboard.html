@@ -98,9 +98,9 @@ body{background:#f1f5f9;padding-bottom:80px}
 <div class="header-gopay">
   <div class="header-top">
     <div class="logo">
-      <img src="img/icon-192.png" alt="Koperasi ARFA">
-      Kopersi 
-      ARFA
+      <img src="./img/icon-192.png" alt="Koperasi ARFA">
+      Koperasi ARFA
+   
     </div>
     <div class="badge">Terlindungi</div>
   </div>
@@ -210,27 +210,59 @@ function hitungPinjamanBelumLunas(){
   let totalSisaPokok = 0;
   let nasabahAktif = new Set();
 
-  Object.values(dataPinjaman).forEach(p => {
-    const idPinjaman = p.id || p.key; // jaga2 kalau id nya di key
+  Object.entries(dataPinjaman).forEach(([key, p]) => {
+
+    // ID pinjaman: prioritaskan id di data, kalau tidak ada gunakan key Firebase
+    const idPinjaman = String(p.id || key);
+
+    // Nilai pinjaman awal
     const jumlahPinjaman = Number(p.jumlah || 0);
+
+    // Hitung total pokok yang sudah dibayar
     let totalBayarPokok = 0;
 
-    // jumlahkan semua angsuran pokok untuk pinjaman ini
     Object.values(dataAngsuran).forEach(a => {
-      if(a.pinjamanId === idPinjaman){
+
+      // Normalisasi ID agar tidak gagal karena beda tipe number/string
+      const idAngsuran = String(a.pinjamanId || "");
+
+      if(idAngsuran === idPinjaman){
         totalBayarPokok += Number(a.pokok || 0);
       }
     });
 
-    const sisaPokok = jumlahPinjaman - totalBayarPokok;
-    if(sisaPokok > 0){ 
+    // Hitung sisa pokok
+    let sisaPokok = jumlahPinjaman - totalBayarPokok;
+
+    // Hindari nilai minus karena kelebihan pembayaran
+    if(sisaPokok < 0){
+      sisaPokok = 0;
+    }
+
+    // HANYA masukkan pinjaman yang masih memiliki sisa
+    if(sisaPokok > 0){
+
       totalSisaPokok += sisaPokok;
-      nasabahAktif.add(p.nama || p.anggotaId); // pakai nama biar aman
+
+      // Hitung jumlah nasabah yang masih memiliki pinjaman
+      const idAnggota = String(
+        p.anggotaId ||
+        p.idAnggota ||
+        p.nama ||
+        idPinjaman
+      );
+
+      nasabahAktif.add(idAnggota);
     }
   });
 
-  document.getElementById("totalPinjaman").innerText = formatRp(totalSisaPokok);
-  document.getElementById("jumlahNasabahPinjam").innerText = nasabahAktif.size;
+  // Tampilkan total sisa pinjaman
+  document.getElementById("totalPinjaman").innerText =
+    formatRp(totalSisaPokok);
+
+  // Tampilkan jumlah nasabah yang masih punya pinjaman
+  document.getElementById("jumlahNasabahPinjam").innerText =
+    nasabahAktif.size;
 }
 /* ===== HITUNG SALDO REALTIME ===== */
 function hitungSaldo(){
