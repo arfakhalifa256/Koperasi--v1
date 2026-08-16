@@ -9,7 +9,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
 body{background:#f1f5f9;padding-bottom:80px}
-
+.logo{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:700;
+  font-size:16px;
+  color:#fff;
+}
+.logo img{
+  width:28px; /* atur ukuran logo */
+  height:28px;
+  border-radius:8px; /* biar sudutnya agak bulat */
+  object-fit:cover;
+  background:#fff; /* kasih background putih kalau logo transparan */
+  padding:2px;
+}
 /* HEADER SALDO GOJEK */
 .header-gopay{
   background: linear-gradient(135deg, #0091ff 0%, #0057a8 100%);
@@ -82,10 +97,13 @@ body{background:#f1f5f9;padding-bottom:80px}
 <!-- HEADER SALDO -->
 <div class="header-gopay">
   <div class="header-top">
-    <div class="logo">🏦 Koperasi ARFA</div>
+    <div class="logo">
+      <img src="img/icon-192.png" alt="Koperasi ARFA">
+      Kopersi 
+      ARFA
+    </div>
     <div class="badge">Terlindungi</div>
   </div>
-
   <div class="saldo-box">
     <div class="saldo-kiri">
       <div class="label">Total Saldo Kas</div>
