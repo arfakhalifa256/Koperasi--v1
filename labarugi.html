@@ -1,320 +1,1878 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laporan Pendapatan Koperasi</title>
-  <style>
-    :root{
-      --primary:#3b82f6;
-      --primary-dark:#2563eb;
-      --success:#10b981;
-      --danger:#ef4444;
-      --gray-50:#f9fafb;
-      --gray-100:#f3f4f6;
-      --gray-200:#e5e7eb;
-      --gray-600:#4b5563;
-      --gray-800:#1f2937;
-    }
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--gray-100);color:var(--gray-800)}
-    
-    header{
-      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-      color:#fff;
-      padding:14px 16px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      box-shadow:0 2px 12px rgba(59,130,246,.25);
-      position:sticky;
-      top:0;
-      z-index:100
-    }
-    .header-left{display:flex;align-items:center;gap:12px}
-    .header-left h1{font-size:16px;font-weight:600}
-    .btn-back{
-      background:rgba(255,255,255,.2);
-      backdrop-filter:blur(10px);
-      border:1px solid rgba(255,255,255,.3);
-      color:#fff;
-      width:36px;
-      height:36px;
-      border-radius:10px;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      transition:.2s
-    }
-    .btn-back:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}
-    .header-btns{display:flex;gap:8px}
-    .header-btns button{
-      background:rgba(255,255,255,.2);
-      backdrop-filter:blur(10px);
-      border:1px solid rgba(255,255,255,.3);
-      color:#fff;
-      padding:7px 14px;
-      border-radius:8px;
-      font-size:12px;
-      font-weight:600;
-      cursor:pointer;
-      transition:.2s
-    }
-    .header-btns button:hover{background:rgba(255,255,255,.3);transform:translateY(-1px)}
-  
-     
-   
-    .container{max-width:700px;margin:20px auto;background:#fff;padding:24px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
-    .periode{text-align:center;margin-bottom:20px;color:var(--gray-600);font-size:13px;font-weight:500}
-    .filter{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
-    .filter input{padding:9px 14px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px}
-    .filter input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
-    .filter button{padding:9px 18px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;transition:.2s}
-    .filter button:hover{background:var(--primary-dark);transform:translateY(-1px)}
-    
-    .laporan h4{
-      background:#d1fae5;
-      color:#065f46;
-      border:2px solid #6ee7b7;
-      padding:10px 14px;
-      border-radius:8px 8px 0 0;
-      margin-top:16px;
-      font-size:12px;
-      font-weight:700;
-      letter-spacing:0.5px
-    }
-    .laporan h4:first-child{margin-top:0}
-    .isi{border:1px solid var(--gray-200);border-top:none;padding:14px;border-radius:0 0 8px 8px;background:var(--gray-50)}
-    .baris{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--gray-200);font-size:14px}
-    .baris:last-child{border:none}
-    .baris span:first-child{color:var(--gray-600)}
-    .baris span:last-child{font-weight:500}
-    .total{display:flex;justify-content:space-between;padding:12px 0;margin-top:10px;border-top:2px solid var(--gray-800);font-weight:700;font-size:15px}
-    .shu-final{color:var(--success)}
-    .shu-final.rugi{color:var(--danger)}
-    
-    .shu-box{margin-top:24px;padding:18px;border-radius:12px;text-align:center;font-weight:700;font-size:15px}
-    .laba{background:#d1fae5;color:#065f46;border:2px solid #6ee7b7}
-    .rugi{background:#fee2e2;color:#991b1b;border:2px solid #fca5a5}
-    
-    @media print{display:none}
-    @media(max-width:640px){
-      .container{margin:12px;padding:16px;border-radius:12px}
-      header{padding:12px}
-      .header-left h1{font-size:14px}
-    }
-  
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Laba Rugi Koperasi ARFA</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --primary:#1e90ff;
+  --primary-dark:#0f3057;
+  --bg:#f1f5f9;
+  --card:#fff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e2e8f0;
+  --success:#16a34a;
+  --danger:#dc2626;
+  --warning:#f59e0b;
+  --shadow:0 1px 3px rgba(0,0,0,.08),
+           0 4px 12px rgba(0,0,0,.05);
+}
+
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  font-size:13px;
+  padding-bottom:30px;
+}
+
+/* HEADER */
+
+header{
+  background:linear-gradient(to right,var(--primary),var(--primary-dark));
+  color:#fff;
+  padding:12px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 3px 10px rgba(0,0,0,.15);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#fff;
+  padding:2px;
+}
+
+.brand-text .subtitle{
+  font-size:10px;
+  opacity:.9;
+  line-height:1;
+}
+
+.brand-text .title{
+  font-size:12px;
+  font-weight:700;
+  line-height:1.2;
+}
+
+#userInfo{
+  font-size:11px;
+}
+
+.menu-btn{
+  cursor:pointer;
+  font-size:22px;
+  padding:4px 8px;
+  border-radius:6px;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-240px;
+  width:220px;
+  height:100%;
+  background:#0d47a1;
+  padding:16px;
+  transition:.3s;
+  z-index:99999;
+  overflow-y:auto;
+}
+
+.sidebar.open{
+  left:0;
+}
+
+.sidebar-logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-bottom:16px;
+  margin-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,.2);
+}
+
+.sidebar-logo img{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#fff;
+  padding:2px;
+}
+
+.sidebar-logo h3{
+  color:#fff;
+  font-size:15px;
+}
+
+.sidebar a{
+  display:block;
+  color:#fff;
+  text-decoration:none;
+  padding:10px 12px;
+  border-radius:8px;
+  margin-bottom:6px;
+  font-size:13px;
+  font-weight:500;
+  transition:.2s;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+  background:rgba(255,255,255,.18);
+  transform:translateX(3px);
+}
+
+.sidebar-section{
+  color:rgba(255,255,255,.6);
+  font-size:10px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin:16px 0 8px 12px;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  z-index:999;
+}
+
+/* CONTENT */
+
+.container{
+  padding:14px;
+  max-width:1000px;
+  margin:auto;
+}
+
+.page-title{
+  text-align:center;
+  margin:8px 0 16px;
+  font-size:17px;
+  font-weight:700;
+  color:var(--primary-dark);
+}
+
+.card{
+  background:var(--card);
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:12px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+}
+
+.card h3{
+  margin-bottom:12px;
+  font-size:14px;
+}
+
+/* FILTER */
+
+.filter-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+label{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:600;
+}
+
+input,
+select{
+  width:100%;
+  padding:9px 10px;
+  border:1.5px solid var(--border);
+  border-radius:7px;
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+}
+
+.button-row{
+  display:flex;
+  gap:8px;
+  margin-top:4px;
+}
+
+button{
+  border:none;
+  border-radius:8px;
+  padding:9px 13px;
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:#fff;
+}
+
+.btn-secondary{
+  background:#64748b;
+  color:#fff;
+}
+
+.btn-pdf{
+  background:#dc2626;
+  color:#fff;
+}
+
+/* SUMMARY */
+
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.summary{
+  padding:13px;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  border-radius:9px;
+  text-align:center;
+}
+
+.summary .label{
+  font-size:10px;
+  color:var(--muted);
+}
+
+.summary .value{
+  font-size:17px;
+  font-weight:700;
+  margin-top:4px;
+}
+
+.income{
+  color:var(--success);
+}
+
+.expense{
+  color:var(--danger);
+}
+
+.profit{
+  color:var(--primary);
+}
+
+/* REPORT */
+
+.report-header{
+  text-align:center;
+  margin-bottom:15px;
+}
+
+.report-header h2{
+  font-size:17px;
+  color:var(--primary-dark);
+}
+
+.report-header p{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.report-section{
+  margin-top:15px;
+}
+
+.report-section h4{
+  font-size:13px;
+  padding:9px 10px;
+  background:#f8fafc;
+  border-bottom:1px solid var(--border);
+}
+
+.report-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 10px;
+  border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+
+.report-row.total{
+  font-weight:700;
+  background:#f8fafc;
+}
+
+.report-row.grand-total{
+  font-size:15px;
+  font-weight:700;
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  border-radius:8px;
+  margin-top:12px;
+}
+
+.amount{
+  text-align:right;
+  white-space:nowrap;
+}
+
+/* DETAIL TABLE */
+
+.table-wrap{
+  overflow-x:auto;
+  margin-top:10px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:600px;
+  font-size:11px;
+}
+
+th{
+  background:#f8fafc;
+  color:var(--muted);
+  padding:8px;
+  text-align:left;
+  border-bottom:2px solid var(--border);
+}
+
+td{
+  padding:7px 8px;
+  border-bottom:1px solid var(--border);
+}
+
+.text-right{
+  text-align:right;
+}
+
+.note{
+  font-size:10px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:700px){
+
+  .container{
+    padding:10px;
+  }
+
+  .filter-grid{
+    grid-template-columns:1fr;
+  }
+
+  .summary-grid{
+    grid-template-columns:1fr;
+  }
+
+  .button-row{
+    flex-direction:column;
+  }
+
+  button{
+    width:100%;
+  }
+}
+
+/* PRINT */
+
+@media print{
+
+  body{
+    background:#fff;
+  }
+
+  header,
+  .sidebar,
+  .overlay,
+  .filter-card,
+  .btn-pdf,
+  .btn-secondary{
+    display:none!important;
+  }
+
+  .container{
+    max-width:none;
+    padding:0;
+  }
+
+  .card{
+    box-shadow:none;
+    border:1px solid #ddd;
+  }
+}
+</style>
 </head>
+
 <body>
-  <header>
-    <div class="header-left">
-      <button class="btn-back" onclick="kembali()" title="Kembali">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-      </button>
-      <h1>LAPORAN PENDAPATAN</h1>
-    </div>
-    <div class="header-btns">
-      <button onclick="shareWA()">WA</button>
-      <button onclick="exportPDF()">PDF</button>
-    </div>
-  </header>
-  
 
-  <div class="container" id="laporanContainer">
-    <div class="periode" id="periode">Periode: 1 Jan 2026 - 31 Des 2026</div>
-    
-    <div class="filter">
-      <input type="date" id="tglMulai" title="Tanggal Mulai">
-      <input type="date" id="tglAkhir" title="Tanggal Akhir">
-      <button onclick="hitungLabaRugi()">Tampilkan</button>
-    </div>
-          
+<!-- SIDEBAR -->
 
-    <div class="laporan">
+<div id="sidebar" class="sidebar">
 
-      <h4>PENDAPATAN</h4>
-      <div class="isi">
-        <div class="baris"><span>Pendapatan Jasa Pinjaman</span><span id="pendapatanJasa">Rp 0</span></div>
-        <div class="baris"><span>Pendapatan Lain-lain</span><span id="pendapatanLain">Rp 0</span></div>
-        <div class="total"><span>TOTAL PENDAPATAN</span><span id="totalPendapatan">Rp 0</span></div>
-      </div>
-
-      <h4>BEBAN OPERASIONAL</h4>
-      <div class="isi">
-        <div class="baris"><span>Beban Gaji</span><span id="bebanGaji">Rp 0</span></div>
-        <div class="baris"><span>Beban Listrik & Air</span><span id="bebanListrik">Rp 0</span></div>
-        <div class="baris"><span>Beban ATK</span><span id="bebanAtk">Rp 0</span></div>
-        <div class="baris"><span>Beban Lain-lain</span><span id="bebanLain">Rp 0</span></div>
-        <div class="total"><span>TOTAL BEBAN</span><span id="totalBeban">Rp 0</span></div>
-        <div class="total shu-final"><span>LABA/RUGI BERSIH</span><span id="labaBersih">Rp 0</span></div>
-      </div>
-    </div>
-
-    <div id="shuBox" class="shu-box"></div>
+  <div class="sidebar-logo">
+    <img src="img/icon-192.png" alt="Logo">
+    <h3>Menu Koperasi</h3>
   </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
-    authDomain: "arfa-c7dee.firebaseapp.com",
-    databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
-    projectId: "arfa-c7dee",
-    storageBucket: "arfa-c7dee.firebasestorage.app",
-    messagingSenderId: "468058520812",
-    appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
-  };
-  
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  let dataGlobal = {};
-  let dataSiap = false; // Flag biar tau data udah ke-load
+  <div class="sidebar-section">Data Master</div>
 
-  const rupiah = n => new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",minimumFractionDigits:0}).format(Number(n)||0);
+  <a href="anggota.html">👤 Data Anggota</a>
+  <a href="pinjaman.html">💰 Pinjaman</a>
+  <a href="angsuran.html">📄 Angsuran</a>
+  <a href="simpanan.html">📊 Simpanan</a>
+  <a href="cair.html">💸 Pencairan Simpanan</a>
 
-  db.ref().on("value", snap=>{
-    dataGlobal = snap.val() || {};
-    dataSiap = true;
-    hitungLabaRugi();
+  <div class="sidebar-section">Keuangan</div>
+
+  <a href="kas.html">💵 Kas</a>
+  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <a href="neraca.html">📖 Neraca</a>
+
+  <div class="sidebar-section">Laporan</div>
+
+  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
+  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
+  <a href="labarugi.html" class="active">📊 Laba Rugi</a>
+  <a href="transaksi.html">📊 Lap transaksi</a>
+
+  <div class="sidebar-section">Pengaturan</div>
+
+  <a href="backup.html">💾 Backup Data</a>
+  <a href="user.html">⚙️ Kelola User</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
+
+</div>
+
+<div id="overlay" class="overlay"></div>
+
+<!-- HEADER -->
+
+<header>
+
+  <div class="header-left">
+
+    <div class="brand">
+
+      <img src="img/icon-192.png" alt="Logo">
+
+      <div class="brand-text">
+
+        <div class="subtitle">Koperasi</div>
+        <div class="title">ARFA</div>
+
+      </div>
+
+    </div>
+
+    <span id="userInfo"></span>
+
+  </div>
+
+  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+
+</header>
+
+<!-- CONTENT -->
+
+<div class="container">
+
+  <h3 class="page-title">LAPORAN LABA RUGI</h3>
+
+  <!-- FILTER -->
+
+  <div class="card filter-card">
+
+    <h3>Periode Laporan</h3>
+
+    <div class="filter-grid">
+
+      <div class="form-group">
+
+        <label>Dari Tanggal</label>
+
+        <input type="date" id="tglAwal">
+
+      </div>
+
+      <div class="form-group">
+
+        <label>Sampai Tanggal</label>
+
+        <input type="date" id="tglAkhir">
+
+      </div>
+
+      <div class="form-group full">
+
+        <div class="button-row">
+
+          <button class="btn-primary" onclick="tampilkanLaporan()">
+            🔍 Tampilkan
+          </button>
+
+          <button class="btn-secondary" onclick="periodeBulanIni()">
+            📅 Bulan Ini
+          </button>
+
+          <button class="btn-secondary" onclick="periodeTahunIni()">
+            📆 Tahun Ini
+          </button>
+
+          <button class="btn-pdf" onclick="exportPDF()">
+            📄 Export PDF
+          </button>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SUMMARY -->
+
+  <div class="card">
+
+    <div class="summary-grid">
+
+      <div class="summary">
+
+        <div class="label">TOTAL PENDAPATAN</div>
+
+        <div class="value income">
+          Rp <span id="summaryPendapatan">0</span>
+        </div>
+
+      </div>
+
+      <div class="summary">
+
+        <div class="label">TOTAL BEBAN</div>
+
+        <div class="value expense">
+          Rp <span id="summaryBeban">0</span>
+        </div>
+
+      </div>
+
+      <div class="summary">
+
+        <div class="label">SHU / LABA BERSIH</div>
+
+        <div class="value profit">
+          Rp <span id="summarySHU">0</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- LAPORAN -->
+
+  <div class="card">
+
+    <div class="report-header">
+
+      <h2>KOPERASI ARFA</h2>
+
+      <p>LAPORAN LABA RUGI</p>
+
+      <p id="periodeText">
+        Periode -
+      </p>
+
+    </div>
+
+    <!-- PENDAPATAN -->
+
+    <div class="report-section">
+
+      <h4>
+        A. PENDAPATAN
+      </h4>
+
+      <div id="listPendapatan"></div>
+
+      <div class="report-row total">
+
+        <span>Total Pendapatan</span>
+
+        <span class="amount">
+          Rp <span id="totalPendapatan">0</span>
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- BEBAN -->
+
+    <div class="report-section">
+
+      <h4>
+        B. BEBAN / BIAYA
+      </h4>
+
+      <div id="listBeban"></div>
+
+      <div class="report-row total">
+
+        <span>Total Beban</span>
+
+        <span class="amount">
+          Rp <span id="totalBeban">0</span>
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- SHU -->
+
+    <div class="report-row grand-total">
+
+      <span id="labelHasil">
+        SHU / LABA BERSIH
+      </span>
+
+      <span class="amount">
+        Rp <span id="hasilBersih">0</span>
+      </span>
+
+    </div>
+
+    <div class="note">
+      * Simpanan pokok, simpanan wajib, simpanan sukarela,
+      angsuran pokok, pinjaman dan pengambilan simpanan
+      tidak dihitung sebagai pendapatan/beban laba rugi.
+    </div>
+
+  </div>
+
+  <!-- DETAIL -->
+
+  <div class="card">
+
+    <h3>Detail Transaksi yang Masuk Laba Rugi</h3>
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Tanggal</th>
+            <th>Keterangan</th>
+            <th>Kategori</th>
+            <th>Tipe</th>
+            <th class="text-right">Jumlah</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="detailTransaksi"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script type="module">
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+/* ================================
+   FIREBASE
+================================ */
+
+const firebaseConfig = {
+
+  apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+
+  authDomain:"arfa-c7dee.firebaseapp.com",
+
+  databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",
+
+  projectId:"arfa-c7dee"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+
+/* ================================
+   DATA
+================================ */
+
+let dataTransaksi = {};
+
+let laporanData = {
+
+  pendapatan:{},
+
+  beban:{}
+
+};
+
+
+/* ================================
+   FORMAT
+================================ */
+
+function formatRp(n){
+
+  return Number(n || 0).toLocaleString("id-ID");
+
+}
+
+
+function formatTanggal(timestamp){
+
+  if(!timestamp) return "-";
+
+  return new Date(Number(timestamp))
+    .toLocaleDateString("id-ID",{
+
+      day:"2-digit",
+      month:"short",
+      year:"numeric"
+
+    });
+
+}
+
+
+/* ================================
+   KATEGORI
+================================ */
+
+const namaKategori = {
+
+  pendapatan_jasa:"Pendapatan Jasa",
+
+  pendapatan_lain:"Pendapatan Lain-lain",
+
+  biaya_operasional:"Biaya Operasional",
+
+  konsumsi:"Konsumsi",
+
+  biaya_listrik:"Biaya Listrik",
+
+  biaya_air:"Biaya Air",
+
+  biaya_atk:"Biaya ATK",
+
+  biaya_transportasi:"Biaya Transportasi",
+
+  biaya_admin:"Biaya Administrasi",
+
+  biaya_lain:"Biaya Lain-lain"
+
+};
+
+
+function namaKategoriFix(kategori){
+
+  if(namaKategori[kategori]){
+
+    return namaKategori[kategori];
+
+  }
+
+  if(!kategori) return "Tidak Ada Kategori";
+
+  return kategori
+
+    .replaceAll("_"," ")
+
+    .replace(/\b\w/g,
+
+      huruf => huruf.toUpperCase()
+
+    );
+
+}
+
+
+/* ================================
+   SIDEBAR
+================================ */
+
+window.toggleSidebar = function(){
+
+  const sidebar =
+    document.getElementById("sidebar");
+
+  const overlay =
+    document.getElementById("overlay");
+
+  sidebar.classList.toggle("open");
+
+  overlay.style.display =
+    sidebar.classList.contains("open")
+      ? "block"
+      : "none";
+
+};
+
+
+document
+  .getElementById("overlay")
+  .addEventListener("click",toggleSidebar);
+
+
+/* ================================
+   LOGOUT
+================================ */
+
+document
+  .getElementById("btnLogout")
+  .addEventListener("click",function(e){
+
+    e.preventDefault();
+
+    localStorage.clear();
+
+    location.href="index.html";
+
   });
 
-  function hitungLabaRugi(){
-    if(!dataSiap) return;
-    const tglMulaiStr = document.getElementById("tglMulai").value;
-    const tglAkhirStr = document.getElementById("tglAkhir").value;
-    
-    const tglMulai = tglMulaiStr ? new Date(tglMulaiStr).getTime() : new Date(new Date().getFullYear(), 0, 1).getTime();
-    const tglAkhir = tglAkhirStr ? new Date(tglAkhirStr).getTime() + 86399999 : new Date().getTime();
-    
-    document.getElementById("periode").innerText = `Periode: ${new Date(tglMulai).toLocaleDateString("id-ID")} - ${new Date(tglAkhir).toLocaleDateString("id-ID")}`;
 
-    const kasData = dataGlobal.kas || {};
-    const transaksi = kasData.transaksi || {};
+/* ================================
+   USER
+================================ */
 
-    let totalJasa = 0;
-    Object.values(dataGlobal.angsuran || {}).forEach(a => {
-      if (!a) return;
-      const tgl = Number(a.tanggal || 0);
-      if (tgl < tglMulai || tgl > tglAkhir) return;
-      totalJasa += Number(a.jasa || 0);
-    });
+document.addEventListener("DOMContentLoaded",()=>{
 
-    let pendapatanLain = 0;
-    Object.values(transaksi).forEach(t => {
-      if (!t || t.tipe !== "masuk") return;
-      const tgl = Number(t.tanggal || 0);
-      if (tgl < tglMulai || tgl > tglAkhir) return;
-      const kategori = (t.kategori || "").toLowerCase();
-      if (kategori.includes("pendapatan") || kategori.includes("lain")) {
-        pendapatanLain += Number(t.jumlah || 0);
+  const username =
+    localStorage.getItem("username");
+
+  const role =
+    localStorage.getItem("role");
+
+  const el =
+    document.getElementById("userInfo");
+
+  if(!username || !role){
+
+    el.innerHTML="⚠️ Belum login";
+
+    return;
+
+  }
+
+  const jam =
+    new Date().getHours();
+
+  const salam =
+    jam < 11
+      ? "Pagi"
+      : jam < 15
+        ? "Siang"
+        : jam < 18
+          ? "Sore"
+          : "Malam";
+
+  el.innerHTML =
+    `${salam}, <b>${username}</b>`;
+
+});
+
+
+/* ================================
+   DEFAULT PERIODE
+================================ */
+
+function tanggalHariIni(){
+
+  const d = new Date();
+
+  return d.toISOString().slice(0,10);
+
+}
+
+
+function tanggalAwalBulan(){
+
+  const d = new Date();
+
+  d.setDate(1);
+
+  return d.toISOString().slice(0,10);
+
+}
+
+
+function tanggalAwalTahun(){
+
+  const d = new Date();
+
+  d.setMonth(0);
+
+  d.setDate(1);
+
+  return d.toISOString().slice(0,10);
+
+}
+
+
+document.getElementById("tglAwal").value =
+  tanggalAwalBulan();
+
+document.getElementById("tglAkhir").value =
+  tanggalHariIni();
+
+
+/* ================================
+   PERIODE
+================================ */
+
+window.periodeBulanIni = function(){
+
+  document.getElementById("tglAwal").value =
+    tanggalAwalBulan();
+
+  document.getElementById("tglAkhir").value =
+    tanggalHariIni();
+
+  tampilkanLaporan();
+
+};
+
+
+window.periodeTahunIni = function(){
+
+  document.getElementById("tglAwal").value =
+    tanggalAwalTahun();
+
+  document.getElementById("tglAkhir").value =
+    tanggalHariIni();
+
+  tampilkanLaporan();
+
+};
+
+
+/* ================================
+   FIREBASE LISTENER
+================================ */
+
+onValue(
+  ref(db,"kas/transaksi"),
+  snap=>{
+
+    dataTransaksi =
+      snap.val() || {};
+
+    tampilkanLaporan();
+
+  }
+);
+
+
+/* ================================
+   CEK MASUK PERIODE
+================================ */
+
+function dalamPeriode(timestamp){
+
+  if(!timestamp) return false;
+
+  const awal =
+    document.getElementById("tglAwal").value;
+
+  const akhir =
+    document.getElementById("tglAkhir").value;
+
+  if(!awal || !akhir) return true;
+
+  const t =
+    Number(timestamp);
+
+  const awalTime =
+    new Date(awal+"T00:00:00").getTime();
+
+  const akhirTime =
+    new Date(akhir+"T23:59:59").getTime();
+
+  return (
+    t >= awalTime &&
+    t <= akhirTime
+  );
+
+}
+
+
+/* ================================
+   CEK PENDAPATAN
+================================ */
+
+function apakahPendapatan(t){
+
+  /*
+   * Yang dianggap pendapatan:
+   *
+   * pendapatan_jasa
+   * pendapatan_lain
+   *
+   * BUKAN:
+   * simpanan pokok
+   * simpanan wajib
+   * simpanan sukarela
+   * angsuran pokok
+   */
+
+  return (
+    t.tipe === "masuk" &&
+    (
+      t.kategori === "pendapatan_jasa" ||
+      t.kategori === "pendapatan_lain"
+    )
+  );
+
+}
+
+
+/* ================================
+   CEK BEBAN
+================================ */
+
+function apakahBeban(t){
+
+  /*
+   * Semua transaksi keluar/biaya
+   * dianggap beban KECUALI:
+   *
+   * pinjaman
+   * pengambilan simpanan
+   * transfer bank
+   */
+
+  if(
+    t.tipe !== "keluar" &&
+    t.tipe !== "biaya"
+  ){
+
+    return false;
+
+  }
+
+  const kategori =
+    String(t.kategori || "")
+      .toLowerCase();
+
+  if(
+    kategori === "pinjaman" ||
+    kategori === "pengambilan_simpanan" ||
+    kategori === "transfer_bank"
+  ){
+
+    return false;
+
+  }
+
+  return true;
+
+}
+
+
+/* ================================
+   TAMPILKAN LAPORAN
+================================ */
+
+window.tampilkanLaporan = function(){
+
+  laporanData = {
+
+    pendapatan:{},
+
+    beban:{}
+
+  };
+
+  const detail =
+    document.getElementById(
+      "detailTransaksi"
+    );
+
+  detail.innerHTML="";
+
+  let transaksiLaporan=[];
+
+
+  Object.entries(dataTransaksi)
+    .forEach(([key,t])=>{
+
+      if(!t) return;
+
+      if(!dalamPeriode(t.tanggal))
+        return;
+
+
+      const jumlah =
+        Number(t.jumlah || 0);
+
+      if(jumlah <= 0) return;
+
+
+      /* PENDAPATAN */
+
+      if(apakahPendapatan(t)){
+
+        const kategori =
+          t.kategori ||
+          "pendapatan_lain";
+
+        if(
+          !laporanData.pendapatan[kategori]
+        ){
+
+          laporanData.pendapatan[kategori]=0;
+
+        }
+
+        laporanData
+          .pendapatan[kategori]
+          += jumlah;
+
+        transaksiLaporan.push({
+
+          key,
+          t,
+          jenis:"Pendapatan"
+
+        });
+
       }
+
+
+      /* BEBAN */
+
+      else if(apakahBeban(t)){
+
+        const kategori =
+          t.kategori ||
+          "biaya_lain";
+
+        if(
+          !laporanData.beban[kategori]
+        ){
+
+          laporanData.beban[kategori]=0;
+
+        }
+
+        laporanData.beban[kategori]
+          += jumlah;
+
+        transaksiLaporan.push({
+
+          key,
+          t,
+          jenis:"Beban"
+
+        });
+
+      }
+
     });
 
-    const totalPendapatan = totalJasa + pendapatanLain;
 
-    let bebanGaji = 0;
-    let bebanListrik = 0;
-    let bebanAtk = 0;
-    let bebanLain = 0;
+  renderLaporan(
+    transaksiLaporan
+  );
 
-    Object.values(transaksi).forEach(t => {
-      if (!t || t.tipe !== "keluar") return;
-      const tgl = Number(t.tanggal || 0);
-      if (tgl < tglMulai || tgl > tglAkhir) return;
-      const kategori = (t.kategori || "").toLowerCase();
-      const jumlah = Number(t.jumlah || 0);
-      if (["pinjaman", "pokok", "jasa", "simpanan"].includes(kategori)) return;
+};
 
-      if (kategori.includes("gaji")) bebanGaji += jumlah;
-      else if (kategori.includes("listrik") || kategori.includes("air")) bebanListrik += jumlah;
-      else if (kategori.includes("atk") || kategori.includes("alat tulis")) bebanAtk += jumlah;
-      else bebanLain += jumlah;
-    });
 
-    const totalBeban = bebanGaji + bebanListrik + bebanAtk + bebanLain;
-    const shu = totalPendapatan - totalBeban;
+/* ================================
+   RENDER LAPORAN
+================================ */
 
-    document.getElementById("pendapatanJasa").innerText = rupiah(totalJasa);
-    document.getElementById("pendapatanLain").innerText = rupiah(pendapatanLain);
-    document.getElementById("totalPendapatan").innerText = rupiah(totalPendapatan);
-    document.getElementById("bebanGaji").innerText = rupiah(bebanGaji);
-    document.getElementById("bebanListrik").innerText = rupiah(bebanListrik);
-    document.getElementById("bebanAtk").innerText = rupiah(bebanAtk);
-    document.getElementById("bebanLain").innerText = rupiah(bebanLain);
-    document.getElementById("totalBeban").innerText = rupiah(totalBeban);
-    document.getElementById("labaBersih").innerText = rupiah(shu);
-    document.getElementById("labaBersih").className = shu >= 0 ? "shu-final" : "shu-final rugi";
+function renderLaporan(transaksiLaporan){
 
-    const shuBox = document.getElementById("shuBox");
-    if(shu >= 0){
-      shuBox.className = "shu-box laba";
-      shuBox.innerHTML = `SHU (LABA): ${rupiah(shu)}`;
-    }else{
-      shuBox.className = "shu-box rugi";
-      shuBox.innerHTML = `SHU (RUGI): ${rupiah(Math.abs(shu))}`;
-    }
-  }
+  const listPendapatan =
+    document.getElementById(
+      "listPendapatan"
+    );
 
-  window.kembali = () => {
-    if(document.referrer && document.referrer.includes(window.location.hostname)){
-      window.history.back();
-    } else {
-      window.location.href = "dash.html";
-    }
-  }
+  const listBeban =
+    document.getElementById(
+      "listBeban"
+    );
 
-  function shareWA(){
-    const periode = document.getElementById("periode").innerText;
-    const jasa = document.getElementById("pendapatanJasa").innerText;
-    const lain = document.getElementById("pendapatanLain").innerText;
-    const totalPend = document.getElementById("totalPendapatan").innerText;
-    const beban = document.getElementById("totalBeban").innerText;
-    const laba = document.getElementById("labaBersih").innerText;
-    
-    const text = `*LAPORAN PENDAPATAN*\n${periode}\n\n*PENDAPATAN*\n- Jasa Pinjaman: ${jasa}\n- Lain-lain: ${lain}\n*Total: ${totalPend}*\n\n*BEBAN OPERASIONAL*\n*Total Beban: ${beban}*\n\n*LABA/RUGI BERSIH: ${laba}*`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`,'_blank');
-  }
+  listPendapatan.innerHTML="";
 
-function exportPDF(){
-    if(!dataSiap || document.getElementById("totalPendapatan").innerText === "Rp 0"){
-      alert("Data belum dimuat. Klik 'Tampilkan' dulu ya.");
-      return;
-    }
-    
-    const element = document.getElementById('laporanContainer').cloneNode(true);
-    element.querySelector('.filter').style.display = 'none'; // Sembunyikan filter di PDF
+  listBeban.innerHTML="";
 
-    // Tambah Kop Surat khusus PDF
-    const kop = document.createElement('div');
-    kop.style.textAlign = 'center';
-    kop.style.marginBottom = '20px';
-    kop.style.borderBottom = '2px solid #1f2937';
-    kop.style.paddingBottom = '12px';
-    kop.innerHTML = `
-      <h2 style="margin:0;font-size:18px;font-weight:700;color:#1f2937">LAPORAN PENDAPATAN</h2>
-      <h3 style="margin:4px 0 0 0;font-size:14px;font-weight:600;color:#4b5563">KOPERASI DRIVER ARFA</h3>
+
+  let totalPendapatan=0;
+
+  let totalBeban=0;
+
+
+  /* PENDAPATAN */
+
+  Object.entries(
+    laporanData.pendapatan
+  )
+  .sort((a,b)=>b[1]-a[1])
+  .forEach(([kategori,jumlah])=>{
+
+    totalPendapatan += jumlah;
+
+    const row =
+      document.createElement("div");
+
+    row.className="report-row";
+
+    row.innerHTML=`
+
+      <span>
+        ${namaKategoriFix(kategori)}
+      </span>
+
+      <span class="amount">
+        Rp ${formatRp(jumlah)}
+      </span>
+
     `;
-    element.prepend(kop); // Taruh di paling atas
 
-    const opt = {
-      margin: 10,
-      filename: `LAPORAN_PENDAPATAN_ARFA_${new Date().toISOString().slice(0,10)}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
+    listPendapatan.appendChild(row);
+
+  });
+
+
+  if(
+    Object.keys(
+      laporanData.pendapatan
+    ).length===0
+  ){
+
+    listPendapatan.innerHTML=`
+
+      <div class="report-row">
+
+        <span>
+          Belum ada pendapatan
+        </span>
+
+        <span>
+          Rp 0
+        </span>
+
+      </div>
+
+    `;
+
   }
 
-  const now = new Date();
-  document.getElementById("tglMulai").valueAsDate = new Date(now.getFullYear(), 0, 1);
-  document.getElementById("tglAkhir").valueAsDate = now;
+
+  /* BEBAN */
+
+  Object.entries(
+    laporanData.beban
+  )
+  .sort((a,b)=>b[1]-a[1])
+  .forEach(([kategori,jumlah])=>{
+
+    totalBeban += jumlah;
+
+    const row =
+      document.createElement("div");
+
+    row.className="report-row";
+
+    row.innerHTML=`
+
+      <span>
+        ${namaKategoriFix(kategori)}
+      </span>
+
+      <span class="amount">
+        Rp ${formatRp(jumlah)}
+      </span>
+
+    `;
+
+    listBeban.appendChild(row);
+
+  });
+
+
+  if(
+    Object.keys(
+      laporanData.beban
+    ).length===0
+  ){
+
+    listBeban.innerHTML=`
+
+      <div class="report-row">
+
+        <span>
+          Belum ada beban
+        </span>
+
+        <span>
+          Rp 0
+        </span>
+
+      </div>
+
+    `;
+
+  }
+
+
+  const hasil =
+    totalPendapatan -
+    totalBeban;
+
+
+  document.getElementById(
+    "totalPendapatan"
+  ).innerText =
+    formatRp(totalPendapatan);
+
+
+  document.getElementById(
+    "totalBeban"
+  ).innerText =
+    formatRp(totalBeban);
+
+
+  document.getElementById(
+    "hasilBersih"
+  ).innerText =
+    formatRp(Math.abs(hasil));
+
+
+  document.getElementById(
+    "summaryPendapatan"
+  ).innerText =
+    formatRp(totalPendapatan);
+
+
+  document.getElementById(
+    "summaryBeban"
+  ).innerText =
+    formatRp(totalBeban);
+
+
+  document.getElementById(
+    "summarySHU"
+  ).innerText =
+    formatRp(Math.abs(hasil));
+
+
+  const label =
+    document.getElementById(
+      "labelHasil"
+    );
+
+
+  if(hasil >= 0){
+
+    label.innerText =
+      "SHU / LABA BERSIH";
+
+    document.getElementById(
+      "hasilBersih"
+    ).style.color =
+      "var(--success)";
+
+  }else{
+
+    label.innerText =
+      "RUGI BERSIH";
+
+    document.getElementById(
+      "hasilBersih"
+    ).style.color =
+      "var(--danger)";
+
+  }
+
+
+  const awal =
+    document.getElementById("tglAwal").value;
+
+  const akhir =
+    document.getElementById("tglAkhir").value;
+
+
+  document.getElementById(
+    "periodeText"
+  ).innerText =
+    `Periode ${formatTanggalInput(awal)}
+     s/d ${formatTanggalInput(akhir)}`;
+
+
+  renderDetail(
+    transaksiLaporan
+  );
+
+}
+
+
+/* ================================
+   FORMAT INPUT DATE
+================================ */
+
+function formatTanggalInput(tanggal){
+
+  if(!tanggal) return "-";
+
+  const d =
+    new Date(tanggal+"T00:00:00");
+
+  return d.toLocaleDateString(
+    "id-ID",
+    {
+      day:"2-digit",
+      month:"long",
+      year:"numeric"
+    }
+  );
+
+}
+
+
+/* ================================
+   DETAIL TRANSAKSI
+================================ */
+
+function renderDetail(data){
+
+  const tbody =
+    document.getElementById(
+      "detailTransaksi"
+    );
+
+  tbody.innerHTML="";
+
+
+  data.sort(
+    (a,b)=>
+      Number(b.t.tanggal || 0) -
+      Number(a.t.tanggal || 0)
+  );
+
+
+  data.forEach(item=>{
+
+    const t=item.t;
+
+    const tr =
+      document.createElement("tr");
+
+
+    const jenis =
+      item.jenis;
+
+
+    tr.innerHTML=`
+
+      <td>
+        ${formatTanggal(t.tanggal)}
+      </td>
+
+      <td>
+        ${t.keterangan || "-"}
+      </td>
+
+      <td>
+        ${namaKategoriFix(t.kategori)}
+      </td>
+
+      <td class="${
+        jenis==="Pendapatan"
+          ? "income"
+          : "expense"
+      }">
+        ${jenis}
+      </td>
+
+      <td class="text-right">
+        Rp ${formatRp(t.jumlah)}
+      </td>
+
+    `;
+
+
+    tbody.appendChild(tr);
+
+  });
+
+
+  if(data.length===0){
+
+    tbody.innerHTML=`
+
+      <tr>
+
+        <td
+          colspan="5"
+          style="text-align:center;color:#6b7280"
+        >
+          Tidak ada transaksi laba rugi
+          pada periode ini.
+        </td>
+
+      </tr>
+
+    `;
+
+  }
+
+}
+
+
+/* ================================
+   EXPORT PDF
+================================ */
+
+window.exportPDF = function(){
+
+  const {
+    jsPDF
+  } = window.jspdf;
+
+
+  const doc =
+    new jsPDF("p","mm","a4");
+
+
+  const awal =
+    document.getElementById(
+      "tglAwal"
+    ).value;
+
+
+  const akhir =
+    document.getElementById(
+      "tglAkhir"
+    ).value;
+
+
+  let totalPendapatan=0;
+  let totalBeban=0;
+
+
+  const pendapatanRows=[];
+
+  const bebanRows=[];
+
+
+  Object.entries(
+    laporanData.pendapatan
+  )
+  .forEach(([kategori,jumlah])=>{
+
+    totalPendapatan += jumlah;
+
+    pendapatanRows.push([
+
+      namaKategoriFix(kategori),
+
+      "Rp "+formatRp(jumlah)
+
+    ]);
+
+  });
+
+
+  Object.entries(
+    laporanData.beban
+  )
+  .forEach(([kategori,jumlah])=>{
+
+    totalBeban += jumlah;
+
+    bebanRows.push([
+
+      namaKategoriFix(kategori),
+
+      "Rp "+formatRp(jumlah)
+
+    ]);
+
+  });
+
+
+  const hasil =
+    totalPendapatan-totalBeban;
+
+
+  doc.setFontSize(16);
+
+  doc.text(
+    "KOPERASI ARFA",
+    105,
+    15,
+    {align:"center"}
+  );
+
+
+  doc.setFontSize(13);
+
+  doc.text(
+    "LAPORAN LABA RUGI",
+    105,
+    22,
+    {align:"center"}
+  );
+
+
+  doc.setFontSize(9);
+
+  doc.text(
+    `Periode ${formatTanggalInput(awal)}
+     s/d ${formatTanggalInput(akhir)}`,
+    105,
+    29,
+    {align:"center"}
+  );
+
+
+  let y=38;
+
+
+  doc.setFontSize(11);
+
+  doc.setFont(undefined,"bold");
+
+  doc.text(
+    "A. PENDAPATAN",
+    14,
+    y
+  );
+
+
+  doc.setFont(undefined,"normal");
+
+  y+=4;
+
+
+  doc.autoTable({
+
+    startY:y,
+
+    head:[
+      ["Keterangan","Jumlah"]
+    ],
+
+    body:
+      pendapatanRows.length
+        ? pendapatanRows
+        : [["Tidak ada pendapatan","Rp 0"]],
+
+    theme:"grid",
+
+    styles:{
+      fontSize:9
+    },
+
+    columnStyles:{
+      1:{
+        halign:"right"
+      }
+    }
+
+  });
+
+
+  y =
+    doc.lastAutoTable.finalY+8;
+
+
+  doc.setFont(undefined,"bold");
+
+  doc.text(
+    "Total Pendapatan : Rp "+
+    formatRp(totalPendapatan),
+    14,
+    y
+  );
+
+
+  y+=10;
+
+
+  doc.text(
+    "B. BEBAN / BIAYA",
+    14,
+    y
+  );
+
+
+  doc.setFont(undefined,"normal");
+
+  y+=4;
+
+
+  doc.autoTable({
+
+    startY:y,
+
+    head:[
+      ["Keterangan","Jumlah"]
+    ],
+
+    body:
+      bebanRows.length
+        ? bebanRows
+        : [["Tidak ada beban","Rp 0"]],
+
+    theme:"grid",
+
+    styles:{
+      fontSize:9
+    },
+
+    columnStyles:{
+      1:{
+        halign:"right"
+      }
+    }
+
+  });
+
+
+  y =
+    doc.lastAutoTable.finalY+8;
+
+
+  doc.setFont(undefined,"bold");
+
+
+  if(hasil>=0){
+
+    doc.text(
+      "SHU / LABA BERSIH : Rp "+
+      formatRp(hasil),
+      14,
+      y
+    );
+
+  }else{
+
+    doc.text(
+      "RUGI BERSIH : Rp "+
+      formatRp(Math.abs(hasil)),
+      14,
+      y
+    );
+
+  }
+
+
+  y+=15;
+
+
+  doc.setFontSize(8);
+
+  doc.setFont(undefined,"normal");
+
+  doc.text(
+    "* Simpanan dan angsuran pokok tidak dihitung sebagai pendapatan.",
+    14,
+    y
+  );
+
+
+  const namaFile =
+    `Laba_Rugi_${awal}_${akhir}.pdf`;
+
+
+  doc.save(namaFile);
+
+};
+
+
+/* ================================
+   JALANKAN AWAL
+================================ */
+
+tampilkanLaporan();
+
 </script>
+
 </body>
 </html>
