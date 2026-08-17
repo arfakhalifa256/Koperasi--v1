@@ -8,6 +8,11 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
+  header {background: linear-gradient(to right, #1e90ff, #0f3057);color: white;padding: 12px 16px;display: flex;justify-content: space-between;align-items: center;position: sticky;top: 0;}
+.brand {display: flex;align-items: center;gap: 10px;font-weight:700;}
+.brand img {width: 36px;height: 36px;border-radius: 50%;background: #fff;padding: 2px;}
+.menu-btn {cursor: pointer;font-size: 22px;}
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
   *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
@@ -132,13 +137,18 @@ button{padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weigh
 <div id="overlay" class="overlay"></div>
 
 <header>
-  <div class="header-left"><h1>DATA ANGSURAN</h1></div>
-  <div class="header-right"><span class="menu-btn" onclick="toggleSidebar()">☰</span></div>
+  <div class="brand">
+    <img src="img/icon-192.png">
+    <div>ANGSURAN ANGGOTA</div>
+  </div>
+  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
 </header>
 
+
 <div class="container">
-<div class="card">
-<h2>Input Angsuran</h2>
+  
+  <div class="card" id="formInput">
+    <h2>Input Angsuran</h2>
 <div class="form-group">
 <label>Pilih Peminjam</label>
 <select id="pinjamanSelect"></select>
@@ -182,7 +192,8 @@ button{padding:10px 14px;border:none;border-radius:8px;cursor:pointer;font-weigh
 <button type="button" class="btn-warning" id="btnNota" disabled>Cetak Nota</button>
 </div>
 </div>
-
+</div>
+  
 <div class="card">
 <button type="button" class="btn-success" id="btnRiwayat">Lihat Riwayat</button>
 <div class="list" id="listTransaksi" style="display:none;"></div>
@@ -223,9 +234,31 @@ import { getDatabase, ref, onValue, push, set, update as updateData, remove, get
 const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+/* ================= ROLE FIX ================= */
+const role = (localStorage.getItem("role") || "user").toLowerCase(); // paksa lowercase
+const username = localStorage.getItem("username");
+
+if(!username){ // kalau belum login
+  alert("Silakan login dulu");
+  window.location.href = "index.html";
+}
+
+console.log("Role saat ini:", role); // buat debug
+
+if(role !== "admin"){
+  document.getElementById("formInput").style.display = "none";
+  // Sembunyikan juga menu berbahaya di sidebar
+  document.querySelectorAll('.sidebar a[href="kas.html"],.sidebar a[href="pinjaman.html"],.sidebar a[href="user.html"]').forEach(el=> el.style.display = "none");
+}
+
 const pinjamanRef = ref(db,"pinjaman");
 const angsuranRef = ref(db,"angsuran");
+//... LANJUT KODE KAMU
 
+
+  
+  
 let dataPinjaman = {};
 let dataAnggota = {};
 let dataAngsuran = {};
@@ -358,6 +391,7 @@ function loadPinjaman(){
 function renderRiwayat(){
   const list = document.getElementById("listTransaksi");
   let html = "";
+  const isAdmin = role === "admin"; // TAMBAH INI
   const arr = Object.entries(dataAngsuran).sort((a,b)=> Number(b[1].tanggal || 0) - Number(a[1].tanggal || 0));
   if(arr.length === 0){ list.innerHTML = `<div class="item">Belum ada transaksi</div>`; return; }
   arr.forEach(([id,a])=>{
@@ -379,7 +413,7 @@ function renderRiwayat(){
       ${simpanan > 0? `<div style="color:#10b981;">Simpanan : ${rupiah(simpanan)}</div>` : ''}
       <div><b>Total : ${rupiah(total)}</b></div>
       <div class="btn-group">
-        <button type="button" class="btn-warning" onclick="editAngsuran('${id}')">Edit</button>
+        ${isAdmin? `<button type="button" class="btn-warning" onclick="editAngsuran('${id}')">Edit</button>` : ''} <!-- HANYA ADMIN -->
         <button type="button" class="btn-primary" onclick="kirimNotaRiwayat('${id}')">Kirim WA</button>
       </div>
     </div>`;
@@ -453,6 +487,10 @@ jasaEl.addEventListener("input", function(){
 
 // SIMPAN
 document.getElementById("btnSimpan").onclick = async ()=>{
+  if(role!== "admin"){ // TAMBAH INI
+    showToast("Akses ditolak. Hanya Admin", true);
+    return;
+  }
   if(!pinIdAktif) return showToast("Pilih peminjam",true);
   const pokokInput = getNumber(pokokEl.value);
   const jasaInput = getNumber(jasaEl.value);
@@ -548,7 +586,11 @@ window.cetakNotaAngsuran = function(id){
 };
 
 window.editAngsuran = function(id){
-  const a = dataAngsuran[id];
+  if(role!== "admin"){ // TAMBAH INI
+    showToast("Akses ditolak. Hanya Admin", true);
+    return;
+  }
+   const a = dataAngsuran[id];
   if(!a) return;
   document.getElementById("editAngsuranId").value = id;
   document.getElementById("editAngsuranNama").value = a.nama || "-";
@@ -581,7 +623,11 @@ document.getElementById("editAngsuranJasa").addEventListener("input",function(){
 
 // UPDATE - FIX: Jasa ambil dari input, bukan 20%. Kas ikut ke-update
 document.getElementById("btnUpdateAngsuran").onclick = async ()=>{
-  const id = document.getElementById("editAngsuranId").value;
+  if(role!== "admin"){ // TAMBAH INI
+    showToast("Akses ditolak. Hanya Admin", true);
+    return;
+  }
+    const id = document.getElementById("editAngsuranId").value;
   if(!id) return showToast("ID tidak ditemukan",true);
   try{
     const pokokBaru = getNumber(document.getElementById("editAngsuranPokok").value);
@@ -694,7 +740,11 @@ document.getElementById("btnUpdateAngsuran").onclick = async ()=>{
 
 // HAPUS - Biar Kas & Simpanan ikut kehapus
 document.getElementById("btnHapusAngsuran").onclick = async ()=>{
-  const id = document.getElementById("editAngsuranId").value;
+  if(role!== "admin"){ // TAMBAH INI
+    showToast("Akses ditolak. Hanya Admin", true);
+    return;
+  }
+     const id = document.getElementById("editAngsuranId").value;
   if(!id) return;
   if(!confirm("Hapus angsuran? Data kas & simpanan akan dihapus juga.")) return;
   try{
