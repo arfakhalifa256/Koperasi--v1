@@ -328,7 +328,88 @@ onValue(usersRef, snapshot=>{
 });
 
 /*... FUNGSI TAMBAH, HAPUS, RESET, UBAH ROLE KAMU TETAP SAMA... */
+/* ================= TAMBAH USER ================= */
+document.getElementById("btnTambah").addEventListener("click", async ()=>{
+  const btn = document.getElementById("btnTambah");
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
+  const roleVal = document.getElementById("role").value;
 
+  if(!username ||!password) return alert("Isi semua field");
+
+  btn.innerText = "Menyimpan...";
+  btn.disabled = true;
+
+  try{
+    const snapshot = await get(usersRef);
+    let exists = false;
+    if(snapshot.exists()){
+      const users = snapshot.val();
+      for(const key in users){
+        if(users[key].username === username){
+          exists = true;
+          break;
+        }
+      }
+    }
+
+    if(exists){
+      alert("Username sudah ada!");
+    } else {
+      await push(usersRef, { username, password, role: roleVal });
+      alert("User berhasil ditambahkan");
+      document.getElementById("username").value="";
+      document.getElementById("password").value="";
+    }
+  }catch(err){
+    console.error(err);
+    alert("Gagal menambah user!");
+  }
+
+  btn.innerText = "Tambah User";
+  btn.disabled = false;
+});
+
+/* ================= HAPUS USER ================= */
+window.hapusUser = function(key, username){
+  if(username === localStorage.getItem("username")){
+    return alert("Tidak bisa hapus akun sendiri!");
+  }
+  if(confirm(`Yakin hapus user ${username}?`)){
+    remove(ref(db,'/users/'+key));
+  }
+}
+
+/* ================= RESET PASSWORD ================= */
+window.resetPassword = async function(key){
+  const newPW = prompt("Masukkan password baru:");
+  if(newPW && newPW.trim()!== ""){
+    update(ref(db,'/users/'+key),{password:newPW.trim()});
+    alert("Password berhasil direset");
+  }
+}
+
+/* ================= UBAH ROLE ================= */
+window.ubahRole = function(key, newRole){
+  update(ref(db,'/users/'+key),{role:newRole});
+}
+
+/* ================= LOGOUT ================= */
+window.logout = function(){
+  if(confirm("Yakin ingin logout?")){
+    localStorage.removeItem("username");
+    localStorage.removeItem("role");
+    localStorage.removeItem("login");
+    window.location.href = "index.html";
+  }
+}
+
+/* ================= ENTER TAMBAH ================= */
+document.addEventListener("keypress", function(e){
+  if(e.key === "Enter"){
+    document.getElementById("btnTambah").click();
+  }
+});
 /* ================= UBAH ROLE ================= */
 window.ubahRole = function(key, newRole){
   if(confirm(`Yakin ubah role jadi ${newRole.toUpperCase()}?`)){
