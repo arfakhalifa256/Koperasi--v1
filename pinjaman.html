@@ -71,73 +71,7 @@ header{
 .btn-back:hover{background:rgba(255,255,255,.3);transform:translateX(-2px)}
 .btn-menu:hover{background:rgba(255,255,255,.3)}
 
-/* SIDEBAR */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -260px;
-  width: 240px;
-  height: 100%;
-  background: #0f3057;
-  padding: 16px;
-  transition: 0.3s ease;
-  z-index: 9999;
-  overflow-y: auto;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-}
-.sidebar.open { left: 0; }
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 16px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-.sidebar-logo img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #fff;
-  padding: 2px;
-}
-.sidebar-logo h3 { color: #fff; font-size: 15px; font-weight: 600; }
-.sidebar-section {
-  color: rgba(255,255,255,0.6);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 16px 0 8px 12px;
-}
-.sidebar a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #fff;
-  text-decoration: none;
-  padding: 11px 12px;
-  border-radius: 8px;
-  margin-bottom: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  transition: 0.2s;
-}
-.sidebar a:hover {
-  background: rgba(255,255,255,0.15);
-  transform: translateX(4px);
-}
-.sidebar a.active { background: rgba(255,255,255,0.2); }
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,.4);
-  display: none;
-  z-index: 999;
-}
+
 
 .container{padding:14px;max-width:1200px;margin:0 auto}
 .page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark);letter-spacing:.5px}
@@ -246,25 +180,85 @@ header{
 }
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes zoomIn{from{opacity:0;transform:scale(.85);}to{opacity:1;transform:scale(1);}}
-</style>
+
+  /* ===== SIDEBAR ===== */
+.sidebar{
+  position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;
+  padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;
+  box-shadow:2px 0 10px rgba(0,0,0,0.2);
+}
+.sidebar.open{left:0;}
+
+.sidebar-logo{
+  display:flex;align-items:center;gap:12px;
+  padding-bottom:16px;margin-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,0.2);
+}
+.sidebar-logo img{
+  width:40px;height:40px;border-radius:50%;object-fit:cover;
+  background:#fff;padding:2px;
+}
+.sidebar-logo h3{
+  color:#fff;margin:0;font-size:15px;font-weight:600;
+}
+
+.sidebar-section{
+  color:rgba(255,255,255,0.6);
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:1px;margin:16px 0 8px 12px;
+}
+
+.sidebar a{
+  display:flex;align-items:center;gap:10px;
+  color:#fff;text-decoration:none;padding:10px 10px;
+  border-radius:10px;margin-bottom:2px;font-size:10px;
+  font-weight:500;transition:0.2s;
+}
+.sidebar a:hover{
+  background:rgba(255,255,255,0.15);transform:translateX(4px);
+}
+.sidebar a.active{background:rgba(255,255,255,0.2);}
+
+.overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,.4);display:none;z-index:999;
+}
+.overlay.active{display:block;}
+
+  </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div id="sidebar" class="sidebar">
   <div class="sidebar-logo">
     <img src="img/icon-192.png" alt="Logo">
     <h3>Menu Koperasi</h3>
   </div>
+  
+<a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
+
   <div class="sidebar-section">Data Master</div>
   <a href="anggota.html">👤 Data Anggota</a>
-  <a href="pinjaman.html" class="active">💰 Pinjaman</a>
-  <a href="angsuran.html">📄 Angsuran</a>
+ <a href="kas.html">💵 Kas</a>
+ <a href="angsuran.html">📄 Angsuran</a>
   <a href="simpanan.html">📊 Simpanan</a>
+  
   <div class="sidebar-section">Keuangan</div>
-  <a href="kas.html">💵 Kas</a>
-  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+     <a href="pinjaman.html">💰 Pinjaman</a>
+     <a href="cair.html">💸 Pencairan Simpanan</a>
+    <a href="neraca.html">📖 Neraca</a>
+<a href="labarugi.html">📊 Laba Rugi</a>
+
+  
+  <div class="sidebar-section">Laporan</div>
+   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
+  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
+    <a href="transaksi.html">📊 Lap transaksi</a>
+
   <div class="sidebar-section">Pengaturan</div>
+     <a href="backup.html">💾 Backup Data</a>
+  <a href="user.html">⚙️ Kelola User</a>
   <a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
