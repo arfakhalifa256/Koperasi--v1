@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scan Barcode - Koperasi ARFA</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:#f1f5f9;padding-bottom:80px}
+.header{background:linear-gradient(135deg,#0091ff 0%,#0057a8 100%);color:white;padding:16px;text-align:center;position:sticky;top:0;z-index:99}
+.header h1{font-size:16px;font-weight:700}
+#reader{width:100%;max-width:500px;margin:20px auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.card{background:#fff;margin:12px;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+#hasil{font-size:14px;font-weight:600;color:#16a34a;word-break:break-all}
+.btn{width:100%;padding:12px;border:none;border-radius:12px;background:#0091ff;color:white;font-weight:600;font-size:14px;cursor:pointer;margin-top:10px}
+.btn:active{transform:scale(.98)}
+.btn-danger{background:#dc2626}
+.status{text-align:center;font-size:12px;color:#64748b;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📷 Scan Anggota / Pinjaman</h1>
+</div>
+
+<div id="reader"></div>
+<div class="status" id="status">Arahkan kamera ke barcode / QR Code</div>
+
+<div class="card" id="hasilCard" style="display:none">
+  <div style="font-size:12px;color:#64748b">Hasil Scan:</div>
+  <div id="hasil">-</div>
+  <button class="btn" id="btnCari">Cari Data</button>
+  <button class="btn btn-danger" onclick="startScan()">Scan Ulang</button>
+</div>
+
+<script>
+let html5QrCode;
+let lastResult = "";
+
+function onScanSuccess(decodedText, decodedResult) {
+  if(decodedText === lastResult) return; // biar ga dobel
+  lastResult = decodedText;
+  
+  html5QrCode.stop(); // stop kamera
+  document.getElementById("hasil").innerText = decodedText;
+  document.getElementById("hasilCard").style.display = "block";
+  document.getElementById("status").innerText = "Scan berhasil!";
+  
+  // Getar HP kalau support
+  if(navigator.vibrate) navigator.vibrate(200);
+}
+
+function onScanError(errorMessage) {
+  // abaikan error kecil
+}
+
+function startScan(){
+  document.getElementById("hasilCard").style.display = "none";
+  document.getElementById("status").innerText = "Arahkan kamera ke barcode / QR Code";
+  lastResult = "";
+  
+  html5QrCode.start(
+    { facingMode: "environment" }, // kamera belakang
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    onScanSuccess,
+    onScanError
+  );
+}
+
+// TOMBOL CARI DATA
+document.getElementById("btnCari").onclick = function(){
+  const kode = document.getElementById("hasil").innerText;
+  // Contoh: lempar ke halaman anggota dengan parameter
+  window.location.href = `anggota.html?search=${kode}`;
+  // atau kalau mau ke pinjaman: `pinjaman.html?id=${kode}`
+}
+
+window.onload = function(){
+  html5QrCode = new Html5Qrcode("reader");
+  startScan();
+}
+</script>
+
+</body>
+</html>
