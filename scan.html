@@ -6,11 +6,19 @@
 <title>Scan Barcode - Koperasi ARFA</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<style>
+
+  <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
 body{background:#f1f5f9;padding-bottom:80px}
-.header{background:linear-gradient(135deg,#0091ff 0%,#0057a8 100%);color:white;padding:16px;text-align:center;position:sticky;top:0;z-index:99}
+body {font-family: 'Poppins', sans-serif;background: #f1f5f9;color: #1f2937;font-size: 13px;margin:0;}
+header {background: linear-gradient(to right, #1e90ff, #0f3057);color: white;padding: 12px 16px;display: flex;justify-content: space-between;align-items: center;position: sticky;top: 0;}
+.brand {display: flex;align-items: center;gap: 10px;font-weight:700;}
+.brand img {width: 36px;height: 36px;border-radius: 50%;background: #fff;padding: 2px;}
+.menu-btn {cursor: pointer;font-size: 22px;}
+.overlay {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0,0,0,.4);display: none;z-index: 999;}
+
+  .header{background:linear-gradient(135deg,#0091ff 0%,#0057a8 100%);color:white;padding:16px;text-align:center;position:sticky;top:0;z-index:99}
 .header h1{font-size:16px;font-weight:700}
 #reader{width:100%;max-width:500px;margin:20px auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.1)}
 .card{background:#fff;margin:12px;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
@@ -19,13 +27,95 @@ body{background:#f1f5f9;padding-bottom:80px}
 .btn:active{transform:scale(.98)}
 .btn-danger{background:#dc2626}
 .status{text-align:center;font-size:12px;color:#64748b;margin-top:10px}
-</style>
+/* ===== SIDEBAR ===== */
+.sidebar{
+  position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;
+  padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;
+  box-shadow:2px 0 10px rgba(0,0,0,0.2);
+}
+.sidebar.open{left:0;}
+
+.sidebar-logo{
+  display:flex;align-items:center;gap:12px;
+  padding-bottom:16px;margin-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,0.2);
+}
+.sidebar-logo img{
+  width:40px;height:40px;border-radius:50%;object-fit:cover;
+  background:#fff;padding:2px;
+}
+.sidebar-logo h3{
+  color:#fff;margin:0;font-size:15px;font-weight:600;
+}
+
+.sidebar-section{
+  color:rgba(255,255,255,0.6);
+  font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:1px;margin:16px 0 8px 12px;
+}
+
+.sidebar a{
+  display:flex;align-items:center;gap:10px;
+  color:#fff;text-decoration:none;padding:10px 10px;
+  border-radius:10px;margin-bottom:2px;font-size:10px;
+  font-weight:500;transition:0.2s;
+}
+.sidebar a:hover{
+  background:rgba(255,255,255,0.15);transform:translateX(4px);
+}
+.sidebar a.active{background:rgba(255,255,255,0.2);}
+
+.overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,.4);display:none;z-index:999;
+}
+.overlay.active{display:block;}
+
+  </style>
 </head>
 <body>
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-logo">
+    <img src="img/icon-192.png" alt="Logo">
+    <h3>Menu Koperasi</h3>
+  </div>
+  
+<a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
 
-<div class="header">
-  <h1>📷 Scan Anggota / Pinjaman</h1>
+  <div class="sidebar-section">Data Master</div>
+  <a href="anggota.html">👤 Data Anggota</a>
+ <a href="kas.html">💵 Kas</a>
+ <a href="angsuran.html">📄 Angsuran</a>
+  <a href="simpanan.html">📊 Simpanan</a>
+  
+  <div class="sidebar-section">Keuangan</div>
+     <a href="pinjaman.html">💰 Pinjaman</a>
+     <a href="cair.html">💸 Pencairan Simpanan</a>
+    <a href="neraca.html">📖 Neraca</a>
+<a href="labarugi.html">📊 Laba Rugi</a>
+
+  
+  <div class="sidebar-section">Laporan</div>
+   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
+  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
+  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
+    <a href="transaksi.html">📊 Lap transaksi</a>
+
+  <div class="sidebar-section">Pengaturan</div>
+     <a href="backup.html">💾 Backup Data</a>
+  <a href="user.html">⚙️ Kelola User</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
 </div>
+<div id="overlay" class="overlay"></div>
+
+<header>
+  <div class="brand">
+    <img src="img/icon-192.png">
+    <div> 📷 Scan Anggota / Pinjaman</div>
+  </div>
+  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+</header>
+  
 
 <div id="reader"></div>
 <div class="status" id="status">Arahkan kamera ke barcode / QR Code</div>
@@ -83,6 +173,19 @@ window.onload = function(){
   html5QrCode = new Html5Qrcode("reader");
   startScan();
 }
+  /* ===== SIDEBAR ===== */
+window.toggleSidebar = function(){
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("overlay").classList.toggle("active");
+};
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
+document.getElementById("btnLogout").addEventListener("click", (e)=>{
+  e.preventDefault();
+  if(confirm("Yakin mau logout?")){
+    localStorage.clear();
+    location.href = "index.html";
+  }
+});
 </script>
 
 </body>
