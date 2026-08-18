@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil Koperasi ARFA</title>
+  <style>
+  body{font-family:sans-serif; background:#f5f7fa; margin:0;}
+  .profile-header{background: linear-gradient(135deg, #0B1F3A 0%, #1A4D8F 100%); color:#fff; padding:16px; display:flex; align-items:center; gap:12px; border-radius:0 0 24px 24px;}
+  .profile-header h1{font-size:18px; font-weight:700; margin:0;}
+  .back-btn{font-size:22px; cursor:pointer;}
+
+  .profile-card{background:#fff; margin:16px; border-radius:20px; padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+  .profile-logo{text-align:center; margin-bottom:20px; border-bottom:1px solid #f0f0f0; padding-bottom:16px;}
+  .profile-logo img{width:80px; height:80px; border-radius:20px; background:#f5f5f5; padding:8px; margin-bottom:8px;}
+  .profile-logo h2{margin:4px 0; font-size:20px; color:#0B1F3A;}
+  .status-badge{background:#00D084; color:#fff; padding:4px 12px; border-radius:12px; font-size:10px; font-weight:700;}
+
+  .profile-info{display:flex; flex-direction:column; gap:16px;}
+  .info-item{display:flex; gap:12px; align-items:flex-start;}
+  .info-item .icon{font-size:20px; margin-top:2px;}
+  .info-item label{font-size:11px; color:#888; display:block;}
+  .info-item p{margin:2px 0 0 0; font-size:14px; font-weight:600; color:#333;}
+
+  .visi-misi{margin-top:20px; padding-top:16px; border-top:1px solid #f0f0f0;}
+  .visi-misi h3{font-size:14px; color:#1A4D8F; margin-bottom:6px;}
+  .visi-misi p, .visi-misi li{font-size:13px; color:#555; line-height:1.6;}
+  .visi-layanan ul{padding-left:18px; margin:4px 0;}
+
+  .btn-edit{width:100%; margin-top:20px; background:#1A4D8F; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:14px; cursor:pointer;}
+  .btn-edit:hover{background:#0B1F3A;}
+  
+  /* MODAL */
+  .modal{display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);}
+  .modal-content{background:#fff; margin:5% auto; padding:20px; border-radius:20px; width:90%; max-width:400px; max-height:85vh; overflow-y:auto;}
+  .close-btn{float:right; font-size:24px; font-weight:bold; cursor:pointer; color:#888;}
+  .modal-content h2{margin-top:0; color:#0B1F3A; font-size:18px;}
+  .modal-content label{display:block; margin-top:12px; font-size:12px; font-weight:600; color:#555;}
+  .modal-content input, .modal-content textarea{width:100%; padding:10px; margin-top:4px; border:1px solid #ddd; border-radius:10px; font-size:14px; box-sizing:border-box;}
+  .btn-simpan{width:100%; margin-top:20px; background:#00D084; color:#fff; border:none; padding:14px; border-radius:14px; font-weight:700; font-size:14px; cursor:pointer;}
+  
+  .layanan-keterangan{margin-top:20px; padding-top:16px; border-top:1px solid #f0f0f0;}
+.layanan-keterangan h3{font-size:14px; color:#1A4D8F; margin-bottom:12px;}
+.layanan-list{display:flex; flex-direction:column; gap:12px;}
+.layanan-item{
+  display:flex; gap:12px; align-items:flex-start;
+  background:#F8F9FC; padding:12px; border-radius:14px;
+}
+.layanan-item .icon{font-size:24px; margin-top:2px;}
+.layanan-item b{font-size:13px; color:#0B1F3A;}
+.layanan-item p{margin:2px 0 0 0; font-size:12px; color:#666; line-height:1.5;}
+  </style>
+</head>
+<body>
+
+<div class="profile-header">
+  <div class="back-btn" onclick="goBack()">←</div>
+  <h1>Profil Koperasi</h1>
+</div>
+
+<div class="profile-card">
+  <div class="profile-logo">
+    <img id="logoKoperasi" src="./img/icon-192.png" alt="Logo">
+    <h2 id="namaKoperasiJudul">Koperasi ARFA</h2>
+    <span class="status-badge">AKTIF</span>
+  </div>
+
+  <div class="profile-info">
+    <div class="info-item"><div class="icon">🏢</div><div><label>Nama Koperasi</label><p id="namaKoperasi">-</p></div></div>
+    <div class="info-item"><div class="icon">📍</div><div><label>Alamat Kantor</label><p id="alamat">-</p></div></div>
+    <div class="info-item"><div class="icon">📞</div><div><label>No. Telepon / WA</label><p id="telepon">-</p></div></div>
+    <div class="info-item"><div class="icon">📧</div><div><label>Email</label><p id="email">-</p></div></div>
+    <div class="info-item"><div class="icon">📜</div><div><label>No. Badan Hukum</label><p id="badanHukum">-</p></div></div>
+    <div class="info-item"><div class="icon">📅</div><div><label>Tanggal Berdiri</label><p id="tanggalBerdiri">-</p></div></div>
+  </div>
+
+  <div class="visi-misi">
+    <h3>Visi</h3><p id="visi">-</p>
+    <h3>Misi</h3><ul id="misiList"></ul>
+  </div>
+    
+
+<!-- TAMBAH INI -->
+<div class="layanan-keterangan">
+  <h3>💼 Layanan Kami</h3>
+  <div class="layanan-list">
+    <div class="layanan-item">
+      <div class="icon">💰</div>
+      <div>
+        <b>Simpanan</b>
+        <p>Simpanan Pokok, Wajib, dan Sukarela. Bunga kompetitif & aman.</p>
+      </div>
+    </div>
+    <div class="layanan-item">
+      <div class="icon">🏦</div>
+      <div>
+        <b>Pinjaman</b>
+        <p>Pinjaman opersional anggota. Proses cepat</p>
+      </div>
+    </div>
+    
+    </div>
+    
+  </div>
+</div>
+    
+
+  <button class="btn-edit" id="btnEdit">✏️ Edit Profil</button> <!-- PENTING: ID INI -->
+</div>
+
+<!-- MODAL EDIT -->
+<div id="modalEdit" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h2>Edit Profil Koperasi</h2>
+    <form id="formProfil">
+      <label>Nama Koperasi</label><input type="text" id="inputNama" required>
+      <label>Alamat Kantor</label><textarea id="inputAlamat" rows="3" required></textarea>
+      <label>No. Telepon / WA</label><input type="tel" id="inputTelepon" required>
+      <label>Email</label><input type="email" id="inputEmail" required>
+      <label>No. Badan Hukum</label><input type="text" id="inputBadanHukum">
+      <label>Tanggal Berdiri</label><input type="date" id="inputTanggal">
+      <label>Visi</label><textarea id="inputVisi" rows="3"></textarea>
+      <label>Misi - pisahkan dengan koma ,</label><textarea id="inputMisi" rows="3"></textarea>
+
+      
+      <button type="submit" class="btn-simpan">💾 Simpan Perubahan</button>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.firebasestorage.app",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const profilRef = ref(db,"/profil_koperasi");
+
+// TUNGGU HTML SELESAI LOAD DULU
+document.addEventListener("DOMContentLoaded", () => {
+
+  // 1. AMBIL DATA DARI FIREBASE
+  onValue(profilRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    document.getElementById("namaKoperasi").innerText = data.nama || "-";
+    document.getElementById("namaKoperasiJudul").innerText = data.nama || "Koperasi ARFA";
+    document.getElementById("alamat").innerText = data.alamat || "-";
+    document.getElementById("telepon").innerText = data.telepon || "-";
+    document.getElementById("email").innerText = data.email || "-";
+    document.getElementById("badanHukum").innerText = data.badanHukum || "-";
+    document.getElementById("tanggalBerdiri").innerText = data.tanggalBerdiri || "-";
+    document.getElementById("visi").innerText = data.visi || "-";
+    
+    const misiList = document.getElementById("misiList");
+    misiList.innerHTML = "";
+    if(data.misi && Array.isArray(data.misi)){
+      data.misi.forEach(m => { misiList.innerHTML += `<li>${m}</li>`; })
+    }
+  });
+
+  // 2. BUKA MODAL
+  document.getElementById("btnEdit").onclick = async function() {
+    const snap = await get(profilRef);
+    const data = snap.val() || {};
+    
+    document.getElementById("inputNama").value = data.nama || "";
+    document.getElementById("inputAlamat").value = data.alamat || "";
+    document.getElementById("inputTelepon").value = data.telepon || "";
+    document.getElementById("inputEmail").value = data.email || "";
+    document.getElementById("inputBadanHukum").value = data.badanHukum || "";
+    document.getElementById("inputTanggal").value = data.tanggalBerdiri || "";
+    document.getElementById("inputVisi").value = data.visi || "";
+    document.getElementById("inputMisi").value = data.misi ? data.misi.join(", ") : "";
+    
+    document.getElementById("modalEdit").style.display = "block";
+  }
+
+  // 3. TUTUP MODAL
+  document.getElementById("closeModal").onclick = () => document.getElementById("modalEdit").style.display = "none";
+  window.onclick = (e) => { if(e.target == document.getElementById("modalEdit")) document.getElementById("modalEdit").style.display = "none" }
+
+  // 4. SIMPAN
+  document.getElementById("formProfil").onsubmit = async function(e){
+    e.preventDefault();
+    const misiArray = document.getElementById("inputMisi").value.split(",").map(m => m.trim()).filter(m => m);
+    await update(profilRef, {
+      nama: document.getElementById("inputNama").value,
+      alamat: document.getElementById("inputAlamat").value,
+      telepon: document.getElementById("inputTelepon").value,
+      email: document.getElementById("inputEmail").value,
+      badanHukum: document.getElementById("inputBadanHukum").value,
+      tanggalBerdiri: document.getElementById("inputTanggal").value,
+      visi: document.getElementById("inputVisi").value,
+      misi: misiArray
+    });
+    document.getElementById("modalEdit").style.display = "none";
+    alert("Profil berhasil disimpan!");
+  }
+});
+// FUNGSI BACK
+window.goBack = function() {
+  if (document.referrer && document.referrer !== "") {
+    // Kalau ada halaman sebelumnya, balik
+    history.back();
+  } else {
+    // Kalau gak ada, lempar ke dashboard/home
+    window.location.href = "dashboard.html"; // <-- GANTI SESUAI HALAMAN UTAMA KAMU
+  }
+}
+</script>
+</body>
+</html>
