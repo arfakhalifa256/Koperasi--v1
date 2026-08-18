@@ -131,7 +131,13 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import {
+  getDatabase,
+  ref,
+  get,
+  update,
+  onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
@@ -145,79 +151,407 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const profilRef = ref(db,"/profil_koperasi");
 
-// TUNGGU HTML SELESAI LOAD DULU
+// Lokasi data profil di Firebase
+const profilRef = ref(db, "profil_koperasi");
+
+// =====================================================
+// ROLE
+// =====================================================
+const role = (localStorage.getItem("role") || "").trim().toLowerCase();
+const isAdmin = role === "admin";
+
+console.log("ROLE LOGIN:", role);
+console.log("IS ADMIN:", isAdmin);
+
+
+// =====================================================
+// DOM READY
+// =====================================================
 document.addEventListener("DOMContentLoaded", () => {
 
-  // 1. AMBIL DATA DARI FIREBASE
+  const btnEdit = document.getElementById("btnEdit");
+  const modalEdit = document.getElementById("modalEdit");
+  const closeModal = document.getElementById("closeModal");
+  const formProfil = document.getElementById("formProfil");
+
+  // Pastikan elemen penting tersedia
+  if (!btnEdit) {
+    console.error("ERROR: #btnEdit tidak ditemukan!");
+    return;
+  }
+
+  if (!modalEdit) {
+    console.error("ERROR: #modalEdit tidak ditemukan!");
+    return;
+  }
+
+  if (!formProfil) {
+    console.error("ERROR: #formProfil tidak ditemukan!");
+    return;
+  }
+
+
+  // ===================================================
+  // ATUR TOMBOL EDIT BERDASARKAN ROLE
+  // ===================================================
+  if (!isAdmin) {
+
+    btnEdit.disabled = true;
+    btnEdit.innerHTML = "🔒 Hanya Admin";
+    btnEdit.style.opacity = "0.6";
+    btnEdit.style.cursor = "not-allowed";
+
+  } else {
+
+    btnEdit.disabled = false;
+    btnEdit.innerHTML = "✏️ Edit Profil";
+    btnEdit.style.opacity = "1";
+    btnEdit.style.cursor = "pointer";
+
+  }
+
+// FORMAT TANGGAL KE INDONESIA
+function formatTanggalIndo(tanggal) {
+  if(!tanggal) return "-";
+  
+  const date = new Date(tanggal);
+  if(isNaN(date)) return tanggal; // kalau bukan tanggal valid, balikin aslinya
+  
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  return date.toLocaleDateString('id-ID', options);
+}
+  // ===================================================
+  // LOAD DATA PROFIL DARI FIREBASE
+  // ===================================================
   onValue(profilRef, (snapshot) => {
+
     const data = snapshot.val() || {};
-    document.getElementById("namaKoperasi").innerText = data.nama || "-";
-    document.getElementById("namaKoperasiJudul").innerText = data.nama || "Koperasi ARFA";
-    document.getElementById("alamat").innerText = data.alamat || "-";
-    document.getElementById("telepon").innerText = data.telepon || "-";
-    document.getElementById("email").innerText = data.email || "-";
-    document.getElementById("badanHukum").innerText = data.badanHukum || "-";
-    document.getElementById("tanggalBerdiri").innerText = data.tanggalBerdiri || "-";
-    document.getElementById("visi").innerText = data.visi || "-";
+
+    console.log("DATA PROFIL FIREBASE:", data);
+
+    // Nama
+    document.getElementById("namaKoperasi").textContent =
+      data.nama || "-";
+
+    document.getElementById("namaKoperasiJudul").textContent =
+      data.nama || "Koperasi ARFA";
+
+    // Alamat
+    document.getElementById("alamat").textContent =
+      data.alamat || "-";
+
+    // Telepon
+    document.getElementById("telepon").textContent =
+      data.telepon || "-";
+
+    // Email
+    document.getElementById("email").textContent =
+      data.email || "-";
+
+    // Badan hukum
+    document.getElementById("badanHukum").textContent =
+      data.badanHukum || "-";
+
+    // Tanggal berdiri - FORMAT INDO
+document.getElementById("tanggalBerdiri").textContent =
+  formatTanggalIndo(data.tanggalBerdiri);
     
+    // Visi
+    document.getElementById("visi").textContent =
+      data.visi || "-";
+
+
+    // =================================================
+    // MISI
+    // =================================================
     const misiList = document.getElementById("misiList");
+
     misiList.innerHTML = "";
-    if(data.misi && Array.isArray(data.misi)){
-      data.misi.forEach(m => { misiList.innerHTML += `<li>${m}</li>`; })
+
+    if (Array.isArray(data.misi)) {
+
+      data.misi.forEach((misi) => {
+
+        if (misi && misi.trim() !== "") {
+
+          const li = document.createElement("li");
+          li.textContent = misi;
+
+          misiList.appendChild(li);
+        }
+
+      });
+
+    } else if (typeof data.misi === "string" && data.misi.trim() !== "") {
+
+      // Antisipasi kalau data lama berupa string
+      data.misi
+        .split(",")
+        .map(x => x.trim())
+        .filter(x => x)
+        .forEach(misi => {
+
+          const li = document.createElement("li");
+          li.textContent = misi;
+
+          misiList.appendChild(li);
+
+        });
     }
+
+  }, (error) => {
+
+    console.error("Gagal membaca profil:", error);
+
   });
 
-  // 2. BUKA MODAL
-  document.getElementById("btnEdit").onclick = async function() {
-    const snap = await get(profilRef);
-    const data = snap.val() || {};
-    
-    document.getElementById("inputNama").value = data.nama || "";
-    document.getElementById("inputAlamat").value = data.alamat || "";
-    document.getElementById("inputTelepon").value = data.telepon || "";
-    document.getElementById("inputEmail").value = data.email || "";
-    document.getElementById("inputBadanHukum").value = data.badanHukum || "";
-    document.getElementById("inputTanggal").value = data.tanggalBerdiri || "";
-    document.getElementById("inputVisi").value = data.visi || "";
-    document.getElementById("inputMisi").value = data.misi ? data.misi.join(", ") : "";
-    
-    document.getElementById("modalEdit").style.display = "block";
-  }
 
-  // 3. TUTUP MODAL
-  document.getElementById("closeModal").onclick = () => document.getElementById("modalEdit").style.display = "none";
-  window.onclick = (e) => { if(e.target == document.getElementById("modalEdit")) document.getElementById("modalEdit").style.display = "none" }
+  // ===================================================
+  // BUKA MODAL EDIT
+  // ===================================================
+  btnEdit.addEventListener("click", async () => {
 
-  // 4. SIMPAN
-  document.getElementById("formProfil").onsubmit = async function(e){
-    e.preventDefault();
-    const misiArray = document.getElementById("inputMisi").value.split(",").map(m => m.trim()).filter(m => m);
-    await update(profilRef, {
-      nama: document.getElementById("inputNama").value,
-      alamat: document.getElementById("inputAlamat").value,
-      telepon: document.getElementById("inputTelepon").value,
-      email: document.getElementById("inputEmail").value,
-      badanHukum: document.getElementById("inputBadanHukum").value,
-      tanggalBerdiri: document.getElementById("inputTanggal").value,
-      visi: document.getElementById("inputVisi").value,
-      misi: misiArray
-    });
-    document.getElementById("modalEdit").style.display = "none";
-    alert("Profil berhasil disimpan!");
-  }
+    // Proteksi tambahan
+    if (!isAdmin) {
+      alert("⚠️ Hanya Admin yang dapat mengedit profil.");
+      return;
+    }
+
+    try {
+
+      console.log("Membuka form edit...");
+
+      const snapshot = await get(profilRef);
+      const data = snapshot.val() || {};
+
+      console.log("Data edit:", data);
+
+
+      // Isi form
+      document.getElementById("inputNama").value =
+        data.nama || "";
+
+      document.getElementById("inputAlamat").value =
+        data.alamat || "";
+
+      document.getElementById("inputTelepon").value =
+        data.telepon || "";
+
+      document.getElementById("inputEmail").value =
+        data.email || "";
+
+      document.getElementById("inputBadanHukum").value =
+        data.badanHukum || "";
+
+      document.getElementById("inputTanggal").value =
+        data.tanggalBerdiri || "";
+
+      document.getElementById("inputVisi").value =
+        data.visi || "";
+
+
+      // Misi
+      if (Array.isArray(data.misi)) {
+
+        document.getElementById("inputMisi").value =
+          data.misi.join(", ");
+
+      } else {
+
+        document.getElementById("inputMisi").value =
+          data.misi || "";
+
+      }
+
+
+      // Tampilkan modal
+      modalEdit.style.display = "block";
+
+      document.body.style.overflow = "hidden";
+
+    } catch (error) {
+
+      console.error("Gagal membuka data profil:", error);
+
+      alert(
+        "❌ Gagal mengambil data profil.\n\n" +
+        error.message
+      );
+
+    }
+
+  });
+
+
+  // ===================================================
+  // TUTUP MODAL
+  // ===================================================
+  closeModal.addEventListener("click", () => {
+
+    modalEdit.style.display = "none";
+    document.body.style.overflow = "";
+
+  });
+
+
+  // Klik di luar modal
+  window.addEventListener("click", (event) => {
+
+    if (event.target === modalEdit) {
+
+      modalEdit.style.display = "none";
+      document.body.style.overflow = "";
+
+    }
+
+  });
+
+
+  // ===================================================
+  // SIMPAN PROFIL
+  // ===================================================
+  formProfil.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+
+    // Proteksi Admin
+    if (!isAdmin) {
+
+      alert("⚠️ Hanya Admin yang dapat menyimpan perubahan.");
+      return;
+
+    }
+
+
+    // Ambil data form
+    const nama =
+      document.getElementById("inputNama").value.trim();
+
+    const alamat =
+      document.getElementById("inputAlamat").value.trim();
+
+    const telepon =
+      document.getElementById("inputTelepon").value.trim();
+
+    const email =
+      document.getElementById("inputEmail").value.trim();
+
+    const badanHukum =
+      document.getElementById("inputBadanHukum").value.trim();
+
+    const tanggalBerdiri =
+      document.getElementById("inputTanggal").value;
+
+    const visi =
+      document.getElementById("inputVisi").value.trim();
+
+    const misiArray =
+      document.getElementById("inputMisi").value
+        .split(",")
+        .map(m => m.trim())
+        .filter(m => m !== "");
+
+
+    // Validasi
+    if (!nama) {
+      alert("Nama koperasi wajib diisi.");
+      return;
+    }
+
+    if (!alamat) {
+      alert("Alamat kantor wajib diisi.");
+      return;
+    }
+
+    if (!telepon) {
+      alert("No. Telepon / WA wajib diisi.");
+      return;
+    }
+
+    if (!email) {
+      alert("Email wajib diisi.");
+      return;
+    }
+
+
+    // Disable tombol sementara
+    const btnSimpan =
+      formProfil.querySelector(".btn-simpan");
+
+    const textButtonAwal = btnSimpan.innerHTML;
+
+    btnSimpan.disabled = true;
+    btnSimpan.innerHTML = "⏳ Menyimpan...";
+
+
+    try {
+
+      // =================================================
+      // UPDATE FIREBASE
+      // =================================================
+      await update(profilRef, {
+
+        nama: nama,
+        alamat: alamat,
+        telepon: telepon,
+        email: email,
+        badanHukum: badanHukum,
+        tanggalBerdiri: tanggalBerdiri,
+        visi: visi,
+        misi: misiArray
+
+      });
+
+
+      console.log("Profil berhasil disimpan.");
+
+      // Tutup modal
+      modalEdit.style.display = "none";
+      document.body.style.overflow = "";
+
+      alert("✅ Profil koperasi berhasil disimpan.");
+
+
+    } catch (error) {
+
+      console.error("Gagal menyimpan profil:", error);
+
+      alert(
+        "❌ Gagal menyimpan profil.\n\n" +
+        error.message
+      );
+
+    } finally {
+
+      btnSimpan.disabled = false;
+      btnSimpan.innerHTML = textButtonAwal;
+
+    }
+
+  });
+
 });
-// FUNGSI BACK
+
+
+// =====================================================
+// TOMBOL BACK
+// =====================================================
 window.goBack = function() {
+
   if (document.referrer && document.referrer !== "") {
-    // Kalau ada halaman sebelumnya, balik
+
     history.back();
+
   } else {
-    // Kalau gak ada, lempar ke dashboard/home
-    window.location.href = "dashboard.html"; // <-- GANTI SESUAI HALAMAN UTAMA KAMU
+
+    window.location.href = "dashboard.html";
+
   }
-}
+
+};
+
 </script>
 </body>
 </html>
