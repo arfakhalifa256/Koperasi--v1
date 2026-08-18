@@ -126,6 +126,7 @@ body{background:#f1f5f9;padding-bottom:80px}
   margin-top:-20px;background:#0091ff;color:#fff;width:56px;height:56px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,145,255,0.4)
 }
+  
 </style>
 </head>
 <body>
@@ -136,10 +137,11 @@ body{background:#f1f5f9;padding-bottom:80px}
     <div class="logo">
       <img src="./img/icon-192.png" alt="Koperasi ARFA">
       Koperasi ARFA
-   
     </div>
-    <div class="badge">Terlindungi</div>
-  </div>
+      <div class="badge" id="roleBadge" title="Klik untuk Logout">User</div> 
+</div>
+    
+  
   <div class="saldo-box">
     <div class="saldo-kiri">
       <div class="label">Total Saldo Kas</div>
@@ -328,6 +330,26 @@ function updateDOM(){
   document.getElementById("saldoCash").innerText = formatRp(saldoCash); // 🔥 BARU
   document.getElementById("saldoBank").innerText = formatRp(saldoBank); // 🔥 BARU
 }
+ 
+document.addEventListener("DOMContentLoaded", function(){
+  const role = (localStorage.getItem("role") || "user").toLowerCase();
+  const username = localStorage.getItem("username") || "Tamu";
+  const badge = document.getElementById("roleBadge");
+
+  if(badge){
+    badge.innerText = role; // isi jadi "admin" atau "user"
+    badge.classList.add(role); // kasih class biar warnanya beda
+    badge.title = `Login sebagai: ${username} | Klik untuk Logout`;
+  }
+
+  // KLIK BADGE = LOGOUT
+  badge.addEventListener("click", function(){
+    if(confirm(`Logout dari akun ${username}?`)){
+      localStorage.clear(); // hapus semua data login
+      window.location.href = "index.html"; // balik ke login
+    }
+  });
+});
 </script>
 </body>
 </html>
