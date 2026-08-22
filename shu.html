@@ -850,7 +850,75 @@ tbody tr:hover{
 
 }
 
+/* =====================================================
+   FIX TABEL PDF
+===================================================== */
 
+.pdf-mode{
+    width:100% !important;
+    max-width:none !important;
+    overflow:visible !important;
+}
+
+.pdf-mode .table-wrap{
+    width:100% !important;
+    overflow:visible !important;
+}
+
+.pdf-mode table{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:none !important;
+    table-layout:fixed !important;
+    font-size:9px !important;
+}
+
+.pdf-mode th,
+.pdf-mode td{
+    padding:6px 4px !important;
+    white-space:normal !important;
+    word-break:break-word !important;
+}
+
+.pdf-mode th:nth-child(1),
+.pdf-mode td:nth-child(1){
+    width:4%;
+}
+
+.pdf-mode th:nth-child(2),
+.pdf-mode td:nth-child(2){
+    width:11%;
+}
+
+.pdf-mode th:nth-child(3),
+.pdf-mode td:nth-child(3){
+    width:18%;
+}
+
+.pdf-mode th:nth-child(4),
+.pdf-mode td:nth-child(4),
+.pdf-mode th:nth-child(5),
+.pdf-mode td:nth-child(5),
+.pdf-mode th:nth-child(6),
+.pdf-mode td:nth-child(6),
+.pdf-mode th:nth-child(7),
+.pdf-mode td:nth-child(7),
+.pdf-mode th:nth-child(8),
+.pdf-mode td:nth-child(8){
+    width:11.75%;
+}
+
+.pdf-mode .summary{
+    grid-template-columns:repeat(4,1fr) !important;
+}
+
+.pdf-mode .info-perhitungan{
+    grid-template-columns:repeat(3,1fr) !important;
+}
+
+.pdf-mode .note{
+    font-size:9px !important;
+}
 /* =====================================================
    PRINT
 ===================================================== */
@@ -3217,96 +3285,158 @@ async function hitungSHU(){
 
 
 /* =====================================================
-   EXPORT PDF
+   EXPORT PDF - FIX TABEL
 ===================================================== */
 
 async function exportPDF(){
 
-    if(
-        dataSHU.length === 0
-    ){
+    if(dataSHU.length === 0){
 
         alert(
             "Hitung SHU terlebih dahulu sebelum Export PDF."
         );
 
         return;
-
     }
 
-
     const area =
-        document.getElementById(
-            "areaCetak"
-        );
-
+        document.getElementById("areaCetak");
 
     const btn =
-        document.getElementById(
-            "btnPDF"
-        );
-
+        document.getElementById("btnPDF");
 
     const awal =
-        document.getElementById(
-            "tglAwal"
-        ).value;
-
+        document.getElementById("tglAwal").value;
 
     const akhir =
-        document.getElementById(
-            "tglAkhir"
-        ).value;
+        document.getElementById("tglAkhir").value;
 
 
-    btn.disabled =
-        true;
+    btn.disabled = true;
+
+    btn.innerText = "Membuat PDF...";
 
 
-    btn.innerText =
-        "Membuat PDF...";
+    /* =================================================
+       AKTIFKAN MODE PDF
+    ================================================= */
+
+    area.classList.add("pdf-mode");
+
+
+    /*
+     * Simpan style asli supaya setelah PDF
+     * halaman kembali seperti semula.
+     */
+
+    const oldStyle = {
+
+        width: area.style.width,
+
+        maxWidth: area.style.maxWidth,
+
+        overflow: area.style.overflow
+
+    };
 
 
     try{
 
+        /*
+         * Paksa area PDF mempunyai lebar penuh.
+         */
+
+        area.style.width = "100%";
+
+        area.style.maxWidth = "100%";
+
+        area.style.overflow = "visible";
+
+
+        /*
+         * Beri sedikit waktu agar browser
+         * selesai menghitung ulang layout.
+         */
+
+        await new Promise(
+            resolve => setTimeout(resolve,500)
+        );
+
+
         const opt = {
 
-            margin:8,
+            margin: [
+                8,
+                8,
+                8,
+                8
+            ],
 
             filename:
                 `Laporan_SHU_${awal}_${akhir}.pdf`,
 
             image:{
+
                 type:"jpeg",
+
                 quality:0.98
+
             },
 
             html2canvas:{
+
                 scale:2,
 
                 useCORS:true,
 
-                backgroundColor:"#ffffff"
+                allowTaint:true,
+
+                backgroundColor:"#ffffff",
+
+                logging:false,
+
+                scrollX:0,
+
+                scrollY:0,
+
+                windowWidth:
+                    area.scrollWidth
+
             },
 
             jsPDF:{
+
                 unit:"mm",
 
                 format:"a4",
 
-                orientation:"landscape"
+                orientation:"landscape",
+
+                compress:true
+
             },
 
             pagebreak:{
+
                 mode:[
-                    "avoid-all",
                     "css",
                     "legacy"
+                ],
+
+                avoid:[
+                    "tr",
+                    ".sum-box",
+                    ".info-box"
                 ]
+
             }
 
         };
 
+
+        /*
+         * Generate PDF
+         */
 
         await html2pdf()
 
@@ -3314,7 +3444,10 @@ async function exportPDF(){
 
             .from(area)
 
+            .toPdf()
+
             .save();
+
 
     }
     catch(error){
@@ -3326,15 +3459,30 @@ async function exportPDF(){
 
 
         alert(
-            "Gagal membuat PDF."
+            "Gagal membuat PDF:\n" +
+            error.message
         );
 
     }
     finally{
 
-        btn.disabled =
-            false;
+        /*
+         * Kembalikan tampilan normal
+         */
 
+        area.classList.remove("pdf-mode");
+
+        area.style.width =
+            oldStyle.width;
+
+        area.style.maxWidth =
+            oldStyle.maxWidth;
+
+        area.style.overflow =
+            oldStyle.overflow;
+
+
+        btn.disabled = false;
 
         btn.innerText =
             "Export PDF";
@@ -3342,8 +3490,6 @@ async function exportPDF(){
     }
 
 }
-
-
 /* =====================================================
    SIDEBAR
 ===================================================== */
