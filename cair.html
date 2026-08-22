@@ -416,11 +416,31 @@ onValue(simpananRef,(snap)=>{
 });
 
 function loadDropdown(){
-  const select=document.getElementById("anggotaSelect");
-  select.innerHTML="<option value=''>-- Pilih Anggota --</option>";
-  Object.entries(anggotaData).sort((a,b) => a[1].nama.localeCompare(b[1].nama)).forEach(([id,a])=>{
-    select.innerHTML+=`<option value="${id}">${a.nama}</option>`;
-  });
+  const select = document.getElementById("anggotaSelect");
+
+  select.innerHTML = `
+    <option value="">-- Pilih Anggota --</option>
+  `;
+
+  Object.entries(anggotaData)
+    .filter(([id, a]) => a && a.nama)
+    .sort((a,b) => 
+      (a[1].nama || "").localeCompare(b[1].nama || "")
+    )
+    .forEach(([id, a]) => {
+
+      const status = (a.status || "aktif").toLowerCase();
+
+      const labelStatus = status === "keluar"
+        ? "KELUAR"
+        : "AKTIF";
+
+      select.innerHTML += `
+        <option value="${id}">
+          ${a.nama} - ${a.id || id} (${labelStatus})
+        </option>
+      `;
+    });
 }
 
 document.getElementById("anggotaSelect").addEventListener("change",updateView);
@@ -476,9 +496,29 @@ window.cairkan=async function(){
     return;
   }
 
-  const id=document.getElementById("anggotaSelect").value;
-  if(!id) return alert("Pilih anggota dulu");
+  const id = document.getElementById("anggotaSelect").value;
 
+if(!id){
+  return alert("Pilih anggota dulu");
+}
+
+const anggota = anggotaData[id];
+
+if(!anggota){
+  return alert("Data anggota tidak ditemukan");
+}
+
+const status = (anggota.status || "aktif").toLowerCase();
+
+if(status === "keluar"){
+  const lanjut = confirm(
+    `Anggota ${anggota.nama} berstatus KELUAR.\n\n` +
+    `Pencairan simpanan sukarela tetap diperbolehkan.\n\n` +
+    `Lanjutkan pencairan?`
+  );
+
+  if(!lanjut) return;
+}
   const jumlah=parseInt(document.getElementById("jumlah").value);
   const ket=document.getElementById("keterangan").value||"Pencairan";
   const metode=document.getElementById("metode").value;
