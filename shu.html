@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Perhitungan SHU - Koperasi ARFA</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+*{box-sizing:border-box;font-family:'Poppins',Arial,sans-serif}
+body{background:#f3f6fa;padding:15px}
+.container{max-width:1200px;margin:auto;background:#fff;border-radius:12px;padding:20px}
+h1{color:#087f5b;font-size:18px;margin-bottom:15px}
+.card{background:#f8f9fa;padding:15px;border-radius:10px;margin-bottom:15px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.btn{padding:10px 15px;border:none;border-radius:8px;background:#087f5b;color:#fff;font-weight:600;cursor:pointer}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:15px 0}
+.sum-box{background:#e6fcf5;padding:12px;border-radius:8px;border-left:4px solid #0ca678}
+.sum-box.l{font-size:11px;color:#555}
+.sum-box.v{font-size:16px;font-weight:700;color:#087f5b}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#087f5b;color:#fff;padding:9px;text-align:left}
+td{padding:7px;border-bottom:1px solid #eee}
+.text-right{text-align:right}
+.note{font-size:11px;color:#f59e0b;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Perhitungan SHU Tahunan</h1>
+    <div class="note">* Catatan: SHU Simpanan dihitung dari Simpanan Sukarela saja. Pokok & Wajib tidak dihitung</div>
+
+    <div class="card">
+        <div class="form-grid">
+            <div><label>Tanggal Awal</label><input type="date" id="tglAwal"></div>
+            <div><label>Tanggal Akhir</label><input type="date" id="tglAkhir"></div>
+            <div><label>% SHU Anggota</label><input type="number" id="pShuAnggota" value="45"> %</div>
+            <div><label>% Simpanan : Jasa</label><input type="number" id="pSimpanan" value="50"> : <input type="number" id="pJasa" value="50"></div>
+            <div><label>&nbsp;</label><button class="btn" onclick="hitungSHU()">Hitung SHU</button></div>
+        </div>
+    </div>
+
+    <div id="hasil" style="display:none">
+        <div class="summary">
+            <div class="sum-box"><div class="l">SHU Bersih</div><div class="v">Rp <span id="totSHU">0</span></div></div>
+            <div class="sum-box"><div class="l">SHU untuk Anggota</div><div class="v">Rp <span id="shuAnggota">0</span></div></div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th><th>ID Anggota</th><th>Nama</th>
+                    <th class="text-right">Simpanan Sukarela</th>
+                    <th class="text-right">Jasa Bayar</th>
+                    <th class="text-right">SHU Simpanan</th>
+                    <th class="text-right">SHU Jasa</th>
+                    <th class="text-right">TOTAL SHU</th>
+                </tr>
+            </thead>
+            <tbody id="tbodySHU"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const firebaseConfig = {apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain: "arfa-c7dee.firebaseapp.com",databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",projectId: "arfa-c7dee"};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// FUNGSI PEMBULATAN KE RIBUAN TERDEKAT
+function bulatRibu(n){ return Math.round(Number(n||0) / 1000) * 1000; }
+
+function formatRp(n){ return bulatRibu(n).toLocaleString("id-ID"); } // <--- PAKAI PEMBULATAN
+function toTimestamp(tgl){ return new Date(tgl).getTime(); }
+
+document.getElementById('tglAkhir').value = new Date().toISOString().slice(0,10);
+document.getElementById('tglAwal').value = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10);
+
+async function hitungSHU(){
+    const tglAwal = toTimestamp(document.getElementById('tglAwal').value);
+    const tglAkhir = toTimestamp(document.getElementById('tglAkhir').value) + 86399999;
+    const pShuAnggota = Number(document.getElementById('pShuAnggota').value) / 100;
+    const pSimpanan = Number(document.getElementById('pSimpanan').value) / 100;
+    const pJasa = Number(document.getElementById('pJasa').value) / 100;
+
+    const [snapKas, snapSimpanan, snapAnggota, snapAngsuran] = await Promise.all([
+        db.ref('kas/transaksi').once('value'),
+        db.ref('simpanan').once('value'),
+        db.ref('anggota').once('value'),
+        db.ref('angsuran').once('value')
+    ]);
+
+    // 1. HITUNG SHU
+    let totPendapatan = 0, totBiaya = 0;
+    Object.values(snapKas.val() || {}).forEach(k=>{
+        if(k.tanggal >= tglAwal && k.tanggal <= tglAkhir){
+            if(k.tipe === 'masuk') totPendapatan += Number(k.jumlah || 0);
+            if(k.tipe === 'keluar') totBiaya += Number(k.jumlah || 0);
+        }
+    });
+    const shuBersih = bulatRibu(totPendapatan - totBiaya); // <--- DIBULATKAN
+    const shuUntukAnggota = bulatRibu(shuBersih * pShuAnggota); // <--- DIBULATKAN
+    const danaShuSimpanan = bulatRibu(shuUntukAnggota * pSimpanan);
+    const danaShuJasa = bulatRibu(shuUntukAnggota * pJasa);
+
+    // 2. DAFTAR ANGGOTA
+    let dataPerAnggota = {};
+    let totalSimpananSemua = 0, totalJasaSemua = 0;
+
+    Object.values(snapAnggota.val() || {}).forEach(a=>{
+        let id = a.idAnggota || a.id;
+        if(id){
+            dataPerAnggota[id] = {idAnggota: id, nama: a.nama, simpanan: 0, jasa: 0};
+        }
+    });
+
+    // 3. JUMLAHKAN SIMPANAN SUKARELA SAJA
+    Object.values(snapSimpanan.val() || {}).forEach(s=>{
+        let id = s.idAnggota || s.anggotaId;
+        // FILTER PENTING: hanya sukarela
+        if(dataPerAnggota[id] && String(s.jenis).toLowerCase() === "sukarela"){
+            dataPerAnggota[id].simpanan += Number(s.jumlah || 0);
+            totalSimpananSemua += Number(s.jumlah || 0);
+        }
+    });
+
+    // 4. JUMLAHKAN JASA DARI ANGSURAN
+    Object.values(snapAngsuran.val() || {}).forEach(an=>{
+        if(an.tanggal >= tglAwal && an.tanggal <= tglAkhir){
+            let id = an.idAnggota || an.anggotaId;
+            if(dataPerAnggota[id]){
+                dataPerAnggota[id].jasa += Number(an.jasa || 0);
+                totalJasaSemua += Number(an.jasa || 0);
+            }
+        }
+    });
+
+    // 5. RENDER + PEMBULATAN PER ANGGOTA
+    let no = 1, html = "";
+    Object.values(dataPerAnggota).forEach(d=>{
+        let shuDariSimpanan = totalSimpananSemua > 0? danaShuSimpanan * (d.simpanan / totalSimpananSemua) : 0;
+        let shuDariJasa = totalJasaSemua > 0? danaShuJasa * (d.jasa / totalJasaSemua) : 0;
+
+        // BULATKAN PER ANGGOTA BIAR RAPI
+        shuDariSimpanan = bulatRibu(shuDariSimpanan);
+        shuDariJasa = bulatRibu(shuDariJasa);
+        const totalSHU = shuDariSimpanan + shuDariJasa;
+
+        if(d.simpanan > 0 || d.jasa > 0){
+            html += `<tr><td>${no++}</td><td>${d.idAnggota}</td><td>${d.nama}</td>
+            <td class="text-right">${formatRp(d.simpanan)}</td>
+            <td class="text-right">${formatRp(d.jasa)}</td>
+            <td class="text-right">${formatRp(shuDariSimpanan)}</td>
+            <td class="text-right">${formatRp(shuDariJasa)}</td>
+            <td class="text-right"><b>${formatRp(totalSHU)}</b></td></tr>`;
+        }
+    });
+
+    document.getElementById('totSHU').innerText = formatRp(shuBersih);
+    document.getElementById('shuAnggota').innerText = formatRp(shuUntukAnggota);
+    document.getElementById('tbodySHU').innerHTML = html || `<tr><td colspan="8" style="text-align:center;color:#999">Data tidak ditemukan</td></tr>`;
+    document.getElementById('hasil').style.display = 'block';
+}
+</script>
+</body>
+</html>
