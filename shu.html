@@ -2,165 +2,1920 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Perhitungan SHU - Koperasi ARFA</title>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
 <style>
-*{box-sizing:border-box;font-family:'Poppins',Arial,sans-serif}
-body{background:#f3f6fa;padding:15px}
-.container{max-width:1200px;margin:auto;background:#fff;border-radius:12px;padding:20px}
-h1{color:#087f5b;font-size:18px;margin-bottom:15px}
-.card{background:#f8f9fa;padding:15px;border-radius:10px;margin-bottom:15px}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-.btn{padding:10px 15px;border:none;border-radius:8px;background:#087f5b;color:#fff;font-weight:600;cursor:pointer}
-.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:15px 0}
-.sum-box{background:#e6fcf5;padding:12px;border-radius:8px;border-left:4px solid #0ca678}
-.sum-box.l{font-size:11px;color:#555}
-.sum-box.v{font-size:16px;font-weight:700;color:#087f5b}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#087f5b;color:#fff;padding:9px;text-align:left}
-td{padding:7px;border-bottom:1px solid #eee}
-.text-right{text-align:right}
-.note{font-size:11px;color:#f59e0b;margin-top:10px}
+
+*{
+    box-sizing:border-box;
+    font-family:'Poppins',Arial,sans-serif;
+}
+
+html,
+body{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#f3f6fa;
+    color:#333;
+    padding:10px;
+    overflow-x:hidden;
+}
+
+/* ================= HEADER ================= */
+
+header{
+    background:linear-gradient(to right,#1e90ff,#0f3057);
+    color:#fff;
+    padding:12px 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    border-radius:10px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+}
+
+.brand img{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#fff;
+    padding:2px;
+    object-fit:cover;
+}
+
+.menu-btn{
+    cursor:pointer;
+    font-size:25px;
+    line-height:1;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:-260px;
+    width:240px;
+    height:100%;
+    background:#0f3057;
+    padding:16px;
+    transition:.3s;
+    z-index:9999;
+    overflow-y:auto;
+    box-shadow:2px 0 10px rgba(0,0,0,.2);
+}
+
+.sidebar.open{
+    left:0;
+}
+
+.sidebar-logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding-bottom:16px;
+    margin-bottom:16px;
+    border-bottom:1px solid rgba(255,255,255,.2);
+}
+
+.sidebar-logo img{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#fff;
+    padding:2px;
+}
+
+.sidebar-logo h3{
+    color:#fff;
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+}
+
+.sidebar-section{
+    color:rgba(255,255,255,.6);
+    font-size:10px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin:16px 0 8px 12px;
+}
+
+.sidebar a{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#fff;
+    text-decoration:none;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:2px;
+    font-size:11px;
+    font-weight:500;
+    transition:.2s;
+}
+
+.sidebar a:hover{
+    background:rgba(255,255,255,.15);
+    transform:translateX(4px);
+}
+
+.sidebar a.active{
+    background:rgba(255,255,255,.2);
+}
+
+.sidebar .material-icons{
+    font-size:18px;
+}
+
+.overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.4);
+    display:none;
+    z-index:999;
+}
+
+.overlay.active{
+    display:block;
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+    width:100%;
+    max-width:1200px;
+    margin:10px auto 0;
+    background:#fff;
+    border-radius:14px;
+    padding:14px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    overflow:hidden;
+}
+
+h1{
+    color:#087f5b;
+    font-size:19px;
+    margin:0 0 10px;
+    font-weight:700;
+}
+
+/* ================= NOTE ================= */
+
+.note{
+    font-size:11px;
+    line-height:1.5;
+    color:#d97706;
+    background:#fff8e6;
+    border-left:4px solid #f59e0b;
+    padding:8px 10px;
+    border-radius:6px;
+    margin-bottom:12px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+    width:100%;
+    background:#f8f9fa;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:15px;
+    overflow:hidden;
+}
+
+/* ================= FORM ================= */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:11px;
+    width:100%;
+    align-items:end;
+}
+
+.form-grid label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:#555;
+    margin-bottom:5px;
+}
+
+.form-grid input{
+    width:100%;
+    height:42px;
+    padding:9px 10px;
+    border:1px solid #d7dce1;
+    border-radius:8px;
+    background:#fff;
+    font-size:13px;
+    outline:none;
+}
+
+.form-grid input:focus{
+    border-color:#087f5b;
+    box-shadow:0 0 0 2px rgba(8,127,91,.10);
+}
+
+/* ================= PERCENT ================= */
+
+.group-percent{
+    display:flex;
+    width:100%;
+    align-items:center;
+    gap:6px;
+}
+
+.group-percent input{
+    flex:1;
+    min-width:0;
+}
+
+.group-percent span{
+    font-weight:700;
+    color:#777;
+}
+
+/* ================= BUTTON ================= */
+
+.btn{
+    width:100%;
+    min-height:42px;
+    padding:9px 15px;
+    border:none;
+    border-radius:8px;
+    background:#087f5b;
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 2px 5px rgba(8,127,91,.2);
+    margin-bottom:7px;
+}
+
+.btn:hover{
+    opacity:.92;
+}
+
+.btn:active{
+    transform:scale(.98);
+}
+
+.btn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+/* ================= HASIL ================= */
+
+#hasil{
+    width:100%;
+}
+
+/* ================= SUMMARY ================= */
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+    margin:12px 0;
+}
+
+.sum-box{
+    min-width:0;
+    background:#e6fcf5;
+    padding:10px;
+    border-radius:9px;
+    border-left:4px solid #0ca678;
+    overflow:hidden;
+}
+
+.sum-box .l{
+    font-size:10px;
+    color:#666;
+    margin-bottom:4px;
+}
+
+.sum-box .v{
+    font-size:14px;
+    font-weight:700;
+    color:#087f5b;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* ================= TABLE ================= */
+
+.table-wrap{
+    width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    border-radius:8px;
+}
+
+table{
+    width:100%;
+    min-width:850px;
+    border-collapse:collapse;
+    font-size:11px;
+    background:#fff;
+}
+
+th{
+    background:#087f5b;
+    color:#fff;
+    padding:9px 8px;
+    text-align:left;
+    white-space:nowrap;
+    font-weight:600;
+}
+
+td{
+    padding:8px;
+    border-bottom:1px solid #eee;
+    white-space:nowrap;
+    vertical-align:middle;
+}
+
+tbody tr:nth-child(even){
+    background:#fafafa;
+}
+
+tbody tr:hover{
+    background:#f0fdf4;
+}
+
+.text-right{
+    text-align:right;
+}
+
+/* ================= TOTAL ================= */
+
+.total-row{
+    background:#e6fcf5 !important;
+    font-weight:700;
+}
+
+.total-row td{
+    border-top:2px solid #087f5b;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+    text-align:center;
+    padding:25px;
+    color:#777;
+    font-size:13px;
+}
+
+.spinner{
+    display:inline-block;
+    width:24px;
+    height:24px;
+    border:3px solid #ddd;
+    border-top-color:#087f5b;
+    border-radius:50%;
+    animation:spin .8s linear infinite;
+    vertical-align:middle;
+    margin-right:8px;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* ================= PDF ================= */
+
+#areaCetak{
+    background:#fff;
+    padding:5px;
+}
+
+.judul-pdf{
+    text-align:center;
+    color:#087f5b;
+    margin:5px 0;
+    font-size:20px;
+}
+
+.periode-pdf{
+    text-align:center;
+    font-size:12px;
+    margin:0 0 12px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:767px){
+
+    body{
+        padding:6px;
+    }
+
+    header{
+        border-radius:8px;
+        padding:10px 12px;
+    }
+
+    .brand{
+        font-size:13px;
+    }
+
+    .brand img{
+        width:32px;
+        height:32px;
+    }
+
+    .container{
+        padding:10px;
+        border-radius:10px;
+        margin-top:7px;
+    }
+
+    h1{
+        font-size:17px;
+    }
+
+    .card{
+        padding:10px;
+    }
+
+    .summary{
+        grid-template-columns:1fr 1fr;
+        gap:7px;
+    }
+
+    .sum-box{
+        padding:9px 8px;
+    }
+
+    .sum-box .v{
+        font-size:12px;
+    }
+
+    table{
+        min-width:850px;
+        font-size:10px;
+    }
+
+    th,
+    td{
+        padding:7px 6px;
+    }
+
+    .judul-pdf{
+        font-size:16px;
+    }
+}
+
+/* ================= TABLET / DESKTOP ================= */
+
+@media(min-width:768px){
+
+    body{
+        padding:15px;
+    }
+
+    .container{
+        padding:20px;
+    }
+
+    .form-grid{
+        grid-template-columns:
+            1fr
+            1fr
+            .8fr
+            1.4fr
+            .9fr;
+        gap:12px;
+    }
+
+    .summary{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    table{
+        min-width:100%;
+        font-size:12px;
+    }
+
+    th,
+    td{
+        padding:9px;
+    }
+}
+
+/* ================= DESKTOP BESAR ================= */
+
+@media(min-width:1100px){
+
+    body{
+        padding:25px;
+    }
+
+    .container{
+        padding:25px;
+    }
+
+    .form-grid{
+        grid-template-columns:
+            1fr
+            1fr
+            .8fr
+            1.5fr
+            1fr;
+    }
+
+    table{
+        font-size:13px;
+    }
+}
+
 </style>
 </head>
+
 <body>
 
-<div class="container">
-    <h1>Perhitungan SHU Tahunan</h1>
-    <div class="note">* Catatan: SHU Simpanan dihitung dari Simpanan Sukarela saja. Pokok & Wajib tidak dihitung</div>
+<!-- ================= SIDEBAR ================= -->
 
-    <div class="card">
-        <div class="form-grid">
-            <div><label>Tanggal Awal</label><input type="date" id="tglAwal"></div>
-            <div><label>Tanggal Akhir</label><input type="date" id="tglAkhir"></div>
-            <div><label>% SHU Anggota</label><input type="number" id="pShuAnggota" value="45"> %</div>
-            <div><label>% Simpanan : Jasa</label><input type="number" id="pSimpanan" value="50"> : <input type="number" id="pJasa" value="50"></div>
-            <div><label>&nbsp;</label><button class="btn" onclick="hitungSHU()">Hitung SHU</button></div>
-        </div>
+<div id="sidebar" class="sidebar">
+
+    <div class="sidebar-logo">
+        <img src="img/icon-192.png" alt="Logo">
+        <h3>Menu Koperasi</h3>
     </div>
 
-    <div id="hasil" style="display:none">
-        <div class="summary">
-            <div class="sum-box"><div class="l">SHU Bersih</div><div class="v">Rp <span id="totSHU">0</span></div></div>
-            <div class="sum-box"><div class="l">SHU untuk Anggota</div><div class="v">Rp <span id="shuAnggota">0</span></div></div>
-        </div>
+    <a href="dashboard.html">
+        <span class="material-icons">home</span>
+        Beranda
+    </a>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th><th>ID Anggota</th><th>Nama</th>
-                    <th class="text-right">Simpanan Sukarela</th>
-                    <th class="text-right">Jasa Bayar</th>
-                    <th class="text-right">SHU Simpanan</th>
-                    <th class="text-right">SHU Jasa</th>
-                    <th class="text-right">TOTAL SHU</th>
-                </tr>
-            </thead>
-            <tbody id="tbodySHU"></tbody>
-        </table>
-    </div>
+    <div class="sidebar-section">Data Master</div>
+
+    <a href="anggota.html">
+        <span class="material-icons">people</span>
+        Data Anggota
+    </a>
+
+    <a href="kas.html">
+        <span class="material-icons">payments</span>
+        Kas
+    </a>
+
+    <a href="angsuran.html">
+        <span class="material-icons">receipt_long</span>
+        Angsuran
+    </a>
+
+    <a href="simpanan.html">
+        <span class="material-icons">savings</span>
+        Simpanan
+    </a>
+
+    <div class="sidebar-section">Keuangan</div>
+
+    <a href="pinjaman.html">
+        <span class="material-icons">account_balance_wallet</span>
+        Pinjaman
+    </a>
+
+    <a href="cair.html">
+        <span class="material-icons">money_off</span>
+        Pencairan Simpanan
+    </a>
+
+    <a href="neraca.html">
+        <span class="material-icons">menu_book</span>
+        Neraca
+    </a>
+
+    <a href="labarugi.html">
+        <span class="material-icons">bar_chart</span>
+        Laba Rugi
+    </a>
+
+    <div class="sidebar-section">Laporan</div>
+
+    <a href="laporan-kas-pwa.html">
+        <span class="material-icons">account_balance</span>
+        Laporan Kas
+    </a>
+
+    <a href="laporan-anggota.html">
+        <span class="material-icons">assignment</span>
+        Pinjaman & Angsuran
+    </a>
+
+    <a href="nota-tagihan.html">
+        <span class="material-icons">description</span>
+        Nota Tagihan
+    </a>
+
+    <a href="transaksi.html">
+        <span class="material-icons">analytics</span>
+        Lap Transaksi
+    </a>
+
+    <div class="sidebar-section">Pengaturan</div>
+
+    <a href="backup.html">
+        <span class="material-icons">backup</span>
+        Backup Data
+    </a>
+
+    <a href="user.html">
+        <span class="material-icons">settings</span>
+        Kelola User
+    </a>
+
+    <a href="#" id="btnLogout">
+        <span class="material-icons">logout</span>
+        Logout
+    </a>
+
 </div>
 
+<div id="overlay" class="overlay"></div>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+    <div class="brand">
+        <img src="img/icon-192.png" alt="Logo Koperasi ARFA">
+        <div>SHU Anggota</div>
+    </div>
+
+    <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+
+</header>
+
+
+<!-- ================= CONTENT ================= -->
+
+<div class="container">
+
+    <h1>Perhitungan SHU Tahunan</h1>
+
+    <div class="note">
+        * SHU Simpanan hanya dihitung dari <b>Simpanan Sukarela</b>.
+        Simpanan Pokok dan Simpanan Wajib tidak masuk dasar pembagian SHU Simpanan.
+    </div>
+
+
+    <!-- ================= FORM ================= -->
+
+    <div class="card">
+
+        <div class="form-grid">
+
+            <div>
+                <label>Tanggal Awal</label>
+                <input type="date" id="tglAwal">
+            </div>
+
+            <div>
+                <label>Tanggal Akhir</label>
+                <input type="date" id="tglAkhir">
+            </div>
+
+            <div>
+                <label>% SHU Anggota</label>
+                <input
+                    type="number"
+                    id="pShuAnggota"
+                    value="45"
+                    min="0"
+                    max="100"
+                >
+            </div>
+
+            <div>
+                <label>% Simpanan : Jasa</label>
+
+                <div class="group-percent">
+
+                    <input
+                        type="number"
+                        id="pSimpanan"
+                        value="50"
+                        min="0"
+                        max="100"
+                    >
+
+                    <span>:</span>
+
+                    <input
+                        type="number"
+                        id="pJasa"
+                        value="50"
+                        min="0"
+                        max="100"
+                    >
+
+                </div>
+            </div>
+
+            <div>
+
+                <label>&nbsp;</label>
+
+                <button
+                    class="btn"
+                    id="btnHitung"
+                    onclick="hitungSHU()"
+                >
+                    Hitung SHU
+                </button>
+
+                <button
+                    class="btn"
+                    id="btnPDF"
+                    style="background:#e03131"
+                    onclick="exportPDF()"
+                    disabled
+                >
+                    Export PDF
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= HASIL ================= -->
+
+    <div id="hasil" style="display:none;">
+
+        <div id="areaCetak">
+
+            <h2 class="judul-pdf">
+                LAPORAN PERHITUNGAN SHU
+            </h2>
+
+            <p class="periode-pdf">
+                Periode:
+                <span id="periodeCetak"></span>
+            </p>
+
+
+            <!-- SUMMARY -->
+
+            <div
+                class="summary"
+                id="summaryCetak"
+            >
+
+                <div class="sum-box">
+                    <div class="l">SHU Bersih</div>
+                    <div class="v" id="totSHU">Rp 0</div>
+                </div>
+
+                <div class="sum-box">
+                    <div class="l">SHU Anggota</div>
+                    <div class="v" id="shuAnggota">Rp 0</div>
+                </div>
+
+                <div class="sum-box">
+                    <div class="l">Dana SHU Simpanan</div>
+                    <div class="v" id="danaSimpanan">Rp 0</div>
+                </div>
+
+                <div class="sum-box">
+                    <div class="l">Dana SHU Jasa</div>
+                    <div class="v" id="danaJasa">Rp 0</div>
+                </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>No</th>
+                            <th>ID Anggota</th>
+                            <th>Nama</th>
+
+                            <th class="text-right">
+                                Simpanan Sukarela
+                            </th>
+
+                            <th class="text-right">
+                                Jasa Bayar
+                            </th>
+
+                            <th class="text-right">
+                                SHU Simpanan
+                            </th>
+
+                            <th class="text-right">
+                                SHU Jasa
+                            </th>
+
+                            <th class="text-right">
+                                TOTAL SHU
+                            </th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tbodySHU">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <p class="note">
+                * SHU Simpanan dihitung berdasarkan proporsi
+                Simpanan Sukarela anggota.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
-const firebaseConfig = {apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain: "arfa-c7dee.firebaseapp.com",databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",projectId: "arfa-c7dee"};
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+    authDomain: "arfa-c7dee.firebaseapp.com",
+    databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+    projectId: "arfa-c7dee"
+};
+
 firebase.initializeApp(firebaseConfig);
+
 const db = firebase.database();
 
-// FUNGSI PEMBULATAN KE RIBUAN TERDEKAT
-function bulatRibu(n){ return Math.round(Number(n||0) / 1000) * 1000; }
 
-function formatRp(n){ return bulatRibu(n).toLocaleString("id-ID"); } // <--- PAKAI PEMBULATAN
-function toTimestamp(tgl){ return new Date(tgl).getTime(); }
+/* =====================================================
+   VARIABLE GLOBAL
+===================================================== */
 
-document.getElementById('tglAkhir').value = new Date().toISOString().slice(0,10);
-document.getElementById('tglAwal').value = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10);
+let dataSHU = [];
+
+let hasilPerhitungan = {
+    shuBersih: 0,
+    shuUntukAnggota: 0,
+    danaShuSimpanan: 0,
+    danaShuJasa: 0
+};
+
+
+/* =====================================================
+   HELPER
+===================================================== */
+
+function bulatRibu(n){
+
+    return Math.round(
+        Number(n || 0) / 1000
+    ) * 1000;
+
+}
+
+
+function formatRp(n){
+
+    return "Rp " +
+        bulatRibu(n).toLocaleString("id-ID");
+
+}
+
+
+function formatTanggalIndonesia(tanggal){
+
+    if(!tanggal) return "-";
+
+    const d = new Date(tanggal);
+
+    if(isNaN(d.getTime())) return tanggal;
+
+    return d.toLocaleDateString(
+        "id-ID",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+/* =====================================================
+   NORMALISASI TANGGAL
+===================================================== */
+
+function tanggalKeTime(value){
+
+    if(value === undefined || value === null){
+        return 0;
+    }
+
+    /* Firebase timestamp */
+
+    if(typeof value === "number"){
+        return value;
+    }
+
+    /* String angka */
+
+    if(
+        typeof value === "string" &&
+        /^\d+$/.test(value)
+    ){
+
+        const num = Number(value);
+
+        if(num > 10000000000){
+            return num;
+        }
+
+    }
+
+    /* YYYY-MM-DD */
+
+    const str = String(value).trim();
+
+    if(/^\d{4}-\d{2}-\d{2}$/.test(str)){
+
+        return new Date(
+            str + "T00:00:00"
+        ).getTime();
+
+    }
+
+    const parsed = new Date(str).getTime();
+
+    return isNaN(parsed) ? 0 : parsed;
+
+}
+
+
+/* =====================================================
+   FORMAT TANGGAL INPUT
+===================================================== */
+
+function getTanggalAwal(){
+
+    return document.getElementById("tglAwal").value;
+
+}
+
+
+function getTanggalAkhir(){
+
+    return document.getElementById("tglAkhir").value;
+
+}
+
+
+/* =====================================================
+   SET DEFAULT DATE
+===================================================== */
+
+(function setTanggalDefault(){
+
+    const sekarang = new Date();
+
+    const tahun = sekarang.getFullYear();
+
+    const bulan = String(
+        sekarang.getMonth() + 1
+    ).padStart(2,"0");
+
+    const hari = String(
+        sekarang.getDate()
+    ).padStart(2,"0");
+
+    document.getElementById("tglAkhir").value =
+        `${tahun}-${bulan}-${hari}`;
+
+    document.getElementById("tglAwal").value =
+        `${tahun}-01-01`;
+
+})();
+
+
+/* =====================================================
+   HITUNG SHU
+===================================================== */
 
 async function hitungSHU(){
-    const tglAwal = toTimestamp(document.getElementById('tglAwal').value);
-    const tglAkhir = toTimestamp(document.getElementById('tglAkhir').value) + 86399999;
-    const pShuAnggota = Number(document.getElementById('pShuAnggota').value) / 100;
-    const pSimpanan = Number(document.getElementById('pSimpanan').value) / 100;
-    const pJasa = Number(document.getElementById('pJasa').value) / 100;
 
-    const [snapKas, snapSimpanan, snapAnggota, snapAngsuran] = await Promise.all([
-        db.ref('kas/transaksi').once('value'),
-        db.ref('simpanan').once('value'),
-        db.ref('anggota').once('value'),
-        db.ref('angsuran').once('value')
-    ]);
+    const btn = document.getElementById("btnHitung");
 
-    // 1. HITUNG SHU
-    let totPendapatan = 0, totBiaya = 0;
-    Object.values(snapKas.val() || {}).forEach(k=>{
-        if(k.tanggal >= tglAwal && k.tanggal <= tglAkhir){
-            if(k.tipe === 'masuk') totPendapatan += Number(k.jumlah || 0);
-            if(k.tipe === 'keluar') totBiaya += Number(k.jumlah || 0);
+    try{
+
+        const awalValue = getTanggalAwal();
+        const akhirValue = getTanggalAkhir();
+
+        if(!awalValue || !akhirValue){
+
+            alert("Tanggal awal dan tanggal akhir harus diisi.");
+
+            return;
         }
-    });
-    const shuBersih = bulatRibu(totPendapatan - totBiaya); // <--- DIBULATKAN
-    const shuUntukAnggota = bulatRibu(shuBersih * pShuAnggota); // <--- DIBULATKAN
-    const danaShuSimpanan = bulatRibu(shuUntukAnggota * pSimpanan);
-    const danaShuJasa = bulatRibu(shuUntukAnggota * pJasa);
 
-    // 2. DAFTAR ANGGOTA
-    let dataPerAnggota = {};
-    let totalSimpananSemua = 0, totalJasaSemua = 0;
 
-    Object.values(snapAnggota.val() || {}).forEach(a=>{
-        let id = a.idAnggota || a.id;
-        if(id){
-            dataPerAnggota[id] = {idAnggota: id, nama: a.nama, simpanan: 0, jasa: 0};
+        const awal = tanggalKeTime(
+            awalValue
+        );
+
+        const akhir =
+            tanggalKeTime(akhirValue)
+            + 86399999;
+
+
+        if(awal > akhir){
+
+            alert(
+                "Tanggal awal tidak boleh lebih besar dari tanggal akhir."
+            );
+
+            return;
         }
-    });
 
-    // 3. JUMLAHKAN SIMPANAN SUKARELA SAJA
-    Object.values(snapSimpanan.val() || {}).forEach(s=>{
-        let id = s.idAnggota || s.anggotaId;
-        // FILTER PENTING: hanya sukarela
-        if(dataPerAnggota[id] && String(s.jenis).toLowerCase() === "sukarela"){
-            dataPerAnggota[id].simpanan += Number(s.jumlah || 0);
-            totalSimpananSemua += Number(s.jumlah || 0);
+
+        const pShuAnggota =
+            Number(
+                document.getElementById("pShuAnggota").value
+            ) / 100;
+
+
+        const pSimpanan =
+            Number(
+                document.getElementById("pSimpanan").value
+            ) / 100;
+
+
+        const pJasa =
+            Number(
+                document.getElementById("pJasa").value
+            ) / 100;
+
+
+        /* Validasi persentase */
+
+        if(pShuAnggota < 0 || pShuAnggota > 1){
+
+            alert("% SHU Anggota harus antara 0 - 100.");
+
+            return;
         }
-    });
 
-    // 4. JUMLAHKAN JASA DARI ANGSURAN
-    Object.values(snapAngsuran.val() || {}).forEach(an=>{
-        if(an.tanggal >= tglAwal && an.tanggal <= tglAkhir){
-            let id = an.idAnggota || an.anggotaId;
-            if(dataPerAnggota[id]){
-                dataPerAnggota[id].jasa += Number(an.jasa || 0);
-                totalJasaSemua += Number(an.jasa || 0);
+
+        if(
+            pSimpanan < 0 ||
+            pJasa < 0 ||
+            Math.abs(
+                (pSimpanan + pJasa) - 1
+            ) > 0.0001
+        ){
+
+            alert(
+                "Persentase Simpanan + Jasa harus = 100%."
+            );
+
+            return;
+        }
+
+
+        btn.disabled = true;
+
+        btn.innerHTML =
+            '<span class="spinner"></span> Menghitung...';
+
+
+        document.getElementById("hasil").style.display =
+            "block";
+
+
+        document.getElementById("tbodySHU").innerHTML = `
+            <tr>
+                <td colspan="8" class="loading">
+                    <span class="spinner"></span>
+                    Mengambil data Firebase...
+                </td>
+            </tr>
+        `;
+
+
+        /* =================================================
+           AMBIL DATA FIREBASE
+        ================================================= */
+
+        const [
+            snapKas,
+            snapSimpanan,
+            snapAnggota,
+            snapAngsuran
+        ] = await Promise.all([
+
+            db.ref("kas/transaksi").once("value"),
+
+            db.ref("simpanan").once("value"),
+
+            db.ref("anggota").once("value"),
+
+            db.ref("angsuran").once("value")
+
+        ]);
+
+
+        /* =================================================
+           1. HITUNG PENDAPATAN DAN BIAYA
+        ================================================= */
+
+        let totPendapatan = 0;
+
+        let totBiaya = 0;
+
+
+        Object.values(
+            snapKas.val() || {}
+        ).forEach(k => {
+
+            const waktu =
+                tanggalKeTime(k.tanggal);
+
+
+            if(
+                waktu >= awal &&
+                waktu <= akhir
+            ){
+
+                const jumlah =
+                    Number(k.jumlah || 0);
+
+
+                if(k.tipe === "masuk"){
+
+                    totPendapatan += jumlah;
+
+                }
+
+
+                if(k.tipe === "keluar"){
+
+                    totBiaya += jumlah;
+
+                }
+
             }
+
+        });
+
+
+        const shuBersih =
+            bulatRibu(
+                totPendapatan - totBiaya
+            );
+
+
+        const shuUntukAnggota =
+            bulatRibu(
+                shuBersih * pShuAnggota
+            );
+
+
+        const danaShuSimpanan =
+            bulatRibu(
+                shuUntukAnggota * pSimpanan
+            );
+
+
+        const danaShuJasa =
+            bulatRibu(
+                shuUntukAnggota * pJasa
+            );
+
+
+        hasilPerhitungan = {
+
+            shuBersih,
+
+            shuUntukAnggota,
+
+            danaShuSimpanan,
+
+            danaShuJasa
+
+        };
+
+
+        /* =================================================
+           2. DAFTAR ANGGOTA
+        ================================================= */
+
+        const dataPerAnggota = {};
+
+
+        Object.values(
+            snapAnggota.val() || {}
+        ).forEach(a => {
+
+            const id =
+                a.idAnggota ||
+                a.id ||
+                a.anggotaId;
+
+
+            if(!id) return;
+
+
+            dataPerAnggota[id] = {
+
+                idAnggota:id,
+
+                nama:a.nama || "-",
+
+                simpanan:0,
+
+                jasa:0
+
+            };
+
+        });
+
+
+        /* =================================================
+           3. SIMPANAN SUKARELA
+        ================================================= */
+
+        let totalSimpananSemua = 0;
+
+
+        Object.values(
+            snapSimpanan.val() || {}
+        ).forEach(s => {
+
+            const id =
+                s.idAnggota ||
+                s.anggotaId;
+
+
+            if(!dataPerAnggota[id]) return;
+
+
+            const jenis =
+                String(
+                    s.jenis || ""
+                ).trim().toLowerCase();
+
+
+            /* HANYA SUKARELA */
+
+            if(jenis !== "sukarela") return;
+
+
+            const jumlah =
+                Number(s.jumlah || 0);
+
+
+            /*
+             * Jika transaksi simpanan memiliki tanggal,
+             * gunakan filter periode.
+             */
+
+            if(s.tanggal){
+
+                const waktu =
+                    tanggalKeTime(s.tanggal);
+
+
+                if(
+                    waktu < awal ||
+                    waktu > akhir
+                ){
+
+                    return;
+
+                }
+
+            }
+
+
+            dataPerAnggota[id].simpanan += jumlah;
+
+            totalSimpananSemua += jumlah;
+
+        });
+
+
+        /* =================================================
+           4. JASA ANGSURAN
+        ================================================= */
+
+        let totalJasaSemua = 0;
+
+
+        Object.values(
+            snapAngsuran.val() || {}
+        ).forEach(an => {
+
+            const waktu =
+                tanggalKeTime(an.tanggal);
+
+
+            if(
+                waktu < awal ||
+                waktu > akhir
+            ){
+
+                return;
+
+            }
+
+
+            const id =
+                an.idAnggota ||
+                an.anggotaId;
+
+
+            if(!dataPerAnggota[id]) return;
+
+
+            const jasa =
+                Number(an.jasa || 0);
+
+
+            dataPerAnggota[id].jasa += jasa;
+
+            totalJasaSemua += jasa;
+
+        });
+
+
+        /* =================================================
+           5. BAGI SHU KE ANGGOTA
+        ================================================= */
+
+        dataSHU = [];
+
+
+        Object.values(
+            dataPerAnggota
+        ).forEach(d => {
+
+            if(
+                d.simpanan <= 0 &&
+                d.jasa <= 0
+            ){
+
+                return;
+
+            }
+
+
+            let shuDariSimpanan =
+
+                totalSimpananSemua > 0
+
+                ?
+
+                danaShuSimpanan *
+                (
+                    d.simpanan /
+                    totalSimpananSemua
+                )
+
+                :
+
+                0;
+
+
+            let shuDariJasa =
+
+                totalJasaSemua > 0
+
+                ?
+
+                danaShuJasa *
+                (
+                    d.jasa /
+                    totalJasaSemua
+                )
+
+                :
+
+                0;
+
+
+            shuDariSimpanan =
+                bulatRibu(
+                    shuDariSimpanan
+                );
+
+
+            shuDariJasa =
+                bulatRibu(
+                    shuDariJasa
+                );
+
+
+            const totalSHU =
+                shuDariSimpanan +
+                shuDariJasa;
+
+
+            dataSHU.push({
+
+                idAnggota:d.idAnggota,
+
+                nama:d.nama,
+
+                simpanan:d.simpanan,
+
+                jasa:d.jasa,
+
+                shuSimpanan:shuDariSimpanan,
+
+                shuJasa:shuDariJasa,
+
+                totalSHU
+
+            });
+
+        });
+
+
+        /* =================================================
+           SORT NAMA
+        ================================================= */
+
+        dataSHU.sort(
+            (a,b) =>
+                String(a.nama)
+                .localeCompare(
+                    String(b.nama),
+                    "id"
+                )
+        );
+
+
+        /* =================================================
+           6. SUMMARY
+        ================================================= */
+
+        document.getElementById("totSHU").innerText =
+            formatRp(shuBersih);
+
+
+        document.getElementById("shuAnggota").innerText =
+            formatRp(shuUntukAnggota);
+
+
+        document.getElementById("danaSimpanan").innerText =
+            formatRp(danaShuSimpanan);
+
+
+        document.getElementById("danaJasa").innerText =
+            formatRp(danaShuJasa);
+
+
+        document.getElementById("periodeCetak").innerText =
+            `${formatTanggalIndonesia(awalValue)}
+             s/d
+             ${formatTanggalIndonesia(akhirValue)}`;
+
+
+        /* =================================================
+           7. RENDER TABLE
+        ================================================= */
+
+        let html = "";
+
+        let totalSimpanan = 0;
+        let totalJasa = 0;
+        let totalShuSimpanan = 0;
+        let totalShuJasa = 0;
+        let totalShuAnggota = 0;
+
+
+        dataSHU.forEach((d,index) => {
+
+            totalSimpanan += d.simpanan;
+
+            totalJasa += d.jasa;
+
+            totalShuSimpanan += d.shuSimpanan;
+
+            totalShuJasa += d.shuJasa;
+
+            totalShuAnggota += d.totalSHU;
+
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${index + 1}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(d.idAnggota)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(d.nama)}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(d.simpanan)}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(d.jasa)}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(d.shuSimpanan)}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(d.shuJasa)}
+                    </td>
+
+                    <td class="text-right">
+                        <b>
+                            ${formatRp(d.totalSHU)}
+                        </b>
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+
+        if(dataSHU.length === 0){
+
+            html = `
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        style="
+                            text-align:center;
+                            color:#999;
+                            padding:25px;
+                        "
+                    >
+
+                        Data SHU tidak ditemukan
+                        pada periode tersebut.
+
+                    </td>
+
+                </tr>
+
+            `;
+
         }
-    });
+        else{
 
-    // 5. RENDER + PEMBULATAN PER ANGGOTA
-    let no = 1, html = "";
-    Object.values(dataPerAnggota).forEach(d=>{
-        let shuDariSimpanan = totalSimpananSemua > 0? danaShuSimpanan * (d.simpanan / totalSimpananSemua) : 0;
-        let shuDariJasa = totalJasaSemua > 0? danaShuJasa * (d.jasa / totalJasaSemua) : 0;
+            html += `
 
-        // BULATKAN PER ANGGOTA BIAR RAPI
-        shuDariSimpanan = bulatRibu(shuDariSimpanan);
-        shuDariJasa = bulatRibu(shuDariJasa);
-        const totalSHU = shuDariSimpanan + shuDariJasa;
+                <tr class="total-row">
 
-        if(d.simpanan > 0 || d.jasa > 0){
-            html += `<tr><td>${no++}</td><td>${d.idAnggota}</td><td>${d.nama}</td>
-            <td class="text-right">${formatRp(d.simpanan)}</td>
-            <td class="text-right">${formatRp(d.jasa)}</td>
-            <td class="text-right">${formatRp(shuDariSimpanan)}</td>
-            <td class="text-right">${formatRp(shuDariJasa)}</td>
-            <td class="text-right"><b>${formatRp(totalSHU)}</b></td></tr>`;
+                    <td colspan="3">
+                        TOTAL
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(totalSimpanan)}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(totalJasa)}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(totalShuSimpanan)}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(totalShuJasa)}
+                    </td>
+
+                    <td class="text-right">
+                        ${formatRp(totalShuAnggota)}
+                    </td>
+
+                </tr>
+
+            `;
+
         }
-    });
 
-    document.getElementById('totSHU').innerText = formatRp(shuBersih);
-    document.getElementById('shuAnggota').innerText = formatRp(shuUntukAnggota);
-    document.getElementById('tbodySHU').innerHTML = html || `<tr><td colspan="8" style="text-align:center;color:#999">Data tidak ditemukan</td></tr>`;
-    document.getElementById('hasil').style.display = 'block';
+
+        document.getElementById("tbodySHU").innerHTML =
+            html;
+
+
+        document.getElementById("hasil").style.display =
+            "block";
+
+
+        document.getElementById("btnPDF").disabled =
+            dataSHU.length === 0;
+
+
+    }
+    catch(error){
+
+        console.error(
+            "ERROR HITUNG SHU:",
+            error
+        );
+
+
+        document.getElementById(
+            "tbodySHU"
+        ).innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    style="
+                        text-align:center;
+                        color:#e03131;
+                        padding:25px;
+                    "
+                >
+
+                    Gagal mengambil data.
+                    <br>
+                    ${escapeHtml(error.message)}
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        alert(
+            "Terjadi kesalahan saat menghitung SHU."
+        );
+
+    }
+    finally{
+
+        btn.disabled = false;
+
+        btn.innerHTML =
+            "Hitung SHU";
+
+    }
+
 }
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   EXPORT PDF
+===================================================== */
+
+async function exportPDF(){
+
+    if(dataSHU.length === 0){
+
+        alert(
+            "Hitung SHU terlebih dahulu sebelum Export PDF."
+        );
+
+        return;
+
+    }
+
+
+    const area =
+        document.getElementById("areaCetak");
+
+
+    const btn =
+        document.getElementById("btnPDF");
+
+
+    const awal =
+        getTanggalAwal();
+
+
+    const akhir =
+        getTanggalAkhir();
+
+
+    btn.disabled = true;
+
+    btn.innerText =
+        "Membuat PDF...";
+
+
+    try{
+
+        const opt = {
+
+            margin:10,
+
+            filename:
+                `Laporan_SHU_${awal}_${akhir}.pdf`,
+
+            image:{
+                type:"jpeg",
+                quality:0.98
+            },
+
+            html2canvas:{
+                scale:2,
+                useCORS:true,
+                backgroundColor:"#ffffff"
+            },
+
+            jsPDF:{
+                unit:"mm",
+                format:"a4",
+                orientation:"landscape"
+            },
+
+            pagebreak:{
+                mode:[
+                    "avoid-all",
+                    "css",
+                    "legacy"
+                ]
+            }
+
+        };
+
+
+        await html2pdf()
+            .set(opt)
+            .from(area)
+            .save();
+
+    }
+    catch(error){
+
+        console.error(
+            "PDF ERROR:",
+            error
+        );
+
+        alert(
+            "Gagal membuat PDF."
+        );
+
+    }
+    finally{
+
+        btn.disabled = false;
+
+        btn.innerText =
+            "Export PDF";
+
+    }
+
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+window.toggleSidebar = function(){
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+
+    document
+        .getElementById("overlay")
+        .classList.toggle("active");
+
+};
+
+
+document
+    .getElementById("overlay")
+    .addEventListener(
+        "click",
+        toggleSidebar
+    );
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+document
+    .getElementById("btnLogout")
+    .addEventListener(
+        "click",
+        function(e){
+
+            e.preventDefault();
+
+
+            if(
+                confirm(
+                    "Yakin mau logout?"
+                )
+            ){
+
+                localStorage.clear();
+
+                location.href =
+                    "index.html";
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   AUTO HITUNG SAAT HALAMAN DIBUKA
+   Bisa diaktifkan jika diperlukan.
+===================================================== */
+
+// window.addEventListener("load", hitungSHU);
+
 </script>
+
 </body>
 </html>
