@@ -8,6 +8,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;font-family:'Poppins',Arial,sans-serif;}
+body{background:#f3f6fa;color:#333;padding:10px;margin:0;}
 header {background: linear-gradient(to right, #1e90ff, #0f3057);color: white;padding: 12px 16px;display: flex;justify-content: space-between;align-items: center;position: sticky;top: 0; z-index:998}
 .brand {display: flex;align-items: center;gap: 10px;font-weight:700;}
 .brand img {width: 36px;height: 36px;border-radius: 50%;background: #fff;padding: 2px;}
@@ -20,12 +23,12 @@ header {background: linear-gradient(to right, #1e90ff, #0f3057);color: white;pad
 .sidebar-section{color:rgba(255,255,255,0.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px;}
 .sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px 10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:0.2s;}
 .sidebar a:hover{background:rgba(255,255,255,0.15);transform:translateX(4px);}
+.sidebar a.active{background:rgba(255,255,255,0.2);}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
 .overlay.active{display:block;}
-*{box-sizing:border-box;font-family:'Poppins',Arial,sans-serif;}
-body{background:#f3f6fa;color:#333;padding:10px;}
 .container{width:100%;max-width:1200px;margin:0 auto;background:#fff;border-radius:14px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
 h1{color:#087f5b;font-size:19px;margin:0 0 10px;font-weight:700;}
+.role-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:10px 12px;border-radius:9px;margin-bottom:12px;font-size:11px;}
 .note{font-size:11px;line-height:1.5;color:#d97706;background:#fff8e6;border-left:4px solid #f59e0b;padding:8px 10px;border-radius:6px;margin-bottom:12px;}
 .card{width:100%;background:#f8f9fa;padding:12px;border-radius:10px;margin-bottom:15px;}
 .form-grid{display:grid;grid-template-columns:1fr;gap:11px;width:100%;align-items:end;}
@@ -37,23 +40,16 @@ h1{color:#087f5b;font-size:19px;margin:0 0 10px;font-weight:700;}
 .group-percent span{font-weight:700;color:#777;}
 .btn{width:100%;height:42px;padding:0 15px;border:none;border-radius:8px;background:#087f5b;color:#fff;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 2px 5px rgba(8,127,91,.2);margin-top:5px}
 .btn.red{background:#e03131}
-.summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;}
-.sum-box{background:#e6fcf5;padding:10px;border-radius:9px;border-left:4px solid #0ca678;}
-.sum-box.l{font-size:10px;color:#666;margin-bottom:4px;}
-.sum-box.v{font-size:14px;font-weight:700;color:#087f5b;}
-.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;}
-table{width:100%;min-width:850px;border-collapse:collapse;font-size:11px;background:#fff;}
-th{background:#087f5b;color:#fff;padding:9px 8px;text-align:left;white-space:nowrap;font-weight:600;}
-td{padding:8px;border-bottom:1px solid #eee;white-space:nowrap;vertical-align:middle;}
-.text-right{text-align:right;}
+.btn:hover{opacity:.9;}
 @media(min-width:768px){
-    body{padding:25px;}
-   .container{padding:25px;}
+    body{margin-left:240px;padding:25px;}
+   .sidebar{left:0;}
+   .overlay{display:none!important;}
+   .menu-btn{display:none;}
+  .container{padding:25px;}
     h1{font-size:22px;}
-   .form-grid{grid-template-columns:1fr 1fr.8fr 1.4fr.9fr;gap:12px;}
-   .btn{width:100%;}
-   .summary{grid-template-columns:1fr 1fr;gap:12px;}
-    table{min-width:100%;font-size:12px;}
+  .form-grid{grid-template-columns:1fr 1fr.8fr 1.4fr.9fr;gap:12px;}
+  .btn{width:100%;}
 }
 </style>
 </head>
@@ -75,13 +71,12 @@ td{padding:8px;border-bottom:1px solid #eee;white-space:nowrap;vertical-align:mi
   <a href="neraca.html">📖 Neraca</a>
   <a href="labarugi.html">📊 Laba Rugi</a>
   <div class="sidebar-section">Laporan</div>
+  <a href="shu.html" class="active">📊 Perhitungan SHU</a>
   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
   <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
-  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
-  <a href="transaksi.html">📊 Lap transaksi</a>
-  <div class="sidebar-section">Pengaturan</div>
-  <a href="backup.html">💾 Backup Data</a>
-  <a href="user1.html">⚙️ Kelola User</a>
+  <div class="sidebar-section admin-only">Pengaturan</div>
+  <a href="backup.html" class="admin-only">💾 Backup Data</a>
+  <a href="user.html" class="admin-only">⚙️ Kelola User</a>
   <a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
@@ -93,9 +88,10 @@ td{padding:8px;border-bottom:1px solid #eee;white-space:nowrap;vertical-align:mi
   </div>
   <span class="menu-btn" onclick="toggleSidebar()">☰</span>
 </header>
-  
+
 <div class="container">
     <h1>Perhitungan SHU Tahunan</h1>
+    <div id="roleInfo" class="role-info">Memuat hak akses...</div>
     <div class="note">* Catatan: SHU Simpanan dihitung dari Simpanan Sukarela saja. Pokok & Wajib tidak dihitung</div>
 
   <div class="card">
@@ -112,59 +108,11 @@ td{padding:8px;border-bottom:1px solid #eee;white-space:nowrap;vertical-align:mi
         </div>
         <div>
             <label>&nbsp;</label>
-            <button class="btn" onclick="hitungSHU()">Hitung SHU</button>
-            <button class="btn red" onclick="exportPDF()">Export PDF</button>
+            <button class="btn" onclick="hitungSHU()">📊 Hitung & Buka Tab Baru</button>
+            <button class="btn red" onclick="exportPDF()">📄 Export PDF</button>
         </div>
     </div>
 </div>
-    
-  <!-- AREA YANG DI CETAK -->
-  <div id="areaCetak" style="padding:10px;">
-    <!-- KOP PDF -->
-    <div style="display:flex; align-items:center; gap:15px; margin-bottom:10px; border-bottom:2px solid #087f5b; padding-bottom:10px;">
-        <img src="img/icon-192.png" style="width:55px; height:55px; object-fit:contain;">
-        <div style="text-align:center; flex:1;">
-            <h2 style="margin:0; color:#087f5b; font-size:16px;">KOPERASI ARFA KHALIFA</h2>
-            <p style="margin:0; font-size:10px;">INNOVATIVE | MANDIRI | BERKAH</p>
-            <p style="margin:0; font-size:11px;">Jakarta</p>
-        </div>
-    </div>
-    <h3 style="margin:5px 0; text-align:center; color:#087f5b;">LAPORAN PERHITUNGAN SHU TAHUNAN</h3>
-    <p style="margin:0 0 10px 0; font-size:12px; text-align:center;">Periode: <span id="periodeCetak"></span></p>
-
-    <!-- SUMMARY UNTUK PDF -->
-    <div class="summary" id="summaryCetak"></div>
-
-    <div class="table-wrap">
-        <table>
-            <thead> 
-              <tr>
-                    <th>No</th>
-                    <th>ID Anggota</th>
-                    <th>Nama</th>
-                    <th class="text-right">Simpanan Sukarela</th>
-                    <th class="text-right">Jasa Bayar</th>
-                    <th class="text-right">SHU Simpanan</th>
-                    <th class="text-right">SHU Jasa</th>
-                    <th class="text-right">TOTAL SHU</th>
-                </tr>
-            </thead>
-            <tbody id="tbodySHU"></tbody>
-        </table>
-    </div>
-    <p class="note">* Catatan: SHU Simpanan dihitung dari Simpanan Sukarela saja</p>
-
-    <!-- TTD -->
-    <div style="margin-top:40px; display:flex; justify-content:flex-end;">
-        <div style="text-align:center; width:250px;">
-            <p>Jakarta, <span id="tglCetak"></span></p>
-            <p>Ketua Koperasi</p>
-            <br><br><br>
-            <p>____________________</p>
-        </div>
-    </div>
-</div>
-
 </div>
 
 <script>
@@ -172,7 +120,22 @@ const firebaseConfig = {apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDo
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let dataSHU = []; // <-- PENTING: buat cek udah hitung apa belum
+let dataSHU = []; // simpan hasil hitung untuk export pdf
+
+/* ========== ROLE CHECK ========== */
+const role = localStorage.getItem("role");
+const userId = localStorage.getItem("userId");
+if(localStorage.getItem("login")!== "true"){
+  window.location.href = "index.html";
+}
+document.getElementById("roleInfo").innerHTML = role === "admin"
+ ? "👑 <b>Admin</b> — Melihat SHU semua anggota"
+  : "👤 <b>Anggota</b> — Hanya melihat SHU Anda sendiri";
+
+/* HIDE MENU ADMIN */
+if(role!== 'admin'){
+  document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none');
+}
 
 function bulatRibu(n){ return Math.round(Number(n||0) / 1000) * 1000; }
 function formatRp(n){ return bulatRibu(n).toLocaleString("id-ID"); }
@@ -235,18 +198,21 @@ async function hitungSHU(){
         }
     });
 
-    let no = 1, html = "";
+    let no = 1, rowsHTML = "";
     dataSHU = []; // reset
     Object.values(dataPerAnggota).forEach(d=>{
+        // FILTER ROLE ANGGOTA
+        if(role === 'anggota' && d.idAnggota!== userId) return;
+
         let shuDariSimpanan = totalSimpananSemua > 0? danaShuSimpanan * (d.simpanan / totalSimpananSemua) : 0;
         let shuDariJasa = totalJasaSemua > 0? danaShuJasa * (d.jasa / totalJasaSemua) : 0;
         shuDariSimpanan = bulatRibu(shuDariSimpanan);
         shuDariJasa = bulatRibu(shuDariJasa);
         const totalSHU = shuDariSimpanan + shuDariJasa;
-        
+
         if(d.simpanan > 0 || d.jasa > 0){
-            dataSHU.push(d); // simpan buat cek export
-            html += `<tr><td>${no++}</td><td>${d.idAnggota}</td><td>${d.nama}</td>
+            dataSHU.push({...d, shuSimpanan: shuDariSimpanan, shuJasa: shuDariJasa, totalSHU: totalSHU});
+            rowsHTML += `<tr><td>${no++}</td><td>${d.idAnggota}</td><td>${d.nama}</td>
             <td class="text-right">${formatRp(d.simpanan)}</td>
             <td class="text-right">${formatRp(d.jasa)}</td>
             <td class="text-right">${formatRp(shuDariSimpanan)}</td>
@@ -255,16 +221,72 @@ async function hitungSHU(){
         }
     });
 
-    // ISI SUMMARY
-    document.getElementById('summaryCetak').innerHTML = `
+    if(dataSHU.length === 0){
+        alert("Data tidak ditemukan untuk periode ini");
+        return;
+    }
+
+    // ===== BUKA WINDOW BARU =====
+    let win = window.open("", "_blank", "width=1200,height=800");
+    win.document.write(`
+    <!DOCTYPE html>
+    <html><head><title>Laporan SHU ${tglAwalVal} - ${tglAkhirVal}</title>
+    <style>
+    body{font-family:'Poppins',Arial,sans-serif;padding:20px;}
+    h2{text-align:center;color:#087f5b;}
+  .summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0;}
+  .sum-box{background:#e6fcf5;padding:12px;border-radius:9px;border-left:4px solid #0ca678;}
+  .sum-box.l{font-size:11px;color:#666;margin-bottom:4px;}
+  .sum-box.v{font-size:16px;font-weight:700;color:#087f5b;}
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    th{background:#087f5b;color:#fff;padding:10px;text-align:left;}
+    td{padding:9px;border-bottom:1px solid #eee;}
+  .text-right{text-align:right;}
+  .kop{display:flex;align-items:center;gap:15px;margin-bottom:15px;border-bottom:2px solid #087f5b;padding-bottom:10px;}
+  .kop img{width:55px;height:55px;}
+    @media print{.btn-print{display:none;} }
+    </style>
+    </head><body>
+
+    <div class="kop">
+        <img src="img/icon-192.png">
+        <div style="text-align:center; flex:1;">
+            <h2 style="margin:0;">KOPERASI ARFA KHALIFA</h2>
+            <p style="margin:0; font-size:12px;">LAPORAN PERHITUNGAN SHU TAHUNAN</p>
+            <p style="margin:0; font-size:12px;">Periode: ${tglAwalVal} s/d ${tglAkhirVal}</p>
+        </div>
+    </div>
+
+    <div class="summary">
         <div class="sum-box"><div class="l">Total SHU Bersih</div><div class="v">Rp ${formatRp(shuBersih)}</div></div>
         <div class="sum-box"><div class="l">SHU Untuk Anggota ${document.getElementById('pShuAnggota').value}%</div><div class="v">Rp ${formatRp(shuUntukAnggota)}</div></div>
-    `;
-    
-    document.getElementById('tbodySHU').innerHTML = html || `<tr><td colspan="8" style="text-align:center;color:#999">Data tidak ditemukan</td></tr>`;
+    </div>
+
+    <table>
+        <thead><tr>
+            <th>No</th><th>ID Anggota</th><th>Nama</th>
+            <th class="text-right">Simpanan Sukarela</th><th class="text-right">Jasa Bayar</th>
+            <th class="text-right">SHU Simpanan</th><th class="text-right">SHU Jasa</th><th class="text-right">TOTAL SHU</th>
+        </tr></thead>
+        <tbody>${rowsHTML}</tbody>
+    </table>
+
+    <div style="margin-top:40px;text-align:right;"><p>Jakarta, ${new Date().toLocaleDateString('id-ID')}<br>Ketua Koperasi<br><br><br>____________________</p></div>
+    <button class="btn-print" onclick="window.print()" style="position:fixed;top:10px;right:10px;padding:10px 15px;background:#087f5b;color:#fff;border:none;border-radius:6px;cursor:pointer;">🖨️ Cetak</button>
+    </body></html>
+    `);
+    win.document.close();
 }
 
-/* ===== SIDEBAR ===== */
+function exportPDF(){
+    if(dataSHU.length === 0){
+        alert("Hitung SHU dulu baru bisa export PDF");
+        return;
+    }
+    alert("Fitur export PDF dari tab baru. Silakan klik tombol Cetak di tab baru lalu pilih 'Save as PDF'");
+}
+
+/* SIDEBAR */
 window.toggleSidebar = function(){
   document.getElementById("sidebar").classList.toggle("open");
   document.getElementById("overlay").classList.toggle("active");
@@ -277,27 +299,6 @@ document.getElementById("btnLogout").addEventListener("click", (e)=>{
     location.href = "index.html";
   }
 });
-
-function exportPDF(){
-    if(dataSHU.length === 0){
-        alert("Hitung SHU dulu baru bisa export PDF");
-        return;
-    }
-
-    document.getElementById('periodeCetak').innerText = `${document.getElementById('tglAwal').value} s/d ${document.getElementById('tglAkhir').value}`;
-    document.getElementById('tglCetak').innerText = new Date().toLocaleDateString('id-ID');
-
-    const element = document.getElementById('areaCetak');
-    const opt = {
-      margin: [10, 10, 15, 10],
-      filename: `Laporan_SHU_${document.getElementById('tglAwal').value}_${document.getElementById('tglAkhir').value}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
-    };
-
-    html2pdf().set(opt).from(element).save();
-}
 </script>
 </body>
 </html>
