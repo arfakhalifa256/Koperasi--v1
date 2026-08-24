@@ -6,1533 +6,433 @@
 <title>Data Anggota - Koperasi ARFA</title>
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:#f1f5f9;color:#1f2937;font-size:13px;margin:0;}
 
-*{
-  box-sizing:border-box;
-}
+header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;}
+.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.role-badge{background:rgba(255,255,255,.18);padding:5px 10px;border-radius:20px;font-size:10px;font-weight:600;}
+.menu-btn{cursor:pointer;font-size:22px;}
 
-body{
-  font-family:'Poppins',sans-serif;
-  background:#f1f5f9;
-  color:#1f2937;
-  font-size:13px;
-  margin:0;
-}
+.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:.3s;z-index:9999;overflow-y:auto;box-shadow:2px 0 10px rgba(0,0,0,.2);}
+.sidebar.open{left:0;}
+.sidebar-logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.2);}
+.sidebar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
+.sidebar-logo h3{color:#fff;margin:0;font-size:15px;font-weight:600;}
+.sidebar-section{color:rgba(255,255,255,.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px;}
+.sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:.2s;}
+.sidebar a:hover{background:rgba(255,255,255,.15);transform:translateX(4px);}
+.sidebar a.active{background:rgba(255,255,255,.2);}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
+.overlay.active{display:block;}
 
-/* ================= HEADER ================= */
+.container{padding:16px;max-width:1000px;margin:auto;}
+.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.card h3{margin:0 0 14px;font-size:15px;}
 
-header{
-  background:linear-gradient(to right,#1e90ff,#0f3057);
-  color:white;
-  padding:12px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 2px 8px rgba(0,0,0,.15);
-}
+.role-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;padding:10px 12px;border-radius:9px;margin-bottom:12px;font-size:11px;}
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:700;
-}
+/* ROLE BASED */
+.admin-only{display:block;}
+.anggota-only{display:none;}
+body.role-anggota .admin-only{display:none !important;}
+body.role-anggota .anggota-only{display:block;}
 
-.brand img{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:#fff;
-  padding:2px;
-}
+.form-group{margin-bottom:10px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;}
+.form-group input,.form-group select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:'Poppins',sans-serif;}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#1e90ff;}
+.btn-primary{width:100%;padding:11px;border:none;border-radius:8px;background:#1e90ff;color:white;font-weight:600;cursor:pointer;margin-top:5px;}
+.btn-primary:hover{background:#0f78dc;}
 
-.menu-btn{
-  cursor:pointer;
-  font-size:22px;
-}
+.search-box{margin-bottom:15px;}
+.search-box input{width:100%;padding:10px 12px;border:1px solid #dbe2ea;border-radius:8px;font-family:'Poppins';}
+.search-box input:focus{outline:none;border-color:#1e90ff;}
 
-/* ================= SIDEBAR ================= */
+.anggota-card{background:#fff;padding:15px;border-radius:12px;border:1px solid #e2e8f0;border-left:4px solid #1e90ff;margin-bottom:12px;}
+.anggota-card.keluar{border-left-color:#dc2626;background:#fffafa;}
+.anggota-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #e2e8f0;}
+.anggota-header h3{margin:0;font-size:15px;color:#1e90ff;}
+.keluar .anggota-header h3{color:#dc2626;}
+.badge{display:inline-block;padding:4px 9px;border-radius:20px;font-size:9px;font-weight:700;}
+.badge-aktif{background:#dcfce7;color:#166534;}
+.badge-keluar{background:#fee2e2;color:#991b1b;}
+.anggota-info{font-size:11px;margin-bottom:7px;color:#6b7280;display:flex;justify-content:space-between;gap:10px;}
+.anggota-info b{color:#374151;}
+.anggota-info span{text-align:right;word-break:break-word;}
+.anggota-actions{display:grid;grid-template-columns:1fr;gap:7px;margin-top:12px;}
+.btn-action{border:none;padding:9px;border-radius:8px;font-family:'Poppins';font-size:11px;font-weight:600;cursor:pointer;}
+.btn-edit{background:#dbeafe;color:#1d4ed8;}
+.btn-keluar{background:#fee2e2;color:#b91c1c;}
+.btn-aktif{background:#dcfce7;color:#166534;}
+.view-only{text-align:center;width:100%;padding:8px;background:#f8fafc;color:#64748b;border-radius:8px;font-size:10px;}
 
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-260px;
-  width:240px;
-  height:100%;
-  background:#0f3057;
-  padding:16px;
-  transition:.3s;
-  z-index:9999;
-  overflow-y:auto;
-  box-shadow:2px 0 10px rgba(0,0,0,.2);
-}
-
-.sidebar.open{
-  left:0;
-}
-
-.sidebar-logo{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding-bottom:16px;
-  margin-bottom:16px;
-  border-bottom:1px solid rgba(255,255,255,.2);
-}
-
-.sidebar-logo img{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#fff;
-  padding:2px;
-}
-
-.sidebar-logo h3{
-  color:#fff;
-  margin:0;
-  font-size:15px;
-  font-weight:600;
-}
-
-.sidebar-section{
-  color:rgba(255,255,255,.6);
-  font-size:10px;
-  font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  margin:16px 0 8px 12px;
-}
-
-.sidebar a{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:#fff;
-  text-decoration:none;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:2px;
-  font-size:10px;
-  font-weight:500;
-  transition:.2s;
-}
-
-.sidebar a:hover{
-  background:rgba(255,255,255,.15);
-  transform:translateX(4px);
-}
-
-.sidebar a.active{
-  background:rgba(255,255,255,.2);
-}
-
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.4);
-  display:none;
-  z-index:999;
-}
-
-.overlay.active{
-  display:block;
-}
-
-/* ================= CONTENT ================= */
-
-.container{
-  padding:16px;
-  max-width:1000px;
-  margin:auto;
-}
-
-.card{
-  background:#fff;
-  padding:16px;
-  border-radius:12px;
-  margin-bottom:16px;
-  border:1px solid #e2e8f0;
-  box-shadow:0 2px 8px rgba(0,0,0,.04);
-}
-
-.card h3{
-  margin:0 0 14px;
-  font-size:15px;
-}
-
-/* ================= FORM ================= */
-
-.form-group{
-  margin-bottom:10px;
-}
-
-.form-group label{
-  display:block;
-  font-size:11px;
-  font-weight:600;
-  color:#6b7280;
-  margin-bottom:4px;
-}
-
-.form-group input,
-.form-group select{
-  width:100%;
-  padding:9px 12px;
-  border:1.5px solid #e2e8f0;
-  border-radius:8px;
-  font-size:13px;
-  font-family:'Poppins',sans-serif;
-}
-
-.form-group input:focus,
-.form-group select:focus{
-  outline:none;
-  border-color:#1e90ff;
-}
-
-.btn-primary{
-  width:100%;
-  padding:11px;
-  border:none;
-  border-radius:8px;
-  background:#1e90ff;
-  color:white;
-  font-weight:600;
-  cursor:pointer;
-  margin-top:5px;
-}
-
-.btn-primary:hover{
-  background:#0f78dc;
-}
-
-/* ================= SEARCH ================= */
-
-.search-box{
-  margin-bottom:15px;
-}
-
-.search-box input{
-  width:100%;
-  padding:10px 12px;
-  border:1px solid #dbe2ea;
-  border-radius:8px;
-  font-family:'Poppins';
-}
-
-/* ================= ANGGOTA ================= */
-
-.anggota-card{
-  background:#fff;
-  padding:15px;
-  border-radius:12px;
-  border:1px solid #e2e8f0;
-  border-left:4px solid #1e90ff;
-  margin-bottom:12px;
-}
-
-.anggota-card.keluar{
-  border-left-color:#dc2626;
-  background:#fffafa;
-}
-
-.anggota-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:12px;
-  padding-bottom:10px;
-  border-bottom:1px solid #e2e8f0;
-}
-
-.anggota-header h3{
-  margin:0;
-  font-size:15px;
-  color:#1e90ff;
-}
-
-.keluar .anggota-header h3{
-  color:#dc2626;
-}
-
-.badge{
-  display:inline-block;
-  padding:4px 9px;
-  border-radius:20px;
-  font-size:9px;
-  font-weight:700;
-}
-
-.badge-aktif{
-  background:#dcfce7;
-  color:#166534;
-}
-
-.badge-keluar{
-  background:#fee2e2;
-  color:#991b1b;
-}
-
-.anggota-info{
-  font-size:11px;
-  margin-bottom:7px;
-  color:#6b7280;
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-}
-
-.anggota-info b{
-  color:#374151;
-}
-
-.anggota-actions{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:7px;
-  margin-top:12px;
-}
-
-.btn-action{
-  border:none;
-  padding:9px;
-  border-radius:8px;
-  font-family:'Poppins';
-  font-size:11px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn-edit{
-  background:#dbeafe;
-  color:#1d4ed8;
-}
-
-.btn-keluar{
-  background:#fee2e2;
-  color:#b91c1c;
-}
-
-.btn-aktif{
-  background:#dcfce7;
-  color:#166534;
-}
-
-/* ================= POPUP ================= */
-
-.popup-overlay{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.6);
-  z-index:9999;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-}
-
-.popup-content{
-  background:white;
-  width:100%;
-  max-width:430px;
-  max-height:90vh;
-  overflow-y:auto;
-  border-radius:16px;
-  padding:22px;
-}
-
-.popup-content h3{
-  margin:0 0 15px;
-}
-
-.popup-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin-top:18px;
-}
-
-.popup-actions button{
-  padding:10px;
-  border:none;
-  border-radius:9px;
-  font-family:'Poppins';
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn-save{
-  background:#1e90ff;
-  color:#fff;
-}
-
-.btn-cancel{
-  background:#f1f5f9;
-  color:#64748b;
-}
-
-.empty-state{
-  text-align:center;
-  padding:40px 20px;
-  color:#6b7280;
-}
-
-.info-status{
-  padding:10px;
-  border-radius:8px;
-  background:#f8fafc;
-  font-size:11px;
-  margin-top:8px;
-}
-
-.warning-box{
-  padding:10px;
-  border-radius:8px;
-  background:#fff7ed;
-  color:#9a3412;
-  border:1px solid #fed7aa;
-  font-size:11px;
-  margin-bottom:12px;
-}
-
-/* ================= DESKTOP ================= */
+.popup-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);z-index:9999;justify-content:center;align-items:center;padding:20px;}
+.popup-content{background:white;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;border-radius:16px;padding:22px;}
+.popup-content h3{margin:0 0 15px;}
+.popup-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px;}
+.popup-actions button{padding:10px;border:none;border-radius:9px;font-family:'Poppins';font-weight:600;cursor:pointer;}
+.btn-save{background:#1e90ff;color:#fff;}
+.btn-cancel{background:#f1f5f9;color:#64748b;}
+.empty-state{text-align:center;padding:40px 20px;color:#6b7280;}
+.info-status{padding:10px;border-radius:8px;background:#f8fafc;font-size:11px;margin-top:8px;}
 
 @media(min-width:768px){
-
-  body{
-    margin-left:240px;
-  }
-
-  .sidebar{
-    left:0;
-  }
-
-  .overlay{
-    display:none!important;
-  }
-
-  .menu-btn{
-    display:none;
-  }
-
-  .anggota-actions{
-    grid-template-columns:1fr 1fr;
-  }
+  body{margin-left:240px;}
+  .sidebar{left:0;}
+  .overlay{display:none!important;}
+  .menu-btn{display:none;}
+  .anggota-actions{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= SIDEBAR ================= -->
-
 <div id="sidebar" class="sidebar">
-
   <div class="sidebar-logo">
     <img src="img/icon-192.png" alt="Logo">
     <h3>Menu Koperasi</h3>
   </div>
-
-  <a href="dashboard.html">
-    🏠 Beranda
-  </a>
-
+  <a href="dashboard.html">🏠 Beranda</a>
   <div class="sidebar-section">Data Master</div>
-
-  <a href="anggota.html" class="active">
-    👤 Data Anggota
-  </a>
-
+  <a href="anggota.html" class="active">👤 Data Anggota</a>
   <a href="kas.html">💵 Kas</a>
   <a href="angsuran.html">📄 Angsuran</a>
   <a href="simpanan.html">📊 Simpanan</a>
-
   <div class="sidebar-section">Keuangan</div>
-
   <a href="pinjaman.html">💰 Pinjaman</a>
   <a href="cair.html">💸 Pencairan Simpanan</a>
   <a href="neraca.html">📖 Neraca</a>
   <a href="labarugi.html">📊 Laba Rugi</a>
-
   <div class="sidebar-section">Laporan</div>
-
   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
   <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
   <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
   <a href="transaksi.html">📊 Lap transaksi</a>
-
-  <div class="sidebar-section">Pengaturan</div>
-
-  <a href="backup.html">💾 Backup Data</a>
-  <a href="user.html">⚙️ Kelola User</a>
+  
+  <div class="sidebar-section admin-only">Pengaturan</div>
+  <a href="backup.html" class="admin-only">💾 Backup Data</a>
+  <a href="user1.html" class="admin-only">⚙️ Kelola User</a>
   <a href="#" id="btnLogout">🚪 Logout</a>
-
 </div>
-
 <div id="overlay" class="overlay"></div>
 
-<!-- ================= HEADER ================= -->
-
 <header>
-
   <div class="brand">
-    <img src="img/icon-192.png">
+    <img src="img/icon-192.png" alt="Koperasi ARFA">
     <div>DATA ANGGOTA</div>
   </div>
-
-  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-
+  <div class="header-right">
+    <span id="roleBadge" class="role-badge">USER</span>
+    <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+  </div>
 </header>
 
-<!-- ================= CONTENT ================= -->
-
 <div class="container">
+  <div id="roleInfo" class="role-info">Memuat hak akses...</div>
 
-  <!-- FORM TAMBAH -->
-
-  <div class="card">
-
+  <!-- FORM TAMBAH - HANYA ADMIN -->
+  <div class="card admin-only" id="formTambahAnggota">
     <h3>➕ Tambah Anggota Baru</h3>
-
-    <div class="form-group">
-      <label>Nama</label>
-      <input type="text" id="nama" placeholder="Nama anggota">
-    </div>
-
-    <div class="form-group">
-      <label>Telepon</label>
-      <input type="text" id="telepon" placeholder="Nomor telepon">
-    </div>
-
-    <div class="form-group">
-      <label>Alamat</label>
-      <input type="text" id="alamat" placeholder="Alamat">
-    </div>
-
-    <button class="btn-primary" onclick="tambahAnggota()">
-      💾 Simpan Anggota
-    </button>
-
+    <div class="form-group"><label>Nama</label><input type="text" id="nama" placeholder="Nama anggota"></div>
+    <div class="form-group"><label>Telepon</label><input type="text" id="telepon" placeholder="Nomor telepon"></div>
+    <div class="form-group"><label>Alamat</label><input type="text" id="alamat" placeholder="Alamat"></div>
+    <button class="btn-primary" onclick="tambahAnggota()">💾 Simpan Anggota</button>
   </div>
 
   <!-- PENCARIAN -->
-
   <div class="card">
-
     <div class="search-box">
-      <input
-        type="text"
-        id="search"
-        placeholder="🔎 Cari nama / ID anggota..."
-        oninput="renderAnggota()">
+      <input type="text" id="search" placeholder="🔎 Cari nama / ID anggota..." oninput="renderAnggota()">
     </div>
-
-    <div id="listAnggota">
-      <div class="empty-state">
-        Loading data...
-      </div>
-    </div>
-
+    <div id="listAnggota"><div class="empty-state">Loading data...</div></div>
   </div>
-
 </div>
 
-<!-- ================= POPUP EDIT ================= -->
-
-<div
-  id="popupEdit"
-  class="popup-overlay"
-  onclick="if(event.target===this)tutupPopup()"
->
-
+<!-- POPUP EDIT -->
+<div id="popupEdit" class="popup-overlay" onclick="if(event.target===this)tutupPopup()">
   <div class="popup-content">
-
     <h3>✏️ Edit Data Anggota</h3>
-
-    <div class="form-group">
-      <label>ID Anggota</label>
-      <input type="text" id="editId" disabled>
+    <div class="form-group"><label>ID Anggota</label><input type="text" id="editId" disabled></div>
+    <div class="form-group"><label>Nama</label><input type="text" id="editNama"></div>
+    <div class="form-group"><label>Alamat</label><input type="text" id="editAlamat"></div>
+    <div class="form-group"><label>Telepon</label><input type="text" id="editTelepon"></div>
+    <div class="form-group"><label>Status Anggota</label>
+      <select id="editStatus"><option value="aktif">AKTIF</option><option value="keluar">KELUAR</option></select>
     </div>
-
-    <div class="form-group">
-      <label>Nama</label>
-      <input type="text" id="editNama">
-    </div>
-
-    <div class="form-group">
-      <label>Alamat</label>
-      <input type="text" id="editAlamat">
-    </div>
-
-    <div class="form-group">
-      <label>Telepon</label>
-      <input type="text" id="editTelepon">
-    </div>
-
-    <div class="form-group">
-      <label>Status Anggota</label>
-
-      <select id="editStatus">
-        <option value="aktif">AKTIF</option>
-        <option value="keluar">KELUAR</option>
-      </select>
-
-    </div>
-
     <div id="statusInfo" class="info-status"></div>
-
     <div class="popup-actions">
-
-      <button
-        class="btn-cancel"
-        onclick="tutupPopup()">
-        Batal
-      </button>
-
-      <button
-        class="btn-save"
-        onclick="simpanEdit()">
-        💾 Simpan
-      </button>
-
+      <button class="btn-cancel" onclick="tutupPopup()">Batal</button>
+      <button class="btn-save" onclick="simpanEdit()">💾 Simpan</button>
     </div>
-
   </div>
-
 </div>
 
 <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-  getDatabase,
-  ref,
-  push,
-  onValue,
-  get,
-  update
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-
-/* ================= FIREBASE ================= */
-
-const firebaseConfig = {
-
-  apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
-
-  authDomain:"arfa-c7dee.firebaseapp.com",
-
-  databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",
-
-  projectId:"arfa-c7dee",
-
-  storageBucket:"arfa-c7dee.firebasestorage.app",
-
-  messagingSenderId:"468058520812",
-
-  appId:"1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
-
-};
-
+const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee",storageBucket:"arfa-c7dee.firebasestorage.app",messagingSenderId:"468058520812",appId:"1:468058520812:web:f9cbc82fe7e88ecda9b9c9"};
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
-
 const anggotaRef = ref(db,"/anggota");
 
+/* ========== ROLE CHECK ========== */
+const isLogin = localStorage.getItem("login");
+let role = (localStorage.getItem("role") || "").toLowerCase().trim();
+let username = localStorage.getItem("username") || "";
+let userId = localStorage.getItem("userId") || ""; // WAJIB isi ini saat login
 
-/* ================= LOGIN ================= */
-
-let role = localStorage.getItem("role");
-
-let username = localStorage.getItem("username");
-
-if(!role){
-
-  localStorage.setItem("role","admin");
-
-  localStorage.setItem("username","admin");
-
-  role="admin";
-
+if(isLogin !== "true" || !username || !role){
+  window.location.href = "index.html";
 }
 
+if(role !== "admin" && role !== "anggota"){
+  alert("Role pengguna tidak valid.");
+  localStorage.clear();
+  window.location.href = "index.html";
+}
 
-/* ================= SIDEBAR ================= */
+document.body.classList.add("role-" + role);
 
+/* ROLE BADGE */
+document.getElementById("roleBadge").textContent = role.toUpperCase();
+
+/* ROLE INFO */
+const roleInfo = document.getElementById("roleInfo");
+if(role === "admin"){
+  roleInfo.innerHTML = "👑 <b>Admin</b> — Anda memiliki akses penuh untuk mengelola data anggota.";
+}else{
+  roleInfo.innerHTML = "👤 <b>Anggota</b> — Anda hanya dapat melihat data Anda sendiri.";
+}
+
+/* SIDEBAR */
 window.toggleSidebar=function(){
-
-  document
-    .getElementById("sidebar")
-    .classList
-    .toggle("open");
-
-  document
-    .getElementById("overlay")
-    .classList
-    .toggle("active");
-
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("overlay").classList.toggle("active");
 };
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
 
+/* LOGOUT */
+document.getElementById("btnLogout").addEventListener("click", (e)=>{
+  e.preventDefault();
+  if(confirm("Yakin mau logout?")){
+    localStorage.clear();
+    location.href = "index.html";
+  }
+});
 
-document
-  .getElementById("overlay")
-  .addEventListener("click",toggleSidebar);
+/* DATA */
+let anggotaList = [];
+let editKey = null;
 
-
-document
-  .getElementById("btnLogout")
-  .addEventListener("click",(e)=>{
-
-    e.preventDefault();
-
-    if(confirm("Yakin mau logout?")){
-
-      localStorage.clear();
-
-      location.href="index.html";
-
-    }
-
-  });
-
-
-/* ================= DATA ================= */
-
-let anggotaList=[];
-
-let editKey=null;
-
-
-/* ================= GENERATE ID ================= */
-
+/* GENERATE ID */
 async function generateId(){
-
-  const snapshot=await get(anggotaRef);
-
-  if(!snapshot.exists()){
-
-    return "AG001";
-
-  }
-
-  let max=0;
-
-  snapshot.forEach(child=>{
-
-    const d=child.val();
-
-    const nomor=parseInt(
-      String(d.id||"AG0").replace(/\D/g,"")
-    )||0;
-
-    if(nomor>max){
-
-      max=nomor;
-
-    }
-
+  const snapshot = await get(anggotaRef);
+  if(!snapshot.exists()) return "AG001";
+  let max = 0;
+  snapshot.forEach(child => {
+    const d = child.val();
+    const nomor = parseInt(String(d.id || "AG0").replace(/\D/g,"")) || 0;
+    if(nomor > max) max = nomor;
   });
-
-  return "AG"+String(max+1).padStart(3,"0");
-
+  return "AG" + String(max + 1).padStart(3,"0");
 }
 
-
-/* ================= FORMAT TANGGAL ================= */
-
+/* FORMAT TANGGAL */
 function formatTanggal(tanggal){
-
   if(!tanggal) return "-";
-
-  const d=new Date(tanggal);
-
+  const d = new Date(tanggal);
   if(isNaN(d)) return tanggal;
-
-  return d.toLocaleDateString(
-    "id-ID",
-    {
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric"
-    }
-  );
-
+  return d.toLocaleDateString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric"});
 }
 
-
-/* ================= LOAD DATA ================= */
-
-onValue(
-  anggotaRef,
-
-  (snapshot)=>{
-
-    anggotaList=[];
-
-    if(snapshot.exists()){
-
-      snapshot.forEach(child=>{
-
-        const d=child.val();
-
-        if(d){
-
-          anggotaList.push({
-
-            key:child.key,
-
-            ...d
-
-          });
-
-        }
-
-      });
-
-    }
-
-    renderAnggota();
-
-  },
-
-  (error)=>{
-
-    document.getElementById("listAnggota").innerHTML=`
-
-      <div class="empty-state" style="color:#dc2626">
-
-        <b>Gagal membaca data</b>
-
-        <br>
-
-        ${error.message}
-
-      </div>
-
-    `;
-
+/* LOAD DATA */
+onValue(anggotaRef,(snapshot)=>{
+  anggotaList = [];
+  if(snapshot.exists()){
+    snapshot.forEach(child => {
+      const d = child.val();
+      if(d){ anggotaList.push({key:child.key,...d}); }
+    });
   }
+  renderAnggota();
+});
 
-);
-
-
-/* ================= RENDER ================= */
-
+/* RENDER */
 window.renderAnggota=function(){
+  const container = document.getElementById("listAnggota");
+  const search = document.getElementById("search").value.toLowerCase().trim();
 
-  const container=
-    document.getElementById("listAnggota");
-
-  const search=
-    document
-      .getElementById("search")
-      .value
-      .toLowerCase()
-      .trim();
-
-
-  let arr=anggotaList.filter(a=>{
-
-    const nama=
-      String(a.nama||"").toLowerCase();
-
-    const id=
-      String(a.id||"").toLowerCase();
-
-    return nama.includes(search)
-      || id.includes(search);
-
+  let arr = anggotaList.filter(a => {
+    // JIKA ROLE ANGGOTA, HANYA TAMPILKAN DATA DIRI SENDIRI
+    if(role === 'anggota' && a.id !== userId){
+      return false;
+    }
+    const nama = String(a.nama || "").toLowerCase();
+    const id = String(a.id || "").toLowerCase();
+    return nama.includes(search) || id.includes(search);
   });
-
 
   arr.sort((a,b)=>{
-
-    const noA=
-      parseInt(
-        String(a.id||"AG0")
-        .replace(/\D/g,"")
-      )||0;
-
-    const noB=
-      parseInt(
-        String(b.id||"AG0")
-        .replace(/\D/g,"")
-      )||0;
-
-    return noA-noB;
-
+    const noA = parseInt(String(a.id || "AG0").replace(/\D/g,"")) || 0;
+    const noB = parseInt(String(b.id || "AG0").replace(/\D/g,"")) || 0;
+    return noA - noB;
   });
 
-
-  if(arr.length===0){
-
-    container.innerHTML=`
-
-      <div class="empty-state">
-
-        <p>Belum ada data anggota.</p>
-
-      </div>
-
-    `;
-
+  if(arr.length === 0){
+    container.innerHTML = `<div class="empty-state"><p>Belum ada data anggota.</p></div>`;
     return;
-
   }
 
-
-  container.innerHTML=arr.map(a=>{
-
-    const status=
-      String(a.status||"aktif").toLowerCase();
-
-    const keluar=status==="keluar";
+  container.innerHTML = arr.map(a => {
+    const status = String(a.status || "aktif").toLowerCase();
+    const keluar = status === "keluar";
 
     return `
-
-      <div class="anggota-card ${keluar?"keluar":""}">
-
+      <div class="anggota-card ${keluar ? "keluar" : ""}">
         <div class="anggota-header">
-
-          <h3>${escapeHtml(a.nama||"-")}</h3>
-
-          <span class="badge ${
-            keluar
-              ? "badge-keluar"
-              : "badge-aktif"
-          }">
-
-            ${
-              keluar
-                ? "KELUAR"
-                : "AKTIF"
-            }
-
-          </span>
-
+          <h3>${escapeHtml(a.nama || "-")}</h3>
+          <span class="badge ${keluar ? "badge-keluar" : "badge-aktif"}">${keluar ? "KELUAR" : "AKTIF"}</span>
         </div>
+        <div class="anggota-info"><b>ID Anggota</b><span>${escapeHtml(a.id || "-")}</span></div>
+        <div class="anggota-info"><b>Alamat</b><span>${escapeHtml(a.alamat || "-")}</span></div>
+        <div class="anggota-info"><b>Telepon</b><span>${escapeHtml(a.telepon || "-")}</span></div>
+        
+        ${keluar ? `<div class="anggota-info"><b>Tanggal Keluar</b><span>${formatTanggal(a.tanggalKeluar)}</span></div>` : ""}
 
-
-        <div class="anggota-info">
-
-          <b>ID Anggota</b>
-
-          <span>${escapeHtml(a.id||"-")}</span>
-
-        </div>
-
-
-        <div class="anggota-info">
-
-          <b>Alamat</b>
-
-          <span>${escapeHtml(a.alamat||"-")}</span>
-
-        </div>
-
-
-        <div class="anggota-info">
-
-          <b>Telepon</b>
-
-          <span>${escapeHtml(a.telepon||"-")}</span>
-
-        </div>
-
-
-        ${
-          keluar
-          ? `
-
-            <div class="anggota-info">
-
-              <b>Tanggal Keluar</b>
-
-              <span>${formatTanggal(a.tanggalKeluar)}</span>
-
-            </div>
-
-            ${
-              a.tanggalMasukKembali
-              ? `
-
-                <div class="anggota-info">
-
-                  <b>Masuk Kembali</b>
-
-                  <span>${formatTanggal(a.tanggalMasukKembali)}</span>
-
-                </div>
-
-              `
-              : ""
-            }
-
-          `
-          : ""
-        }
-
-
+        ${role === "admin" ? `
         <div class="anggota-actions">
-
-          <button
-            class="btn-action btn-edit"
-            onclick="editAnggota('${a.key}')">
-
-            ✏️ Edit
-
-          </button>
-
-
-          ${
-            keluar
-
-            ?
-
-            `
-
-              <button
-                class="btn-action btn-aktif"
-                onclick="aktifkanAnggota('${a.key}')">
-
-                🔄 Aktifkan Kembali
-
-              </button>
-
-            `
-
-            :
-
-            `
-
-              <button
-                class="btn-action btn-keluar"
-                onclick="keluarkanAnggota('${a.key}')">
-
-                🚪 Keluarkan Anggota
-
-              </button>
-
-            `
-          }
-
+          <button class="btn-action btn-edit" onclick="editAnggota('${a.key}')">✏️ Edit</button>
+          ${keluar ? `<button class="btn-action btn-aktif" onclick="aktifkanAnggota('${a.key}')">🔄 Aktifkan Kembali</button>` : `<button class="btn-action btn-keluar" onclick="keluarkanAnggota('${a.key}')">🚪 Keluarkan Anggota</button>`}
         </div>
-
+        ` : `
+        <div class="anggota-actions">
+          <div class="view-only">👁️ Mode lihat — Anggota tidak dapat mengubah data</div>
+        </div>
+        `}
       </div>
-
     `;
-
   }).join("");
-
 };
 
+/* ESCAPE HTML */
+function escapeHtml(text){ return String(text || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
 
-/* ================= ESCAPE HTML ================= */
-
-function escapeHtml(text){
-
-  return String(text||"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-/* ================= TAMBAH ANGGOTA ================= */
-
-window.tambahAnggota=async function(){
-
-  const nama=
-    document
-      .getElementById("nama")
-      .value
-      .trim();
-
-  const telepon=
-    document
-      .getElementById("telepon")
-      .value
-      .trim();
-
-  const alamat=
-    document
-      .getElementById("alamat")
-      .value
-      .trim();
-
-
-  if(!nama){
-
-    alert("Nama anggota wajib diisi.");
-
-    return;
-
-  }
-
-
+/* TAMBAH ANGGOTA */
+window.tambahAnggota = async function(){
+  if(role !== "admin"){ alert("Akses ditolak.\n\nHanya Admin yang dapat menambah anggota."); return; }
+  const nama = document.getElementById("nama").value.trim();
+  const telepon = document.getElementById("telepon").value.trim();
+  const alamat = document.getElementById("alamat").value.trim();
+  if(!nama){ alert("Nama anggota wajib diisi."); return; }
   try{
-
-    const idBaru=await generateId();
-
-
-    await push(
-      anggotaRef,
-      {
-
-        id:idBaru,
-
-        nama:nama,
-
-        telepon:telepon,
-
-        alamat:alamat,
-
-        status:"aktif",
-
-        tanggalMasuk:new Date()
-          .toISOString()
-          .slice(0,10),
-
-        tanggalKeluar:"",
-
-        tanggalMasukKembali:""
-
-      }
-    );
-
-
-    document.getElementById("nama").value="";
-
-    document.getElementById("telepon").value="";
-
-    document.getElementById("alamat").value="";
-
-
-    alert(
-      `Anggota berhasil ditambahkan.\n\nID Anggota: ${idBaru}`
-    );
-
-  }
-  catch(error){
-
-    alert(
-      "Gagal menyimpan anggota:\n"+
-      error.message
-    );
-
-  }
-
+    const idBaru = await generateId();
+    await push(anggotaRef,{id:idBaru,nama:nama,telepon:telepon,alamat:alamat,status:"aktif",tanggalMasuk:new Date().toISOString().slice(0,10),tanggalKeluar:"",tanggalMasukKembali:""});
+    document.getElementById("nama").value = "";
+    document.getElementById("telepon").value = "";
+    document.getElementById("alamat").value = "";
+    alert("Anggota berhasil ditambahkan.\n\nID Anggota: " + idBaru);
+  }catch(error){ alert("Gagal menyimpan anggota:\n"+ error.message); }
 };
 
-
-/* ================= EDIT ================= */
-
-window.editAnggota=async function(key){
-
-  const snapshot=
-    await get(
-      ref(db,"/anggota/"+key)
-    );
-
-  if(!snapshot.exists()){
-
-    alert("Data anggota tidak ditemukan.");
-
-    return;
-
-  }
-
-
-  const d=snapshot.val();
-
-  editKey=key;
-
-
-  document.getElementById("editId").value=
-    d.id||"";
-
-  document.getElementById("editNama").value=
-    d.nama||"";
-
-  document.getElementById("editAlamat").value=
-    d.alamat||"";
-
-  document.getElementById("editTelepon").value=
-    d.telepon||"";
-
-  document.getElementById("editStatus").value=
-    d.status||"aktif";
-
-
+/* EDIT */
+window.editAnggota = async function(key){
+  if(role !== "admin"){ alert("Akses ditolak.\n\nHanya Admin yang dapat mengedit anggota."); return; }
+  const snapshot = await get(ref(db,"/anggota/" + key));
+  if(!snapshot.exists()){ alert("Data anggota tidak ditemukan."); return; }
+  const d = snapshot.val();
+  editKey = key;
+  document.getElementById("editId").value = d.id || "";
+  document.getElementById("editNama").value = d.nama || "";
+  document.getElementById("editAlamat").value = d.alamat || "";
+  document.getElementById("editTelepon").value = d.telepon || "";
+  document.getElementById("editStatus").value = d.status || "aktif";
   updateStatusInfo(d);
-
-
-  document.getElementById("popupEdit").style.display="flex";
-
+  document.getElementById("popupEdit").style.display = "flex";
 };
-
-
-/* ================= STATUS INFO ================= */
 
 function updateStatusInfo(d){
-
-  const status=
-    String(
-      document.getElementById("editStatus").value
-    ).toLowerCase();
-
-
-  let html="";
-
-
-  if(status==="keluar"){
-
-    html=`
-
-      <b style="color:#b91c1c">
-        Status: KELUAR
-      </b>
-
-      ${
-        d.tanggalKeluar
-        ? `<br>Tanggal keluar:
-           ${formatTanggal(d.tanggalKeluar)}`
-        : ""
-      }
-
-      <br><br>
-
-      ⚠️ Data anggota tidak dihapus.
-      Riwayat simpanan, pinjaman dan angsuran
-      tetap tersimpan.
-
-    `;
-
+  const status = String(document.getElementById("editStatus").value).toLowerCase();
+  let html = "";
+  if(status === "keluar"){
+    html = `<b style="color:#b91c1c">Status: KELUAR</b>${d.tanggalKeluar ? `<br>Tanggal keluar: ${formatTanggal(d.tanggalKeluar)}` : ""}<br><br>⚠️ Data anggota tidak dihapus. Riwayat simpanan, pinjaman dan angsuran tetap tersimpan.`;
   }else{
-
-    html=`
-
-      <b style="color:#166534">
-        Status: AKTIF
-      </b>
-
-      ${
-        d.tanggalMasukKembali
-        ? `<br>Masuk kembali:
-           ${formatTanggal(d.tanggalMasukKembali)}`
-        : ""
-      }
-
-      <br><br>
-
-      Anggota dapat melakukan transaksi kembali.
-
-    `;
-
+    html = `<b style="color:#166534">Status: AKTIF</b>${d.tanggalMasukKembali ? `<br>Masuk kembali: ${formatTanggal(d.tanggalMasukKembali)}` : ""}<br><br>Anggota dapat melakukan transaksi kembali.`;
   }
-
-
-  document.getElementById("statusInfo").innerHTML=html;
-
+  document.getElementById("statusInfo").innerHTML = html;
 }
 
-
-document
-  .getElementById("editStatus")
-  .addEventListener(
-    "change",
-    async function(){
-
-      if(!editKey) return;
-
-      const snapshot=
-        await get(
-          ref(db,"/anggota/"+editKey)
-        );
-
-      if(snapshot.exists()){
-
-        updateStatusInfo(snapshot.val());
-
-      }
-
-    }
-  );
-
-
-/* ================= SIMPAN EDIT ================= */
-
-window.simpanEdit=async function(){
-
+document.getElementById("editStatus").addEventListener("change", async function(){
   if(!editKey) return;
+  const snapshot = await get(ref(db,"/anggota/" + editKey));
+  if(snapshot.exists()){ updateStatusInfo(snapshot.val()); }
+});
 
-
-  const nama=
-    document
-      .getElementById("editNama")
-      .value
-      .trim();
-
-  const alamat=
-    document
-      .getElementById("editAlamat")
-      .value
-      .trim();
-
-  const telepon=
-    document
-      .getElementById("editTelepon")
-      .value
-      .trim();
-
-  const status=
-    document
-      .getElementById("editStatus")
-      .value;
-
-
-  if(!nama){
-
-    alert("Nama wajib diisi.");
-
-    return;
-
-  }
-
-
+/* SIMPAN EDIT */
+window.simpanEdit = async function(){
+  if(role !== "admin"){ alert("Akses ditolak."); return; }
+  if(!editKey) return;
+  const nama = document.getElementById("editNama").value.trim();
+  const alamat = document.getElementById("editAlamat").value.trim();
+  const telepon = document.getElementById("editTelepon").value.trim();
+  const status = document.getElementById("editStatus").value;
+  if(!nama){ alert("Nama wajib diisi."); return; }
   try{
-
-    const oldSnapshot=
-      await get(
-        ref(db,"/anggota/"+editKey)
-      );
-
+    const oldSnapshot = await get(ref(db,"/anggota/" + editKey));
     if(!oldSnapshot.exists()) return;
-
-    const oldData=oldSnapshot.val();
-
-    const dataUpdate={
-
-      nama:nama,
-
-      alamat:alamat,
-
-      telepon:telepon,
-
-      status:status
-
-    };
-
-
-    /*
-      Jika status diubah menjadi KELUAR
-    */
-
-    if(
-      status==="keluar"
-      &&
-      String(oldData.status||"aktif")
-        .toLowerCase()!=="keluar"
-    ){
-
-      dataUpdate.tanggalKeluar=
-        new Date()
-        .toISOString()
-        .slice(0,10);
-
+    const oldData = oldSnapshot.val();
+    const dataUpdate = {nama:nama,alamat:alamat,telepon:telepon,status:status};
+    if(status === "keluar" && String(oldData.status || "aktif").toLowerCase() !== "keluar"){
+      dataUpdate.tanggalKeluar = new Date().toISOString().slice(0,10);
     }
-
-
-    /*
-      Jika status diubah menjadi AKTIF
-    */
-
-    if(
-      status==="aktif"
-      &&
-      String(oldData.status||"aktif")
-        .toLowerCase()==="keluar"
-    ){
-
-      dataUpdate.tanggalMasukKembali=
-        new Date()
-        .toISOString()
-        .slice(0,10);
-
+    if(status === "aktif" && String(oldData.status || "aktif").toLowerCase() === "keluar"){
+      dataUpdate.tanggalMasukKembali = new Date().toISOString().slice(0,10);
     }
-
-
-    await update(
-      ref(db,"/anggota/"+editKey),
-      dataUpdate
-    );
-
-
+    await update(ref(db,"/anggota/" + editKey), dataUpdate);
     tutupPopup();
-
-
     alert("Data anggota berhasil diperbarui.");
-
-  }
-  catch(error){
-
-    alert(
-      "Gagal menyimpan:\n"+
-      error.message
-    );
-
-  }
-
+  }catch(error){ alert("Gagal menyimpan:\n"+ error.message); }
 };
 
-
-/* ================= KELUARKAN ================= */
-
-window.keluarkanAnggota=async function(key){
-
-  const snapshot=
-    await get(
-      ref(db,"/anggota/"+key)
-    );
-
+/* KELUARKAN ANGGOTA */
+window.keluarkanAnggota = async function(key){
+  if(role !== "admin"){ alert("Akses ditolak.\n\nHanya Admin yang dapat mengeluarkan anggota."); return; }
+  const snapshot = await get(ref(db,"/anggota/" + key));
   if(!snapshot.exists()) return;
-
-
-  const d=snapshot.val();
-
-
-  const yakin=confirm(
-
-    "KELUARKAN ANGGOTA?\n\n"+
-    "ID   : "+(d.id||"-")+"\n"+
-    "Nama : "+(d.nama||"-")+
-    "\n\n"+
-    "Data anggota TIDAK akan dihapus.\n"+
-    "Riwayat transaksi tetap tersimpan.\n\n"+
-    "Lanjutkan?"
-
-  );
-
-
+  const d = snapshot.val();
+  const yakin = confirm(`KELUARKAN ANGGOTA?\n\nID   : ${d.id || "-"}\nNama : ${d.nama || "-"}\n\nData anggota TIDAK akan dihapus.\nRiwayat transaksi tetap tersimpan.\n\nLanjutkan?`);
   if(!yakin) return;
-
-
-  await update(
-
-    ref(db,"/anggota/"+key),
-
-    {
-
-      status:"keluar",
-
-      tanggalKeluar:
-        new Date()
-        .toISOString()
-        .slice(0,10)
-
-    }
-
-  );
-
-
-  alert(
-    "Anggota telah berstatus KELUAR.\n\n"+
-    "Data tetap tersimpan di database."
-  );
-
+  try{
+    await update(ref(db,"/anggota/" + key),{status:"keluar",tanggalKeluar:new Date().toISOString().slice(0,10)});
+    alert("Anggota telah berstatus KELUAR.\n\nData tetap tersimpan di database.");
+  }catch(error){ alert("Gagal mengubah status:\n"+ error.message); }
 };
 
-
-/* ================= AKTIFKAN KEMBALI ================= */
-
-window.aktifkanAnggota=async function(key){
-
-  const snapshot=
-    await get(
-      ref(db,"/anggota/"+key)
-    );
-
+/* AKTIFKAN KEMBALI */
+window.aktifkanAnggota = async function(key){
+  if(role !== "admin"){ alert("Akses ditolak.\n\nHanya Admin yang dapat mengaktifkan anggota."); return; }
+  const snapshot = await get(ref(db,"/anggota/" + key));
   if(!snapshot.exists()) return;
-
-
-  const d=snapshot.val();
-
-
-  const yakin=confirm(
-
-    "AKTIFKAN KEMBALI ANGGOTA?\n\n"+
-    "ID   : "+(d.id||"-")+"\n"+
-    "Nama : "+(d.nama||"-")+
-    "\n\n"+
-    "ID anggota tetap "+(d.id||"-")+
-    ".\n"+
-    "Tidak membuat ID baru."
-
-  );
-
-
+  const d = snapshot.val();
+  const yakin = confirm(`AKTIFKAN KEMBALI ANGGOTA?\n\nID   : ${d.id || "-"}\nNama : ${d.nama || "-"}\n\nID anggota tetap ${d.id || "-"}.\nTidak membuat ID baru.`);
   if(!yakin) return;
-
-
-  await update(
-
-    ref(db,"/anggota/"+key),
-
-    {
-
-      status:"aktif",
-
-      tanggalMasukKembali:
-        new Date()
-        .toISOString()
-        .slice(0,10)
-
-    }
-
-  );
-
-
-  alert(
-    "Anggota berhasil diaktifkan kembali.\n\n"+
-    "ID anggota tetap "+(d.id||"-")+"."
-  );
-
+  try{
+    await update(ref(db,"/anggota/" + key),{status:"aktif",tanggalMasukKembali:new Date().toISOString().slice(0,10)});
+    alert("Anggota berhasil diaktifkan kembali.\n\nID anggota tetap " + (d.id || "-") + ".");
+  }catch(error){ alert("Gagal mengaktifkan anggota:\n"+ error.message); }
 };
 
-
-/* ================= TUTUP POPUP ================= */
-
-window.tutupPopup=function(){
-
-  document.getElementById("popupEdit").style.display="none";
-
-  editKey=null;
-
+/* TUTUP POPUP */
+window.tutupPopup = function(){
+  document.getElementById("popupEdit").style.display = "none";
+  editKey = null;
 };
-
 </script>
-
 </body>
 </html>

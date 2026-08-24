@@ -1,249 +1,186 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Koperasi App</title>
-<link rel="icon" href="./img/icon-192.png?v=1">
-<link rel="apple-touch-icon" href="./img/icon-192.png">
-
-<link rel="manifest" href="./manifest.json">
-
-<meta name="theme-color" content="#1e90ff">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Koperasi App">
-
-<!-- 🔥 TAMBAHAN PENTING -->
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-    <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-  
-  *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-  }
-
-  :root{
-    --primary:#1e90ff;
-    --primary-dark:#187bdb;
-    --bg:#f4f7fb;
-    --card:#ffffff;
-    --text:#1f2937;
-    --muted:#6b7280;
-    --shadow:0 10px 30px rgba(15,23,42,.10);
-    --radius:22px;
-  }
-
-  body{
-    font-family:'Poppins', sans-serif;
-    background:linear-gradient(180deg,#eaf4ff 0%, #f4f7fb 100%);
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:16px;
-    color:var(--text);
-  }
-
-  .wrap{
-    width:100%;
-    max-width:420px;
-    animation: fadeIn 0.5s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .card{
-    background:var(--card);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:28px 20px;
-    text-align:center;
-    border:1px solid #eaf0f6;
-  }
-
-  /* ===== WAKTU & SALAM ===== */
-  .time-box {
-    background: linear-gradient(135deg, var(--primary) 0%, #0ea5e9 100%);
-    color: #fff;
-    padding: 12px 14px;
-    border-radius: 14px;
-    margin-bottom: 18px;
-    box-shadow: 0 6px 16px rgba(30,144,255,0.22);
-  }
-
-  #jam {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    margin-bottom: 2px;
-    line-height: 1.2;
-  }
-  
-  
-  
-
-  .logo{
-    width:90px;
-    height:90px;
-    border-radius:24px;
-    margin:0 auto 18px;
-    display:block;
-    object-fit:cover;
-    background:#fff;
-    box-shadow:0 12px 25px rgba(30,144,255,.18);
-    border:2px solid #dbeafe;
-    padding:8px;
-  }
-
-  h1{
-    font-size:26px;
-    font-weight:700;
-    color:var(--primary);
-    margin-bottom:10px;
-  }
-
-  p{
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.5;
-    margin-bottom: 20px;
-  }
-
-  .btn{
-    display:block;
-    width:100%;
-    text-decoration:none;
-    background:linear-gradient(135deg, var(--primary) 0%, #0ea5e9 100%);
-    color:#fff;
-    padding:14px 16px;
-    border-radius:14px;
-    font-size:15px;
-    font-weight:600;
-    transition:all 0.3s ease;
-    margin-top:10px;
-    box-shadow: 0 4px 15px rgba(30,144,255,0.3);
-  }
-
-  .btn:hover{
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(30,144,255,0.4);
-  }
-
-  .sub-btn{
-     text-align:center;
-    display:block;
-    width:100%;
-    text-decoration:none;
-    background:#fff;
-    color:var(--primary);
-    padding:13px 16px;
-    border-radius:14px;
-    font-size:14px;
-    font-weight:600;
-    transition:all 0.3s ease;
-    margin-top:10px;
-    border:2px solid #e0f2fe;
-  }
-
-  .sub-btn:hover{
-    background:#f0f9ff;
-    border-color:var(--primary);
-    transform: translateY(-2px);
-  }
-
-  .footer{
-    margin-top:16px;
-    text-align:center;
-    color:#94a3b8;
-    font-size:11px;
-    font-weight:500;
-  }
-
-  @media (max-width:480px){
-    body{ padding:12px; }
-    .card{ padding:24px 18px; }
-    h1{ font-size:22px; }
-    p{ font-size: 10.5px; }
-    #jam{ font-size:22px; 
-      color:yellow;
-    }
-    #salam{ font-size:14px; }
-    .logo{ width:80px; height:80px; }
-    .btn{ font-size:14px; padding:13px 16px; }
-    .sub-btn{ font-size:13px; padding:12px 16px; }
-  }
-  
-  </style>
+<title>Login - Koperasi Arfa Sejahtera</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(to right,#1e90ff,#0f3057);display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:15px;}
+.box{background:#fff;padding:25px;border-radius:14px;width:100%;max-width:380px;box-shadow:0 5px 20px rgba(0,0,0,.2);}
+.box img{width:60px;margin:0 auto 10px;display:block;}
+.box h2{text-align:center;color:#087f5b;margin:0 0 15px;font-size:18px;}
+.form-group{margin-bottom:12px;}
+.form-group label{font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;}
+.form-group input, .form-group select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-family:'Poppins';font-size:13px;}
+.btn{width:100%;padding:11px;border:none;border-radius:8px;background:#087f5b;color:#fff;font-weight:600;cursor:pointer;margin-top:5px;}
+.btn:hover{background:#065f46;}
+.btn.outline{background:#fff;color:#087f5b;border:1px solid #087f5b;}
+.tabs{display:flex;margin-bottom:15px;border-bottom:1px solid #ddd;}
+.tabs button{flex:1;padding:10px;border:none;background:none;cursor:pointer;font-weight:600;color:#999;font-size:12px;}
+.tabs button.active{color:#087f5b;border-bottom:2px solid #087f5b;}
+.link-kecil{text-align:center;font-size:11px;margin-top:10px;}
+.link-kecil a{color:#1e90ff;text-decoration:none;cursor:pointer;}
+.note{font-size:10px;color:#d97706;background:#fff8e6;padding:8px;border-radius:6px;margin-top:10px;}
+</style>
 </head>
 <body>
-  
-  <div class="wrap">
-    <div class="card">
-      <!-- 🔥 TAMBAH INI -->
-      <div class="time-box">
-        <div id="jam">00:00:00</div>
-        <div id="salam">Selamat datang</div>
-      </div>
-      
-       <img src="./img/icon-512.png?v=1" alt="Logo School Bus App" class="logo">
-      
-      <h1>Koperasi App</h1>
 
-      <p>
-        Aplikasi pengelolaan koprasi driver KHALFA IMS.
-        Input data, edit data koperasi, lihat laporan, dan cetak PDF dalam satu sistem.
-      </p>
+<div class="box">
+  <img src="img/icon-192.png">
+  <h2>Koperasi Arfa Sejahtera</h2>
 
-      <a href="login.html" class="btn">Login ke Aplikasi</a>
-        </div>
-
-    <div class="footer">
-      Versi 1.02 • Mobile Friendly
-    </div>
+  <div class="tabs">
+    <button id="tabLogin" class="active" onclick="showTab('login')">Login</button>
+    <button id="tabDaftar" onclick="showTab('daftar')">Daftar</button>
+    <button id="tabLupa" onclick="showTab('lupa')">Lupa Pass</button>
   </div>
 
-  <script>
-  // 🔥 JAM + SALAM REALTIME
-function updateWaktu() {
-  const now = new Date();
-  const jam = now.getHours();
-  const menit = String(now.getMinutes()).padStart(2, '0');
-  const detik = String(now.getSeconds()).padStart(2, '0');
-  
-  // Ambil username dari localStorage
-  const username = localStorage.getItem("username");
-  
-  // Update jam
-  document.getElementById("jam").textContent = `${jam}:${menit}:${detik}`;
-  
-  // Update salam + username
-  let salam = "Selamat datang";
-  if(jam < 11) salam = "Selamat pagi";
-  else if(jam < 15) salam = "Selamat siang";
-  else if(jam < 18) salam = "Selamat sore";
-  else salam = "Selamat malam";
-  
-  // Tempelin username kalau ada, kalau ga ada biarin aja
-  document.getElementById("salam").textContent = username 
-    ? `${salam}, ${username}` 
-    : salam;
-}
-  
+  <!-- FORM LOGIN -->
+  <div id="formLogin">
+    <div class="form-group"><label>Username</label><input type="text" id="loginUser" placeholder="Username"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Password"></div>
+    <button class="btn" onclick="login()">Masuk</button>
+  </div>
 
-updateWaktu();
-setInterval(updateWaktu, 1000);
-  
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js');
+  <!-- FORM DAFTAR -->
+  <div id="formDaftar" style="display:none;">
+    <div class="form-group"><label>Pilih Nama Anda</label><select id="daftarAnggota"><option value="">-- Pilih dari Data Anggota --</option></select></div>
+    <div class="form-group"><label>Buat Username</label><input type="text" id="daftarUser" placeholder="Contoh: budi01"></div>
+    <div class="form-group"><label>Buat Password</label><input type="password" id="daftarPass" placeholder="Minimal 6 karakter"></div>
+    <button class="btn" onclick="daftar()">Daftar Akun</button>
+    <div class="note">* Hanya anggota yang sudah terdaftar di data admin yang bisa daftar akun</div>
+  </div>
+
+  <!-- FORM LUPA PASSWORD -->
+  <div id="formLupa" style="display:none;">
+    <div class="form-group"><label>Pilih Nama Anda</label><select id="lupaAnggota"><option value="">-- Pilih dari Data Anggota --</option></select></div>
+    <div class="form-group"><label>Username</label><input type="text" id="lupaUser" placeholder="Username yang terdaftar"></div>
+    <div class="form-group"><label>Password Baru</label><input type="password" id="lupaPass" placeholder="Password baru"></div>
+    <button class="btn" onclick="resetPassword()">Reset Password</button>
+    <div class="note">* Pastikan nama dan username sesuai yang didaftarkan</div>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const usersRef = ref(db,"/users");
+const anggotaRef = ref(db,"/anggota");
+
+/* TABS */
+window.showTab = function(tab){
+  ['login','daftar','lupa'].forEach(t=>{
+    document.getElementById('form'+t.charAt(0).toUpperCase()+t.slice(1)).style.display = t===tab?'block':'none';
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+  })
 }
 
-  </script>
+/* LOAD DATA ANGGOTA KE DROPDOWN */
+function loadAnggota(targetId){
+  onValue(anggotaRef, snapshot=>{
+    const select = document.getElementById(targetId);
+    select.innerHTML = '<option value="">-- Pilih dari Data Anggota --</option>';
+    if(snapshot.exists()){
+      snapshot.forEach(child=>{
+        const a = child.val();
+        if(a.status === 'aktif'){
+          select.innerHTML += `<option value="${a.id}">${a.id} - ${a.nama}</option>`;
+        }
+      });
+    }
+  },{onlyOnce:true});
+}
+loadAnggota('daftarAnggota');
+loadAnggota('lupaAnggota');
+
+/* FUNGSI LOGIN */
+window.login = async function(){
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value.trim();
+  if(!username || !password){ alert("Username dan Password wajib diisi"); return; }
+
+  const snap = await get(usersRef);
+  let ketemu = null;
+  snap.forEach(child=>{
+    const u = child.val();
+    if(u.username === username && u.password === password){
+      ketemu = {key:child.key, ...u};
+    }
+  });
+
+  if(ketemu){
+    localStorage.setItem('login', 'true');
+    localStorage.setItem('username', ketemu.username);
+    localStorage.setItem('role', ketemu.role); // admin / anggota
+    localStorage.setItem('userId', ketemu.userId); // AG001
+    location.href = 'dashboard.html';
+  } else {
+    alert("Username atau Password salah");
+  }
+}
+
+/* FUNGSI DAFTAR */
+window.daftar = async function(){
+  const userId = document.getElementById('daftarAnggota').value;
+  const username = document.getElementById('daftarUser').value.trim();
+  const password = document.getElementById('daftarPass').value.trim();
+
+  if(!userId){ alert("Silakan pilih nama Anda dari data anggota"); return; }
+  if(!username){ alert("Buat username dulu"); return; }
+  if(password.length < 6){ alert("Password minimal 6 karakter"); return; }
+
+  const snap = await get(usersRef);
+  let ada = false, adaAkun = false;
+  snap.forEach(c=>{ 
+    if(c.val().username === username) ada=true; 
+    if(c.val().userId === userId) adaAkun=true;
+  });
+  if(ada){ alert("Username sudah digunakan"); return; }
+  if(adaAkun){ alert("Anggota ini sudah punya akun. Hubungi admin"); return; }
+
+  await push(usersRef, {username, password, role:'anggota', userId});
+  alert("Pendaftaran berhasil. Silakan login");
+  showTab('login');
+  document.getElementById('daftarUser').value = "";
+  document.getElementById('daftarPass').value = "";
+}
+
+/* FUNGSI LUPA PASSWORD */
+window.resetPassword = async function(){
+  const userId = document.getElementById('lupaAnggota').value;
+  const username = document.getElementById('lupaUser').value.trim();
+  const passwordBaru = document.getElementById('lupaPass').value.trim();
+
+  if(!userId || !username || !passwordBaru){ alert("Semua field wajib diisi"); return; }
+  if(passwordBaru.length < 6){ alert("Password minimal 6 karakter"); return; }
+
+  const snap = await get(usersRef);
+  let ketemuKey = null;
+  snap.forEach(child=>{
+    const u = child.val();
+    if(u.userId === userId && u.username === username){
+      ketemuKey = child.key;
+    }
+  });
+
+  if(ketemuKey){
+    await update(ref(db,"/users/" + ketemuKey), {password: passwordBaru});
+    alert("Password berhasil direset. Silakan login");
+    showTab('login');
+    document.getElementById('lupaUser').value = "";
+    document.getElementById('lupaPass').value = "";
+  } else {
+    alert("Data tidak cocok. Pastikan nama dan username benar");
+  }
+}
+
+</script>
 </body>
 </html>
