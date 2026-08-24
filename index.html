@@ -16,12 +16,9 @@ body{font-family:'Poppins',sans-serif;background:linear-gradient(to right,#1e90f
 .form-group input, .form-group select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-family:'Poppins';font-size:13px;}
 .btn{width:100%;padding:11px;border:none;border-radius:8px;background:#087f5b;color:#fff;font-weight:600;cursor:pointer;margin-top:5px;}
 .btn:hover{background:#065f46;}
-.btn.outline{background:#fff;color:#087f5b;border:1px solid #087f5b;}
 .tabs{display:flex;margin-bottom:15px;border-bottom:1px solid #ddd;}
 .tabs button{flex:1;padding:10px;border:none;background:none;cursor:pointer;font-weight:600;color:#999;font-size:12px;}
 .tabs button.active{color:#087f5b;border-bottom:2px solid #087f5b;}
-.link-kecil{text-align:center;font-size:11px;margin-top:10px;}
-.link-kecil a{color:#1e90ff;text-decoration:none;cursor:pointer;}
 .note{font-size:10px;color:#d97706;background:#fff8e6;padding:8px;border-radius:6px;margin-top:10px;}
 </style>
 </head>
@@ -37,44 +34,37 @@ body{font-family:'Poppins',sans-serif;background:linear-gradient(to right,#1e90f
     <button id="tabLupa" onclick="showTab('lupa')">Lupa Pass</button>
   </div>
 
-  <!-- FORM LOGIN -->
   <div id="formLogin">
     <div class="form-group"><label>Username</label><input type="text" id="loginUser" placeholder="Username"></div>
     <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Password"></div>
     <button class="btn" onclick="login()">Masuk</button>
   </div>
 
-  <!-- FORM DAFTAR -->
   <div id="formDaftar" style="display:none;">
-    <div class="form-group"><label>Pilih Nama Anda</label><select id="daftarAnggota"><option value="">-- Pilih dari Data Anggota --</option></select></div>
+    <div class="form-group"><label>Pilih Nama Anda</label><select id="daftarAnggota"><option>Loading...</option></select></div>
     <div class="form-group"><label>Buat Username</label><input type="text" id="daftarUser" placeholder="Contoh: budi01"></div>
     <div class="form-group"><label>Buat Password</label><input type="password" id="daftarPass" placeholder="Minimal 6 karakter"></div>
     <button class="btn" onclick="daftar()">Daftar Akun</button>
-    <div class="note">* Hanya anggota yang sudah terdaftar di data admin yang bisa daftar akun</div>
+    <div class="note">* Hanya anggota yang terdaftar di admin yang bisa daftar</div>
   </div>
 
-  <!-- FORM LUPA PASSWORD -->
   <div id="formLupa" style="display:none;">
-    <div class="form-group"><label>Pilih Nama Anda</label><select id="lupaAnggota"><option value="">-- Pilih dari Data Anggota --</option></select></div>
+    <div class="form-group"><label>Pilih Nama Anda</label><select id="lupaAnggota"><option>Loading...</option></select></div>
     <div class="form-group"><label>Username</label><input type="text" id="lupaUser" placeholder="Username yang terdaftar"></div>
     <div class="form-group"><label>Password Baru</label><input type="password" id="lupaPass" placeholder="Password baru"></div>
     <button class="btn" onclick="resetPassword()">Reset Password</button>
-    <div class="note">* Pastikan nama dan username sesuai yang didaftarkan</div>
   </div>
 
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, onValue, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, push, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const usersRef = ref(db,"/users");
-const anggotaRef = ref(db,"/anggota");
 
-/* TABS */
 window.showTab = function(tab){
   ['login','daftar','lupa'].forEach(t=>{
     document.getElementById('form'+t.charAt(0).toUpperCase()+t.slice(1)).style.display = t===tab?'block':'none';
@@ -82,105 +72,94 @@ window.showTab = function(tab){
   })
 }
 
-/* LOAD DATA ANGGOTA KE DROPDOWN */
-function loadAnggota(targetId){
-  onValue(anggotaRef, snapshot=>{
-    const select = document.getElementById(targetId);
-    select.innerHTML = '<option value="">-- Pilih dari Data Anggota --</option>';
-    if(snapshot.exists()){
-      snapshot.forEach(child=>{
-        const a = child.val();
-        if(a.status === 'aktif'){
-          select.innerHTML += `<option value="${a.id}">${a.id} - ${a.nama}</option>`;
-        }
-      });
-    }
-  },{onlyOnce:true});
+/* LOAD DATA ANGGOTA - FIX: YANG GAK ADA STATUS DIANGGAP AKTIF */
+async function loadAnggota(){
+  const snap = await get(ref(db,"/anggota"));
+  let options = '<option value="">-- Pilih dari Data Anggota --</option>';
+  
+  if(snap.exists()){
+    snap.forEach(child=>{
+      const a = child.val();
+      const id = a.id;
+      const nama = a.nama;
+      const status = String(a.status || 'aktif').toLowerCase(); // <-- KUNCI: kalau kosong = aktif
+      
+      if(status !== 'keluar'){ // tampilkan semua kecuali yang status keluar
+        options += `<option value="${id}">${id} - ${nama}</option>`;
+      }
+    });
+  }
+  
+  document.getElementById('daftarAnggota').innerHTML = options;
+  document.getElementById('lupaAnggota').innerHTML = options;
 }
-loadAnggota('daftarAnggota');
-loadAnggota('lupaAnggota');
+loadAnggota();
 
-/* FUNGSI LOGIN */
+/* LOGIN */
 window.login = async function(){
   const username = document.getElementById('loginUser').value.trim();
   const password = document.getElementById('loginPass').value.trim();
   if(!username || !password){ alert("Username dan Password wajib diisi"); return; }
 
-  const snap = await get(usersRef);
+  const snap = await get(ref(db,"/users"));
   let ketemu = null;
   snap.forEach(child=>{
     const u = child.val();
-    if(u.username === username && u.password === password){
-      ketemu = {key:child.key, ...u};
-    }
+    if(u.username === username && u.password === password) ketemu = u;
   });
 
   if(ketemu){
     localStorage.setItem('login', 'true');
     localStorage.setItem('username', ketemu.username);
-    localStorage.setItem('role', ketemu.role); // admin / anggota
-    localStorage.setItem('userId', ketemu.userId); // AG001
+    localStorage.setItem('role', ketemu.role);
+    localStorage.setItem('userId', ketemu.userId);
     location.href = 'dashboard.html';
-  } else {
-    alert("Username atau Password salah");
-  }
+  } else { alert("Username atau Password salah"); }
 }
 
-/* FUNGSI DAFTAR */
+/* DAFTAR */
 window.daftar = async function(){
   const userId = document.getElementById('daftarAnggota').value;
   const username = document.getElementById('daftarUser').value.trim();
   const password = document.getElementById('daftarPass').value.trim();
-
-  if(!userId){ alert("Silakan pilih nama Anda dari data anggota"); return; }
+  if(!userId){ alert("Pilih nama Anda dulu"); return; }
   if(!username){ alert("Buat username dulu"); return; }
   if(password.length < 6){ alert("Password minimal 6 karakter"); return; }
 
-  const snap = await get(usersRef);
+  const snap = await get(ref(db,"/users"));
   let ada = false, adaAkun = false;
   snap.forEach(c=>{ 
     if(c.val().username === username) ada=true; 
     if(c.val().userId === userId) adaAkun=true;
   });
   if(ada){ alert("Username sudah digunakan"); return; }
-  if(adaAkun){ alert("Anggota ini sudah punya akun. Hubungi admin"); return; }
+  if(adaAkun){ alert("Anggota ini sudah punya akun"); return; }
 
-  await push(usersRef, {username, password, role:'anggota', userId});
+  await push(ref(db,"/users"), {username, password, role:'anggota', userId});
   alert("Pendaftaran berhasil. Silakan login");
   showTab('login');
-  document.getElementById('daftarUser').value = "";
-  document.getElementById('daftarPass').value = "";
 }
 
-/* FUNGSI LUPA PASSWORD */
+/* LUPA PASSWORD */
 window.resetPassword = async function(){
   const userId = document.getElementById('lupaAnggota').value;
   const username = document.getElementById('lupaUser').value.trim();
   const passwordBaru = document.getElementById('lupaPass').value.trim();
-
   if(!userId || !username || !passwordBaru){ alert("Semua field wajib diisi"); return; }
-  if(passwordBaru.length < 6){ alert("Password minimal 6 karakter"); return; }
 
-  const snap = await get(usersRef);
+  const snap = await get(ref(db,"/users"));
   let ketemuKey = null;
   snap.forEach(child=>{
     const u = child.val();
-    if(u.userId === userId && u.username === username){
-      ketemuKey = child.key;
-    }
+    if(u.userId === userId && u.username === username) ketemuKey = child.key;
   });
 
   if(ketemuKey){
     await update(ref(db,"/users/" + ketemuKey), {password: passwordBaru});
-    alert("Password berhasil direset. Silakan login");
+    alert("Password berhasil direset");
     showTab('login');
-    document.getElementById('lupaUser').value = "";
-    document.getElementById('lupaPass').value = "";
-  } else {
-    alert("Data tidak cocok. Pastikan nama dan username benar");
-  }
+  } else { alert("Data tidak cocok"); }
 }
-
 </script>
 </body>
 </html>
