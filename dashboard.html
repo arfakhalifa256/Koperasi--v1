@@ -14,13 +14,13 @@ body{background:#f1f5f9;padding-bottom:80px}
   align-items:center;
   gap:8px;
   font-weight:700;
-  font-size:16px;
+  font-size:12px;
   color:#fff;
 }
 .logo img{
-  width:28px; /* atur ukuran logo */
-  height:28px;
-  border-radius:8px; /* biar sudutnya agak bulat */
+  width:38px; /* atur ukuran logo */
+  height:38px;
+  border-radius:10px; /* biar sudutnya agak bulat */
   object-fit:cover;
   background:#fff; /* kasih background putih kalau logo transparan */
   padding:2px;
@@ -33,7 +33,7 @@ body{background:#f1f5f9;padding-bottom:80px}
   border-radius: 0 0 24px 24px;
 }
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.logo{display:flex;align-items:center;gap:6px;font-weight:700;font-size:16px}
+.logo{display:flex;align-items:center;gap:6px;font-weight:700;font-size:12px}
 .badge{background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600}
 
   .saldo-box{display:flex;justify-content:space-between;align-items:flex-start;color:#fff} /* default putih */
@@ -136,7 +136,7 @@ body{background:#f1f5f9;padding-bottom:80px}
   <div class="header-top">
     <div class="logo">
       <img src="./img/icon-192.png" alt="Koperasi ARFA">
-      Koperasi ARFA
+<p>KOPERASI<br>Arfa Sejahtera</p>
     </div>
       <div class="badge" id="roleBadge" title="Klik untuk Logout">User</div> 
 </div>
@@ -175,15 +175,17 @@ body{background:#f1f5f9;padding-bottom:80px}
 <!-- MENU GRID -->
 <div class="container">
   <div class="menu-grid">
-    <a href="anggota.html" class="menu-item"><div class="menu-icon" style="background:#dbeafe">👤</div><span>Data<br>Anggota</span></a>
+    <a href="agt1.html" class="menu-item"><div class="menu-icon" style="background:#dbeafe">👤</div><span>Data<br>Anggota</span></a>
     <a href="kas.html" class="menu-item"><div class="menu-icon" style="background:#dcfce7">💵<div class="badge-promo">BARU</div></div><span>Kas</span></a>
     <a href="angsuran.html" class="menu-item"><div class="menu-icon" style="background:#fef3c7">📄</div><span>Angsuran</span></a>
     <a href="simpanan.html" class="menu-item"><div class="menu-icon" style="background:#ffedd5">📊</div><span>Simpanan</span></a>
     <a href="pinjaman.html" class="menu-item"><div class="menu-icon" style="background:#fee2e2">💰</div><span>Pinjaman</span></a>
     <a href="neraca.html" class="menu-item"><div class="menu-icon" style="background:#e0e7ff">📖</div><span>Neraca</span></a>
     <a href="labarugi.html" class="menu-item"><div class="menu-icon" style="background:#f3e8ff">📈</div><span>Laba Rugi</span></a>
-    <a href="shu.html" class="menu-item"><div class="menu-icon" style="background:#f1f5f9">💰</div><span>SHU<br>Anggota</span></a>
+    <a href="shu1.html" class="menu-item"><div class="menu-icon" style="background:#f1f5f9">💰</div><span>SHU<br>Anggota</span></a>
     <a href="laporan-anggota.html" class="menu-item"><div class="menu-icon" style="background:#f1f5f9">⋯</div><span>Lihat<br>Semua</span></a>
+    <a href="arisan.html" class="menu-item"><div class="menu-icon" style="background:#f1f5">👤</div><span>Arisan</span></a>
+
   </div>
 </div>
 
@@ -345,7 +347,7 @@ document.addEventListener("DOMContentLoaded", function(){
   badge.addEventListener("click", function(){
     if(confirm(`Logout dari akun ${username}?`)){
       localStorage.clear(); // hapus semua data login
-      window.location.href = "index.html"; // balik ke login
+      window.location.href = "index1.html"; // balik ke login
     }
   });
 });
