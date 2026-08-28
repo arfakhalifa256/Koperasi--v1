@@ -144,10 +144,22 @@ body{background:#f1f5f9;padding-bottom:80px}
   </div>
 </div>
 
-<script type="module">
+
+  <script type="module">
+// CEK LOGIN DULU
+const role = localStorage.getItem("role");
+const username = localStorage.getItem("username");
+
+// Kalau belum login atau kosong, tendang ke index.html
+if(!role || !username){
+  alert("Silakan login dulu");
+  window.location.href = "index.html"; 
+  throw new Error("Belum login"); // biar kode dibawah gak jalan
+}
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
+  
 const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
 const app = initializeApp(firebaseConfig); const db = getDatabase(app);
 
