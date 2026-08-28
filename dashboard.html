@@ -2,16 +2,43 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
+  
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard - Koperasi ARFA</title>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0091ff">
+<link rel="apple-touch-icon" href="./img/icon-192.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
 body{background:#f1f5f9;padding-bottom:80px}
-.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12px;color:#fff;}
-.logo img{width:38px;height:38px;border-radius:10px;object-fit:cover;background:#fff;padding:2px;}
-.header-gopay{background: linear-gradient(135deg, #0091ff 0%, #0057a8 100%);padding: 16px;color: white;border-radius: 0 0 24px 24px;}
+.logo{
+  display:flex;
+  align-items:center; /* biar sejajar tengah */
+  gap:10px;
+  color:#fff;
+}
+.logo img{
+  width:48px; /* naikin dikit biar tajem */
+  height:48px;
+  border-radius:50%; /* Bikin bulat sempurna */
+  object-fit:contain; /* biar gak kepotong */
+  background:transparent; /* HAPUS background putih */
+  padding:0; /* HAPUS padding */
+  flex-shrink:0; /* biar gak gepeng */
+}
+.logo p{
+  font-weight:700;
+  font-size:14px; /* naikin dikit */
+  line-height:1.2;
+  margin:0;
+}
+.logo p span{
+  font-size:12px; /* baris kedua lebih kecil */
+  font-weight:500;
+  opacity:0.9;
+}.header-gopay{background: linear-gradient(135deg, #0091ff 0%, #0057a8 100%);padding: 16px;color: white;border-radius: 0 0 24px 24px;}
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .badge{background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer}
 
