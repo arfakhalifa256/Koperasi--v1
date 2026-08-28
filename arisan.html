@@ -38,7 +38,9 @@ button:disabled{opacity:0.6; cursor:not-allowed}
 .modal-content{background:#fff;width:95%;max-width:500px;border-radius:12px;padding:15px;max-height:90vh;overflow:auto}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--success);color:#fff;padding:10px 15px;border-radius:8px;opacity:0;transition:.3s;z-index:9999}
 .toast.show{opacity:1}
-.checkbox-item{display:flex; align-items:center; gap:8px; padding:6px; border-bottom:1px solid #eee}
+  .checkbox-item{display:flex; align-items:center; gap:8px; padding:6px; border-bottom:1px solid #eee}
+.checkbox-item:last-child{border-bottom:none}
+.checkbox-item input{width:18px; height:18px}
 .tabel-setor{width:100%; border-collapse:collapse; font-size:12px; margin-top:10px}
 .tabel-setor th,.tabel-setor td{padding:8px; border-bottom:1px solid #eee; text-align:left}
 .tabel-setor th{background:#f8fafc; font-weight:600}
