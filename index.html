@@ -11,19 +11,26 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;}
-body{font-family:'Poppins',sans-serif;background:linear-gradient(to right,#1e90ff,#0f3057);display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:15px;}
-.box{background:#fff;padding:25px;border-radius:14px;width:100%;max-width:380px;box-shadow:0 5px 20px rgba(0,0,0,.2);}
-.box img{width:60px;margin:0 auto 10px;display:block;}
-.box h2{text-align:center;color:#087f5b;margin:0 0 15px;font-size:18px;}
-.form-group{margin-bottom:12px;}
-.form-group label{font-size:11px;font-weight:600;color:#555;display:block;margin-bottom:5px;}
-.form-group input, .form-group select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-family:'Poppins';font-size:13px;}
-.btn{width:100%;padding:11px;border:none;border-radius:8px;background:#087f5b;color:#fff;font-weight:600;cursor:pointer;margin-top:5px;}
-.btn:hover{background:#065f46;}
-.tabs{display:flex;margin-bottom:15px;border-bottom:1px solid #ddd;}
-.tabs button{flex:1;padding:10px;border:none;background:none;cursor:pointer;font-weight:600;color:#999;font-size:12px;}
-.tabs button.active{color:#087f5b;border-bottom:2px solid #087f5b;}
-.note{font-size:10px;color:#d97706;background:#fff8e6;padding:8px;border-radius:6px;margin-top:10px;}
+body{font-family:'Poppins',sans-serif;background:linear-gradient(to right,#1e90ff,#0f3057);display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:15px;color:#fff;} /* TEKS PUTIH */
+
+.box{background:transparent;padding:0;border-radius:0;width:100%;max-width:380px;box-shadow:none;} /* HAPUS KOTAK PUTIH */
+.box img{width:90px;height:90px;margin:0 auto 15px;display:block;border-radius:50%;object-fit:contain;background:rgba(255,255,255,0.15);padding:10px;border:2px solid rgba(255,255,255,0.3);} /* LOGO LINGKARAN */
+.box h2{text-align:center;color:#fff;margin:0 0 20px;font-size:20px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3);} /* JUDUL PUTIH */
+
+.form-group{margin-bottom:14px;}
+.form-group label{font-size:12px;font-weight:600;color:#e0f2ff;display:block;margin-bottom:6px;} /* LABEL PUTIH BIRU */
+.form-group input, .form-group select{width:100%;padding:11px;border:1px solid rgba(255,255,255,0.3);border-radius:10px;font-family:'Poppins';font-size:14px;background:rgba(255,255,255,0.15);color:#fff;backdrop-filter:blur(5px);} /* INPUT TRANSPARAN */
+.form-group input::placeholder{color:rgba(255,255,255,0.7);} /* PLACEHOLDER PUTIH */
+.form-group input:focus, .form-group select:focus{outline:none;border-color:#fff;background:rgba(255,255,255,0.25);}
+
+.btn{width:100%;padding:12px;border:none;border-radius:10px;background:#fff;color:#0f3057;font-weight:700;cursor:pointer;margin-top:8px;font-size:15px;transition:0.2s;} /* TOMBOL PUTIH */
+.btn:hover{background:#e0f2ff;transform:translateY(-2px);}
+
+.tabs{display:flex;margin-bottom:20px;background:rgba(255,255,255,0.1);border-radius:10px;padding:4px;} /* TABS TRANSPARAN */
+.tabs button{flex:1;padding:10px;border:none;background:transparent;cursor:pointer;font-weight:600;color:rgba(255,255,255,0.7);font-size:13px;border-radius:8px;transition:0.2s;}
+.tabs button.active{color:#0f3057;background:#fff;} /* TAB AKTIF PUTIH */
+
+.note{font-size:11px;color:#fff;background:rgba(255,193,7,0.2);padding:10px;border-radius:8px;margin-top:12px;border:1px solid rgba(255,193,7,0.3);} /* NOTE TRANSPARAN */
 </style>
 </head>
 <body>
