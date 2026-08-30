@@ -3,1719 +3,309 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Profil Koperasi ARFA</title>
-
 <style>
-*{
-  box-sizing:border-box;
-}
-
-body{
-  font-family:sans-serif;
-  background:#f5f7fa;
-  margin:0;
-}
-
-/* HEADER */
-.profile-header{
-  background:linear-gradient(135deg,#0B1F3A 0%,#1A4D8F 100%);
-  color:#fff;
-  padding:16px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  border-radius:0 0 24px 24px;
-}
-
-.profile-header h1{
-  font-size:18px;
-  font-weight:700;
-  margin:0;
-}
-
-.back-btn{
-  font-size:22px;
-  cursor:pointer;
-}
-
-/* CARD */
-.profile-card{
-  background:#fff;
-  margin:16px;
-  border-radius:20px;
-  padding:20px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.08);
-}
-
-/* LOGO */
-.profile-logo{
-  text-align:center;
-  margin-bottom:20px;
-  border-bottom:1px solid #f0f0f0;
-  padding-bottom:16px;
-}
-
-.profile-logo img{
-  width:80px;
-  height:80px;
-  border-radius:20px;
-  background:#f5f5f5;
-  padding:8px;
-  margin-bottom:8px;
-}
-
-.profile-logo h2{
-  margin:4px 0;
-  font-size:20px;
-  color:#0B1F3A;
-}
-
-.status-badge{
-  background:#00D084;
-  color:#fff;
-  padding:4px 12px;
-  border-radius:12px;
-  font-size:10px;
-  font-weight:700;
-}
-
-/* INFO */
-.profile-info{
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
-
-.info-item{
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
-}
-
-.info-item .icon{
-  font-size:20px;
-  margin-top:2px;
-}
-
-.info-item label{
-  font-size:11px;
-  color:#888;
-  display:block;
-}
-
-.info-item p{
-  margin:2px 0 0 0;
-  font-size:14px;
-  font-weight:600;
-  color:#333;
-  line-height:1.5;
-}
-
-/* VISI MISI */
-.visi-misi{
-  margin-top:20px;
-  padding-top:16px;
-  border-top:1px solid #f0f0f0;
-}
-
-.visi-misi h3{
-  font-size:14px;
-  color:#1A4D8F;
-  margin-bottom:6px;
-}
-
-.visi-misi p,
-.visi-misi li{
-  font-size:13px;
-  color:#555;
-  line-height:1.6;
-}
-
-.visi-misi ul{
-  padding-left:18px;
-  margin:4px 0;
-}
-
-/* =====================================
-   SUSUNAN PENGURUS
-===================================== */
-
-.susunan-pengurus{
-  margin-top:20px;
-  padding-top:16px;
-  border-top:1px solid #f0f0f0;
-}
-
-.susunan-pengurus h3{
-  font-size:14px;
-  color:#1A4D8F;
-  margin:0 0 12px 0;
-}
-
-.pengurus-list{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.pengurus-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background:#F8F9FC;
-  padding:12px;
-  border-radius:14px;
-}
-
-.pengurus-icon{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  background:#EAF1FA;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:21px;
-  flex-shrink:0;
-}
-
-.pengurus-item b{
-  display:block;
-  font-size:13px;
-  color:#0B1F3A;
-}
-
-.pengurus-item p{
-  margin:3px 0 0;
-  font-size:12px;
-  color:#666;
-}
-
-/* =====================================
-   LAYANAN
-===================================== */
-
-.layanan-keterangan{
-  margin-top:20px;
-  padding-top:16px;
-  border-top:1px solid #f0f0f0;
-}
-
-.layanan-keterangan h3{
-  font-size:14px;
-  color:#1A4D8F;
-  margin-bottom:12px;
-}
-
-.layanan-list{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-.layanan-item{
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
-  background:#F8F9FC;
-  padding:12px;
-  border-radius:14px;
-}
-
-.layanan-item .icon{
-  font-size:24px;
-  margin-top:2px;
-}
-
-.layanan-item b{
-  font-size:13px;
-  color:#0B1F3A;
-}
-
-.layanan-item p{
-  margin:2px 0 0 0;
-  font-size:12px;
-  color:#666;
-  line-height:1.5;
-}
-
-/* BUTTON EDIT */
-.btn-edit{
-  width:100%;
-  margin-top:20px;
-  background:#1A4D8F;
-  color:#fff;
-  border:none;
-  padding:14px;
-  border-radius:14px;
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
-}
-
-.btn-edit:hover{
-  background:#0B1F3A;
-}
-
-/* =====================================
-   MODAL
-===================================== */
-
-.modal{
-  display:none;
-  position:fixed;
-  z-index:999;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.5);
-  backdrop-filter:blur(4px);
-}
-
-.modal-content{
-  background:#fff;
-  margin:5% auto;
-  padding:20px;
-  border-radius:20px;
-  width:90%;
-  max-width:400px;
-  max-height:85vh;
-  overflow-y:auto;
-}
-
-.close-btn{
-  float:right;
-  font-size:24px;
-  font-weight:bold;
-  cursor:pointer;
-  color:#888;
-}
-
-.modal-content h2{
-  margin-top:0;
-  color:#0B1F3A;
-  font-size:18px;
-}
-
-.modal-content label{
-  display:block;
-  margin-top:12px;
-  font-size:12px;
-  font-weight:600;
-  color:#555;
-}
-
-.modal-content input,
-.modal-content textarea{
-  width:100%;
-  padding:10px;
-  margin-top:4px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  font-size:14px;
-  box-sizing:border-box;
-}
-
-.btn-simpan{
-  width:100%;
-  margin-top:20px;
-  background:#00D084;
-  color:#fff;
-  border:none;
-  padding:14px;
-  border-radius:14px;
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
-}
-
-.btn-simpan:disabled{
-  opacity:.6;
-  cursor:not-allowed;
-}
-
-/* FORM PENGURUS */
-
-.pengurus-form{
-  margin-top:8px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.pengurus-input{
-  background:#F8F9FC;
-  padding:10px;
-  border-radius:12px;
-}
-
-.pengurus-input label{
-  margin-top:0;
-  margin-bottom:4px;
-}
-
-.judul-form-pengurus{
-  margin-top:18px;
-  margin-bottom:5px;
-  padding:10px;
-  background:#EAF1FA;
-  border-radius:10px;
-  color:#1A4D8F;
-  font-size:13px;
-  font-weight:700;
-}
+*{box-sizing:border-box;}
+body{font-family:sans-serif;background:#f5f7fa;margin:0;}
+.profile-header{background:linear-gradient(135deg,#0B1F3A 0%,#1A4D8F 100%);color:#fff;padding:16px;display:flex;align-items:center;gap:12px;border-radius:0 0 24px 24px;}
+.profile-header h1{font-size:18px;font-weight:700;margin:0;}
+.back-btn{font-size:22px;cursor:pointer;}
+.profile-card{background:#fff;margin:16px;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
+.profile-logo{text-align:center;margin-bottom:20px;border-bottom:1px solid #f0f0f0;padding-bottom:16px;}
+.profile-logo img{width:80px;height:80px;border-radius:20px;background:#f5f5f5;padding:8px;margin-bottom:8px;}
+.profile-logo h2{margin:4px 0;font-size:20px;color:#0B1F3A;}
+.status-badge{background:#00D084;color:#fff;padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;}
+.profile-info{display:flex;flex-direction:column;gap:16px;}
+.info-item{display:flex;gap:12px;align-items:flex-start;}
+.info-item .icon{font-size:20px;margin-top:2px;}
+.info-item label{font-size:11px;color:#888;display:block;}
+.info-item p{margin:2px 0 0 0;font-size:14px;font-weight:600;color:#333;line-height:1.5;}
+.visi-misi{margin-top:20px;padding-top:16px;border-top:1px solid #f0f0f0;}
+.visi-misi h3{font-size:14px;color:#1A4D8F;margin-bottom:6px;}
+.visi-misi p,.visi-misi li{font-size:13px;color:#555;line-height:1.6;}
+.visi-misi ul{padding-left:18px;margin:4px 0;}
+.susunan-pengurus{margin-top:20px;padding-top:16px;border-top:1px solid #f0f0f0;}
+.susunan-pengurus h3{font-size:14px;color:#1A4D8F;margin:0 0 12px 0;}
+.pengurus-list{display:flex;flex-direction:column;gap:10px;}
+.pengurus-item{display:flex;align-items:center;gap:12px;background:#F8F9FC;padding:12px;border-radius:14px;}
+.pengurus-icon{width:40px;height:40px;border-radius:12px;background:#EAF1FA;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+.pengurus-item b{display:block;font-size:13px;color:#0B1F3A;}
+.pengurus-item p{margin:3px 0 0;font-size:12px;color:#666;}
+.layanan-keterangan{margin-top:20px;padding-top:16px;border-top:1px solid #f0f0f0;}
+.layanan-keterangan h3{font-size:14px;color:#1A4D8F;margin-bottom:12px;}
+.layanan-list{display:flex;flex-direction:column;gap:12px;}
+.layanan-item{display:flex;gap:12px;align-items:flex-start;background:#F8F9FC;padding:12px;border-radius:14px;}
+.layanan-item .icon{font-size:24px;margin-top:2px;}
+.layanan-item b{font-size:13px;color:#0B1F3A;}
+.layanan-item p{margin:2px 0 0 0;font-size:12px;color:#666;line-height:1.5;}
+.btn-edit{width:100%;margin-top:20px;background:#1A4D8F;color:#fff;border:none;padding:14px;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;}
+.btn-edit:hover{background:#0B1F3A;}
+.modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
+.modal-content{background:#fff;margin:5% auto;padding:20px;border-radius:20px;width:90%;max-width:400px;max-height:85vh;overflow-y:auto;}
+.close-btn{float:right;font-size:24px;font-weight:bold;cursor:pointer;color:#888;}
+.modal-content h2{margin-top:0;color:#0B1F3A;font-size:18px;}
+.modal-content label{display:block;margin-top:12px;font-size:12px;font-weight:600;color:#555;}
+.modal-content input,.modal-content textarea{width:100%;padding:10px;margin-top:4px;border:1px solid #ddd;border-radius:10px;font-size:14px;box-sizing:border-box;}
+.btn-simpan{width:100%;margin-top:20px;background:#00D084;color:#fff;border:none;padding:14px;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;}
+.btn-simpan:disabled{opacity:.6;cursor:not-allowed;}
+.pengurus-form{margin-top:8px;display:flex;flex-direction:column;gap:10px;}
+.pengurus-input{background:#F8F9FC;padding:10px;border-radius:12px;}
+.pengurus-input label{margin-top:0;margin-bottom:4px;}
+.judul-form-pengurus{margin-top:18px;margin-bottom:5px;padding:10px;background:#EAF1FA;border-radius:10px;color:#1A4D8F;font-size:13px;font-weight:700;}
+.layanan-form{margin-top:8px;display:flex;flex-direction:column;gap:12px;}
+.layanan-input{background:#F8F9FC;padding:12px;border-radius:12px;}
+.layanan-input label{margin-top:0;margin-bottom:6px;}
+.layanan-input textarea{resize:vertical;}
 </style>
 </head>
-
 <body>
-
-<!-- =====================================
-     HEADER
-===================================== -->
 
 <div class="profile-header">
   <div class="back-btn" onclick="goBack()">←</div>
   <h1>Profil Koperasi</h1>
 </div>
 
-
-<!-- =====================================
-     PROFILE CARD
-===================================== -->
-
 <div class="profile-card">
-
-  <!-- LOGO -->
-
   <div class="profile-logo">
-
-    <img
-      id="logoKoperasi"
-      src="./img/icon-192.png"
-      alt="Logo Koperasi"
-    >
-
-    <h2 id="namaKoperasiJudul">
-      
-    </h2>
-
-    <span class="status-badge">
-      AKTIF
-    </span>
-
+    <img id="logoKoperasi" src="./img/icon-192.png" alt="Logo Koperasi">
+    <h2 id="namaKoperasiJudul"></h2>
+    <span class="status-badge">AKTIF</span>
   </div>
-
-
-  <!-- INFORMASI KOPERASI -->
 
   <div class="profile-info">
-
-    <div class="info-item">
-      <div class="icon">🏢</div>
-      <div>
-        <label>Nama Koperasi</label>
-        <p id="namaKoperasi">-</p>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <div class="icon">📍</div>
-      <div>
-        <label>Alamat Kantor</label>
-        <p id="alamat">-</p>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <div class="icon">📞</div>
-      <div>
-        <label>No. Telepon / WA</label>
-        <p id="telepon">-</p>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <div class="icon">📧</div>
-      <div>
-        <label>Email</label>
-        <p id="email">-</p>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <div class="icon">📜</div>
-      <div>
-        <label>No. Badan Hukum</label>
-        <p id="badanHukum">-</p>
-      </div>
-    </div>
-
-    <div class="info-item">
-      <div class="icon">📅</div>
-      <div>
-        <label>Tanggal Berdiri</label>
-        <p id="tanggalBerdiri">-</p>
-      </div>
-    </div>
-
+    <div class="info-item"><div class="icon">🏢</div><div><label>Nama Koperasi</label><p id="namaKoperasi">-</p></div></div>
+    <div class="info-item"><div class="icon">📍</div><div><label>Alamat Kantor</label><p id="alamat">-</p></div></div>
+    <div class="info-item"><div class="icon">📞</div><div><label>No. Telepon / WA</label><p id="telepon">-</p></div></div>
+    <div class="info-item"><div class="icon">📧</div><div><label>Email</label><p id="email">-</p></div></div>
+    <div class="info-item"><div class="icon">📜</div><div><label>No. Badan Hukum</label><p id="badanHukum">-</p></div></div>
+    <div class="info-item"><div class="icon">📅</div><div><label>Tanggal Berdiri</label><p id="tanggalBerdiri">-</p></div></div>
   </div>
-
-
-  <!-- =====================================
-       VISI MISI
-  ====================================== -->
 
   <div class="visi-misi">
-
-    <h3>Visi</h3>
-
-    <p id="visi">
-      -
-    </p>
-
-    <h3>Misi</h3>
-
-    <ul id="misiList"></ul>
-
+    <h3>Visi</h3><p id="visi">-</p>
+    <h3>Misi</h3><ul id="misiList"></ul>
   </div>
-
-
-  <!-- =====================================
-       SUSUNAN PENGURUS
-  ====================================== -->
 
   <div class="susunan-pengurus">
-
     <h3>👥 Susunan Pengurus</h3>
-
-    <div
-      class="pengurus-list"
-      id="pengurusList"
-    ></div>
-
+    <div class="pengurus-list" id="pengurusList"></div>
   </div>
-
-
-  <!-- =====================================
-       LAYANAN
-  ====================================== -->
 
   <div class="layanan-keterangan">
-
     <h3>💼 Layanan Kami</h3>
-
-    <div class="layanan-list">
-
-      <div class="layanan-item">
-
-        <div class="icon">💰</div>
-
-        <div>
-
-          <b>Simpanan</b>
-
-          <p>
-            Simpanan Pokok, Wajib, dan Sukarela.
-            Bunga kompetitif & aman.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="layanan-item">
-
-        <div class="icon">🏦</div>
-
-        <div>
-
-          <b>Pinjaman</b>
-
-          <p>
-            Pinjaman operasional anggota.
-            Proses cepat.
-          </p>
-
-        </div>
-
-      </div>
-
-    </div>
-
+    <div class="layanan-list" id="layananList"></div> <!-- INI DIKOSONGIN BUAT DIISI JS -->
   </div>
 
-
-  <!-- BUTTON EDIT -->
-
-  <button
-    class="btn-edit"
-    id="btnEdit"
-  >
-    ✏️ Edit Profil
-  </button>
-
+  <button class="btn-edit" id="btnEdit">✏️ Edit Profil</button>
 </div>
 
-
-<!-- =====================================
-     MODAL EDIT
-===================================== -->
-
-<div
-  id="modalEdit"
-  class="modal"
->
-
+<div id="modalEdit" class="modal">
   <div class="modal-content">
-
-    <span
-      class="close-btn"
-      id="closeModal"
-    >
-      &times;
-    </span>
-
-    <h2>
-      Edit Profil Koperasi
-    </h2>
-
-
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h2>Edit Profil Koperasi</h2>
     <form id="formProfil">
+      <label>Nama Koperasi</label><input type="text" id="inputNama" required>
+      <label>Alamat Kantor</label><textarea id="inputAlamat" rows="3" required></textarea>
+      <label>No. Telepon / WA</label><input type="tel" id="inputTelepon" required>
+      <label>Email</label><input type="email" id="inputEmail" required>
+      <label>No. Badan Hukum</label><input type="text" id="inputBadanHukum">
+      <label>Tanggal Berdiri</label><input type="date" id="inputTanggal">
+      <label>Visi</label><textarea id="inputVisi" rows="3"></textarea>
+      <label>Misi - pisahkan dengan koma ,</label><textarea id="inputMisi" rows="3"></textarea>
 
-      <label>
-        Nama Koperasi
-      </label>
-
-      <input
-        type="text"
-        id="inputNama"
-        required
-      >
-
-
-      <label>
-        Alamat Kantor
-      </label>
-
-      <textarea
-        id="inputAlamat"
-        rows="3"
-        required
-      ></textarea>
-
-
-      <label>
-        No. Telepon / WA
-      </label>
-
-      <input
-        type="tel"
-        id="inputTelepon"
-        required
-      >
-
-
-      <label>
-        Email
-      </label>
-
-      <input
-        type="email"
-        id="inputEmail"
-        required
-      >
-
-
-      <label>
-        No. Badan Hukum
-      </label>
-
-      <input
-        type="text"
-        id="inputBadanHukum"
-      >
-
-
-      <label>
-        Tanggal Berdiri
-      </label>
-
-      <input
-        type="date"
-        id="inputTanggal"
-      >
-
-
-      <label>
-        Visi
-      </label>
-
-      <textarea
-        id="inputVisi"
-        rows="3"
-      ></textarea>
-
-
-      <label>
-        Misi - pisahkan dengan koma ,
-      </label>
-
-      <textarea
-        id="inputMisi"
-        rows="3"
-      ></textarea>
-
-
-      <!-- =================================
-           PENGURUS
-      ================================== -->
-
-      <div class="judul-form-pengurus">
-        👥 Susunan Pengurus
-      </div>
-
-
+      <div class="judul-form-pengurus">👥 Susunan Pengurus</div>
       <div class="pengurus-form">
-
-        <div class="pengurus-input">
-
-          <label>
-            Ketua
-          </label>
-
-          <input
-            type="text"
-            id="inputKetua"
-            placeholder="Nama Ketua"
-          >
-
-        </div>
-
-
-        <div class="pengurus-input">
-
-          <label>
-            Wakil Ketua
-          </label>
-
-          <input
-            type="text"
-            id="inputWakilKetua"
-            placeholder="Nama Wakil Ketua"
-          >
-
-        </div>
-
-
-        <div class="pengurus-input">
-
-          <label>
-            Sekretaris
-          </label>
-
-          <input
-            type="text"
-            id="inputSekretaris"
-            placeholder="Nama Sekretaris"
-          >
-
-        </div>
-
-
-        <div class="pengurus-input">
-
-          <label>
-            Bendahara
-          </label>
-
-          <input
-            type="text"
-            id="inputBendahara"
-            placeholder="Nama Bendahara"
-          >
-
-        </div>
-
-
-        <div class="pengurus-input">
-
-          <label>
-            Pengawas
-          </label>
-
-          <input
-            type="text"
-            id="inputPengawas"
-            placeholder="Nama Pengawas"
-          >
-
-        </div>
-
+        <div class="pengurus-input"><label>Ketua</label><input type="text" id="inputKetua" placeholder="Nama Ketua"></div>
+        <div class="pengurus-input"><label>Wakil Ketua</label><input type="text" id="inputWakilKetua" placeholder="Nama Wakil Ketua"></div>
+        <div class="pengurus-input"><label>Sekretaris</label><input type="text" id="inputSekretaris" placeholder="Nama Sekretaris"></div>
+        <div class="pengurus-input"><label>Bendahara</label><input type="text" id="inputBendahara" placeholder="Nama Bendahara"></div>
+        <div class="pengurus-input"><label>Pengawas</label><input type="text" id="inputPengawas" placeholder="Nama Pengawas"></div>
       </div>
 
+      <div class="judul-form-pengurus">💼 Layanan Koperasi</div>
+      <div class="layanan-form">
+        <div class="layanan-input"><label>Simpanan</label><textarea id="inputLayananSimpanan" rows="3" placeholder="Contoh: Simpanan Pokok, Wajib, dan Sukarela. Bunga kompetitif & aman."></textarea></div>
+        <div class="layanan-input"><label>Pinjaman</label><textarea id="inputLayananPinjaman" rows="3" placeholder="Contoh: Pinjaman operasional anggota. Proses cepat."></textarea></div>
+      </div>
 
-      <button
-        type="submit"
-        class="btn-simpan"
-      >
-        💾 Simpan Perubahan
-      </button>
-
+      <button type="submit" class="btn-simpan">💾 Simpan Perubahan</button>
     </form>
-
   </div>
-
 </div>
-
-
-<!-- =====================================
-     FIREBASE
-===================================== -->
 
 <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee",storageBucket:"arfa-c7dee.firebasestorage.app",messagingSenderId:"468058520812",appId:"1:468058520812:web:f9cbc82fe7e88ecda9b9c9"};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const profilRef = ref(db,"profil_koperasi");
 
-import {
-  getDatabase,
-  ref,
-  get,
-  update,
-  onValue
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
-
-  authDomain:
-    "arfa-c7dee.firebaseapp.com",
-
-  databaseURL:
-    "https://arfa-c7dee-default-rtdb.firebaseio.com",
-
-  projectId:
-    "arfa-c7dee",
-
-  storageBucket:
-    "arfa-c7dee.firebasestorage.app",
-
-  messagingSenderId:
-    "468058520812",
-
-  appId:
-    "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
-
-};
-
-
-const app =
-  initializeApp(firebaseConfig);
-
-const db =
-  getDatabase(app);
-
-
-// Lokasi profil
-const profilRef =
-  ref(db,"profil_koperasi");
-
-
-// =====================================
-// ROLE
-// =====================================
-
-const role =
-  (localStorage.getItem("role") || "")
-  .trim()
-  .toLowerCase();
-
-const isAdmin =
-  role === "admin";
-
-
-console.log("ROLE LOGIN:",role);
-console.log("IS ADMIN:",isAdmin);
-
-
-// =====================================
-// FORMAT TANGGAL
-// =====================================
+const role = (localStorage.getItem("role") || "").trim().toLowerCase();
+const isAdmin = role === "admin";
 
 function formatTanggalIndo(tanggal){
-
-  if(!tanggal){
-    return "-";
-  }
-
-  const date =
-    new Date(tanggal);
-
-  if(isNaN(date)){
-    return tanggal;
-  }
-
-  const options = {
-    day:"numeric",
-    month:"long",
-    year:"numeric"
-  };
-
-  return date.toLocaleDateString(
-    "id-ID",
-    options
-  );
+  if(!tanggal){return "-";}
+  const date = new Date(tanggal);
+  if(isNaN(date)){return tanggal;}
+  return date.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
 }
 
-
-// =====================================
-// DOM READY
-// =====================================
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-
-  const btnEdit =
-    document.getElementById("btnEdit");
-
-  const modalEdit =
-    document.getElementById("modalEdit");
-
-  const closeModal =
-    document.getElementById("closeModal");
-
-  const formProfil =
-    document.getElementById("formProfil");
-
-  const pengurusList =
-    document.getElementById("pengurusList");
-
-
-  if(!btnEdit ||
-     !modalEdit ||
-     !formProfil){
-
-    console.error(
-      "Elemen penting tidak ditemukan."
-    );
-
-    return;
-  }
-
-
-  // ===================================
-  // ROLE BUTTON
-  // ===================================
+document.addEventListener("DOMContentLoaded", () => {
+  const btnEdit = document.getElementById("btnEdit");
+  const modalEdit = document.getElementById("modalEdit");
+  const closeModal = document.getElementById("closeModal");
+  const formProfil = document.getElementById("formProfil");
+  const pengurusList = document.getElementById("pengurusList");
+  const layananList = document.getElementById("layananList");
 
   if(!isAdmin){
-
     btnEdit.disabled = true;
-
-    btnEdit.innerHTML =
-      "🔒 Hanya Admin";
-
-    btnEdit.style.opacity =
-      "0.6";
-
-    btnEdit.style.cursor =
-      "not-allowed";
-
-  }else{
-
-    btnEdit.disabled = false;
-
-    btnEdit.innerHTML =
-      "✏️ Edit Profil";
-
-    btnEdit.style.opacity =
-      "1";
-
-    btnEdit.style.cursor =
-      "pointer";
-
+    btnEdit.innerHTML = "🔒 Hanya Admin";
+    btnEdit.style.opacity = "0.6";
+    btnEdit.style.cursor = "not-allowed";
   }
 
-
-  // ===================================
-  // LOAD PROFIL
-  // ===================================
-
-  onValue(
-    profilRef,
-    (snapshot) => {
-
-      const data =
-        snapshot.val() || {};
-
-
-      console.log(
-        "DATA PROFIL FIREBASE:",
-        data
-      );
-
-
-      // ================================
-      // INFORMASI KOPERASI
-      // ================================
-
-      document.getElementById(
-        "namaKoperasi"
-      ).textContent =
-        data.nama || "-";
-
-
-      document.getElementById(
-        "namaKoperasiJudul"
-      ).textContent =
-        data.nama ||
-        "Koperasi ARFA";
-
-
-      document.getElementById(
-        "alamat"
-      ).textContent =
-        data.alamat || "-";
-
-
-      document.getElementById(
-        "telepon"
-      ).textContent =
-        data.telepon || "-";
-
-
-      document.getElementById(
-        "email"
-      ).textContent =
-        data.email || "-";
-
-
-      document.getElementById(
-        "badanHukum"
-      ).textContent =
-        data.badanHukum || "-";
-
-
-      document.getElementById(
-        "tanggalBerdiri"
-      ).textContent =
-        formatTanggalIndo(
-          data.tanggalBerdiri
-        );
-
-
-      document.getElementById(
-        "visi"
-      ).textContent =
-        data.visi || "-";
-
-
-      // ================================
-      // MISI
-      // ================================
-
-      const misiList =
-        document.getElementById(
-          "misiList"
-        );
-
-      misiList.innerHTML = "";
-
-
-      if(Array.isArray(data.misi)){
-
-        data.misi.forEach(
-          (misi) => {
-
-            if(
-              misi &&
-              misi.trim() !== ""
-            ){
-
-              const li =
-                document.createElement(
-                  "li"
-                );
-
-              li.textContent =
-                misi;
-
-              misiList.appendChild(
-                li
-              );
-
-            }
-
-          }
-        );
-
-      }else if(
-        typeof data.misi === "string" &&
-        data.misi.trim() !== ""
-      ){
-
-        data.misi
-          .split(",")
-          .map(x => x.trim())
-          .filter(x => x)
-          .forEach(
-            misi => {
-
-              const li =
-                document.createElement(
-                  "li"
-                );
-
-              li.textContent =
-                misi;
-
-              misiList.appendChild(
-                li
-              );
-
-            }
-          );
-
-      }
-
-
-      // ================================
-      // SUSUNAN PENGURUS
-      // ================================
-
-      pengurusList.innerHTML = "";
-
-
-      const pengurus =
-        data.pengurus || {};
-
-
-      const daftarPengurus = [
-
-        {
-          jabatan:"Ketua",
-          nama:pengurus.ketua || ""
-        },
-
-        {
-          jabatan:"Wakil Ketua",
-          nama:pengurus.wakilKetua || ""
-        },
-
-        {
-          jabatan:"Sekretaris",
-          nama:pengurus.sekretaris || ""
-        },
-
-        {
-          jabatan:"Bendahara",
-          nama:pengurus.bendahara || ""
-        },
-
-        {
-          jabatan:"Pengawas",
-          nama:pengurus.pengawas || ""
-        }
-
-      ];
-
-
-      let jumlahPengurus = 0;
-
-
-      daftarPengurus.forEach(
-        item => {
-
-          if(
-            item.nama &&
-            item.nama.trim() !== ""
-          ){
-
-            jumlahPengurus++;
-
-
-            const div =
-              document.createElement(
-                "div"
-              );
-
-            div.className =
-              "pengurus-item";
-
-
-            div.innerHTML = `
-
-              <div class="pengurus-icon">
-                👤
-              </div>
-
-              <div>
-
-                <b>${item.jabatan}</b>
-
-                <p>
-                  ${item.nama}
-                </p>
-
-              </div>
-
-            `;
-
-
-            pengurusList.appendChild(
-              div
-            );
-
-          }
-
-        }
-      );
-
-
-      // Jika belum ada data
-      if(jumlahPengurus === 0){
-
-        pengurusList.innerHTML = `
-
-          <div class="pengurus-item">
-
-            <div class="pengurus-icon">
-              👤
-            </div>
-
-            <div>
-
-              <b>Susunan Pengurus</b>
-
-              <p>
-                Belum diisi
-              </p>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }
-
-    },
-
-    (error) => {
-
-      console.error(
-        "Gagal membaca profil:",
-        error
-      );
-
+  onValue(profilRef, (snapshot) => {
+    const data = snapshot.val() || {};
+    
+    document.getElementById("namaKoperasi").textContent = data.nama || "-";
+    document.getElementById("namaKoperasiJudul").textContent = data.nama || "Koperasi ARFA";
+    document.getElementById("alamat").textContent = data.alamat || "-";
+    document.getElementById("telepon").textContent = data.telepon || "-";
+    document.getElementById("email").textContent = data.email || "-";
+    document.getElementById("badanHukum").textContent = data.badanHukum || "-";
+    document.getElementById("tanggalBerdiri").textContent = formatTanggalIndo(data.tanggalBerdiri);
+    document.getElementById("visi").textContent = data.visi || "-";
+
+    const misiList = document.getElementById("misiList");
+    misiList.innerHTML = "";
+    if(Array.isArray(data.misi)){
+      data.misi.forEach(misi => { if(misi && misi.trim() !== ""){ const li = document.createElement("li"); li.textContent = misi; misiList.appendChild(li); } });
+    }else if(typeof data.misi === "string" && data.misi.trim() !== ""){
+      data.misi.split(",").map(x => x.trim()).filter(x => x).forEach(misi => { const li = document.createElement("li"); li.textContent = misi; misiList.appendChild(li); });
     }
-  );
 
-
-  // ===================================
-  // BUKA MODAL EDIT
-  // ===================================
-
-  btnEdit.addEventListener(
-    "click",
-    async () => {
-
-
-      if(!isAdmin){
-
-        alert(
-          "⚠️ Hanya Admin yang dapat mengedit profil."
-        );
-
-        return;
+    pengurusList.innerHTML = "";
+    const pengurus = data.pengurus || {};
+    const daftarPengurus = [
+      {jabatan:"Ketua",nama:pengurus.ketua || ""},
+      {jabatan:"Wakil Ketua",nama:pengurus.wakilKetua || ""},
+      {jabatan:"Sekretaris",nama:pengurus.sekretaris || ""},
+      {jabatan:"Bendahara",nama:pengurus.bendahara || ""},
+      {jabatan:"Pengawas",nama:pengurus.pengawas || ""}
+    ];
+    let jumlahPengurus = 0;
+    daftarPengurus.forEach(item => {
+      if(item.nama && item.nama.trim() !== ""){
+        jumlahPengurus++;
+        const div = document.createElement("div");
+        div.className = "pengurus-item";
+        div.innerHTML = `<div class="pengurus-icon">👤</div><div><b>${item.jabatan}</b><p>${item.nama}</p></div>`;
+        pengurusList.appendChild(div);
       }
+    });
+    if(jumlahPengurus === 0){ pengurusList.innerHTML = `<div class="pengurus-item"><div class="pengurus-icon">👤</div><div><b>Susunan Pengurus</b><p>Belum diisi</p></div></div>`; }
 
+    // ================================ LAYAN ================================
+    layananList.innerHTML = "";
+    const layanan = data.layanan || {};
+    const daftarLayanan = [
+      {icon: "💰", nama: "Simpanan", desc: layanan.simpanan || "Simpanan Pokok, Wajib, dan Sukarela. Bunga kompetitif & aman."},
+      {icon: "🏦", nama: "Pinjaman", desc: layanan.pinjaman || "Pinjaman operasional anggota. Proses cepat."}
+    ];
+    daftarLayanan.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "layanan-item";
+      div.innerHTML = `<div class="icon">${item.icon}</div><div><b>${item.nama}</b><p>${item.desc}</p></div>`;
+      layananList.appendChild(div);
+    });
 
-      try{
+  });
 
-        const snapshot =
-          await get(profilRef);
+  btnEdit.addEventListener("click", async () => {
+    if(!isAdmin){ alert("⚠️ Hanya Admin yang dapat mengedit profil."); return; }
+    const snapshot = await get(profilRef);
+    const data = snapshot.val() || {};
 
-        const data =
-          snapshot.val() || {};
+    document.getElementById("inputNama").value = data.nama || "";
+    document.getElementById("inputAlamat").value = data.alamat || "";
+    document.getElementById("inputTelepon").value = data.telepon || "";
+    document.getElementById("inputEmail").value = data.email || "";
+    document.getElementById("inputBadanHukum").value = data.badanHukum || "";
+    document.getElementById("inputTanggal").value = data.tanggalBerdiri || "";
+    document.getElementById("inputVisi").value = data.visi || "";
+    document.getElementById("inputMisi").value = Array.isArray(data.misi) ? data.misi.join(", ") : data.misi || "";
 
+    const pengurus = data.pengurus || {};
+    document.getElementById("inputKetua").value = pengurus.ketua || "";
+    document.getElementById("inputWakilKetua").value = pengurus.wakilKetua || "";
+    document.getElementById("inputSekretaris").value = pengurus.sekretaris || "";
+    document.getElementById("inputBendahara").value = pengurus.bendahara || "";
+    document.getElementById("inputPengawas").value = pengurus.pengawas || "";
 
-        // ==============================
-        // DATA PROFIL
-        // ==============================
+    const layanan = data.layanan || {};
+    document.getElementById("inputLayananSimpanan").value = layanan.simpanan || "";
+    document.getElementById("inputLayananPinjaman").value = layanan.pinjaman || "";
 
-        document.getElementById(
-          "inputNama"
-        ).value =
-          data.nama || "";
+    modalEdit.style.display = "block";
+    document.body.style.overflow = "hidden";
+  });
 
+  closeModal.addEventListener("click", () => { modalEdit.style.display = "none"; document.body.style.overflow = ""; });
+  window.addEventListener("click", (event) => { if(event.target === modalEdit){ modalEdit.style.display = "none"; document.body.style.overflow = ""; } });
 
-        document.getElementById(
-          "inputAlamat"
-        ).value =
-          data.alamat || "";
+  formProfil.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if(!isAdmin){ alert("⚠️ Hanya Admin yang dapat menyimpan perubahan."); return; }
 
+    const nama = document.getElementById("inputNama").value.trim();
+    const alamat = document.getElementById("inputAlamat").value.trim();
+    const telepon = document.getElementById("inputTelepon").value.trim();
+    const email = document.getElementById("inputEmail").value.trim();
+    const badanHukum = document.getElementById("inputBadanHukum").value.trim();
+    const tanggalBerdiri = document.getElementById("inputTanggal").value;
+    const visi = document.getElementById("inputVisi").value.trim();
+    const misiArray = document.getElementById("inputMisi").value.split(",").map(m => m.trim()).filter(m => m !== "");
 
-        document.getElementById(
-          "inputTelepon"
-        ).value =
-          data.telepon || "";
+    const pengurus = {
+      ketua: document.getElementById("inputKetua").value.trim(),
+      wakilKetua: document.getElementById("inputWakilKetua").value.trim(),
+      sekretaris: document.getElementById("inputSekretaris").value.trim(),
+      bendahara: document.getElementById("inputBendahara").value.trim(),
+      pengawas: document.getElementById("inputPengawas").value.trim()
+    };
 
+    const layanan = {
+      simpanan: document.getElementById("inputLayananSimpanan").value.trim(),
+      pinjaman: document.getElementById("inputLayananPinjaman").value.trim()
+    };
 
-        document.getElementById(
-          "inputEmail"
-        ).value =
-          data.email || "";
+    if(!nama){ alert("Nama koperasi wajib diisi."); return; }
+    if(!alamat){ alert("Alamat kantor wajib diisi."); return; }
+    if(!telepon){ alert("No. Telepon / WA wajib diisi."); return; }
+    if(!email){ alert("Email wajib diisi."); return; }
 
+    const btnSimpan = formProfil.querySelector(".btn-simpan");
+    btnSimpan.disabled = true; btnSimpan.innerHTML = "⏳ Menyimpan...";
 
-        document.getElementById(
-          "inputBadanHukum"
-        ).value =
-          data.badanHukum || "";
-
-
-        document.getElementById(
-          "inputTanggal"
-        ).value =
-          data.tanggalBerdiri || "";
-
-
-        document.getElementById(
-          "inputVisi"
-        ).value =
-          data.visi || "";
-
-
-        // ==============================
-        // MISI
-        // ==============================
-
-        if(
-          Array.isArray(data.misi)
-        ){
-
-          document.getElementById(
-            "inputMisi"
-          ).value =
-            data.misi.join(", ");
-
-        }else{
-
-          document.getElementById(
-            "inputMisi"
-          ).value =
-            data.misi || "";
-
-        }
-
-
-        // ==============================
-        // PENGURUS
-        // ==============================
-
-        const pengurus =
-          data.pengurus || {};
-
-
-        document.getElementById(
-          "inputKetua"
-        ).value =
-          pengurus.ketua || "";
-
-
-        document.getElementById(
-          "inputWakilKetua"
-        ).value =
-          pengurus.wakilKetua || "";
-
-
-        document.getElementById(
-          "inputSekretaris"
-        ).value =
-          pengurus.sekretaris || "";
-
-
-        document.getElementById(
-          "inputBendahara"
-        ).value =
-          pengurus.bendahara || "";
-
-
-        document.getElementById(
-          "inputPengawas"
-        ).value =
-          pengurus.pengawas || "";
-
-
-        // ==============================
-        // TAMPILKAN MODAL
-        // ==============================
-
-        modalEdit.style.display =
-          "block";
-
-        document.body.style.overflow =
-          "hidden";
-
-
-      }catch(error){
-
-        console.error(
-          "Gagal membuka data profil:",
-          error
-        );
-
-
-        alert(
-          "❌ Gagal mengambil data profil.\n\n" +
-          error.message
-        );
-
-      }
-
+    try{
+      await update(profilRef, {
+        nama:nama, alamat:alamat, telepon:telepon, email:email, badanHukum:badanHukum, tanggalBerdiri:tanggalBerdiri, visi:visi, misi:misiArray, pengurus:pengurus, layanan:layanan // <-- UDAH ADA KOMANYA
+      });
+      modalEdit.style.display = "none"; document.body.style.overflow = "";
+      alert("✅ Profil koperasi berhasil disimpan.");
+    }catch(error){
+      console.error("Gagal menyimpan profil:", error);
+      alert("❌ Gagal menyimpan profil.\n\n" + error.message);
+    }finally{
+      btnSimpan.disabled = false; btnSimpan.innerHTML = "💾 Simpan Perubahan";
     }
-  );
-
-
-  // ===================================
-  // TUTUP MODAL
-  // ===================================
-
-  closeModal.addEventListener(
-    "click",
-    () => {
-
-      modalEdit.style.display =
-        "none";
-
-      document.body.style.overflow =
-        "";
-
-    }
-  );
-
-
-  // Klik luar modal
-  window.addEventListener(
-    "click",
-    (event) => {
-
-      if(
-        event.target === modalEdit
-      ){
-
-        modalEdit.style.display =
-          "none";
-
-        document.body.style.overflow =
-          "";
-
-      }
-
-    }
-  );
-
-
-  // ===================================
-  // SIMPAN PROFIL
-  // ===================================
-
-  formProfil.addEventListener(
-    "submit",
-    async (event) => {
-
-      event.preventDefault();
-
-
-      if(!isAdmin){
-
-        alert(
-          "⚠️ Hanya Admin yang dapat menyimpan perubahan."
-        );
-
-        return;
-
-      }
-
-
-      // ==============================
-      // DATA PROFIL
-      // ==============================
-
-      const nama =
-        document.getElementById(
-          "inputNama"
-        ).value.trim();
-
-
-      const alamat =
-        document.getElementById(
-          "inputAlamat"
-        ).value.trim();
-
-
-      const telepon =
-        document.getElementById(
-          "inputTelepon"
-        ).value.trim();
-
-
-      const email =
-        document.getElementById(
-          "inputEmail"
-        ).value.trim();
-
-
-      const badanHukum =
-        document.getElementById(
-          "inputBadanHukum"
-        ).value.trim();
-
-
-      const tanggalBerdiri =
-        document.getElementById(
-          "inputTanggal"
-        ).value;
-
-
-      const visi =
-        document.getElementById(
-          "inputVisi"
-        ).value.trim();
-
-
-      const misiArray =
-        document.getElementById(
-          "inputMisi"
-        ).value
-        .split(",")
-        .map(
-          m => m.trim()
-        )
-        .filter(
-          m => m !== ""
-        );
-
-
-      // ==============================
-      // DATA PENGURUS
-      // ==============================
-
-      const pengurus = {
-
-        ketua:
-          document.getElementById(
-            "inputKetua"
-          ).value.trim(),
-
-        wakilKetua:
-          document.getElementById(
-            "inputWakilKetua"
-          ).value.trim(),
-
-        sekretaris:
-          document.getElementById(
-            "inputSekretaris"
-          ).value.trim(),
-
-        bendahara:
-          document.getElementById(
-            "inputBendahara"
-          ).value.trim(),
-
-        pengawas:
-          document.getElementById(
-            "inputPengawas"
-          ).value.trim()
-
-      };
-
-
-      // ==============================
-      // VALIDASI
-      // ==============================
-
-      if(!nama){
-
-        alert(
-          "Nama koperasi wajib diisi."
-        );
-
-        return;
-
-      }
-
-
-      if(!alamat){
-
-        alert(
-          "Alamat kantor wajib diisi."
-        );
-
-        return;
-
-      }
-
-
-      if(!telepon){
-
-        alert(
-          "No. Telepon / WA wajib diisi."
-        );
-
-        return;
-
-      }
-
-
-      if(!email){
-
-        alert(
-          "Email wajib diisi."
-        );
-
-        return;
-
-      }
-
-
-      // ==============================
-      // BUTTON LOADING
-      // ==============================
-
-      const btnSimpan =
-        formProfil.querySelector(
-          ".btn-simpan"
-        );
-
-
-      const textButtonAwal =
-        btnSimpan.innerHTML;
-
-
-      btnSimpan.disabled =
-        true;
-
-      btnSimpan.innerHTML =
-        "⏳ Menyimpan...";
-
-
-      try{
-
-
-        // ============================
-        // UPDATE FIREBASE
-        // ============================
-
-        await update(
-          profilRef,
-          {
-
-            nama:nama,
-
-            alamat:alamat,
-
-            telepon:telepon,
-
-            email:email,
-
-            badanHukum:badanHukum,
-
-            tanggalBerdiri:
-              tanggalBerdiri,
-
-            visi:visi,
-
-            misi:misiArray,
-
-            pengurus:pengurus
-
-          }
-        );
-
-
-        console.log(
-          "Profil berhasil disimpan."
-        );
-
-
-        // ============================
-        // TUTUP MODAL
-        // ============================
-
-        modalEdit.style.display =
-          "none";
-
-        document.body.style.overflow =
-          "";
-
-
-        alert(
-          "✅ Profil koperasi berhasil disimpan."
-        );
-
-
-      }catch(error){
-
-        console.error(
-          "Gagal menyimpan profil:",
-          error
-        );
-
-
-        alert(
-          "❌ Gagal menyimpan profil.\n\n" +
-          error.message
-        );
-
-
-      }finally{
-
-        btnSimpan.disabled =
-          false;
-
-        btnSimpan.innerHTML =
-          textButtonAwal;
-
-      }
-
-    }
-  );
-
+  });
 });
 
-
-// =====================================
-// TOMBOL BACK
-// =====================================
-
-window.goBack = function(){
-
-  if(
-    document.referrer &&
-    document.referrer !== ""
-  ){
-
-    history.back();
-
-  }else{
-
-    window.location.href =
-      "dashboard.html";
-
-  }
-
-};
-
+window.goBack = function(){ if(document.referrer && document.referrer !== ""){ history.back(); }else{ window.location.href = "dashboard.html"; } };
 </script>
-
 </body>
 </html>
