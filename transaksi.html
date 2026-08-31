@@ -74,28 +74,318 @@ function formatRp(n){return Number(n||0).toLocaleString("id-ID");}
 function formatTanggal(t){if(!t)return"-";let d=new Date(Number(t));return isNaN(d)?"-":d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});}
 function generateNoBukti(timestamp,id){if(!timestamp)timestamp=Date.now();const d=new Date(Number(timestamp));const tgl=d.toISOString().slice(0,10).replace(/-/g,"");const shortId=String(id).slice(-3).toUpperCase();return `KAS-${tgl}-${shortId}`;}
 
-onValue(kasRef,(snap)=>{dataAsli=[];saldoAwalData=null;
-if(snap.exists()){const data=snap.val();const saldoAwal=data.saldoAwal||{};const totalSaldoAwal=Number(saldoAwal.cash||0)+Number(saldoAwal.bank||0);
-if(totalSaldoAwal>0){saldoAwalData={id:"SALDO-AWAL",noBukti:"SALDO-AWAL",tanggal:Number(saldoAwal.tanggal)||0,keterangan:"Saldo Awal",kategori:"Saldo Awal",petugas:"-",sumber:Number(saldoAwal.cash||0)>0&&Number(saldoAwal.bank||0)>0?"cash/bank":Number(saldoAwal.cash||0)>0?"cash":"bank",masuk:totalSaldoAwal,keluar:0,isSaldoAwal:true};}
-const transaksi=data.transaksi||{};
-for(const k in transaksi){const i=transaksi[k];
-dataAsli.push({id:k,noBukti:i.no_bukti||generateNoBukti(i.tanggal,k),tanggal:Number(i.tanggal)||0,keterangan:i.keterangan??"-",kategori:i.kategori??i.jenis??"Lainnya",petugas:i.petugas??i.user??"-",sumber:(i.sumberKas??"cash").toLowerCase(),masuk:i.tipe==="masuk"?Number(i.jumlah||0):0,keluar:(i.tipe==="keluar"||i.tipe==="biaya")?Number(i.jumlah||0):0,isSaldoAwal:false});}}
-isiDropdownFilter();filterTanggal();});
+onValue(kasRef,(snap)=>{
+    dataAsli=[];
+    saldoAwalData=null;
 
-function isiDropdownFilter(){const setKategori=new Set();dataAsli.forEach(i=>setKategori.add(i.kategori));const selKat=document.getElementById("filterKategori");selKat.innerHTML='<option value="">Semua Kategori</option>';[...setKategori].sort().forEach(k=>{if(k)selKat.innerHTML+=`<option value="${k}">${k}</option>`});}
+    if(snap.exists()){
+        const data=snap.val();
 
-window.filterTanggal=function(){const awal=document.getElementById("tglAwal").value;const akhir=document.getElementById("tglAkhir").value;dataTampil=[...dataAsli];if(awal&&akhir){const a=new Date(awal).getTime();const b=new Date(akhir);b.setHours(23,59,59,999);dataTampil=dataTampil.filter(i=>i.tanggal>=a&&i.tanggal<=b.getTime());}filterRinci();}
-window.resetFilter=function(){document.getElementById("tglAwal").value="";document.getElementById("tglAkhir").value="";document.getElementById("searchRinci").value="";document.getElementById("filterKategori").value="";document.getElementById("filterSumber").value="";dataTampil=[...dataAsli];filterRinci();}
-window.filterRinci=function(){let filtered=[...dataTampil];if(saldoAwalData)filtered.unshift(saldoAwalData);const search=document.getElementById("searchRinci").value.toLowerCase();const kat=document.getElementById("filterKategori").value;const sum=document.getElementById("filterSumber").value;
-filtered=filtered.filter(i=>{const matchSearch=i.keterangan.toLowerCase().includes(search)||i.noBukti.toLowerCase().includes(search);const matchKat=!kat||i.kategori===kat;const matchSum=!sum||i.sumber===sum;return matchSearch&&matchKat&&matchSum;});tampilkanTabel(filtered);}
+        // =========================
+        // SALDO AWAL
+        // =========================
+        const saldoAwal=data.saldoAwal||{};
+        const cashAwal=Number(saldoAwal.cash||0);
+        const bankAwal=Number(saldoAwal.bank||0);
+        const tanggalAwal=Number(saldoAwal.tanggal)||0;
 
-function tampilkanTabel(data){const tbody=document.getElementById("laporanRinci");tbody.innerHTML="";data.sort((a,b)=>{if(a.isSaldoAwal)return-1;if(b.isSaldoAwal)return 1;return a.tanggal-b.tanggal;});let saldo=0,totalMasuk=0,totalKeluar=0,no=1;
-if(data.length===0)tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:30px">Tidak ada data</td></tr>`;
-data.forEach(i=>{saldo+=i.masuk-i.keluar;if(!i.isSaldoAwal){totalMasuk+=i.masuk;totalKeluar+=i.keluar;}
-let badgeClass="badge-cash";if(i.sumber==="bank")badgeClass="badge-bank";
-tbody.innerHTML+=`<tr><td>${no++}</td><td>${formatTanggal(i.tanggal)}</td><td>${i.noBukti}</td><td>${i.kategori}</td><td>${i.keterangan}</td><td class="masuk text-right">${i.masuk?"Rp "+formatRp(i.masuk):"-"}</td><td class="keluar text-right">${i.keluar?"Rp "+formatRp(i.keluar):"-"}</td><td class="text-right" style="font-weight:600">Rp ${formatRp(saldo)}</td><td><span class="badge ${badgeClass}">${i.sumber.toUpperCase()}</span></td><td>${i.petugas}</td></tr>`;});
-document.getElementById("saldoKas").innerText="Rp "+formatRp(saldo);document.getElementById("kasMasuk").innerText="Rp "+formatRp(totalMasuk);document.getElementById("kasKeluar").innerText="Rp "+formatRp(totalKeluar);}
+        // Saldo awal CASH
+        if(cashAwal>0){
+            dataAsli.push({
+                id:"SALDO-AWAL-CASH",
+                noBukti:"SALDO-AWAL",
+                tanggal:tanggalAwal,
+                keterangan:"Saldo Awal Cash",
+                kategori:"Saldo Awal",
+                petugas:"-",
+                sumber:"cash",
+                masuk:cashAwal,
+                keluar:0,
+                isSaldoAwal:true
+            });
+        }
 
+        // Saldo awal BANK
+        if(bankAwal>0){
+            dataAsli.push({
+                id:"SALDO-AWAL-BANK",
+                noBukti:"SALDO-AWAL",
+                tanggal:tanggalAwal,
+                keterangan:"Saldo Awal Bank",
+                kategori:"Saldo Awal",
+                petugas:"-",
+                sumber:"bank",
+                masuk:bankAwal,
+                keluar:0,
+                isSaldoAwal:true
+            });
+        }
+
+        // =========================
+        // TRANSAKSI
+        // =========================
+        const transaksi=data.transaksi||{};
+
+        for(const k in transaksi){
+            const i=transaksi[k];
+
+            dataAsli.push({
+                id:k,
+                noBukti:i.no_bukti||generateNoBukti(i.tanggal,k),
+                tanggal:Number(i.tanggal)||0,
+                keterangan:i.keterangan??"-",
+                kategori:i.kategori??i.jenis??"Lainnya",
+                petugas:i.petugas??i.user??"-",
+                sumber:(i.sumberKas??"cash").toLowerCase(),
+
+                masuk:
+                    i.tipe==="masuk"
+                    ? Number(i.jumlah||0)
+                    : 0,
+
+                keluar:
+                    (i.tipe==="keluar"||i.tipe==="biaya")
+                    ? Number(i.jumlah||0)
+                    : 0,
+
+                isSaldoAwal:false
+            });
+        }
+    }
+
+    isiDropdownFilter();
+    filterTanggal();
+});
+
+
+// =========================
+// DROPDOWN KATEGORI
+// =========================
+function isiDropdownFilter(){
+    const setKategori=new Set();
+
+    dataAsli.forEach(i=>{
+        if(i.kategori){
+            setKategori.add(i.kategori);
+        }
+    });
+
+    const selKat=document.getElementById("filterKategori");
+
+    selKat.innerHTML='<option value="">Semua Kategori</option>';
+
+    [...setKategori]
+        .sort()
+        .forEach(k=>{
+            selKat.innerHTML+=`<option value="${k}">${k}</option>`;
+        });
+}
+
+
+// =========================
+// FILTER TANGGAL
+// =========================
+window.filterTanggal=function(){
+
+    const awal=document.getElementById("tglAwal").value;
+    const akhir=document.getElementById("tglAkhir").value;
+
+    dataTampil=[...dataAsli];
+
+    if(awal&&akhir){
+
+        const a=new Date(awal).getTime();
+
+        const b=new Date(akhir);
+        b.setHours(23,59,59,999);
+
+        dataTampil=dataTampil.filter(i=>
+            i.tanggal>=a &&
+            i.tanggal<=b.getTime()
+        );
+    }
+
+    filterRinci();
+};
+
+
+// =========================
+// RESET FILTER
+// =========================
+window.resetFilter=function(){
+
+    document.getElementById("tglAwal").value="";
+    document.getElementById("tglAkhir").value="";
+    document.getElementById("searchRinci").value="";
+    document.getElementById("filterKategori").value="";
+    document.getElementById("filterSumber").value="";
+
+    dataTampil=[...dataAsli];
+
+    filterRinci();
+};
+
+
+// =========================
+// FILTER RINCI
+// =========================
+window.filterRinci=function(){
+
+    let filtered=[...dataTampil];
+
+    const search=
+        document.getElementById("searchRinci")
+        .value
+        .toLowerCase()
+        .trim();
+
+    const kat=
+        document.getElementById("filterKategori").value;
+
+    const sum=
+        document.getElementById("filterSumber").value;
+
+    filtered=filtered.filter(i=>{
+
+        const keterangan=String(i.keterangan||"").toLowerCase();
+        const noBukti=String(i.noBukti||"").toLowerCase();
+
+        const matchSearch=
+            !search ||
+            keterangan.includes(search) ||
+            noBukti.includes(search);
+
+        const matchKat=
+            !kat ||
+            i.kategori===kat;
+
+        const matchSum=
+            !sum ||
+            i.sumber===sum;
+
+        return matchSearch &&
+               matchKat &&
+               matchSum;
+    });
+
+    tampilkanTabel(filtered);
+};
+
+
+// =========================
+// TAMPILKAN TABEL
+// =========================
+function tampilkanTabel(data){
+
+    const tbody=document.getElementById("laporanRinci");
+
+    tbody.innerHTML="";
+
+    // Urutkan berdasarkan tanggal
+    // Saldo awal tetap berada di bagian awal
+    data.sort((a,b)=>{
+
+        if(a.isSaldoAwal && !b.isSaldoAwal) return -1;
+        if(!a.isSaldoAwal && b.isSaldoAwal) return 1;
+
+        return a.tanggal-b.tanggal;
+    });
+
+    let saldo=0;
+    let totalMasuk=0;
+    let totalKeluar=0;
+    let no=1;
+
+    if(data.length===0){
+
+        tbody.innerHTML=`
+            <tr>
+                <td colspan="10"
+                    style="text-align:center;padding:30px">
+                    Tidak ada data
+                </td>
+            </tr>
+        `;
+
+        document.getElementById("saldoKas").innerText="Rp 0";
+        document.getElementById("kasMasuk").innerText="Rp 0";
+        document.getElementById("kasKeluar").innerText="Rp 0";
+
+        return;
+    }
+
+    data.forEach(i=>{
+
+        saldo += i.masuk-i.keluar;
+
+        // Saldo awal ikut dihitung ke saldo,
+        // tetapi TIDAK dimasukkan ke Kas Masuk.
+        if(!i.isSaldoAwal){
+
+            totalMasuk += i.masuk;
+            totalKeluar += i.keluar;
+        }
+
+        let badgeClass="badge-cash";
+
+        if(i.sumber==="bank"){
+            badgeClass="badge-bank";
+        }
+
+        tbody.innerHTML+=`
+            <tr>
+
+                <td>${no++}</td>
+
+                <td>${formatTanggal(i.tanggal)}</td>
+
+                <td>${i.noBukti}</td>
+
+                <td>${i.kategori}</td>
+
+                <td>${i.keterangan}</td>
+
+                <td class="masuk text-right">
+                    ${i.masuk
+                        ?"Rp "+formatRp(i.masuk)
+                        :"-"}
+                </td>
+
+                <td class="keluar text-right">
+                    ${i.keluar
+                        ?"Rp "+formatRp(i.keluar)
+                        :"-"}
+                </td>
+
+                <td class="text-right"
+                    style="font-weight:600">
+                    Rp ${formatRp(saldo)}
+                </td>
+
+                <td>
+                    <span class="badge ${badgeClass}">
+                        ${i.sumber.toUpperCase()}
+                    </span>
+                </td>
+
+                <td>${i.petugas}</td>
+
+            </tr>
+        `;
+    });
+
+    // =========================
+    // SUMMARY
+    // =========================
+    document.getElementById("saldoKas").innerText=
+        "Rp "+formatRp(saldo);
+
+    document.getElementById("kasMasuk").innerText=
+        "Rp "+formatRp(totalMasuk);
+
+    document.getElementById("kasKeluar").innerText=
+        "Rp "+formatRp(totalKeluar);
+}
 window.exportPDF=function(){const{jsPDF}=window.jspdf;const doc=new jsPDF("l");doc.setFontSize(14);doc.text("KOPERASI ARFA SEJAHTERA",148,15,{align:"center"});doc.setFontSize(11);doc.text("LAPORAN KAS RINCI",148,22,{align:"center"});
 let rows=[];document.querySelectorAll("#laporanRinci tr").forEach(tr=>{const tds=tr.querySelectorAll("td");if(tds.length>1)rows.push([tds[0].innerText,tds[1].innerText,tds[2].innerText,tds[3].innerText,tds[4].innerText,tds[5].innerText,tds[6].innerText,tds[7].innerText,tds[8].innerText,tds[9].innerText]);});
 doc.autoTable({startY:32,head:[["No","Tanggal","No Bukti","Kategori","Keterangan","Masuk","Keluar","Saldo","Sumber","Petugas"]],body:rows,styles:{fontSize:7}});doc.save(`laporan_kas_${new Date().toLocaleDateString("id-ID").replace(/\//g,"-")}.pdf`);}
