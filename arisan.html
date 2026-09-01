@@ -25,6 +25,8 @@ button:disabled{opacity:0.6; cursor:not-allowed}
 .btn-primary{background:var(--primary);color:#fff;width:100%}
 .btn-warning{background:var(--warning);color:#fff}
 .btn-danger{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-info{background:#0ea5e9;color:#fff}
 .list{display:flex;flex-direction:column;gap:10px;margin-top:15px}
 .item{background:#fff;padding:12px;border-radius:10px;border:1px solid #e5e7eb}
 .item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -32,22 +34,21 @@ button:disabled{opacity:0.6; cursor:not-allowed}
 .badge.aktif{background:var(--success)}
 .badge.selesai{background:var(--muted)}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.member-tag{background:#e0f2fe;color:#0369a1;padding:4px 8px;border-radius:20px;font-size:11px;margin:2px;display:inline-block}
+.member-tag{background:#e0f2fe;color:#0369a1;padding:4px 8px;border-radius:20px;font-size:11px;margin:2px;display:inline-flex; align-items:center; gap:5px}
+.member-tag.del{cursor:pointer; font-size:14px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:999}
 .modal.show{display:flex}
 .modal-content{background:#fff;width:95%;max-width:500px;border-radius:12px;padding:15px;max-height:90vh;overflow:auto}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--success);color:#fff;padding:10px 15px;border-radius:8px;opacity:0;transition:.3s;z-index:9999}
 .toast.show{opacity:1}
-  .checkbox-item{display:flex; align-items:center; gap:8px; padding:6px; border-bottom:1px solid #eee}
-.checkbox-item:last-child{border-bottom:none}
-.checkbox-item input{width:18px; height:18px}
 .tabel-setor{width:100%; border-collapse:collapse; font-size:12px; margin-top:10px}
 .tabel-setor th,.tabel-setor td{padding:8px; border-bottom:1px solid #eee; text-align:left}
 .tabel-setor th{background:#f8fafc; font-weight:600}
 .tabel-setor input[type=checkbox]{width:18px; height:18px}
 .btn-kecil{padding:5px 8px; font-size:11px}
 tr.lunas{background:#dcfce7}
-
+.btn-wa{background:#25D366;color:#fff;padding:3px 6px;border-radius:20px;font-size:10px;display:inline-flex;align-items:center;gap:3px; text-decoration:none}
+.btn-wa.material-icons{font-size:14px}
 /* ANIMASI ROLET */
 #roletBox{display:none; text-align:center; padding:20px; background:#fef3c7; border-radius:12px; margin:10px 0; border:2px dashed var(--warning)}
 #roletBox.show{display:block; animation:shake.5s}
@@ -67,15 +68,21 @@ tr.lunas{background:#dcfce7}
 <div class="container">
   <div class="card">
     <h2>+ Buat Arisan Baru</h2>
-    <div class="form-group"><label>Nama Arisan</label><input type="text" id="namaArisan" placeholder="Contoh: Arisan "></div>
+    <div class="form-group"><label>Nama Arisan</label><input type="text" id="namaArisan" placeholder="Contoh: Arisan Ibu-ibu"></div>
     <div class="grid-2">
       <div class="form-group"><label>Jumlah Iuran</label><input type="number" id="iuran" placeholder="100000"></div>
       <div class="form-group"><label>Periode</label><select id="periode"><option value="mingguan">Mingguan</option><option value="bulanan">Bulanan</option></select></div>
     </div>
+
     <div class="form-group">
-      <label>Pilih Anggota <span id="jmlAnggotaDipilih" style="color:var(--primary)">0</span> orang</label>
-      <div id="listCheckboxAnggota" style="max-height:200px; overflow-y:auto; border:1px solid #ddd; border-radius:8px; padding:8px; background:#fafafa"></div>
+      <label>Tambah Anggota Arisan</label>
+      <div class="form-group"><input type="text" id="inputNamaAnggota" placeholder="Nama Anggota"></div>
+      <div class="form-group"><input type="text" id="inputHpAnggota" placeholder="No HP / WhatsApp 08xxx"></div>
+      <button class="btn-success" style="margin-bottom:10px" onclick="tambahAnggotaManual()">+ Tambah Anggota</button>
+      <div id="listAnggotaPreview" style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px"></div>
+      <small style="color:#666">*Anggota arisan bisa siapa saja, tidak harus anggota koperasi</small>
     </div>
+
     <button class="btn-primary" id="btnBuatArisan">Buat Arisan</button>
   </div>
 
@@ -91,13 +98,16 @@ tr.lunas{background:#dcfce7}
 <div id="modalDetail" class="modal">
   <div class="modal-content">
     <div style="display:flex;justify-content:space-between"><h2 id="detailJudul">Detail Arisan</h2><span onclick="tutupModal()" class="material-icons" style="cursor:pointer">close</span></div>
-    <div id="detailInfo"></div>
+   <div id="detailInfo"></div>
 
-    <h3>Input Setoran Putaran <span id="txtPeriodeSekarang"></span></h3>
-    <table class="tabel-setor"><thead><tr><th width="40">Lunas</th><th>Nama Anggota</th><th>Jumlah</th></tr></thead><tbody id="tabelSetoran"></tbody></table>
+<h3>Daftar Anggota</h3>
+<table class="tabel-setor" id="tabelAnggota"><thead><tr><th>Nama</th><th>No HP</th><th>Status</th><th width="90">Aksi</th></tr></thead><tbody id="tbodyAnggota"></tbody></table>
+
+<h3>Input Setoran Putaran <span id="txtPeriodeSekarang"></span></h3>
+    <table class="tabel-setor"><thead><tr><th width="40">Lunas</th><th>Nama Anggota</th><th>No HP</th><th>Jumlah</th></tr></thead><tbody id="tabelSetoran"></tbody></table>
 
     <div class="grid-2" style="margin-top:10px">
-      <div class="form-group"><label>Potongan Jasa Kas %</label><input type="number" id="inputJasa" value="5" min="0" max="100"></div>
+      <div class="form-group"><label>Potongan Jasa Kas Rp</label><input type="number" id="inputJasa" value="0" min="0"></div>
       <div class="form-group"><label>Total Diterima</label><input type="text" id="inputDiterima" readonly style="background:#f3f4f6; font-weight:700; color:var(--success)"></div>
     </div>
 
@@ -111,6 +121,20 @@ tr.lunas{background:#dcfce7}
   </div>
 </div>
 
+<!-- MODAL EDIT ANGGOTA -->
+<div id="modalEditAnggota" class="modal">
+  <div class="modal-content">
+    <h3>Edit Anggota</h3>
+    <input type="hidden" id="editAnggotaId">
+    <div class="form-group"><label>Nama</label><input type="text" id="editNamaAnggota"></div>
+    <div class="form-group"><label>No HP</label><input type="text" id="editHpAnggota" placeholder="08xxx"></div>
+    <div class="grid-2">
+      <button class="btn-primary" onclick="simpanEditAnggota()">Simpan</button>
+      <button class="btn-danger" onclick="tutupModalEditAnggota()">Batal</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
 <script type="module">
@@ -120,52 +144,58 @@ import { getDatabase, ref, push, set, onValue, get, update } from "https://www.g
 const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
 const app = initializeApp(firebaseConfig); const db = getDatabase(app);
 
-// AUDIO CONTEXT BUAT SOUND TANPA FILE
 let audioCtx;
-function initAudio(){
-  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-}
-function playDrum(){
-  initAudio(); const ctx = audioCtx;
-  for(let i=0; i<30; i++){
-    setTimeout(()=>{
-      const osc = ctx.createOscillator(); const gain = ctx.createGain();
-      osc.frequency.value = 200 - i*3; gain.gain.value = 0.3 - i*0.01;
-      osc.connect(gain).connect(ctx.destination); osc.start(); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.stop(ctx.currentTime + 0.1);
-    }, i*80)
-  }
-}
-function playMenang(){
-  initAudio(); const ctx = audioCtx;
-  [523,659,784,1046].forEach((f,i)=>{
-    setTimeout(()=>{ const osc=ctx.createOscillator(); const gain=ctx.createGain(); osc.frequency.value=f; gain.gain.value=0.3; osc.connect(gain).connect(ctx.destination); osc.start(); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4); osc.stop(ctx.currentTime + 0.4); }, i*200)
-  })
-}
+function initAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+function playDrum(){ initAudio(); const ctx = audioCtx; for(let i=0; i<30; i++){ setTimeout(()=>{ const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.frequency.value = 200 - i*3; gain.gain.value = 0.3 - i*0.01; osc.connect(gain).connect(ctx.destination); osc.start(); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.stop(ctx.currentTime + 0.1); }, i*80) } }
+function playMenang(){ initAudio(); const ctx = audioCtx; [523,659,784,1046].forEach((f,i)=>{ setTimeout(()=>{ const osc=ctx.createOscillator(); const gain=ctx.createGain(); osc.frequency.value=f; gain.gain.value=0.3; osc.connect(gain).connect(ctx.destination); osc.start(); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4); osc.stop(ctx.currentTime + 0.4); }, i*200) }) }
 
 const role = (localStorage.getItem("role") || "").toLowerCase();
 if(role!== "admin"){ alert("Hanya Admin"); window.location="dashboard.html"; }
 
-let dataAnggota = {}; let dataArisan = {}; let arisanAktifId = null; let filterSaatIni = "semua"; let sedangKocok = false;
+let dataArisan = {}; let arisanAktifId = null; let filterSaatIni = "semua"; let sedangKocok = false; let anggotaSementara = [];
 const rupiah = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
 function showToast(msg){ const t=document.getElementById("toast"); t.innerText=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2500); }
 
-function hitungDiterima(){
+function formatWA(no){ 
+  let num = no.replace(/\D/g,''); // hapus semua selain angka
+  if(num.startsWith('0')) num = '62' + num.substring(1); // 0812 -> 62812
+  if(num.startsWith('8')) num = '62' + num; // 812 -> 62812
+  return num; 
+}
+ 
+ function hitungDiterima(){
   if(!arisanAktifId) return;
   const a = dataArisan[arisanAktifId];
   const totalKas = a.iuran * a.jumlahAnggota;
-  const jasaPersen = Number(document.getElementById("inputJasa").value) || 0;
-  const potongan = totalKas * (jasaPersen / 100);
-  const diterima = totalKas - potongan;
+  const jasaRp = Number(document.getElementById("inputJasa").value) || 0;
+  const diterima = totalKas - jasaRp;
   document.getElementById("inputDiterima").value = rupiah(diterima);
 }
 
-onValue(ref(db,"anggota"), snap=>{
-  dataAnggota = snap.val() || {};
-  const container = document.getElementById("listCheckboxAnggota"); container.innerHTML = "";
-  if(Object.keys(dataAnggota).length === 0){ container.innerHTML = "<p style='color:#888'>Belum ada data anggota</p>"; return; }
-  Object.entries(dataAnggota).forEach(([id,a])=>{ container.innerHTML += `<label class="checkbox-item"><input type="checkbox" class="cbAnggota" value="${id}"><div><b>${a.nama}</b><br><small style="color:#666">${a.idAnggota || ''} - ${a.telepon || ''}</small></div></label>`; });
-  document.querySelectorAll('.cbAnggota').forEach(cb=>{ cb.addEventListener('change', ()=>{ document.getElementById("jmlAnggotaDipilih").innerText = document.querySelectorAll('.cbAnggota:checked').length; }) });
-});
+window.tambahAnggotaManual = function(){
+  const nama = document.getElementById("inputNamaAnggota").value.trim();
+  const hp = document.getElementById("inputHpAnggota").value.trim();
+  if(!nama) return alert("Nama wajib diisi");
+  const id = "agt_" + Date.now();
+  anggotaSementara.push({id, nama, hp});
+  renderPreviewAnggota();
+  document.getElementById("inputNamaAnggota").value = "";
+  document.getElementById("inputHpAnggota").value = "";
+}
+
+function renderPreviewAnggota(){
+  const div = document.getElementById("listAnggotaPreview");
+  div.innerHTML = "";
+  anggotaSementara.forEach((a, i)=>{
+    let waBtn = "";
+    if(a.hp){
+      const noWa = formatWA(a.hp);
+      waBtn = `<a href="https://wa.me/${noWa}" target="_blank" class="btn-wa"><span class="material-icons">chat</span>WA</a>`;
+    }
+    div.innerHTML += `<span class="member-tag">${a.nama} ${a.hp?'('+a.hp+')':''} ${waBtn} <span class="del" onclick="hapusAnggotaPreview(${i})">x</span></span>`;
+  });
+}
+window.hapusAnggotaPreview = function(i){ anggotaSementara.splice(i,1); renderPreviewAnggota(); }
 
 onValue(ref(db,"arisan"), snap=>{ dataArisan = snap.val() || {}; renderListArisan(); });
 document.getElementById("filterStatus").addEventListener("change", (e)=>{ filterSaatIni = e.target.value; renderListArisan(); });
@@ -181,86 +211,222 @@ function renderListArisan(){
 }
 
 document.getElementById("btnBuatArisan").onclick = async ()=>{
-  initAudio(); // aktifin audio pas klik pertama
-  const nama = document.getElementById("namaArisan").value.trim(); const iuran = Number(document.getElementById("iuran").value); const periode = document.getElementById("periode").value; const anggotaTerpilih = Array.from(document.querySelectorAll('.cbAnggota:checked')).map(cb=>cb.value);
-  if(!nama) return alert("Nama arisan wajib diisi"); if(!iuran || iuran < 1000) return alert("Jumlah iuran tidak valid"); if(anggotaTerpilih.length < 2) return alert("Pilih minimal 2 anggota");
+  initAudio();
+  const nama = document.getElementById("namaArisan").value.trim();
+  const iuran = Number(document.getElementById("iuran").value);
+  const periode = document.getElementById("periode").value;
+
+  if(!nama) return alert("Nama arisan wajib diisi");
+  if(!iuran || iuran < 1000) return alert("Jumlah iuran tidak valid");
+  if(anggotaSementara.length < 2) return alert("Tambah minimal 2 anggota");
+
   const btn = document.getElementById("btnBuatArisan"); btn.disabled = true; btn.innerText = "Menyimpan...";
-  try{ const arisanBaru = push(ref(db,"arisan")); await set(arisanBaru,{ nama, iuran, periode, status:"aktif", jumlahAnggota: anggotaTerpilih.length, anggota: anggotaTerpilih, periodeSekarang: 1, tanggalBuat: Date.now() }); const updates = {}; anggotaTerpilih.forEach(id=>{ updates[`arisan_anggota/${arisanBaru.key}/${id}`] = { nama: dataAnggota[id].nama, sudahDapat: false, totalSetor: 0 }; }); await update(ref(db), updates); showToast("Arisan berhasil dibuat"); document.getElementById("namaArisan").value = ""; document.getElementById("iuran").value = ""; document.querySelectorAll('.cbAnggota:checked').forEach(cb=>cb.checked=false); document.getElementById("jmlAnggotaDipilih").innerText = 0;
+  try{
+    const arisanBaru = push(ref(db,"arisan"));
+    const dataAnggotaObj = {};
+    anggotaSementara.forEach(a=>{ dataAnggotaObj[a.id] = {...a, sudahDapat:false, totalSetor:0} });
+
+    await set(arisanBaru,{
+      nama, iuran, periode, status:"aktif",
+      jumlahAnggota: anggotaSementara.length,
+      anggota: dataAnggotaObj,
+      periodeSekarang: 1, tanggalBuat: Date.now()
+    });
+
+    showToast("Arisan berhasil dibuat");
+    document.getElementById("namaArisan").value = "";
+    document.getElementById("iuran").value = "";
+    anggotaSementara = []; renderPreviewAnggota();
   }catch(err){ alert("Gagal: " + err.message) } finally{ btn.disabled = false; btn.innerText = "Buat Arisan"; }
 }
 
 window.bukaDetail = async function(id){
   initAudio();
-  arisanAktifId = id; const a = dataArisan[id]; const snapAnggota = await get(ref(db,`arisan_anggota/${arisanAktifId}`)); const dataAnggotaArisan = snapAnggota.val() || {}; const anggotaBelumDapat = a.anggota.filter(id=>!dataAnggotaArisan[id]?.sudahDapat);
-  document.getElementById("detailJudul").innerText = a.nama; document.getElementById("txtPeriodeSekarang").innerText = a.periodeSekarang;
-  document.getElementById("detailInfo").innerHTML = `<p><b>Putaran:</b> ${a.periodeSekarang} / ${a.jumlahAnggota}</p><p><b>Iuran:</b> ${rupiah(a.iuran)}</p><p><b>Sisa Peserta:</b> <span style="color:var(--warning); font-weight:700">${anggotaBelumDapat.length} orang</span></p><p><b>Anggota:</b><br>${a.anggota.map(id=>`<span class="member-tag" style="background:${dataAnggotaArisan[id]?.sudahDapat?'#dcfce7':'#e0f2fe'}">${dataAnggota[id]?.nama} ${dataAnggotaArisan[id]?.sudahDapat?'✓':''}</span>`).join("")}</p>`;
-  const roletBox = document.getElementById("roletBox"); roletBox.classList.remove("show"); roletBox.style.display = "none"; document.getElementById("roletNama").classList.remove("pemenang");
-  renderTabelSetoran(a, dataAnggotaArisan); loadRiwayat(id); hitungDiterima(); document.getElementById("inputJasa").addEventListener("input", hitungDiterima); document.getElementById("modalDetail").classList.add("show");
+  arisanAktifId = id; const a = dataArisan[id];
+  const anggotaObj = a.anggota || {};
+  const anggotaBelumDapat = Object.entries(anggotaObj).filter(([id,ag])=>!ag.sudahDapat).map(([id])=>id);
+
+  document.getElementById("detailJudul").innerText = a.nama;
+  document.getElementById("txtPeriodeSekarang").innerText = a.periodeSekarang;
+  document.getElementById("detailInfo").innerHTML = `<p><b>Putaran:</b> ${a.periodeSekarang} / ${a.jumlahAnggota}</p><p><b>Iuran:</b> ${rupiah(a.iuran)}</p><p><b>Sisa Peserta:</b> <span style="color:var(--warning); font-weight:700">${anggotaBelumDapat.length} orang</span></p>`;
+
+  renderTabelAnggota(a);
+
+  document.getElementById("roletBox").style.display = "none";
+  document.getElementById("roletNama").classList.remove("pemenang");
+  renderTabelSetoran(a);
+  loadRiwayat(id);
+  hitungDiterima();
+  document.getElementById("inputJasa").addEventListener("input", hitungDiterima);
+  document.getElementById("modalDetail").classList.add("show");
 }
 window.tutupModal = ()=> document.getElementById("modalDetail").classList.remove("show");
 
-async function renderTabelSetoran(a, dataAnggotaArisan){
-  const tbody = document.getElementById("tabelSetoran"); tbody.innerHTML = ""; const periode = a.periodeSekarang; const snapSetor = await get(ref(db,`arisan_setoran/${arisanAktifId}/${periode}`)); const dataSetor = snapSetor.val() || {};
-  a.anggota.forEach(id=>{
-    const nama = dataAnggota[id]?.nama || "Loading...";
-    const sudahBayar = dataSetor[id]?.status === "lunas";
-    tbody.innerHTML += `<tr class="${sudahBayar?'lunas':''}"><td><input type="checkbox" class="cbSetor" data-id="${id}" ${sudahBayar? 'checked' : ''}></td><td>${nama}</td><td>${rupiah(a.iuran)}</td></tr>`;
+async function renderTabelAnggota(a){
+  const tbody = document.getElementById("tbodyAnggota");
+  tbody.innerHTML = "";
+  const anggotaObj = a.anggota || {};
+
+  Object.entries(anggotaObj).forEach(([id, ag])=>{
+    let status = ag.sudahDapat? `<span style="color:var(--success)">Sudah Dapat</span>` : `<span style="color:var(--warning)">Belum</span>`;
+    let btnEdit = `<button class="btn-info btn-kecil" onclick="bukaModalEditAnggota('${id}')"><span class="material-icons" style="font-size:14px">edit</span></button>`;
+    let btnHapus = ag.sudahDapat? '' : `<button class="btn-danger btn-kecil" onclick="hapusAnggotaArisan('${id}', '${ag.nama}')">x</button>`;
+
+    tbody.innerHTML += `<tr>
+      <td>${ag.nama}</td>
+      <td>${ag.hp || '-'}</td>
+      <td>${status}</td>
+      <td style="display:flex; gap:4px">${btnEdit} ${btnHapus}</td>
+    </tr>`;
   });
+}
+
+window.bukaModalEditAnggota = function(id){
+  const a = dataArisan[arisanAktifId];
+  const ag = a.anggota[id];
+  document.getElementById("editAnggotaId").value = id;
+  document.getElementById("editNamaAnggota").value = ag.nama;
+  document.getElementById("editHpAnggota").value = ag.hp || '';
+  document.getElementById("modalEditAnggota").classList.add("show");
+}
+window.tutupModalEditAnggota = function(){ document.getElementById("modalEditAnggota").classList.remove("show"); }
+
+window.simpanEditAnggota = async function(){
+  const id = document.getElementById("editAnggotaId").value;
+  const nama = document.getElementById("editNamaAnggota").value.trim();
+  const hp = document.getElementById("editHpAnggota").value.trim();
+  if(!nama) return alert("Nama wajib diisi");
+
+  try{
+    await update(ref(db,`arisan/${arisanAktifId}/anggota/${id}`), { nama, hp });
+    showToast("Data anggota berhasil diupdate");
+    tutupModalEditAnggota();
+    bukaDetail(arisanAktifId);
+  } catch(err){ alert("Gagal: " + err.message) }
+}
+
+window.hapusAnggotaArisan = async function(anggotaId, nama){
+  if(!confirm(`Yakin hapus anggota "${nama}" dari arisan ini?`)) return;
+
+  const a = dataArisan[arisanAktifId];
+  if(a.periodeSekarang > 1) return alert("Tidak bisa hapus anggota. Arisan sudah berjalan.");
+  if(Object.keys(a.anggota).length <= 2) return alert("Minimal anggota 2 orang");
+
+  try{
+    await set(ref(db,`arisan/${arisanAktifId}/anggota/${anggotaId}`), null);
+    const jumlahBaru = Object.keys(a.anggota).length - 1;
+    await update(ref(db,`arisan/${arisanAktifId}`), { jumlahAnggota: jumlahBaru });
+
+    showToast(`Anggota ${nama} dihapus`);
+    bukaDetail(arisanAktifId);
+  } catch(err){ alert("Gagal: " + err.message) }
+}
+
+async function renderTabelSetoran(a){
+  const tbody = document.getElementById("tabelSetoran"); tbody.innerHTML = "";
+  const periode = a.periodeSekarang;
+  const snapSetor = await get(ref(db,`arisan_setoran/${arisanAktifId}/${periode}`));
+  const dataSetor = snapSetor.val() || {};
+  const anggotaObj = a.anggota || {};
+
+  Object.entries(anggotaObj).forEach(([id, ag])=>{
+    const sudahBayar = dataSetor[id]?.status === "lunas";
+    let waBtn = "";
+    if(ag.hp){
+      const noWa = formatWA(ag.hp);
+      waBtn = `<a href="https://wa.me/${noWa}" target="_blank" class="btn-wa"><span class="material-icons">chat</span></a>`;   }
+    tbody.innerHTML += `<tr class="${sudahBayar?'lunas':''}">
+      <td><input type="checkbox" class="cbSetor" data-id="${id}" ${sudahBayar? 'checked' : ''}></td>
+      <td>${ag.nama}</td>
+      <td>${ag.hp || '-'} ${waBtn}</td>
+      <td>${rupiah(a.iuran)}</td>
+    </tr>`;
+  });
+
   document.querySelectorAll('.cbSetor').forEach(cb => {
     cb.addEventListener('change', async function() {
       const anggotaId = this.dataset.id;
       if(this.checked){
         await set(ref(db,`arisan_setoran/${arisanAktifId}/${periode}/${anggotaId}`),{ jumlah: a.iuran, tanggal: Date.now(), status: "lunas" });
-        const snap = await get(ref(db,`arisan_anggota/${arisanAktifId}/${anggotaId}/totalSetor`)); const totalLama = snap.val() || 0;
-        await update(ref(db,`arisan_anggota/${arisanAktifId}/${anggotaId}`),{totalSetor: totalLama + a.iuran});
-        showToast(`${dataAnggota[anggotaId].nama} lunas`); this.closest('tr').classList.add('lunas');
+        await update(ref(db,`arisan/${arisanAktifId}/anggota/${anggotaId}`),{totalSetor: (a.anggota[anggotaId].totalSetor || 0) + a.iuran});
+        showToast(`${a.anggota[anggotaId].nama} lunas`); this.closest('tr').classList.add('lunas');
       } else {
         await set(ref(db,`arisan_setoran/${arisanAktifId}/${periode}/${anggotaId}`), null);
-        showToast(`${dataAnggota[anggotaId].nama} dibatalkan`); this.closest('tr').classList.remove('lunas');
+        showToast(`${a.anggota[anggotaId].nama} dibatalkan`); this.closest('tr').classList.remove('lunas');
       }
     });
   });
 }
 
 document.getElementById("btnHapusArisan").onclick = async ()=>{ hapusArisanDariList(arisanAktifId, dataArisan[arisanAktifId].nama); tutupModal(); }
-window.hapusArisanDariList = async function(id, nama){ if(!confirm(`Yakin hapus arisan "${nama}"? Semua data akan terhapus`)) return; try{ await set(ref(db,`arisan/${id}`), null); await set(ref(db,`arisan_anggota/${id}`), null); await set(ref(db,`arisan_setoran/${id}`), null); await set(ref(db,`arisan_transaksi/${id}`), null); showToast(`Arisan "${nama}" dihapus`); } catch(err){ alert("Gagal hapus: " + err.message) } }
+window.hapusArisanDariList = async function(id, nama){ if(!confirm(`Yakin hapus arisan "${nama}"?`)) return; try{ await set(ref(db,`arisan/${id}`), null); await set(ref(db,`arisan_setoran/${id}`), null); await set(ref(db,`arisan_transaksi/${id}`), null); showToast(`Arisan "${nama}" dihapus`); } catch(err){ alert("Gagal hapus: " + err.message) } }
 
 document.getElementById("btnPutaran").onclick = async ()=>{
   initAudio();
   if(sedangKocok) return; const a = dataArisan[arisanAktifId]; const periode = a.periodeSekarang;
   const snapSetor = await get(ref(db,`arisan_setoran/${arisanAktifId}/${periode}`)); const dataSetor = snapSetor.val() || {}; const jmlSetor = Object.keys(dataSetor).length;
   if(jmlSetor < a.jumlahAnggota) return alert(`Belum semua setor. ${jmlSetor}/${a.jumlahAnggota} orang`);
-  const snapAnggota = await get(ref(db,`arisan_anggota/${arisanAktifId}`)); const dataAnggotaArisan = snapAnggota.val() || {}; const anggotaBelumDapat = a.anggota.filter(id=>!dataAnggotaArisan[id]?.sudahDapat);
+
+  const anggotaObj = a.anggota || {};
+  const anggotaBelumDapat = Object.entries(anggotaObj).filter(([id,ag])=>!ag.sudahDapat).map(([id])=>id);
   if(anggotaBelumDapat.length === 0) return alert("Semua anggota sudah dapat giliran");
 
   sedangKocok = true; document.getElementById("btnPutaran").disabled = true;
   const roletBox = document.getElementById("roletBox"); roletBox.style.display = "block"; roletBox.classList.add("show"); const roletNama = document.getElementById("roletNama"); roletNama.classList.remove("pemenang");
 
-  playDrum(); // SOUND DRUM
-  const interval = setInterval(()=>{ const randomId = anggotaBelumDapat[Math.floor(Math.random() * anggotaBelumDapat.length)]; roletNama.innerText = dataAnggota[randomId]?.nama || "Memilih..."; }, 80);
+  playDrum();
+  const interval = setInterval(()=>{ const randomId = anggotaBelumDapat[Math.floor(Math.random() * anggotaBelumDapat.length)]; roletNama.innerText = anggotaObj[randomId]?.nama || "Memilih..."; }, 80);
 
   setTimeout(async ()=>{
     clearInterval(interval);
-    const pemenangId = anggotaBelumDapat[Math.floor(Math.random() * anggotaBelumDapat.length)]; roletNama.innerText = dataAnggota[pemenangId].nama; roletNama.classList.add("pemenang");
-    playMenang(); // SOUND MENANG
+    const pemenangId = anggotaBelumDapat[Math.floor(Math.random() * anggotaBelumDapat.length)];
+    const agPemenang = anggotaObj[pemenangId];
+    roletNama.innerText = agPemenang.nama; roletNama.classList.add("pemenang");
+    playMenang();
 
-    const totalKas = a.iuran * a.jumlahAnggota; const jasaPersen = Number(document.getElementById("inputJasa").value) || 0; const potongan = totalKas * (jasaPersen / 100); const diterima = totalKas - potongan;
-    await set(ref(db,`arisan_transaksi/${arisanAktifId}/${periode}`),{ tanggal: Date.now(), pemenangId, totalKas, jasaPersen, potongan, diterima, metode: "rolet" });
-    await update(ref(db,`arisan_anggota/${arisanAktifId}/${pemenangId}`),{sudahDapat:true});
-    const periodeBaru = periode + 1; if(periodeBaru > a.jumlahAnggota){ await update(ref(db,`arisan/${arisanAktifId}`),{status:"selesai"}); showToast("Arisan Selesai"); } else{ await update(ref(db,`arisan/${arisanAktifId}`),{periodeSekarang: periodeBaru}); }
-    cetakNotaArisan(a, pemenangId, totalKas, potongan, diterima, periode, jasaPersen);
-    showToast(`Pemenang Putaran ${periode}: ${dataAnggota[pemenangId].nama}`); sedangKocok = false; document.getElementById("btnPutaran").disabled = false; setTimeout(()=>{ tutupModal(); bukaDetail(arisanAktifId); }, 3000);
+    const totalKas = a.iuran * a.jumlahAnggota;
+    const jasaRp = Number(document.getElementById("inputJasa").value) || 0;
+    const diterima = totalKas - jasaRp;
+
+    await set(ref(db,`arisan_transaksi/${arisanAktifId}/${periode}`),{ tanggal: Date.now(), pemenangId, totalKas, jasaRp, diterima, metode: "rolet" });
+    await update(ref(db,`arisan/${arisanAktifId}/anggota/${pemenangId}`),{sudahDapat:true});
+
+    const periodeBaru = periode + 1;
+    if(periodeBaru > a.jumlahAnggota){ await update(ref(db,`arisan/${arisanAktifId}`),{status:"selesai"}); showToast("Arisan Selesai"); }
+    else{ await update(ref(db,`arisan/${arisanAktifId}`),{periodeSekarang: periodeBaru}); }
+
+    if(agPemenang.hp){
+      const noWa = formatWA(agPemenang.hp);
+      const pesan = `Selamat ${agPemenang.nama}!\n\nAnda pemenang Arisan ${a.nama} Putaran ${periode}.\nTotal Kas: ${rupiah(totalKas)}\nPotongan Jasa: ${rupiah(jasaRp)}\nDiterima: ${rupiah(diterima)}\n\nTerima kasih`;
+      const linkWa = `https://wa.me/${noWa}?text=${encodeURIComponent(pesan)}`;     roletNama.innerHTML += `<br><a href="${linkWa}" target="_blank" class="btn-wa" style="margin-top:8px; font-size:12px; padding:8px 12px"><span class="material-icons">send</span> Kirim WA ke Pemenang</a>`;
+    }
+
+    cetakNotaArisan(a, pemenangId, totalKas, jasaRp, diterima, periode);
+    showToast(`Pemenang Putaran ${periode}: ${agPemenang.nama}`);
+    sedangKocok = false; document.getElementById("btnPutaran").disabled = false;
+    setTimeout(()=>{ tutupModal(); bukaDetail(arisanAktifId); }, 4000);
   }, 3000);
 }
 
-async function loadRiwayat(arisanId){ const snap = await get(ref(db,`arisan_transaksi/${arisanId}`)); const data = snap.val() || {}; const list = document.getElementById("listRiwayat"); list.innerHTML = ""; if(Object.keys(data).length === 0){ list.innerHTML = "<p style='color:#888'>Belum ada riwayat</p>"; return; } Object.entries(data).forEach(([periode,t])=>{ list.innerHTML += `<div class="item"><div><b>Putaran ${periode}</b></div><div>Penerima: ${dataAnggota[t.pemenangId]?.nama}</div><div>Total Kas: ${rupiah(t.totalKas)}</div><div>Potongan Jasa ${t.jasaPersen || 0}%: -${rupiah(t.potongan || 0)}</div><div style="color:var(--success); font-weight:700">Diterima: ${rupiah(t.diterima)}</div></div>`; }); }
+async function loadRiwayat(arisanId){
+  const snap = await get(ref(db,`arisan_transaksi/${arisanId}`));
+  const data = snap.val() || {};
+  const list = document.getElementById("listRiwayat"); list.innerHTML = "";
+  if(Object.keys(data).length === 0){ list.innerHTML = "<p style='color:#888'>Belum ada riwayat</p>"; return; }
 
-function cetakNotaArisan(a, pemenangId, totalKas, potongan, diterima, periode, jasaPersen){
+  const anggotaObj = dataArisan[arisanId].anggota || {};
+  Object.entries(data).forEach(([periode,t])=>{
+    list.innerHTML += `<div class="item"><div><b>Putaran ${periode}</b></div><div>Penerima: ${anggotaObj[t.pemenangId]?.nama}</div><div>Total Kas: ${rupiah(t.totalKas)}</div><div>Potongan Jasa: -${rupiah(t.jasaRp || 0)}</div><div style="color:var(--success); font-weight:700">Diterima: ${rupiah(t.diterima)}</div></div>`;
+  });
+}
+
+function cetakNotaArisan(a, pemenangId, totalKas, jasaRp, diterima, periode){
   const { jsPDF } = window.jspdf; const doc = new jsPDF({unit: 'mm', format: [80, 130]}); let y=5; const center=40;
+  const anggotaObj = a.anggota || {};
   doc.setFont("helvetica","bold");doc.setFontSize(10); doc.text("BUKTI PENERIMAAN ARISAN",center,y,{align:"center"});y+=5;
   doc.setFont("helvetica","normal");doc.setFontSize(8); doc.text(a.nama,center,y,{align:"center"});y+=7; doc.line(3,y,77,y);y+=4;
-  doc.text(`Putaran: ${periode} / ${a.jumlahAnggota}`,3,y);y+=4; doc.text(`Penerima: ${dataAnggota[pemenangId].nama}`,3,y);y+=6;
-  doc.text(`Total Kas: ${rupiah(totalKas)}`,3,y);y+=4; doc.text(`Potongan Jasa ${jasaPersen}%: -${rupiah(potongan)}`,3,y);y+=6;
+  doc.text(`Putaran: ${periode} / ${a.jumlahAnggota}`,3,y);y+=4; doc.text(`Penerima: ${anggotaObj[pemenangId].nama}`,3,y);y+=6;
+  doc.text(`Total Kas: ${rupiah(totalKas)}`,3,y);y+=4; doc.text(`Potongan Jasa: -${rupiah(jasaRp)}`,3,y);y+=6;
   doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.text(`DITERIMA: ${rupiah(diterima)}`,3,y);y+=6;
   doc.line(3,y,77,y);y+=4; doc.setFont("helvetica","normal");doc.setFontSize(7); doc.text("Metode: Rolet Random",center,y,{align:"center"});y+=4; doc.text("Terima kasih",center,y,{align:"center"});
   doc.save(`Nota_Arisan_${a.nama}_P${periode}.pdf`);
