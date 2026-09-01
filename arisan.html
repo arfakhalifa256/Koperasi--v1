@@ -101,6 +101,7 @@ tr.lunas{background:#dcfce7}
    <div id="detailInfo"></div>
 
 <h3>Daftar Anggota</h3>
+<button class="btn-success btn-kecil" style="margin-bottom:8px" onclick="bukaModalTambahAnggota()">+ Tambah Anggota</button>
 <table class="tabel-setor" id="tabelAnggota"><thead><tr><th>Nama</th><th>No HP</th><th>Status</th><th width="90">Aksi</th></tr></thead><tbody id="tbodyAnggota"></tbody></table>
 
 <h3>Input Setoran Putaran <span id="txtPeriodeSekarang"></span></h3>
@@ -135,6 +136,19 @@ tr.lunas{background:#dcfce7}
   </div>
 </div>
 
+<!-- MODAL TAMBAH ANGGOTA BARU -->
+<div id="modalTambahAnggota" class="modal">
+  <div class="modal-content">
+    <h3>Tambah Anggota Baru</h3>
+    <div class="form-group"><label>Nama</label><input type="text" id="tambahNamaAnggota"></div>
+    <div class="form-group"><label>No HP</label><input type="text" id="tambahHpAnggota" placeholder="08xxx"></div>
+    <div class="grid-2">
+      <button class="btn-success" onclick="simpanAnggotaBaru()">Simpan</button>
+      <button class="btn-danger" onclick="tutupModalTambahAnggota()">Batal</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
 <script type="module">
@@ -156,14 +170,14 @@ let dataArisan = {}; let arisanAktifId = null; let filterSaatIni = "semua"; let 
 const rupiah = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
 function showToast(msg){ const t=document.getElementById("toast"); t.innerText=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2500); }
 
-function formatWA(no){ 
-  let num = no.replace(/\D/g,''); // hapus semua selain angka
-  if(num.startsWith('0')) num = '62' + num.substring(1); // 0812 -> 62812
-  if(num.startsWith('8')) num = '62' + num; // 812 -> 62812
-  return num; 
+function formatWA(no){
+  let num = no.replace(/\D/g,'');
+  if(num.startsWith('0')) num = '62' + num.substring(1);
+  if(num.startsWith('8')) num = '62' + num;
+  return num;
 }
- 
- function hitungDiterima(){
+
+function hitungDiterima(){
   if(!arisanAktifId) return;
   const a = dataArisan[arisanAktifId];
   const totalKas = a.iuran * a.jumlahAnggota;
@@ -305,6 +319,38 @@ window.simpanEditAnggota = async function(){
   } catch(err){ alert("Gagal: " + err.message) }
 }
 
+window.bukaModalTambahAnggota = function(){
+  const a = dataArisan[arisanAktifId];
+  if(a.periodeSekarang > 1) return alert("Tidak bisa tambah anggota. Arisan sudah berjalan putaran 2+");
+  document.getElementById("tambahNamaAnggota").value = "";
+  document.getElementById("tambahHpAnggota").value = "";
+  document.getElementById("modalTambahAnggota").classList.add("show");
+}
+window.tutupModalTambahAnggota = function(){ document.getElementById("modalTambahAnggota").classList.remove("show"); }
+window.simpanAnggotaBaru = async function(){
+  const nama = document.getElementById("tambahNamaAnggota").value.trim();
+  const hp = document.getElementById("tambahHpAnggota").value.trim();
+  if(!nama) return alert("Nama wajib diisi");
+
+  const a = dataArisan[arisanAktifId];
+  const idBaru = "agt_" + Date.now();
+
+  // AMBIL JUMLAH DARI DATA TERBARU DULU, JANGAN DARI OBJEK LAMA
+  const snap = await get(ref(db,`arisan/${arisanAktifId}`));
+  const dataTerbaru = snap.val();
+  const jumlahBaru = (dataTerbaru.jumlahAnggota || 0) + 1;
+
+  try{
+    // 1. Tambah anggota baru
+    await set(ref(db,`arisan/${arisanAktifId}/anggota/${idBaru}`), { id:idBaru, nama, hp, sudahDapat:false, totalSetor:0 });
+    // 2. Update jumlah anggota
+    await update(ref(db,`arisan/${arisanAktifId}`), { jumlahAnggota: jumlahBaru });
+
+    showToast(`Anggota ${nama} ditambahkan`);
+    tutupModalTambahAnggota();
+    bukaDetail(arisanAktifId); // refresh
+  } catch(err){ alert("Gagal: " + err.message) }
+}
 window.hapusAnggotaArisan = async function(anggotaId, nama){
   if(!confirm(`Yakin hapus anggota "${nama}" dari arisan ini?`)) return;
 
@@ -334,7 +380,8 @@ async function renderTabelSetoran(a){
     let waBtn = "";
     if(ag.hp){
       const noWa = formatWA(ag.hp);
-      waBtn = `<a href="https://wa.me/${noWa}" target="_blank" class="btn-wa"><span class="material-icons">chat</span></a>`;   }
+      waBtn = `<a href="https://wa.me/${noWa}" target="_blank" class="btn-wa"><span class="material-icons">chat</span></a>`;
+    }
     tbody.innerHTML += `<tr class="${sudahBayar?'lunas':''}">
       <td><input type="checkbox" class="cbSetor" data-id="${id}" ${sudahBayar? 'checked' : ''}></td>
       <td>${ag.nama}</td>
@@ -398,7 +445,8 @@ document.getElementById("btnPutaran").onclick = async ()=>{
     if(agPemenang.hp){
       const noWa = formatWA(agPemenang.hp);
       const pesan = `Selamat ${agPemenang.nama}!\n\nAnda pemenang Arisan ${a.nama} Putaran ${periode}.\nTotal Kas: ${rupiah(totalKas)}\nPotongan Jasa: ${rupiah(jasaRp)}\nDiterima: ${rupiah(diterima)}\n\nTerima kasih`;
-      const linkWa = `https://wa.me/${noWa}?text=${encodeURIComponent(pesan)}`;     roletNama.innerHTML += `<br><a href="${linkWa}" target="_blank" class="btn-wa" style="margin-top:8px; font-size:12px; padding:8px 12px"><span class="material-icons">send</span> Kirim WA ke Pemenang</a>`;
+      const linkWa = `https://wa.me/${noWa}?text=${encodeURIComponent(pesan)}`;
+      roletNama.innerHTML += `<br><a href="${linkWa}" target="_blank" class="btn-wa" style="margin-top:8px; font-size:12px; padding:8px 12px"><span class="material-icons">send</span> Kirim WA ke Pemenang</a>`;
     }
 
     cetakNotaArisan(a, pemenangId, totalKas, jasaRp, diterima, periode);
@@ -419,16 +467,27 @@ async function loadRiwayat(arisanId){
     list.innerHTML += `<div class="item"><div><b>Putaran ${periode}</b></div><div>Penerima: ${anggotaObj[t.pemenangId]?.nama}</div><div>Total Kas: ${rupiah(t.totalKas)}</div><div>Potongan Jasa: -${rupiah(t.jasaRp || 0)}</div><div style="color:var(--success); font-weight:700">Diterima: ${rupiah(t.diterima)}</div></div>`;
   });
 }
-
 function cetakNotaArisan(a, pemenangId, totalKas, jasaRp, diterima, periode){
   const { jsPDF } = window.jspdf; const doc = new jsPDF({unit: 'mm', format: [80, 130]}); let y=5; const center=40;
   const anggotaObj = a.anggota || {};
+  const tgl = new Date().toLocaleDateString("id-ID", {day:'2-digit', month:'short', year:'numeric'});
+
   doc.setFont("helvetica","bold");doc.setFontSize(10); doc.text("BUKTI PENERIMAAN ARISAN",center,y,{align:"center"});y+=5;
   doc.setFont("helvetica","normal");doc.setFontSize(8); doc.text(a.nama,center,y,{align:"center"});y+=7; doc.line(3,y,77,y);y+=4;
-  doc.text(`Putaran: ${periode} / ${a.jumlahAnggota}`,3,y);y+=4; doc.text(`Penerima: ${anggotaObj[pemenangId].nama}`,3,y);y+=6;
-  doc.text(`Total Kas: ${rupiah(totalKas)}`,3,y);y+=4; doc.text(`Potongan Jasa: -${rupiah(jasaRp)}`,3,y);y+=6;
+  doc.text(`Putaran: ${periode} / ${a.jumlahAnggota}`,3,y);y+=4; doc.text(`Tanggal: ${tgl}`,3,y);y+=4;
+  doc.text(`Penerima: ${anggotaObj[pemenangId].nama}`,3,y);y+=6;
+  
+  doc.text(`Total Kas      : ${rupiah(totalKas)}`,3,y);y+=4; 
+  doc.text(`Potongan Jasa  : -${rupiah(jasaRp)}`,3,y);y+=6;
+  
   doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.text(`DITERIMA: ${rupiah(diterima)}`,3,y);y+=6;
-  doc.line(3,y,77,y);y+=4; doc.setFont("helvetica","normal");doc.setFontSize(7); doc.text("Metode: Rolet Random",center,y,{align:"center"});y+=4; doc.text("Terima kasih",center,y,{align:"center"});
+  doc.line(3,y,77,y);y+=4; 
+  
+  doc.setFont("helvetica","normal");doc.setFontSize(7); 
+  doc.text("Metode: Rolet Random",center,y,{align:"center"});y+=4; 
+  doc.text("Terima kasih",center,y,{align:"center"});y+=4;
+  doc.text("Koperasi ARFA",center,y,{align:"center"});
+
   doc.save(`Nota_Arisan_${a.nama}_P${periode}.pdf`);
 }
 </script>
