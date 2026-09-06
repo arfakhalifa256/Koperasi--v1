@@ -3,1685 +3,339 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Neraca Koperasi ARFA</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-:root{
-  --primary:#1e90ff;
-  --primary-dark:#0f3057;
-  --bg:#f1f5f9;
-  --card:#fff;
-  --text:#1f2937;
-  --muted:#64748b;
-  --border:#e2e8f0;
-  --success:#16a34a;
-  --danger:#dc2626;
-  --warning:#d97706;
-  --shadow:0 2px 8px rgba(0,0,0,.08);
-}
-
-body{
-  font-family:'Poppins',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  font-size:13px;
-  padding-bottom:30px;
-}
-
-/* HEADER */
-header{
-  height:68px;
-  background:linear-gradient(90deg,var(--primary),var(--primary-dark));
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 15px;
-  position:sticky;
-  top:0;
-  z-index:100;
-  box-shadow:0 3px 10px rgba(0,0,0,.15);
-}
-
-.header-left{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:9px;
-}
-
-.brand img{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#fff;
-  padding:2px;
-}
-
-.brand-small{
-  font-size:10px;
-  opacity:.9;
-  line-height:1;
-}
-
-.brand-title{
-  font-size:12px;
-  font-weight:700;
-}
-
-.user-info{
-  font-size:11px;
-  margin-left:8px;
-}
-
-.menu-btn{
-  font-size:27px;
-  cursor:pointer;
-  padding:4px 8px;
-}
-/* ===== SIDEBAR ===== */
-.sidebar{
-  position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;
-  padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;
-  box-shadow:2px 0 10px rgba(0,0,0,0.2);
-}
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--primary:#1e90ff;--primary-dark:#0f3057;--bg:#f1f5f9;--card:#fff;--text:#1f2937;--muted:#64748b;--border:#e2e8f0;--success:#16a34a;--danger:#dc2626;--warning:#d97706;--shadow:0 2px 8px rgba(0,0,0,.08);}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;padding-bottom:30px;}
+header{height:68px;background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;display:flex;align-items:center;justify-content:space-between;padding:10px 15px;position:sticky;top:0;z-index:100;box-shadow:0 3px 10px rgba(0,0,0,.15);}
+.header-left{display:flex;align-items:center;gap:10px;}
+.brand{display:flex;align-items:center;gap:9px;}
+.brand img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
+.brand-small{font-size:10px;opacity:.9;line-height:1;}
+.brand-title{font-size:12px;font-weight:700;}
+.user-info{font-size:11px;margin-left:8px;}
+.menu-btn{font-size:27px;cursor:pointer;padding:4px 8px;}
+.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;box-shadow:2px 0 10px rgba(0,0,0,0.2);}
 .sidebar.open{left:0;}
-
-.sidebar-logo{
-  display:flex;align-items:center;gap:12px;
-  padding-bottom:16px;margin-bottom:16px;
-  border-bottom:1px solid rgba(255,255,255,0.2);
-}
-.sidebar-logo img{
-  width:40px;height:40px;border-radius:50%;object-fit:cover;
-  background:#fff;padding:2px;
-}
-.sidebar-logo h3{
-  color:#fff;margin:0;font-size:15px;font-weight:600;
-}
-
-.sidebar-section{
-  color:rgba(255,255,255,0.6);
-  font-size:10px;font-weight:600;text-transform:uppercase;
-  letter-spacing:1px;margin:16px 0 8px 12px;
-}
-
-.sidebar a{
-  display:flex;align-items:center;gap:10px;
-  color:#fff;text-decoration:none;padding:10px 10px;
-  border-radius:10px;margin-bottom:2px;font-size:10px;
-  font-weight:500;transition:0.2s;
-}
-.sidebar a:hover{
-  background:rgba(255,255,255,0.15);transform:translateX(4px);
-}
+.sidebar-logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.2);}
+.sidebar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
+.sidebar-logo h3{color:#fff;margin:0;font-size:15px;font-weight:600;}
+.sidebar-section{color:rgba(255,255,255,0.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px;}
+.sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px 10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:0.2s;}
+.sidebar a:hover{background:rgba(255,255,255,0.15);transform:translateX(4px);}
 .sidebar a.active{background:rgba(255,255,255,0.2);}
-
-.overlay{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,.4);display:none;z-index:999;
-}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
 .overlay.active{display:block;}
-
-
-/* CONTAINER */
-.container{
-  width:100%;
-  max-width:1000px;
-  margin:auto;
-  padding:12px;
-}
-
-.page-title{
-  text-align:center;
-  color:var(--primary-dark);
-  font-size:12px;
-  font-weight:700;
-  margin:8px 0 3px;
-}
-
-.period{
-  text-align:center;
-  color:var(--muted);
-  font-size:11px;
-  margin-bottom:15px;
-}
-
-/* CARD */
-.card{
-  background:white;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:15px;
-  margin-bottom:13px;
-  box-shadow:var(--shadow);
-}
-
-.card h3{
-  font-size:12px;
-  margin-bottom:12px;
-  color:var(--primary-dark);
-}
-
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.box{
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:12px;
-  background:#f8fafc;
-}
-
-.box-title{
-  font-size:11px;
-  color:var(--muted);
-  margin-bottom:2px;
-}
-
-.box-value{
-  font-size:12px;
-  font-weight:700;
-}
-
-.blue{
-  color:#2563eb;
-}
-
-.green{
-  color:var(--success);
-}
-
-.red{
-  color:var(--danger);
-}
-
-.orange{
-  color:var(--warning);
-}
-
-/* NERACA */
-.neraca{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.neraca-column{
-  border:1px solid var(--border);
-  border-radius:12px;
-  overflow:hidden;
-}
-
-.neraca-header{
-  background:var(--primary);
-  color:white;
-  padding:11px 13px;
-  font-size:12px;
-  font-weight:700;
-}
-
-.neraca-body{
-  padding:10px 13px;
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:8px 0;
-  border-bottom:1px dashed var(--border);
-}
-
-.row:last-child{
-  border-bottom:none;
-}
-
-.row-label{
-  color:var(--text);
-}
-
-.row-value{
-  font-weight:600;
-  text-align:right;
-  white-space:nowrap;
-}
-
-.sub{
-  padding-left:12px;
-  font-size:11px;
-  color:var(--muted);
-}
-
-.total-row{
-  margin-top:5px;
-  padding-top:11px;
-  border-top:2px solid var(--primary-dark);
-  font-weight:700;
-}
-
-.total-row .row-value{
-  color:var(--primary-dark);
-}
-
-/* BALANCE */
-.balance-box{
-  text-align:center;
-  padding:15px;
-  border-radius:12px;
-  border:2px solid var(--success);
-  background:#f0fdf4;
-}
-
-.balance-box.warning{
-  border-color:var(--danger);
-  background:#fef2f2;
-}
-
-.balance-title{
-  font-size:12px;
-  color:var(--muted);
-}
-
-.balance-value{
-  font-size:13px;
-  font-weight:700;
-  color:var(--success);
-  margin-top:3px;
-}
-
-.warning .balance-value{
-  color:var(--danger);
-}
-
-/* DEBUG */
+.container{width:100%;max-width:1000px;margin:auto;padding:12px;}
+.page-title{text-align:center;color:var(--primary-dark);font-size:12px;font-weight:700;margin:8px 0 3px;}
+.period{text-align:center;color:var(--muted);font-size:11px;margin-bottom:15px;}
+.card{background:white;border:1px solid var(--border);border-radius:12px;padding:15px;margin-bottom:13px;box-shadow:var(--shadow);}
+.card h3{font-size:12px;margin-bottom:12px;color:var(--primary-dark);}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.box{border:1px solid var(--border);border-radius:10px;padding:12px;background:#f8fafc;}
+.box-title{font-size:11px;color:var(--muted);margin-bottom:2px;}
+.box-value{font-size:12px;font-weight:700;}
+.blue{color:#2563eb;}.green{color:var(--success);}.red{color:var(--danger);}.orange{color:var(--warning);}
+.neraca{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.neraca-column{border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.neraca-header{background:var(--primary);color:white;padding:11px 13px;font-size:12px;font-weight:700;}
+.neraca-body{padding:10px 13px;}
+.row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border);}
+.row:last-child{border-bottom:none;}
+.row-label{color:var(--text);}
+.row-value{font-weight:600;text-align:right;white-space:nowrap;}
+.sub{padding-left:12px;font-size:11px;color:var(--muted);}
+.total-row{margin-top:5px;padding-top:11px;border-top:2px solid var(--primary-dark);font-weight:700;}
+.total-row.row-value{color:var(--primary-dark);}
+.balance-box{text-align:center;padding:15px;border-radius:12px;border:2px solid var(--success);background:#f0fdf4;}
+.balance-box.warning{border-color:var(--danger);background:#fef2f2;}
+.balance-title{font-size:12px;color:var(--muted);}
+.balance-value{font-size:13px;font-weight:700;color:var(--success);margin-top:3px;}
+.warning.balance-value{color:var(--danger);}
 .debug{
-  
-  color:black;
+  color:#0f172a;
+  background:#f8fafc;
   padding:14px;
   border-radius:12px;
-  font-family:monospace;
+  font-family:'Courier New', monospace;
   font-size:11px;
-  line-height:1 px;
+  line-height:1.6; /* diperbaiki */
+  white-space:pre; /* biar spasi & enter kebaca */
   overflow-x:auto;
-}
-
-.btn{
-  width:100%;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  background:var(--primary);
-  color:white;
-  font-family:'Poppins';
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn:active{
-  transform:scale(.98);
-}
-
-.loading{
-  text-align:center;
-  padding:30px;
-  color:var(--muted);
-}
-
-@media(max-width:700px){
-  .grid,
-  .neraca{
-    grid-template-columns:1fr;
-  }
-
-  .container{
-    padding:10px;
-  }
-
-  .brand-title{
-    font-size:13px;
-  }
-
-  .user-info{
-    font-size:10px;
-  }
-}
-
-@media print{
-  header,
-  .sidebar,
-  .overlay,
-  .no-print,
-  .debug-card{
-    display:none!important;
-  }
-
-  body{
-    background:white;
-  }
-
-  .card{
-    box-shadow:none;
-    break-inside:avoid;
-  }
-}
+  border:1px dashed var(--border);
+}.btn{width:100%;padding:10px;border:none;border-radius:8px;background:var(--primary);color:white;font-family:'Poppins';font-weight:600;cursor:pointer;}
+.btn:active{transform:scale(.98);}
+@media(max-width:700px){.grid,.neraca{grid-template-columns:1fr;}.container{padding:10px;}.brand-title{font-size:13px;}.user-info{font-size:10px;}}
+@media print{header,.sidebar,.overlay,.no-print,.debug-card{display:none!important;}body{background:white;}.card{box-shadow:none;break-inside:avoid;}}
 </style>
 </head>
-
 <body>
 
-<!-- SIDEBAR -->
+<!-- SIDEBAR + HEADER SAMA -->
 <div id="sidebar" class="sidebar">
-
-  <div class="sidebar-logo">
-    <img src="img/icon-192.png" alt="Logo">
-    <h3>Menu Koperasi</h3>
-  </div>
-
+  <div class="sidebar-logo"><img src="img/icon-192.png" alt="Logo"><h3>Menu Koperasi</h3></div>
   <a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
-
   <div class="sidebar-section">Data Master</div>
-  <a href="anggota.html">👤 Data Anggota</a>
- <a href="kas.html">💵 Kas</a>
- <a href="angsuran.html">📄 Angsuran</a>
-  <a href="simpanan.html">📊 Simpanan</a>
-  
+  <a href="anggota.html">👤 Data Anggota</a><a href="kas.html">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
   <div class="sidebar-section">Keuangan</div>
-     <a href="pinjaman.html">💰 Pinjaman</a>
-     <a href="cair.html">💸 Pencairan Simpanan</a>
-    <a href="neraca.html">📖 Neraca</a>
-<a href="labarugi.html">📊 Laba Rugi</a>
-
-  
+     <a href="pinjaman.html">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
   <div class="sidebar-section">Laporan</div>
-   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
-  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
-  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
-    <a href="transaksi.html">📊 Lap transaksi</a>
-
+   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a>
   <div class="sidebar-section">Pengaturan</div>
-     <a href="backup.html">💾 Backup Data</a>
-  <a href="user.html">⚙️ Kelola User</a>
-  <a href="#" id="btnLogout">🚪 Logout</a>
+     <a href="backup.html">💾 Backup Data</a><a href="user.html">⚙️ Kelola User</a><a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
 
-<!-- HEADER -->
-<header>
+<header><div class="header-left"><div class="brand"><img src="img/icon-192.png" alt="Logo"><div><div class="brand-small">Koperasi</div><div class="brand-title">ARFA</div></div></div><div id="userInfo" class="user-info"></div></div><div class="menu-btn" onclick="toggleSidebar()">☰</div></header>
 
-  <div class="header-left">
-
-    <div class="brand">
-
-      <img src="img/icon-192.png" alt="Logo">
-
-      <div>
-        <div class="brand-small">Koperasi</div>
-        <div class="brand-title">ARFA</div>
-      </div>
-
-    </div>
-
-    <div id="userInfo" class="user-info"></div>
-
-  </div>
-
-  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-
-</header>
-
-<!-- CONTENT -->
 <div class="container">
+  <h2 class="page-title">NERACA KOPERASI</h2>
+  <div class="period" id="periode">Perhitungan realtime dari Firebase</div>
 
-  <h2 class="page-title">
-    NERACA KOPERASI
-  </h2>
-
-  <div class="period" id="periode">
-    Perhitungan realtime dari Firebase
-  </div>
-
-  
   <!-- NERACA -->
-  <div class="card">
+  <div class="card"><h3>Neraca</h3><div class="neraca">
+    <div class="neraca-column"><div class="neraca-header">AKTIVA</div><div class="neraca-body">
+      <div class="row"><div class="row-label">Kas Cash</div><div class="row-value">Rp <span id="aCash">0</span></div></div>
+      <div class="row"><div class="row-label">Kas Bank</div><div class="row-value">Rp <span id="aBank">0</span></div></div>
+      <div class="row"><div class="row-label">Piutang Pokok</div><div class="row-value">Rp <span id="aPokok">0</span></div></div>
+      <div class="row"><div class="row-label">Piutang Jasa</div><div class="row-value">Rp <span id="aJasa">0</span></div></div>
+      <div class="row total-row"><div class="row-label">TOTAL AKTIVA</div><div class="row-value">Rp <span id="totalAktiva">0</span></div></div>
+    </div></div>
+    <div class="neraca-column"><div class="neraca-header">PASIVA</div><div class="neraca-body">
+      <div class="row"><div class="row-label">Modal Awal</div><div class="row-value">Rp <span id="pModal">0</span></div></div>
+      <div class="row"><div class="row-label sub">Simpanan Pokok</div><div class="row-value">Rp <span id="pPokok">0</span></div></div>
+      <div class="row"><div class="row-label sub">Simpanan Wajib</div><div class="row-value">Rp <span id="pWajib">0</span></div></div>
+      <div class="row"><div class="row-label sub">Simpanan Sukarela</div><div class="row-value">Rp <span id="pSukarela">0</span></div></div>
+      <div class="row"><div class="row-label">SHU Berjalan</div><div class="row-value green">Rp <span id="pSHU">0</span></div></div>
+      <div class="row total-row"><div class="row-label">TOTAL PASIVA</div><div class="row-value">Rp <span id="totalPasiva">0</span></div></div>
+    </div></div>
+  </div></div>
 
-    <h3>Neraca</h3>
-
-    <div class="neraca">
-
-      <!-- AKTIVA -->
-      <div class="neraca-column">
-
-        <div class="neraca-header">
-          AKTIVA
-        </div>
-
-        <div class="neraca-body">
-
-          <div class="row">
-            <div class="row-label">
-              Kas Cash
-            </div>
-            <div class="row-value">
-              Rp <span id="aCash">0</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="row-label">
-              Kas Bank
-            </div>
-            <div class="row-value">
-              Rp <span id="aBank">0</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="row-label">
-              Piutang Pokok
-            </div>
-            <div class="row-value">
-              Rp <span id="aPokok">0</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="row-label">
-              Piutang Jasa
-            </div>
-            <div class="row-value">
-              Rp <span id="aJasa">0</span>
-            </div>
-          </div>
-
-          <div class="row total-row">
-            <div class="row-label">
-              TOTAL AKTIVA
-            </div>
-            <div class="row-value">
-              Rp <span id="totalAktiva">0</span>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- PASIVA -->
-      <div class="neraca-column">
-
-        <div class="neraca-header">
-          PASIVA
-        </div>
-
-        <div class="neraca-body">
-
-          <div class="row">
-            <div class="row-label">
-              Modal Awal
-            </div>
-            <div class="row-value">
-              Rp <span id="pModal">0</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="row-label sub">
-              Simpanan Pokok
-            </div>
-            <div class="row-value">
-              Rp <span id="pPokok">0</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="row-label sub">
-              Simpanan Wajib
-            </div>
-            <div class="row-value">
-              Rp <span id="pWajib">0</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="row-label sub">
-              Simpanan Sukarela
-            </div>
-            <div class="row-value">
-              Rp <span id="pSukarela">0</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="row-label">
-              SHU Berjalan
-            </div>
-            <div class="row-value green">
-              Rp <span id="pSHU">0</span>
-            </div>
-          </div>
-
-          <div class="row total-row">
-            <div class="row-label">
-              TOTAL PASIVA
-            </div>
-            <div class="row-value">
-              Rp <span id="totalPasiva">0</span>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-  
-    <!-- BALANCE -->
-  <div class="card">
-
-    <div id="balanceBox" class="balance-box">
-
-      <div class="balance-title">
-        SELISIH AKTIVA - PASIVA
-      </div>
-
-      <div class="balance-value">
-        Rp <span id="selisih">0</span>
-      </div>
-
-      <div id="statusBalance"
-           style="font-size:11px;margin-top:4px">
-        NERACA SEIMBANG
-      </div>
-
-    </div>
-
-  </div>
-
-
-  
-  
-<!-- RINGKASAN -->
-  <div class="card">
-
-    <h3>Ringkasan Keuangan</h3>
-
-    <div class="grid">
-
-      <div class="box">
-        <div class="box-title">Kas Cash</div>
-        <div class="box-value blue">
-          Rp <span id="kasCash">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Kas Bank</div>
-        <div class="box-value blue">
-          Rp <span id="kasBank">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Piutang Pokok</div>
-        <div class="box-value orange">
-          Rp <span id="piutangPokok">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Piutang Jasa</div>
-        <div class="box-value orange">
-          Rp <span id="piutangJasa">0</span>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <!-- PINJAMAN -->
-  <div class="card">
-
-    <h3>Rincian Pinjaman</h3>
-
-    <div class="grid">
-
-      <div class="box">
-        <div class="box-title">Total Pinjaman Pokok</div>
-        <div class="box-value">
-          Rp <span id="totalPinjamanPokok">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Angsuran Pokok Terbayar</div>
-        <div class="box-value green">
-          Rp <span id="angsuranPokok">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Total Jasa Pinjaman</div>
-        <div class="box-value">
-          Rp <span id="totalJasa">0</span>
-        </div>
-      </div>
-
-      <div class="box">
-        <div class="box-title">Jasa Terbayar</div>
-        <div class="box-value green">
-          Rp <span id="jasaTerbayar">0</span>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
+  <div class="card"><div id="balanceBox" class="balance-box"><div class="balance-title">SELISIH AKTIVA - PASIVA</div><div class="balance-value">Rp <span id="selisih">0</span></div><div id="statusBalance" style="font-size:11px;margin-top:4px">NERACA SEIMBANG</div></div></div>
 
   <!-- SHU -->
-  <div class="card">
+  <div class="card"><h3>Perhitungan SHU</h3><div class="grid">
+    <div class="box"><div class="box-title">Pendapatan Jasa</div><div class="box-value green">Rp <span id="pendapatan">0</span></div></div>
+    <div class="box"><div class="box-title">Pendapatan Lain-lain</div><div class="box-value green">Rp <span id="pendapatanLain">0</span></div></div>
+    <div class="box"><div class="box-title">Total Pendapatan</div><div class="box-value green">Rp <span id="totalPendapatan">0</span></div></div>
+    <div class="box"><div class="box-title">Beban Operasional</div><div class="box-value red">Rp <span id="beban">0</span></div></div>
+    <div class="box"><div class="box-title">SHU Berjalan</div><div class="box-value green">Rp <span id="shu">0</span></div></div>
+    <div class="box"><div class="box-title">Sisa Piutang Jasa</div><div class="box-value orange">Rp <span id="sisaJasa">0</span></div></div>
+  </div></div>
 
-    <h3>Perhitungan SHU</h3>
+  <!-- RINGKASAN + PINJAMAN SAMA -->
+  <div class="card"><h3>Ringkasan Keuangan</h3><div class="grid">
+    <div class="box"><div class="box-title">Kas Cash</div><div class="box-value blue">Rp <span id="kasCash">0</span></div></div>
+    <div class="box"><div class="box-title">Kas Bank</div><div class="box-value blue">Rp <span id="kasBank">0</span></div></div>
+    <div class="box"><div class="box-title">Piutang Pokok</div><div class="box-value orange">Rp <span id="piutangPokok">0</span></div></div>
+    <div class="box"><div class="box-title">Piutang Jasa</div><div class="box-value orange">Rp <span id="piutangJasa">0</span></div></div>
+  </div></div>
 
-    <div class="grid">
+  <div class="card"><h3>Rincian Pinjaman</h3><div class="grid">
+    <div class="box"><div class="box-title">Total Pinjaman Pokok</div><div class="box-value">Rp <span id="totalPinjamanPokok">0</span></div></div>
+    <div class="box"><div class="box-title">Angsuran Pokok Terbayar</div><div class="box-value green">Rp <span id="angsuranPokok">0</span></div></div>
+    <div class="box"><div class="box-title">Total Jasa Pinjaman</div><div class="box-value">Rp <span id="totalJasa">0</span></div></div>
+    <div class="box"><div class="box-title">Jasa Terbayar</div><div class="box-value green">Rp <span id="jasaTerbayar">0</span></div></div>
+  </div></div>
 
-      <div class="box">
-        <div class="box-title">
-          Pendapatan Jasa Diakui
-        </div>
-
-        <div class="box-value green">
-          Rp <span id="pendapatan">0</span>
-        </div>
-
-        <div style="font-size:10px;color:#64748b;margin-top:5px">
-          Termasuk jasa yang masih menjadi piutang
-        </div>
-
-      </div>
-
-
-      <div class="box">
-
-        <div class="box-title">
-          Beban Operasional
-        </div>
-
-        <div class="box-value red">
-          Rp <span id="beban">0</span>
-        </div>
-
-      </div>
-
-
-      <div class="box">
-
-        <div class="box-title">
-          SHU Berjalan
-        </div>
-
-        <div class="box-value green">
-          Rp <span id="shu">0</span>
-        </div>
-
-      </div>
-
-
-      <div class="box">
-
-        <div class="box-title">
-          Sisa Piutang Jasa
-        </div>
-
-        <div class="box-value orange">
-          Rp <span id="sisaJasa">0</span>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- DEBUG -->
-  <div class="card debug-card">
-
-    <h3>Detail Perhitungan</h3>
-
-    <div class="debug" id="debug">
-      Memuat data...
-    </div>
-
-  </div>
-
-
-  <div class="card no-print">
-
-    <button class="btn" onclick="window.print()">
-      🖨️ Cetak Neraca
-    </button>
-
-  </div>
-
+  <div class="card debug-card"><h3>Detail Perhitungan</h3><div class="debug" id="debug">Memuat data...</div></div>
+  <div class="card no-print"><button class="btn" onclick="window.print()">🖨️ Cetak Neraca</button></div>
 </div>
 
-
 <script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-  getDatabase,
-  ref,
-  onValue
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-
-/* =========================================================
-   FIREBASE
-========================================================= */
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
-
-  authDomain:
-    "arfa-c7dee.firebaseapp.com",
-
-  databaseURL:
-    "https://arfa-c7dee-default-rtdb.firebaseio.com",
-
-  projectId:
-    "arfa-c7dee"
-
-};
-
+const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
 
-
-/* =========================================================
-   USER
-========================================================= */
-
-const username =
-  localStorage.getItem("username") || "";
-
-const role =
-  localStorage.getItem("role") || "";
-
-const userInfo =
-  document.getElementById("userInfo");
-
-if(username && role){
-
-  const jam = new Date().getHours();
-
-  let salam =
-    jam < 11
-      ? "Pagi"
-      : jam < 15
-      ? "Siang"
-      : jam < 18
-      ? "Sore"
-      : "Malam";
-
-  userInfo.innerHTML =
-    `${salam}, <b>${username}</b>`;
-
-}
-
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
-
-window.toggleSidebar = function(){
-
-  const sidebar =
-    document.getElementById("sidebar");
-
-  const overlay =
-    document.getElementById("overlay");
-
-  sidebar.classList.toggle("open");
-
-  overlay.style.display =
-    sidebar.classList.contains("open")
-      ? "block"
-      : "none";
-
-};
-
-document
-  .getElementById("overlay")
-  .addEventListener("click",toggleSidebar);
-
-
-document
-  .getElementById("btnLogout")
-  .addEventListener("click",function(e){
-
-    e.preventDefault();
-
-    if(confirm("Yakin ingin logout?")){
-
-      localStorage.clear();
-
-      location.href =
-        "index.html";
-
-    }
-
-  });
-
-
-/* =========================================================
-   DATA
-========================================================= */
-
-let dataKas = {};
-
-let dataSaldoAwal = {};
-
-let dataPinjaman = {};
-
-let dataAngsuran = {};
-
-let dataSimpanan = {};
-
-let dataAnggota = {};
-
-
-/* =========================================================
-   HELPER
-========================================================= */
-
-function num(value){
-
-  if(value === null ||
-     value === undefined ||
-     value === "")
-    return 0;
-
-  if(typeof value === "string"){
-
-    value =
-      value
-      .replace(/\./g,"")
-      .replace(/,/g,"");
-
-  }
-
-  const n =
-    Number(value);
-
-  return Number.isFinite(n)
-    ? n
-    : 0;
-
-}
-
-
-function rupiah(value){
-
-  return num(value)
-    .toLocaleString("id-ID");
-
-}
-
-
-function firstNumber(obj,fields){
-
-  for(const field of fields){
-
-    if(
-      obj &&
-      obj[field] !== undefined &&
-      obj[field] !== null &&
-      obj[field] !== ""
-    ){
-
-      return num(obj[field]);
-
-    }
-
-  }
-
-  return 0;
-
-}
-
-
-/* =========================================================
-   AMBIL DATA FIREBASE
-========================================================= */
-
-onValue(
-  ref(db,"kas"),
-  snap => {
-
-    const data =
-      snap.val() || {};
-
-    dataSaldoAwal =
-      data.saldoAwal || {};
-
-    dataKas =
-      data.transaksi || {};
-
-    hitungNeraca();
-
-  }
-);
-
-
-onValue(
-  ref(db,"pinjaman"),
-  snap => {
-
-    dataPinjaman =
-      snap.val() || {};
-
-    hitungNeraca();
-
-  }
-);
-
-
-onValue(
-  ref(db,"angsuran"),
-  snap => {
-
-    dataAngsuran =
-      snap.val() || {};
-
-    hitungNeraca();
-
-  }
-);
-
-
-onValue(
-  ref(db,"simpanan"),
-  snap => {
-
-    dataSimpanan =
-      snap.val() || {};
-
-    hitungNeraca();
-
-  }
-);
-
-
-onValue(
-  ref(db,"anggota"),
-  snap => {
-
-    dataAnggota =
-      snap.val() || {};
-
-    hitungNeraca();
-
-  }
-);
-
-
-/* =========================================================
-   HITUNG NERACA
-========================================================= */
+const username = localStorage.getItem("username") || "";
+const role = localStorage.getItem("role") || "";
+const userInfo = document.getElementById("userInfo");
+if(username && role){const jam = new Date().getHours();let salam = jam < 11? "Pagi" : jam < 15? "Siang" : jam < 18? "Sore" : "Malam";userInfo.innerHTML = `${salam}, <b>${username}</b>`;}
+
+window.toggleSidebar = function(){const sidebar = document.getElementById("sidebar");const overlay = document.getElementById("overlay");sidebar.classList.toggle("open");overlay.style.display = sidebar.classList.contains("open")? "block" : "none";};
+document.getElementById("overlay").addEventListener("click",toggleSidebar);
+document.getElementById("btnLogout").addEventListener("click",function(e){e.preventDefault();if(confirm("Yakin ingin logout?")){localStorage.clear();location.href = "index.html";}});
+
+let dataKas = {};let dataSaldoAwal = {};let dataPinjaman = {};let dataAngsuran = {};let dataSimpanan = {};let dataAnggota = {};
+
+function num(value){if(value === null || value === undefined || value === "") return 0;if(typeof value === "string"){value = value.replace(/\./g,"").replace(/,/g,"");}const n = Number(value);return Number.isFinite(n)? n : 0;}
+function rupiah(value){return num(value).toLocaleString("id-ID");}
+function firstNumber(obj,fields){for(const field of fields){if(obj && obj[field]!== undefined && obj[field]!== null && obj[field]!== ""){return num(obj[field]);}}return 0;}
+
+onValue(ref(db,"kas"), snap => {const data = snap.val() || {};dataSaldoAwal = data.saldoAwal || {};dataKas = data.transaksi || {};hitungNeraca();});
+onValue(ref(db,"pinjaman"), snap => {dataPinjaman = snap.val() || {};hitungNeraca();});
+onValue(ref(db,"angsuran"), snap => {dataAngsuran = snap.val() || {};hitungNeraca();});
+onValue(ref(db,"simpanan"), snap => {dataSimpanan = snap.val() || {};hitungNeraca();});
+onValue(ref(db,"anggota"), snap => {dataAnggota = snap.val() || {};hitungNeraca();});
 
 function hitungNeraca(){
-
-  /* -------------------------------------------------------
-     1. KAS
-  ------------------------------------------------------- */
-
-  let kasCash =
-    num(dataSaldoAwal.cash);
-
-  let kasBank =
-    num(dataSaldoAwal.bank);
-
-
+  let kasCash = num(dataSaldoAwal.cash);
+  let kasBank = num(dataSaldoAwal.bank);
   let totalPendapatanKas = 0;
-
   let totalBebanKas = 0;
+  let pendapatanLain = 0; // BARU
 
+  Object.values(dataKas || {}).forEach(trx => {
+    const jumlah = firstNumber(trx, ["jumlah","nominal","amount"]);
+    const tipe = String(trx.tipe || "").toLowerCase();
+    const sumber = String(trx.sumberKas || "cash").toLowerCase();
+    const kategori = String(trx.kategori || "").toLowerCase();
 
-  Object.values(dataKas || {})
-    .forEach(trx => {
+    if(tipe === "masuk"){
+      if(sumber === "bank") kasBank += jumlah; else kasCash += jumlah;
 
-      const jumlah =
-        firstNumber(
-          trx,
-          ["jumlah","nominal","amount"]
-        );
-
-      const tipe =
-        String(
-          trx.tipe || ""
-        ).toLowerCase();
-
-      const sumber =
-        String(
-          trx.sumberKas || "cash"
-        ).toLowerCase();
-
-
-      if(
-        tipe === "masuk"
-      ){
-
-        if(sumber === "bank")
-          kasBank += jumlah;
-        else
-          kasCash += jumlah;
-
+      // HITUNG PENDAPATAN LAIN-LAIN
+      if(kategori === "pendapatan_lain" || kategori === "lain-lain" || kategori === "pendapatan lain"){
+        pendapatanLain += jumlah;
       }
-
-
-      else if(
-        tipe === "keluar" ||
-        tipe === "biaya"
-      ){
-
-        if(sumber === "bank")
-          kasBank -= jumlah;
-        else
-          kasCash -= jumlah;
-
-      }
-
-
-      /* ---------------------------------------------
-         BEBAN
-         Hanya transaksi yang memang merupakan biaya.
-      --------------------------------------------- */
-
-      const kategori =
-        String(
-          trx.kategori || ""
-        ).toLowerCase();
-
-
-      if(
-        tipe === "biaya" ||
-        kategori === "biaya_operasional" ||
-        kategori === "biaya" ||
-        kategori === "konsumsi"
-      ){
-
+    }
+    else if(tipe === "keluar" || tipe === "biaya"){
+      if(sumber === "bank") kasBank -= jumlah; else kasCash -= jumlah;
+      if(tipe === "biaya" || kategori === "biaya_operasional" || kategori === "biaya" || kategori === "konsumsi"){
         totalBebanKas += jumlah;
-
       }
-
-    });
-
-
-  /* -------------------------------------------------------
-     2. PINJAMAN POKOK
-  ------------------------------------------------------- */
-
-  let totalPinjamanPokok = 0;
-
-  let totalJasaPinjaman = 0;
-
-
-  Object.values(dataPinjaman || {})
-    .forEach(p => {
-
-      const status =
-        String(
-          p.status || ""
-        ).toLowerCase();
-
-
-      /*
-       * Abaikan pinjaman yang batal.
-       */
-
-      if(
-        status === "batal" ||
-        status === "dibatalkan" ||
-        status === "cancel"
-      ){
-
-        return;
-
-      }
-
-
-      const pokok =
-        firstNumber(
-          p,
-          [
-            "jumlah",
-            "jumlahPinjaman",
-            "nominal",
-            "pokok"
-          ]
-        );
-
-
-      let jasa =
-        firstNumber(
-          p,
-          [
-            "jasa",
-            "totalJasa",
-            "jumlahJasa"
-          ]
-        );
-
-
-      /*
-       * Jika field jasa tidak ada,
-       * sistem koperasi ARFA menggunakan
-       * jasa 20%.
-       */
-
-      if(jasa === 0 && pokok > 0){
-
-        jasa =
-          Math.round(
-            pokok * 0.20
-          );
-
-      }
-
-
-      totalPinjamanPokok +=
-        pokok;
-
-      totalJasaPinjaman +=
-        jasa;
-
-    });
-
-
-  /* -------------------------------------------------------
-     3. ANGSURAN
-  ------------------------------------------------------- */
-
-  let angsuranPokokTerbayar = 0;
-
-  let jasaTerbayar = 0;
-
-
-  Object.values(dataAngsuran || {})
-    .forEach(a => {
-
-      const pokok =
-        firstNumber(
-          a,
-          [
-            "pokok",
-            "bayarPokok",
-            "angsuranPokok",
-            "pokokDibayar"
-          ]
-        );
-
-
-      const jasa =
-        firstNumber(
-          a,
-          [
-            "jasa",
-            "bayarJasa",
-            "jasaDibayar"
-          ]
-        );
-
-
-      angsuranPokokTerbayar +=
-        pokok;
-
-      jasaTerbayar +=
-        jasa;
-
-    });
-
-
-  /* -------------------------------------------------------
-     4. PIUTANG
-  ------------------------------------------------------- */
-
-  const piutangPokok =
-    Math.max(
-      0,
-      totalPinjamanPokok -
-      angsuranPokokTerbayar
-    );
-
-
-  const piutangJasa =
-    Math.max(
-      0,
-      totalJasaPinjaman -
-      jasaTerbayar
-    );
-
-
-  /* -------------------------------------------------------
-     5. SIMPANAN
-  ------------------------------------------------------- */
-
-  let simpananPokok = 0;
-
-  let simpananWajib = 0;
-
-  let simpananSukarela = 0;
-
-
-  Object.values(dataSimpanan || {})
-    .forEach(s => {
-
-      const jenis =
-        String(
-          s.jenis ||
-          s.kategori ||
-          s.tipe ||
-          ""
-        ).toLowerCase();
-
-
-      const jumlah =
-        firstNumber(
-          s,
-          [
-            "jumlah",
-            "nominal",
-            "nilai",
-            "amount"
-          ]
-        );
-
-
-      if(
-        jenis.includes("pokok")
-      ){
-
-        simpananPokok +=
-          jumlah;
-
-      }
-
-      else if(
-        jenis.includes("wajib")
-      ){
-
-        simpananWajib +=
-          jumlah;
-
-      }
-
-      else if(
-        jenis.includes("sukarela")
-      ){
-
-        simpananSukarela +=
-          jumlah;
-
-      }
-
-    });
-
-
-  /*
-   * Jika data simpanan memakai struktur:
-   * {pokok, wajib, sukarela}
-   */
-
-  Object.values(dataSimpanan || {})
-    .forEach(s => {
-
-      if(
-        typeof s === "object" &&
-        (
-          s.pokok !== undefined ||
-          s.wajib !== undefined ||
-          s.sukarela !== undefined
-        )
-      ){
-
-        simpananPokok +=
-          num(s.pokok);
-
-        simpananWajib +=
-          num(s.wajib);
-
-        simpananSukarela +=
-          num(s.sukarela);
-
-      }
-
-    });
-
-
-  /* -------------------------------------------------------
-     6. MODAL AWAL
-  ------------------------------------------------------- */
-
-  let modalAwal =
-    firstNumber(
-      dataSaldoAwal,
-      [
-        "modalAwal"
-      ]
-    );
-
-
-  /*
-   * Pada sistem ARFA:
-   * Modal awal = Cash + Bank
-   * jika field modalAwal belum tersimpan.
-   */
-
-  if(modalAwal === 0){
-
-    modalAwal =
-      num(dataSaldoAwal.cash) +
-      num(dataSaldoAwal.bank);
-
-  }
-
-
-  /*
-   * Bisa juga menggunakan global/modalAwal
-   * tetapi untuk menjaga realtime,
-   * nilai saldo awal diprioritaskan.
-   */
-
-
-  /* -------------------------------------------------------
-     7. PENDAPATAN
-  ------------------------------------------------------- */
-
-  /*
-   * PENTING:
-   *
-   * Pendapatan jasa menggunakan TOTAL JASA PINJAMAN,
-   * bukan hanya jasa yang sudah dibayar.
-   *
-   * Contoh:
-   *
-   * Total jasa      = 777.000
-   * Terbayar        = 570.000
-   * Piutang jasa    = 207.000
-   *
-   * Pendapatan      = 777.000
-   */
-
-  const pendapatanJasa =
-    totalJasaPinjaman;
-
-
-  /* -------------------------------------------------------
-     8. SHU
-  ------------------------------------------------------- */
-
-  const shu =
-    pendapatanJasa -
-    totalBebanKas;
-
-
-  /* -------------------------------------------------------
-     9. AKTIVA
-  ------------------------------------------------------- */
-
-  const totalAktiva =
-    kasCash +
-    kasBank +
-    piutangPokok +
-    piutangJasa;
-
-
-  /* -------------------------------------------------------
-     10. PASIVA
-  ------------------------------------------------------- */
-
-  const totalSimpanan =
-    simpananPokok +
-    simpananWajib +
-    simpananSukarela;
-
-
-  const totalPasiva =
-    modalAwal +
-    totalSimpanan +
-    shu;
-
-
-  /* -------------------------------------------------------
-     11. SELISIH
-  ------------------------------------------------------- */
-
-  const selisih =
-    totalAktiva -
-    totalPasiva;
-
-
-  /* =======================================================
-     RENDER
-  ======================================================= */
-
-  document.getElementById("kasCash").innerText =
-    rupiah(kasCash);
-
-  document.getElementById("kasBank").innerText =
-    rupiah(kasBank);
-
-  document.getElementById("piutangPokok").innerText =
-    rupiah(piutangPokok);
-
-  document.getElementById("piutangJasa").innerText =
-    rupiah(piutangJasa);
-
-
-  document.getElementById("aCash").innerText =
-    rupiah(kasCash);
-
-  document.getElementById("aBank").innerText =
-    rupiah(kasBank);
-
-  document.getElementById("aPokok").innerText =
-    rupiah(piutangPokok);
-
-  document.getElementById("aJasa").innerText =
-    rupiah(piutangJasa);
-
-  document.getElementById("totalAktiva").innerText =
-    rupiah(totalAktiva);
-
-
-  document.getElementById("pModal").innerText =
-    rupiah(modalAwal);
-
-  document.getElementById("pPokok").innerText =
-    rupiah(simpananPokok);
-
-  document.getElementById("pWajib").innerText =
-    rupiah(simpananWajib);
-
-  document.getElementById("pSukarela").innerText =
-    rupiah(simpananSukarela);
-
-  document.getElementById("pSHU").innerText =
-    rupiah(shu);
-
-  document.getElementById("totalPasiva").innerText =
-    rupiah(totalPasiva);
-
-
-  document.getElementById("totalPinjamanPokok").innerText =
-    rupiah(totalPinjamanPokok);
-
-  document.getElementById("angsuranPokok").innerText =
-    rupiah(angsuranPokokTerbayar);
-
-  document.getElementById("totalJasa").innerText =
-    rupiah(totalJasaPinjaman);
-
-  document.getElementById("jasaTerbayar").innerText =
-    rupiah(jasaTerbayar);
-
-
-  document.getElementById("pendapatan").innerText =
-    rupiah(pendapatanJasa);
-
-  document.getElementById("beban").innerText =
-    rupiah(totalBebanKas);
-
-  document.getElementById("shu").innerText =
-    rupiah(shu);
-
-  document.getElementById("sisaJasa").innerText =
-    rupiah(piutangJasa);
-
-
-  document.getElementById("selisih").innerText =
-    rupiah(Math.abs(selisih));
-
-
-  /* =======================================================
-     STATUS
-  ======================================================= */
-
-  const balanceBox =
-    document.getElementById("balanceBox");
-
-  const status =
-    document.getElementById("statusBalance");
-
-
-  if(Math.abs(selisih) < 1){
-
-    balanceBox.classList.remove("warning");
-
-    status.innerText =
-      "✓ NERACA SEIMBANG";
-
-    status.style.color =
-      "#16a34a";
-
-  }
-  else{
-
-    balanceBox.classList.add("warning");
-
-    status.innerText =
-      "⚠ NERACA BELUM SEIMBANG";
-
-    status.style.color =
-      "#dc2626";
-
-  }
-
-
-  /* =======================================================
-     DEBUG
-  ======================================================= */
-
-  document.getElementById("debug").innerHTML = `
-
-SALDO AWAL
+    }
+  });
+
+  let totalPinjamanPokok = 0;let totalJasaPinjaman = 0;
+  Object.values(dataPinjaman || {}).forEach(p => {
+    const status = String(p.status || "").toLowerCase();
+    if(status === "batal" || status === "dibatalkan" || status === "cancel"){return;}
+    const pokok = firstNumber(p, ["jumlah","jumlahPinjaman","nominal","pokok"]);
+    let jasa = firstNumber(p, ["jasa","totalJasa","jumlahJasa"]);
+    if(jasa === 0 && pokok > 0){jasa = Math.round(pokok * 0.20);}
+    totalPinjamanPokok += pokok;totalJasaPinjaman += jasa;
+  });
+
+  let angsuranPokokTerbayar = 0;let jasaTerbayar = 0;
+  Object.values(dataAngsuran || {}).forEach(a => {
+    const pokok = firstNumber(a, ["pokok","bayarPokok","angsuranPokok","pokokDibayar"]);
+    const jasa = firstNumber(a, ["jasa","bayarJasa","jasaDibayar"]);
+    angsuranPokokTerbayar += pokok;jasaTerbayar += jasa;
+  });
+
+  const piutangPokok = Math.max(0, totalPinjamanPokok - angsuranPokokTerbayar);
+  const piutangJasa = Math.max(0, totalJasaPinjaman - jasaTerbayar);
+
+  let simpananPokok = 0;let simpananWajib = 0;let simpananSukarela = 0;
+  Object.values(dataSimpanan || {}).forEach(s => {
+    const jenis = String(s.jenis || s.kategori || s.tipe || "").toLowerCase();
+    const jumlah = firstNumber(s, ["jumlah","nominal","nilai","amount"]);
+    if(jenis.includes("pokok")){simpananPokok += jumlah;}
+    else if(jenis.includes("wajib")){simpananWajib += jumlah;}
+    else if(jenis.includes("sukarela")){simpananSukarela += jumlah;}
+  });
+  Object.values(dataSimpanan || {}).forEach(s => {
+    if(typeof s === "object" && (s.pokok!== undefined || s.wajib!== undefined || s.sukarela!== undefined)){
+      simpananPokok += num(s.pokok);simpananWajib += num(s.wajib);simpananSukarela += num(s.sukarela);
+    }
+  });
+
+  let modalAwal = firstNumber(dataSaldoAwal, ["modalAwal"]);
+  if(modalAwal === 0){modalAwal = num(dataSaldoAwal.cash) + num(dataSaldoAwal.bank);}
+
+  const pendapatanJasa = totalJasaPinjaman;
+  const totalPendapatan = pendapatanJasa + pendapatanLain; // BARU
+  const shu = totalPendapatan - totalBebanKas; // BARU: SHU = Pendapatan Total - Beban
+
+  const totalAktiva = kasCash + kasBank + piutangPokok + piutangJasa;
+  const totalSimpanan = simpananPokok + simpananWajib + simpananSukarela;
+  const totalPasiva = modalAwal + totalSimpanan + shu;
+  const selisih = totalAktiva - totalPasiva;
+
+  // RENDER
+  document.getElementById("kasCash").innerText = rupiah(kasCash);
+  document.getElementById("kasBank").innerText = rupiah(kasBank);
+  document.getElementById("piutangPokok").innerText = rupiah(piutangPokok);
+  document.getElementById("piutangJasa").innerText = rupiah(piutangJasa);
+  document.getElementById("aCash").innerText = rupiah(kasCash);
+  document.getElementById("aBank").innerText = rupiah(kasBank);
+  document.getElementById("aPokok").innerText = rupiah(piutangPokok);
+  document.getElementById("aJasa").innerText = rupiah(piutangJasa);
+  document.getElementById("totalAktiva").innerText = rupiah(totalAktiva);
+  document.getElementById("pModal").innerText = rupiah(modalAwal);
+  document.getElementById("pPokok").innerText = rupiah(simpananPokok);
+  document.getElementById("pWajib").innerText = rupiah(simpananWajib);
+  document.getElementById("pSukarela").innerText = rupiah(simpananSukarela);
+  document.getElementById("pSHU").innerText = rupiah(shu);
+  document.getElementById("totalPasiva").innerText = rupiah(totalPasiva);
+  document.getElementById("totalPinjamanPokok").innerText = rupiah(totalPinjamanPokok);
+  document.getElementById("angsuranPokok").innerText = rupiah(angsuranPokokTerbayar);
+  document.getElementById("totalJasa").innerText = rupiah(totalJasaPinjaman);
+  document.getElementById("jasaTerbayar").innerText = rupiah(jasaTerbayar);
+
+  document.getElementById("pendapatan").innerText = rupiah(pendapatanJasa);
+  document.getElementById("pendapatanLain").innerText = rupiah(pendapatanLain); // BARU
+  document.getElementById("totalPendapatan").innerText = rupiah(totalPendapatan); // BARU
+  document.getElementById("beban").innerText = rupiah(totalBebanKas);
+  document.getElementById("shu").innerText = rupiah(shu);
+  document.getElementById("sisaJasa").innerText = rupiah(piutangJasa);
+
+  document.getElementById("selisih").innerText = rupiah(Math.abs(selisih));
+  const balanceBox = document.getElementById("balanceBox");
+  const status = document.getElementById("statusBalance");
+  if(Math.abs(selisih) < 1){balanceBox.classList.remove("warning");status.innerText = "✓ NERACA SEIMBANG";status.style.color = "#16a34a";}
+  else{balanceBox.classList.add("warning");status.innerText = "⚠ NERACA BELUM SEIMBANG";status.style.color = "#dc2626";}
+
+  document.getElementById("debug").innerText = `
+=============== SALDO AWAL ===============
 Cash                  : Rp ${rupiah(num(dataSaldoAwal.cash))}
 Bank                  : Rp ${rupiah(num(dataSaldoAwal.bank))}
 Modal Awal            : Rp ${rupiah(modalAwal)}
 
-PINJAMAN
-Total Pokok           : Rp ${rupiah(totalPinjamanPokok)}
-Pokok Terbayar        : Rp ${rupiah(angsuranPokokTerbayar)}
-Piutang Pokok         : Rp ${rupiah(piutangPokok)}
+============== PENDAPATAN ===============
+Pendapatan Jasa       : Rp ${rupiah(pendapatanJasa)}
+Pendapatan Lain-lain  : Rp ${rupiah(pendapatanLain)}
 
-JASA
-Total Jasa            : Rp ${rupiah(totalJasaPinjaman)}
-Jasa Terbayar         : Rp ${rupiah(jasaTerbayar)}
-Piutang Jasa          : Rp ${rupiah(piutangJasa)}
+TOTAL PENDAPATAN      : Rp ${rupiah(totalPendapatan)}
 
-SIMPANAN
+================ BEBAN =================
+Beban Operasional     : Rp ${rupiah(totalBebanKas)}
+
+SHU BERJALAN          : Rp ${rupiah(shu)}
+
+=============== SIMPANAN ===============
 Simpanan Pokok        : Rp ${rupiah(simpananPokok)}
 Simpanan Wajib        : Rp ${rupiah(simpananWajib)}
 Simpanan Sukarela     : Rp ${rupiah(simpananSukarela)}
+
+TOTAL SIMPANAN        : Rp ${rupiah(totalSimpanan)}
+
+=============== PINJAMAN ===============
+Total Pinjaman Pokok  : Rp ${rupiah(totalPinjamanPokok)}
+Pokok Terbayar        : Rp ${rupiah(angsuranPokokTerbayar)}
+PIUTANG POK         : Rp ${rupiah(piutangPokok)}
+
+Total Jasa            : Rp ${rupiah(totalJasaPinjaman)}
+Jasa Terbayar         : Rp ${rupiah(jasaTerbayar)}
+PIUTANG JASA          : Rp ${rupiah(piutangJasa)}
+
+================ AKTIVA ================
+Kas Cash              : Rp ${rupiah(kasCash)}
+Kas Bank              : Rp ${rupiah(kasBank)}
+Piutang Pokok         : Rp ${rupiah(piutangPokok)}
+Piutang Jasa          : Rp ${rupiah(piutangJasa)}
+
+TOTAL AKTIVA          : Rp ${rupiah(totalAktiva)}
+
+================ PASIVA ================
+Modal Awal            : Rp ${rupiah(modalAwal)}
 Total Simpanan        : Rp ${rupiah(totalSimpanan)}
+SHU Berjalan          : Rp ${rupiah(shu)}
 
-LABA RUGI
-Pendapatan Jasa       : Rp ${rupiah(pendapatanJasa)}
-Beban                  : Rp ${rupiah(totalBebanKas)}
-SHU                    : Rp ${rupiah(shu)}
+TOTAL PASIVA          : Rp ${rupiah(totalPasiva)}
 
-AKTIVA
-Cash                   : Rp ${rupiah(kasCash)}
-Bank                   : Rp ${rupiah(kasBank)}
-Piutang Pokok          : Rp ${rupiah(piutangPokok)}
-Piutang Jasa           : Rp ${rupiah(piutangJasa)}
-TOTAL AKTIVA           : Rp ${rupiah(totalAktiva)}
-
-PASIVA
-Modal Awal             : Rp ${rupiah(modalAwal)}
-Total Simpanan         : Rp ${rupiah(totalSimpanan)}
-SHU                     : Rp ${rupiah(shu)}
-TOTAL PASIVA            : Rp ${rupiah(totalPasiva)}
-
-SELISIH
-Aktiva - Pasiva        : Rp ${rupiah(selisih)}
-
+=============== SELISIH ================
+Aktiva - Pasiva       : Rp ${rupiah(selisih)}
 `;
-
 }
-
-
-/* =========================================================
-   TANGGAL
-========================================================= */
-
-document.getElementById("periode").innerText =
-  "Perhitungan realtime • " +
-  new Date().toLocaleDateString(
-    "id-ID",
-    {
-      day:"2-digit",
-      month:"long",
-      year:"numeric"
-    }
-  );
-
+document.getElementById("periode").innerText = "Perhitungan realtime • " + new Date().toLocaleDateString("id-ID", {day:"2-digit",month:"long",year:"numeric"});
 </script>
-
 </body>
 </html>
