@@ -150,15 +150,15 @@ onValue(ref(db,"audit/opname"), snap=>{
 
 // 3. SIMPAN OPNAME + CATAT LOG
 window.simpanOpname = async function(){
-  const kasFisik = Number(document.getElementById("cashFisik").value) || 0;
+  const kasFisik = Number(document.getElementById("kasFisik").value) || 0; // FIX: kasFisik
   const bankFisik = Number(document.getElementById("bankFisik").value) || 0;
   const data = {
     tanggal: document.getElementById("tglOpname").value,
-    cashFisik: kasFisik,
+    kasFisik: kasFisik, // FIX: kasFisik
     bankFisik: bankFisik,
     catatan: document.getElementById("catatanOpname").value,
     oleh: username,
-    waktu: Date.now() // PENTING: ini buat urutan
+    waktu: Date.now()
   }
   if(!data.tanggal){ alert("Tanggal wajib diisi"); return; }
   try{
@@ -169,11 +169,11 @@ window.simpanOpname = async function(){
       aksi: "OPNAME KAS",
       user: username,
       role: role,
-      keterangan: `Kas: Rp ${formatRp(cashFisik)} | Bank: Rp ${formatRp(bankFisik)} - ${data.catatan}`,
+      keterangan: `Kas: Rp ${formatRp(kasFisik)} | Bank: Rp ${formatRp(bankFisik)} - ${data.catatan}`, // FIX: kasFisik
       jumlah: kasFisik + bankFisik
     });
     alert("Opname tersimpan ✅");
-    document.getElementById("kasFisik").value = "";
+    document.getElementById("kasFisik").value = ""; // FIX: kasFisik
     document.getElementById("bankFisik").value = "";
     document.getElementById("catatanOpname").value = "";
   } catch(err){ alert("Gagal simpan: " + err.message); }
