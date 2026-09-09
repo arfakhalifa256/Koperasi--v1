@@ -25,9 +25,9 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .card{background:var(--card);padding:16px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid var(--border)}
 .card h3{margin:0 0 12px 0;font-size:14px;font-weight:700;color:var(--text)}
 .summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.summary-item{background:var(--gray-50);padding:12px;border-radius:10px;border:1px solid var(--border);text-align:center}
-.summary-item b{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:500}
-.summary-item span{font-size:16px;font-weight:700;color:var(--text)}
+.summary-item{background:var(--blue-50);padding:12px;border-radius:10px;border:1px solid var(--border);text-align:center}
+.summary-item b{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:500}
+.summary-item span{font-size:10px;font-weight:700;color:var(--text)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form-group{display:flex;flex-direction:column;gap:4px}
 .form-group.full{grid-column:1/-1}
@@ -48,16 +48,23 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .btn-cancel{background:var(--gray-200);color:var(--text)}
 .alert{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;margin-top:10px}
 .alert.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
-.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;box-shadow:2px 0 10px rgba(0,0,0,0.2);}
-.sidebar.open{left:0;}
-.sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px 10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:0.2s;}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
 .overlay.active{display:block;}
 .custom-alert{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px}
 .custom-alert-box{width:100%;max-width:320px;background:#fff;border-radius:18px;padding:24px 20px;text-align:center;box-shadow:0 10px 35px rgba(0,0,0,.25)}
 .alert-icon{width:70px;height:70px;border-radius:50%;margin:auto;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:14px;color:white;font-weight:bold;}
 .alert-text{font-size:14px;font-weight:600;color:#1f2937;line-height:1.5;margin-bottom:18px;}
-</style>
+.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:.3s;z-index:9999;overflow-y:auto;box-shadow:2px 0 10px rgba(0,0,0,.2);}
+.sidebar.open{left:0;}
+.sidebar-logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.2);}
+.sidebar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
+.sidebar-logo h3{color:#fff;margin:0;font-size:15px;font-weight:600;}
+.sidebar-section{color:rgba(255,255,255,.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px;}
+.sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:.2s;}
+.sidebar a:hover{background:rgba(255,255,255,.15);transform:translateX(4px);}
+.sidebar a.active{background:rgba(255,255,255,.2);}
+
+  </style>
 </head>
 <body>
 
@@ -92,34 +99,22 @@ const username = localStorage.getItem("username") || "Unknown";
 if(role!== "admin"){ document.getElementById("formPinjaman").style.display = "none"; }
 document.getElementById("roleBadge").innerText = role.toUpperCase();
 
-// 1. FUNGSI AUDIT GLOBAL
 async function catatanAudit(aksi, keterangan, jumlah, dataTambahan={}){
-  await push(ref(db,"audit/log"),{
-    tanggal: Date.now(),
-    aksi: aksi,
-    user: username,
-    role: role,
-    keterangan: keterangan,
-    jumlah: jumlah,
-  ...dataTambahan
-  });
+  await push(ref(db,"audit/log"),{ tanggal: Date.now(), aksi, user: username, role, keterangan, jumlah,...dataTambahan });
 }
 
-// SIDEBAR TOGGLE
 window.toggleSidebar = function(){ const sidebar = document.getElementById("sidebar"); const overlay = document.getElementById("overlay"); sidebar.classList.toggle("open"); overlay.style.display = sidebar.classList.contains("open")? "block" : "none"; }
 document.getElementById("overlay").addEventListener("click", toggleSidebar);
 document.getElementById("btnLogout").addEventListener("click", (e)=>{ e.preventDefault(); if(confirm("Yakin logout?")){ localStorage.clear(); window.location.href = "index.html"; } });
 
-// Refs
-// Refs
 const anggotaRef = ref(db, "anggota");
 const pinjamanRef = ref(db, "pinjaman");
 const angsuranRef = ref(db, "angsuran");
 const kasTransaksiRef = ref(db, "kas/transaksi");
 const saldoAwalRef = ref(db, "kas/saldoAwal");
 
-const anggotaSelect = document.getElementById("anggota"); // <-- TAMBAH INI
-const tabelPinjaman = document.getElementById("tabelPinjaman"); // <-- TAMBAH INI JUGA
+const anggotaSelect = document.getElementById("anggota");
+const tabelPinjaman = document.getElementById("tabelPinjaman");
 let dataPinjaman = {};
 let dataAnggota = {};
 let dataAngsuran = {};
@@ -136,37 +131,88 @@ window.tutupAlert = () => document.getElementById("customAlert").style.display =
 
 window.hitungJasa = () => { const jumlah = Number(document.getElementById("jumlah").value) || 0; document.getElementById("jasa").value = Math.round(jumlah * 0.2); }
 window.hitungJasaEdit = () => { const jumlah = Number(document.getElementById("editJumlah").value) || 0; document.getElementById("editJasa").value = Math.round(jumlah * 0.2); }
-// Load Anggota
+
+// FUNGSI CEK SISA PINJAMAN - PINDAH KE SINI BIAR GLOBAL
+function cekSisaPinjaman(idAnggota){
+  let totalSisa = 0;
+  Object.values(dataPinjaman).forEach(p => {
+    if(p.idAnggota!== idAnggota) return;
+    let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
+    let total = Number(p.jumlah || 0) + jasaOtomatis;
+    let totalAngsuran = 0;
+    Object.values(dataAngsuran).forEach(a => {
+      if(a.pinjamanId!== p.id) return;
+      totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0);
+    });
+    let sisa = total - totalAngsuran;
+    if(sisa > 0) totalSisa += sisa;
+  });
+  return totalSisa;
+}
+
+// AUTO ISI TELEPON SAAT PILIH ANGGOTA
+window.isiTelepon = function(){
+  const idAnggota = anggotaSelect.value;
+  if(!idAnggota) { document.getElementById("telepon").value = ""; return; }
+  const data = dataAnggota[idAnggota];
+  document.getElementById("telepon").value = data.telepon || data.noHp || "-";
+}
+
 onValue(anggotaRef, snap => {
   dataAnggota = snap.val() || {};
-  anggotaSelect.innerHTML = "<option value=''>Pilih anggota</option>"; // pakai anggotaSelect
-
-  if(Object.keys(dataAnggota).length === 0){
-    anggotaSelect.innerHTML = "<option value=''>Data anggota kosong</option>";
-    return;
-  }
-
-  Object.entries(dataAnggota)
-  .sort((a,b)=> a[1].nama.localeCompare(b[1].nama))
-  .forEach(([id,a])=>{
+  anggotaSelect.innerHTML = "<option value=''>Pilih anggota</option>";
+  if(Object.keys(dataAnggota).length === 0){ anggotaSelect.innerHTML = "<option value=''>Data anggota kosong</option>"; return; }
+  Object.entries(dataAnggota).sort((a,b)=> a[1].nama.localeCompare(b[1].nama)).forEach(([id,a])=>{
       anggotaSelect.innerHTML += `<option value="${id}">${a.nama} - ${a.idAnggota || ''}</option>`;
     });
+  loadDropdownEdit();
+}, err => { console.error("Error load anggota:", err); showAlert("Gagal load data anggota", "danger"); });
 
-  loadDropdownEdit(); // isi dropdown edit juga
-}, err => {
-  console.error("Error load anggota:", err);
-  showAlert("Gagal load data anggota", "danger");
+onValue(pinjamanRef, snap => {
+  dataPinjaman = {};
+  if(!snap.exists()){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Belum ada data pinjaman</div>`; hitungSummary(); return; }
+  snap.forEach(d => { let p = d.val(); p.id = d.key; dataPinjaman[d.key] = p; });
+  renderPinjaman(); hitungSummary(); hitungSaldo();
 });
-  
-  // Load Pinjaman + Angsuran + Saldo
-onValue(pinjamanRef, snap => { dataPinjaman = {}; if(!snap.exists()){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Belum ada data pinjaman</div>`; hitungSummary(); return; } snap.forEach(d => { let p = d.val(); p.id = d.key; dataPinjaman[d.key] = p; }); renderPinjaman(); hitungSummary(); hitungSaldo(); });
 onValue(angsuranRef, snap => { dataAngsuran = snap.val() || {}; renderPinjaman(); });
 onValue(saldoAwalRef, snap => { dataSaldoAwal = snap.val() || {}; hitungSaldo(); });
 onValue(kasTransaksiRef, snap => { dataTransaksi = snap.val() || {}; hitungSaldo(); });
 
 function hitungSaldo(){ let saldoCash = Number(dataSaldoAwal.cash || 0); let saldoBank = Number(dataSaldoAwal.bank || 0); Object.values(dataTransaksi).forEach(k => { let jumlah = Number(k.jumlah || 0); let tipe = (k.tipe || "").toLowerCase(); let sumber = (k.sumberKas || "cash").toLowerCase(); if(tipe === "biaya") tipe = "keluar"; if(sumber === "cash"){ if(tipe === "masuk") saldoCash += jumlah; else saldoCash -= jumlah; } if(sumber === "bank"){ if(tipe === "masuk") saldoBank += jumlah; else saldoBank -= jumlah; } }); document.getElementById("saldoCash").innerText = format(saldoCash); document.getElementById("saldoBank").innerText = format(saldoBank); }
 
-function renderPinjaman(){ tabelPinjaman.innerHTML = ""; let listPinjaman = Object.values(dataPinjaman); listPinjaman.sort((a,b)=> Number(b.tanggal || 0) - Number(a.tanggal || 0)); if(listPinjaman.length === 0){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Tidak ada data</div>`; return; } listPinjaman.forEach(p=>{ let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2)); let total = Number(p.jumlah || 0) + jasaOtomatis; let totalAngsuran = 0; Object.values(dataAngsuran).forEach(a => { if(a.pinjamanId!== p.id) return; totalAngsuran += Number(a.pokok || a.jumlah || 0) + Number(a.jasa || 0); }); let lunas = totalAngsuran >= total; let status = lunas? "LUNAS" : "BELUM LUNAS"; let warnaStatus = lunas? "#10b981" : "#ef4444"; let card = document.createElement("div"); card.className = "pinjaman-card"; card.innerHTML = `<div class="pinjaman-header"><div><div class="pinjaman-no">${p.nomor || "-"}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${p.nama || "-"}</div></div><div style="display:flex;flex-direction:column;gap:6px;align-items:end"><div class="pinjaman-badge">${(p.sumberKas || "-").toUpperCase()}</div><div style="background:${warnaStatus};color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700">${status}</div></div></div><div class="pinjaman-row"><span class="label">Sudah Bayar</span><span class="value">Rp ${format(totalAngsuran)}</span></div><div class="pinjaman-row"><span class="label">Sisa</span><span class="value" style="color:${lunas? '#10b981' : '#ef4444'};font-weight:700">Rp ${format(Math.max(total - totalAngsuran,0))}</span></div><div class="pinjaman-row"><span class="label">Tanggal</span><span class="value">${formatTanggal(p.tanggal)}</span></div><div class="pinjaman-row"><span class="label">Pokok</span><span class="value">Rp ${format(p.jumlah)}</span></div><div class="pinjaman-row"><span class="label">Jasa (20%)</span><span class="value">Rp ${format(jasaOtomatis)}</span></div><div class="pinjaman-row"><span class="label">Total</span><span class="value" style="color:var(--primary);font-weight:700">Rp ${format(total)}</span></div><div class="pinjaman-row"><span class="label">Ket</span><span class="value">${p.ket || "-"}</span></div><div class="pinjaman-actions"><button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>${role==="admin"? `<button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button><button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>` : ''}</div>`; tabelPinjaman.appendChild(card); }); }
+function renderPinjaman(){
+  tabelPinjaman.innerHTML = "";
+  let listPinjaman = Object.values(dataPinjaman);
+  listPinjaman.sort((a,b)=> Number(b.tanggal || 0) - Number(a.tanggal || 0));
+  if(listPinjaman.length === 0){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Tidak ada data</div>`; return; }
+  listPinjaman.forEach(p=>{
+    let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
+    let total = Number(p.jumlah || 0) + jasaOtomatis;
+    let totalAngsuran = 0;
+    Object.values(dataAngsuran).forEach(a => { if(a.pinjamanId!== p.id) return; totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0); });
+    let lunas = totalAngsuran >= total;
+    let status = lunas? "LUNAS" : "BELUM LUNAS";
+    let warnaStatus = lunas? "#10b981" : "#ef4444";
+    let metode = p.sumberKas || "-";
+    let card = document.createElement("div");
+    card.className = "pinjaman-card";
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
+        <div><div style="font-weight:700;font-size:13px">${p.nomor || "-"}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${p.nama || "-"}</div></div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:end"><div style="background:#e0e7ff;color:#3730a3;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600">${metode.toUpperCase()}</div><div style="background:${warnaStatus};color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700">${status}</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Sudah Bayar</span><span><b>Rp ${format(totalAngsuran)}</b></span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Sisa</span><span style="color:${lunas? '#10b981' : '#ef4444'};font-weight:700">Rp ${format(Math.max(total - totalAngsuran,0))}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Tanggal</span><span>${formatTanggal(p.tanggal)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Pokok</span><span>Rp ${format(p.jumlah)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Jasa (20%)</span><span>Rp ${format(jasaOtomatis)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Total</span><span style="color:var(--primary);font-weight:700">Rp ${format(total)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:10px"><span>Ket</span><span>${p.ket || "-"}</span></div>
+      <div class="pinjaman-actions"><button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>${role==="admin"? `<button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button><button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>` : ''}</div>
+    `;
+    tabelPinjaman.appendChild(card);
+  });
+}
 
 function hitungSummary(){ let totalPokok = 0; Object.values(dataPinjaman).forEach(p=>{ totalPokok += Number(p.jumlah || 0); }); document.getElementById("totalPinjaman").innerText = format(totalPokok); }
 
@@ -175,10 +221,13 @@ async function generateNoPinjaman(){ const counterRef = ref(db, "counter/pinjama
 
 window.onload = async () => { document.getElementById("tanggal").value = new Date().toISOString().split("T")[0]; document.getElementById("noPinjaman").value = await previewNoPinjaman(); hitungSaldo(); }
 
-// 2. SIMPAN PINJAMAN + LOG
 window.simpanPinjaman = async () => {
   if(role!== "admin") return showAlert("Hanya admin!", "danger");
-  let idAnggota = anggota.value; let nama = anggota.options[anggota.selectedIndex]?.text || "";
+  let idAnggota = anggota.value; let nama = anggota.options[anggota.selectedIndex]?.text.split(" - ")[0] || "";
+
+  const sisaLama = cekSisaPinjaman(idAnggota);
+  if(sisaLama > 0){ return showAlert(`Gagal! ${nama} masih punya sisa pinjaman Rp ${format(sisaLama)}. Lunasi dulu.`, "danger"); }
+
   let tanggalInput = document.getElementById("tanggal").value; let jumlah = Number(document.getElementById("jumlah").value);
   let jasa = Number(document.getElementById("jasa").value) || 0; let metode = document.getElementById("metode").value; let ket = document.getElementById("ket").value;
   if(!idAnggota) return showAlert("Pilih anggota!", "warning"); if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
@@ -188,7 +237,6 @@ window.simpanPinjaman = async () => {
   let kas = await push(kasTransaksiRef,{ tanggal, keterangan:`Pinjaman ${nama} (${nomor})`, tipe:"keluar", kategori:"pinjaman", sumberKas:metode, jumlah: jumlah });
   const snapPinjaman = await push(pinjamanRef,{ nomor, idAnggota, nama, tanggal, jumlah, jasa, sumberKas:metode, ket, kasId: kas.key, status:"belum" });
 
-  // CATAT AUDIT
   await catatanAudit("PENGAJUAN PINJAMAN", `${nama} - No: ${nomor} - Rp ${format(jumlah)}`, jumlah, {anggotaId: idAnggota, refPinjaman: snapPinjaman.key});
 
   document.getElementById("notif").innerHTML = `<div class="alert success">Berhasil disimpan ✅</div>`;
@@ -201,7 +249,6 @@ function loadDropdownEdit(){ const editAnggota = document.getElementById("editAn
 
 window.editPinjaman = id => { if(role!=="admin") return; let p = dataPinjaman[id]; editId = id; document.getElementById("editNoPinjaman").value = p.nomor; document.getElementById("editAnggota").value = p.idAnggota; document.getElementById("editTanggal").value = inputDate(p.tanggal); document.getElementById("editMetode").value = p.sumberKas; document.getElementById("editJumlah").value = p.jumlah; document.getElementById("editJasa").value = p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2); document.getElementById("editKet").value = p.ket || ""; document.getElementById("popupEdit").style.display = "flex"; }
 
-// 3. UPDATE PINJAMAN + LOG
 window.updatePinjaman = async () => {
   if(!editId) return; let pLama = dataPinjaman[editId];
   let nama = document.getElementById("editAnggota").options[document.getElementById("editAnggota").selectedIndex]?.text || "";
@@ -212,21 +259,14 @@ window.updatePinjaman = async () => {
   const updates = {}; updates[`/pinjaman/${editId}`] = {...pLama, nama, idAnggota: document.getElementById("editAnggota").value, tanggal, jumlah, jasa, sumberKas: metode, ket};
   if(pLama.kasId){ updates[`/kas/transaksi/${pLama.kasId}`] = {...pLama, tanggal, jumlah, sumberKas: metode, keterangan: `Pinjaman ${nama} (${pLama.nomor})`}; }
   await update(ref(db), updates);
-
-  // CATAT AUDIT
   await catatanAudit("EDIT PINJAMAN", `${nama} - No: ${pLama.nomor} - Dari: Rp ${format(pLama.jumlah)} -> Rp ${format(jumlah)}`, jumlah, {anggotaId: pLama.idAnggota, refPinjaman: editId});
-
   tutupPopup(); showAlert("Update berhasil ✅", "success");
 }
 
-// 4. HAPUS PINJAMAN + LOG
 window.hapusPinjaman = async id => {
   if(role!== "admin") return; let p = dataPinjaman[id]; if(!confirm(`Hapus pinjaman ${p.nomor} atas nama ${p.nama}?`)) return;
   try{ await remove(ref(db, `pinjaman/${id}`)); if(p.kasId){ await remove(ref(db, `kas/transaksi/${p.kasId}`)); }
-
-    // CATAT AUDIT
     await catatanAudit("HAPUS PINJAMAN", `${p.nama} - No: ${p.nomor} - Rp ${format(p.jumlah)}`, p.jumlah, {anggotaId: p.idAnggota, refPinjaman: id});
-
     delete dataPinjaman[id]; renderPinjaman(); hitungSummary(); hitungSaldo(); showAlert("Pinjaman & saldo kas berhasil diperbarui ✅", "success");
   }catch(err){ console.error(err); showAlert("Gagal menghapus data", "danger"); }
 }

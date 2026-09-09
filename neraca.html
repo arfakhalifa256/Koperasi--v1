@@ -370,7 +370,7 @@ Aktiva - Pasiva       : Rp ${rupiah(selisih)}
 
   // HEADER
   doc.setFont("helvetica","bold"); doc.setFontSize(16);
-  doc.text("KOPERASI ARFA", 105, 15, {align:"center"});
+  doc.text("KOPERASI ARFA SEJHTERA", 105, 15, {align:"center"});
   doc.setFontSize(13);
   doc.text("NERACA", 105, 22, {align:"center"});
   doc.setFont("helvetica","normal"); doc.setFontSize(9);
@@ -446,7 +446,7 @@ Aktiva - Pasiva       : Rp ${rupiah(selisih)}
   // FOOTER TTD
   y = doc.lastAutoTable.finalY + 20;
   doc.setFontSize(9);
-  doc.text("Pd Betung, " + new Date().toLocaleDateString("id-ID"), 140, y);
+  doc.text("Parigi, " + new Date().toLocaleDateString("id-ID"), 140, y);
   doc.text("Ketua", 140, y + 20);
 
   const namaFile = `Neraca_ARFA_${new Date().toISOString().slice(0,10)}.pdf`;
