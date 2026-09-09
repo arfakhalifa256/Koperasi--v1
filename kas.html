@@ -5,11 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kas Koperasi</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
-
   <style>
+/* CSS sama */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--primary:#1e90ff;--primary-dark:#0f3057;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);--radius:12px;--success:#16a34a;--danger:#dc2626}
@@ -38,7 +37,7 @@ header{background:linear-gradient(to right,var(--primary),var(--primary-dark));c
 .btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif}
 .btn-danger{background:var(--danger)}
 .table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--border);border-radius:8px}
-table{width:100%;border-collapse:collapse;font-size:11px;min-width:650px}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:750px}
 th{background:#f8fafc;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border);white-space:nowrap}
 td{padding:7px 8px;border-bottom:1px solid var(--border)}
 tr:hover{background:#f8fafc;cursor:pointer}
@@ -53,48 +52,16 @@ tr:hover{background:#f8fafc;cursor:pointer}
 .btn-save{flex:1;padding:10px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:600;cursor:pointer}
 .btn-delete{flex:1;padding:10px;border:none;border-radius:8px;background:var(--danger);color:#fff;font-weight:600;cursor:pointer}
 .btn-cancel{flex:1;padding:10px;border:none;border-radius:8px;background:#6b7280;color:#fff;font-weight:600;cursor:pointer}
-/* ===== SIDEBAR ===== */
-.sidebar{
-  position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;
-  padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;
-  box-shadow:2px 0 10px rgba(0,0,0,0.2);
-}
+.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;box-shadow:2px 0 10px rgba(0,0,0,0.2);}
 .sidebar.open{left:0;}
-
-.sidebar-logo{
-  display:flex;align-items:center;gap:12px;
-  padding-bottom:16px;margin-bottom:16px;
-  border-bottom:1px solid rgba(255,255,255,0.2);
-}
-.sidebar-logo img{
-  width:40px;height:40px;border-radius:50%;object-fit:cover;
-  background:#fff;padding:2px;
-}
-.sidebar-logo h3{
-  color:#fff;margin:0;font-size:15px;font-weight:600;
-}
-
-.sidebar-section{
-  color:rgba(255,255,255,0.6);
-  font-size:10px;font-weight:600;text-transform:uppercase;
-  letter-spacing:1px;margin:16px 0 8px 12px;
-}
-
-.sidebar a{
-  display:flex;align-items:center;gap:10px;
-  color:#fff;text-decoration:none;padding:10px 10px;
-  border-radius:10px;margin-bottom:2px;font-size:10px;
-  font-weight:500;transition:0.2s;
-}
-.sidebar a:hover{
-  background:rgba(255,255,255,0.15);transform:translateX(4px);
-}
+.sidebar-logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.2);}
+.sidebar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
+.sidebar-logo h3{color:#fff;margin:0;font-size:15px;font-weight:600;}
+.sidebar-section{color:rgba(255,255,255,0.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px;}
+.sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px 10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:0.2s;}
+.sidebar a:hover{background:rgba(255,255,255,0.15);transform:translateX(4px);}
 .sidebar a.active{background:rgba(255,255,255,0.2);}
-
-.overlay{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,.4);display:none;z-index:999;
-}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
 .overlay.active{display:block;}
 .menu-btn{cursor:pointer;font-size:22px;padding:4px 8px;border-radius:6px}
 .note{font-size:10px;color:var(--muted);margin-top:5px}
@@ -104,48 +71,22 @@ tr:hover{background:#f8fafc;cursor:pointer}
 <body>
 
 <div id="sidebar" class="sidebar">
-  <div class="sidebar-logo">
-    <img src="img/icon-192.png" alt="Logo">
-    <h3>Menu Koperasi</h3>
-  </div>
-  
-  <a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
-
+  <div class="sidebar-logo"><img src="img/icon-192.png" alt="Logo"><h3>Menu Koperasi</h3></div>
+  <a href="dashboard.html"><span class="material-icons">home</span>Beranda</a>
   <div class="sidebar-section">Data Master</div>
-  <a href="anggota.html">👤 Data Anggota</a>
- <a href="kas.html">💵 Kas</a>
- <a href="angsuran.html">📄 Angsuran</a>
-  <a href="simpanan.html">📊 Simpanan</a>
-  
+  <a href="anggota.html">👤 Data Anggota</a><a href="kas.html">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
   <div class="sidebar-section">Keuangan</div>
-     <a href="pinjaman.html">💰 Pinjaman</a>
-     <a href="cair.html">💸 Pencairan Simpanan</a>
-    <a href="neraca.html">📖 Neraca</a>
-<a href="labarugi.html">📊 Laba Rugi</a>
-
-  
+  <a href="pinjaman.html">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
   <div class="sidebar-section">Laporan</div>
-   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
-  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
-  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
-    <a href="transaksi.html">📊 Lap transaksi</a>
-
+  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a>
   <div class="sidebar-section">Pengaturan</div>
-     <a href="backup.html">💾 Backup Data</a>
-  <a href="user.html">⚙️ Kelola User</a>
-  <a href="#" id="btnLogout">🚪 Logout</a>
+  <a href="backup.html">💾 Backup Data</a><a href="user.html">⚙️ Kelola User</a><a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
 
 <header>
   <div class="header-left">
-    <div class="brand">
-      <img src="img/icon-192.png">
-      <div class="brand-text">
-        <div class="subtitle">Koperasi</div>
-        <div class="title">ARFA</div>
-      </div>
-    </div>
+    <div class="brand"><img src="img/icon-192.png"><div class="brand-text"><div class="subtitle">Koperasi</div><div class="title">ARFA</div></div></div>
     <span id="userInfo"></span>
   </div>
   <span class="menu-btn" onclick="toggleSidebar()">☰</span>
@@ -153,6 +94,7 @@ tr:hover{background:#f8fafc;cursor:pointer}
 
 <div class="container">
   <h3 class="page-title">KAS</h3>
+
   <div class="card" id="cardSaldoAwal">
     <h3>Set Saldo Awal Koperasi</h3>
     <div class="form-grid">
@@ -180,10 +122,11 @@ tr:hover{background:#f8fafc;cursor:pointer}
     <div class="form-grid">
       <div class="form-group"><label>Sumber Kas</label><select id="sumberKas"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
       <div class="form-group"><label>Tipe</label><select id="tipe" onchange="toggleKategori()"><option value="masuk">Kas Masuk</option><option value="keluar">Kas Keluar</option><option value="biaya">Biaya Operasional</option></select></div>
-      <div class="form-group"><label>Kategori</label><select id="kategori"></select></div>
+      <div class="form-group"><label>Kategori</label><select id="kategori" onchange="toggleAnggota()"></select></div>
+      <div class="form-group" id="formAnggota" style="display:none"><label>Pilih Anggota</label><select id="anggotaSelect"><option value="">Pilih Anggota</option></select></div>
       <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="tanggal"></div>
       <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" placeholder="0"></div>
-      <div class="form-group full"><label>Keterangan</label><input type="text" id="keterangan" placeholder="Contoh: Listrik Januari"></div>
+      <div class="form-group full"><label>Keterangan</label><input type="text" id="keterangan" placeholder="Otomatis: Nama Anggota - Kategori"></div>
       <div class="form-group full"><button class="btn-primary" id="btnSimpan">Simpan Transaksi</button></div>
     </div>
   </div>
@@ -191,7 +134,10 @@ tr:hover{background:#f8fafc;cursor:pointer}
   <div class="card">
     <h3>Riwayat Transaksi</h3>
     <div class="table-wrap">
-      <table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Tipe</th><th class="text-right">Jumlah</th><th>Sumber</th><th>Kategori</th></tr></thead><tbody id="riwayat"></tbody></table>
+      <table>
+        <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Tipe</th><th class="text-right">Jumlah</th><th>Sumber</th><th>Kategori</th><th>Anggota</th></tr></thead>
+        <tbody id="riwayat"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -201,8 +147,8 @@ tr:hover{background:#f8fafc;cursor:pointer}
     <h3>Edit Transaksi</h3>
     <input type="hidden" id="editKasKey">
     <div class="form-group"><label>Sumber Kas</label><select id="editKasSumber"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
-    <div class="form-group"><label>Tipe</label><select id="editKasTipe" onchange="toggleEditKategori()"><option value="masuk">Kas Masuk</option><option value="keluar">Kas Keluar</option><option value="biaya">Biaya Operasional</option></select></div> <!-- 🔥 tambah biaya -->
-    <div class="form-group"><label>Kategori</label><select id="editKasKategori"></select></div> <!-- 🔥 tambah kategori -->
+    <div class="form-group"><label>Tipe</label><select id="editKasTipe" onchange="toggleEditKategori()"><option value="masuk">Kas Masuk</option><option value="keluar">Kas Keluar</option><option value="biaya">Biaya Operasional</option></select></div>
+    <div class="form-group"><label>Kategori</label><select id="editKasKategori"></select></div>
     <div class="form-group"><label>Jumlah</label><input type="number" id="editKasJumlah"></div>
     <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="editKasTanggal"></div>
     <div class="form-group"><label>Keterangan</label><input type="text" id="editKasKeterangan"></div>
@@ -225,17 +171,41 @@ const db = getDatabase(app);
 const role = localStorage.getItem("role") || "user";
 if(role!== "admin") {
   document.querySelector("#btnSimpan").style.display="none";
-  document.querySelectorAll(".menu-admin").forEach(el => el.style.display="none");
-  document.querySelectorAll("input,select").forEach(el => el.disabled=true);
+  document.querySelectorAll("input,select,button").forEach(el => { if(el.id!== "btnLogout") el.disabled=true; });
 }
 
 const kasTransaksiRef = ref(db,"kas/transaksi");
 const saldoAwalRef = ref(db, "kas/saldoAwal");
+const anggotaRef = ref(db,"anggota");
 
 let editKey = null;
 let saldoCash = 0, saldoBank = 0, totalMasuk = 0, totalKeluar = 0;
 let dataSaldoAwal = {};
 let dataTransaksi = {};
+let dataAnggota = {};
+
+onValue(anggotaRef, snap => {
+  dataAnggota = snap.val() || {};
+  const sel = document.getElementById("anggotaSelect");
+  if(!sel) return;
+  sel.innerHTML = "<option value=''>Pilih Anggota</option>";
+  Object.entries(dataAnggota).forEach(([key, ag])=>{
+    sel.innerHTML += `<option value="${key}">${ag.nama} - ${ag.id || ag.idAnggota || ''}</option>`;
+  });
+});
+
+window.toggleAnggota = function(){
+  const kat = document.getElementById("kategori").value;
+  const formAnggota = document.getElementById("formAnggota");
+  const ket = document.getElementById("keterangan");
+  if(kat.includes("simpanan") || kat.includes("angsuran")){
+    formAnggota.style.display = "block";
+    ket.placeholder = "Contoh: Setoran Januari";
+  } else {
+    formAnggota.style.display = "none";
+    ket.placeholder = "Contoh: Listrik Januari";
+  }
+}
 
 function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
 
@@ -246,10 +216,7 @@ window.toggleSidebar = function(){
   o.style.display = s.classList.contains("open")? "block" : "none";
 };
 document.getElementById("overlay").addEventListener("click", toggleSidebar);
-document.getElementById("btnLogout").addEventListener("click", ()=>{ // 🔥 ID bener
-  localStorage.clear();
-  location.href="index.html";
-});
+document.getElementById("btnLogout").addEventListener("click", ()=>{ localStorage.clear(); location.href="index.html"; });
 
 document.addEventListener("DOMContentLoaded", () => {
   const el = document.getElementById("userInfo");
@@ -310,22 +277,35 @@ function isiOpsiKategori(el, tipe, selected=""){
 
 window.toggleKategori = function(){
   const tipe = document.getElementById("tipe").value;
-  isiOpsiKategori(document.getElementById("kategori"), tipe === "biaya" ? "keluar" : tipe);
+  isiOpsiKategori(document.getElementById("kategori"), tipe === "biaya"? "keluar" : tipe);
 }
 
-window.toggleEditKategori = function(){ // 🔥 fungsi baru buat modal
+window.toggleEditKategori = function(){
   const tipe = document.getElementById("editKasTipe").value;
-  isiOpsiKategori(document.getElementById("editKasKategori"), tipe === "biaya" ? "keluar" : tipe);
+  isiOpsiKategori(document.getElementById("editKasKategori"), tipe === "biaya"? "keluar" : tipe);
 }
 
 document.getElementById("btnSimpan").onclick = async()=>{
   const sumberKas = document.getElementById("sumberKas").value;
   let tipe = document.getElementById("tipe").value;
   const jumlah = Number(document.getElementById("jumlah").value);
-  const ket = document.getElementById("keterangan").value;
+  let ket = document.getElementById("keterangan").value;
   const tanggalInput = document.getElementById("tanggal").value;
   const kategori = document.getElementById("kategori").value || "";
+  const anggotaId = document.getElementById("anggotaSelect").value;
+  const username = localStorage.getItem("username") || "Unknown";
+
   if(!jumlah){ alert("Jumlah wajib diisi"); return; }
+
+  let namaAnggota = "";
+  let keteranganFinal = ket;
+
+  if(kategori.includes("simpanan") || kategori.includes("angsuran")){
+    if(!anggotaId){ alert("Pilih anggota dulu"); return; }
+    namaAnggota = dataAnggota[anggotaId]?.nama || "-";
+    keteranganFinal = `${namaAnggota} - ${ket || kategori}`;
+  }
+
   if((tipe==="keluar" || tipe==="biaya")){
     let saldoSaatIni = sumberKas === "cash"? saldoCash : saldoBank;
     if(jumlah > saldoSaatIni){
@@ -333,12 +313,40 @@ document.getElementById("btnSimpan").onclick = async()=>{
       return;
     }
   }
+
   if(tipe === "biaya") tipe = "keluar";
   const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
-  await push(kasTransaksiRef, { sumberKas, tipe, jumlah, kategori, keterangan: ket || kategori || "Transaksi Kas", tanggal });
+
+  // 1. DATA YANG MAU DISIMPAN
+  const dataTransaksiBaru = {
+    sumberKas, tipe, jumlah, kategori,
+    keterangan: keteranganFinal,
+    anggotaId: anggotaId || null,
+    namaAnggota: namaAnggota || null,
+    tanggal
+  }
+
+  // 2. SIMPAN KE KAS
+  const snapKas = await push(kasTransaksiRef, dataTransaksiBaru);
+
+  // 3. CATAT AUDIT LOG
+  await push(ref(db,"audit/log"),{
+    tanggal: Date.now(),
+    aksi: tipe === "masuk"? "KAS MASUK" : "KAS KELUAR",
+    user: username,
+    role: role,
+    keterangan: keteranganFinal,
+    jumlah: jumlah,
+    sumberKas: sumberKas,
+    kategori: kategori,
+    anggotaId: anggotaId || null,
+    refKas: snapKas.key
+  });
+
   alert("Data berhasil disimpan");
   document.getElementById("jumlah").value="";
   document.getElementById("keterangan").value="";
+  document.getElementById("anggotaSelect").value="";
 }
 
 onValue(saldoAwalRef, snap => {
@@ -359,10 +367,7 @@ onValue(saldoAwalRef, snap => {
   hitungDanRender();
 });
 
-onValue(kasTransaksiRef, snap => {
-  dataTransaksi = snap.val() || {};
-  hitungDanRender();
-});
+onValue(kasTransaksiRef, snap => { dataTransaksi = snap.val() || {}; hitungDanRender(); });
 
 function hitungDanRender(){
   saldoCash = Number(dataSaldoAwal.cash || 0);
@@ -371,7 +376,9 @@ function hitungDanRender(){
   const riwayat = document.getElementById("riwayat");
   riwayat.innerHTML = "";
   if (!dataTransaksi || Object.keys(dataTransaksi).length === 0) { updateSummary(); return; }
+
   const data = Object.entries(dataTransaksi).sort((a,b)=> Number(b[1].tanggal) - Number(a[1].tanggal));
+
   data.forEach(([key, i]) => {
     let jumlah = Number(i.jumlah) || 0;
     let tipe = String(i.tipe || "").toLowerCase();
@@ -388,8 +395,11 @@ function hitungDanRender(){
       'simpanan_pokok': 'Simpanan Pokok','simpanan_wajib': 'Simpanan Wajib','biaya_operasional': 'Biaya Operasional',
       'pengambilan_simpanan': 'Ambil Simpanan'
     }[i.kategori] || i.kategori || '-';
+
+    const namaAnggota = i.namaAnggota || "-";
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${tanggal}</td><td>${i.keterangan || "-"}</td><td class="${className}">${labelTipe}</td><td class="text-right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${namaKategori}</td>`;
+    tr.innerHTML = `<td>${tanggal}</td><td>${i.keterangan || "-"}</td><td class="${className}">${labelTipe}</td><td class="text-right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${namaKategori}</td><td>${namaAnggota}</td>`;
+
     if (role === "admin") { tr.style.cursor = "pointer"; tr.addEventListener("click", () => editKas(key)); }
     riwayat.appendChild(tr);
   });
@@ -411,9 +421,9 @@ window.editKas = async function(key){
   editKey = key;
   document.getElementById("editKasKey").value = key;
   document.getElementById("editKasSumber").value = d.sumberKas || "cash";
-  document.getElementById("editKasTipe").value = d.tipe === "keluar"? "keluar" : "masuk"; // biaya tetap jadi keluar
-  toggleEditKategori(); // 🔥 isi opsi dulu
-  document.getElementById("editKasKategori").value = d.kategori || ""; // 🔥 set kategori lama
+  document.getElementById("editKasTipe").value = d.tipe === "keluar"? "keluar" : "masuk";
+  toggleEditKategori();
+  document.getElementById("editKasKategori").value = d.kategori || "";
   document.getElementById("editKasJumlah").value = d.jumlah || 0;
   document.getElementById("editKasKeterangan").value = d.keterangan || "";
   if(d.tanggal){
@@ -428,24 +438,58 @@ window.tutupModalKas = function(){ document.getElementById("modalEditKas").class
 
 window.updateKas = async function(){
   const key = document.getElementById("editKasKey").value;
+  const username = localStorage.getItem("username") || "Unknown";
+  const snapLama = await get(ref(db,"kas/transaksi/"+key)); // ambil data lama
+  const dataLama = snapLama.val();
+
   const sumber = document.getElementById("editKasSumber").value;
   let tipe = document.getElementById("editKasTipe").value;
-  const kategori = document.getElementById("editKasKategori").value || ""; // 🔥 ambil kategori
+  const kategori = document.getElementById("editKasKategori").value || "";
   const jumlah = Number(document.getElementById("editKasJumlah").value);
   const keterangan = document.getElementById("editKasKeterangan").value;
   const tanggalInput = document.getElementById("editKasTanggal").value;
   const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
   if(tipe === "biaya") tipe = "keluar";
-  await update(ref(db,"kas/transaksi/"+key), { sumberKas: sumber, tipe, kategori, jumlah, keterangan: keterangan||"Transaksi Kas", tanggal }); // 🔥 simpan kategori
+
+  await update(ref(db,"kas/transaksi/"+key), { sumberKas: sumber, tipe, kategori, jumlah, keterangan: keterangan||"Transaksi Kas", tanggal });
+
+  // LOG EDIT
+  await push(ref(db,"audit/log"),{
+    tanggal: Date.now(),
+    aksi: "EDIT TRANSAKSI",
+    user: username,
+    role: role,
+    keterangan: `Dari: ${dataLama.keterangan} -> Ke: ${keterangan}`,
+    jumlah: jumlah,
+    refKas: key
+  });
+
   alert("Data berhasil diperbarui");
   tutupModalKas();
 }
 
 window.hapusKasModal = async function(){
   const key = document.getElementById("editKasKey").value;
+  const username = localStorage.getItem("username") || "Unknown";
   if(!key) return;
+
+  const snapLama = await get(ref(db,"kas/transaksi/"+key)); // ambil data sebelum hapus
+  const dataLama = snapLama.val();
+
   if(confirm("Yakin ingin menghapus transaksi ini?")){
     await remove(ref(db,"kas/transaksi/"+key));
+
+    // LOG HAPUS
+    await push(ref(db,"audit/log"),{
+      tanggal: Date.now(),
+      aksi: "HAPUS TRANSAKSI",
+      user: username,
+      role: role,
+      keterangan: dataLama.keterangan,
+      jumlah: dataLama.jumlah,
+      refKas: key
+    });
+
     alert("Data berhasil dihapus");
     tutupModalKas();
   }

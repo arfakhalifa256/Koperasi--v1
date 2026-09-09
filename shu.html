@@ -43,14 +43,29 @@ h1{color:#087f5b;font-size:19px;margin:0 0 10px;font-weight:700;}
 .btn:hover{opacity:.9;}
 @media(min-width:768px){
     body{margin-left:240px;padding:25px;}
-   .sidebar{left:0;}
-   .overlay{display:none!important;}
-   .menu-btn{display:none;}
-  .container{padding:25px;}
+  .sidebar{left:0;}
+  .overlay{display:none!important;}
+  .menu-btn{display:none;}
+ .container{padding:25px;}
     h1{font-size:22px;}
-  .form-grid{grid-template-columns:1fr 1fr.8fr 1.4fr.9fr;gap:12px;}
-  .btn{width:100%;}
+ .form-grid{grid-template-columns:1fr 1fr 0.8fr 1.4fr 0.9fr;gap:12px;}
+ .btn{width:100%;}
 }
+
+/* STYLE UNTUK PDF */
+#pdfContent{display:none;}
+.pdf-wrap{padding:20px;background:#fff;color:#000;}
+.pdf-kop{display:flex;align-items:center;gap:15px;margin-bottom:15px;border-bottom:2px solid #087f5b;padding-bottom:10px;}
+.pdf-kop img{width:55px;height:55px;}
+.pdf-kop h2{margin:0;color:#087f5b;text-align:center;flex:1;font-size:18px;}
+.pdf-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0;}
+.pdf-sum-box{background:#e6fcf5;padding:12px;border-radius:9px;border-left:4px solid #0ca678;}
+.pdf-sum-box.l{font-size:11px;color:#666;margin-bottom:4px;}
+.pdf-sum-box.v{font-size:16px;font-weight:700;color:#087f5b;}
+.pdf-table{width:100%;border-collapse:collapse;font-size:10px;}
+.pdf-table th{background:#087f5b;color:#fff;padding:8px;text-align:left;}
+.pdf-table td{padding:7px;border-bottom:1px solid #eee;}
+.pdf-text-right{text-align:right;}
 </style>
 </head>
 <body>
@@ -115,12 +130,16 @@ h1{color:#087f5b;font-size:19px;margin:0 0 10px;font-weight:700;}
 </div>
 </div>
 
+<!-- WADAH HIDDEN UNTUK PDF -->
+<div id="pdfContent"></div>
+
 <script>
 const firebaseConfig = {apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain: "arfa-c7dee.firebaseapp.com",databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",projectId: "arfa-c7dee"};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let dataSHU = []; // simpan hasil hitung untuk export pdf
+let dataGlobal = {}; // simpan data summary
 
 /* ========== ROLE CHECK ========== */
 const role = localStorage.getItem("role");
@@ -129,7 +148,7 @@ if(localStorage.getItem("login")!== "true"){
   window.location.href = "index.html";
 }
 document.getElementById("roleInfo").innerHTML = role === "admin"
- ? "👑 <b>Admin</b> — Melihat SHU semua anggota"
+? "👑 <b>Admin</b> — Melihat SHU semua anggota"
   : "👤 <b>Anggota</b> — Hanya melihat SHU Anda sendiri";
 
 /* HIDE MENU ADMIN */
@@ -144,7 +163,7 @@ function toTimestamp(tgl){ return new Date(tgl).getTime(); }
 document.getElementById('tglAkhir').value = new Date().toISOString().slice(0,10);
 document.getElementById('tglAwal').value = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0,10);
 
-async function hitungSHU(){
+async function prosesData(){
     const tglAwalVal = document.getElementById('tglAwal').value;
     const tglAkhirVal = document.getElementById('tglAkhir').value;
     const tglAwal = toTimestamp(tglAwalVal);
@@ -199,9 +218,8 @@ async function hitungSHU(){
     });
 
     let no = 1, rowsHTML = "";
-    dataSHU = []; // reset
+    dataSHU = [];
     Object.values(dataPerAnggota).forEach(d=>{
-        // FILTER ROLE ANGGOTA
         if(role === 'anggota' && d.idAnggota!== userId) return;
 
         let shuDariSimpanan = totalSimpananSemua > 0? danaShuSimpanan * (d.simpanan / totalSimpananSemua) : 0;
@@ -213,64 +231,62 @@ async function hitungSHU(){
         if(d.simpanan > 0 || d.jasa > 0){
             dataSHU.push({...d, shuSimpanan: shuDariSimpanan, shuJasa: shuDariJasa, totalSHU: totalSHU});
             rowsHTML += `<tr><td>${no++}</td><td>${d.idAnggota}</td><td>${d.nama}</td>
-            <td class="text-right">${formatRp(d.simpanan)}</td>
-            <td class="text-right">${formatRp(d.jasa)}</td>
-            <td class="text-right">${formatRp(shuDariSimpanan)}</td>
-            <td class="text-right">${formatRp(shuDariJasa)}</td>
-            <td class="text-right"><b>${formatRp(totalSHU)}</b></td></tr>`;
+            <td class="pdf-text-right">${formatRp(d.simpanan)}</td>
+            <td class="pdf-text-right">${formatRp(d.jasa)}</td>
+            <td class="pdf-text-right">${formatRp(shuDariSimpanan)}</td>
+            <td class="pdf-text-right">${formatRp(shuDariJasa)}</td>
+            <td class="pdf-text-right"><b>${formatRp(totalSHU)}</b></td></tr>`;
         }
     });
 
-    if(dataSHU.length === 0){
-        alert("Data tidak ditemukan untuk periode ini");
-        return;
-    }
+    dataGlobal = {tglAwalVal, tglAkhirVal, shuBersih, shuUntukAnggota, pShuAnggota: document.getElementById('pShuAnggota').value, rowsHTML};
+    return dataSHU.length > 0;
+}
 
-    // ===== BUKA WINDOW BARU =====
+async function hitungSHU(){
+    const ok = await prosesData();
+    if(!ok){ alert("Data tidak ditemukan untuk periode ini"); return; }
+
     let win = window.open("", "_blank", "width=1200,height=800");
     win.document.write(`
     <!DOCTYPE html>
-    <html><head><title>Laporan SHU ${tglAwalVal} - ${tglAkhirVal}</title>
+    <html><head><title>Laporan SHU ${dataGlobal.tglAwalVal} - ${dataGlobal.tglAkhirVal}</title>
     <style>
     body{font-family:'Poppins',Arial,sans-serif;padding:20px;}
     h2{text-align:center;color:#087f5b;}
-  .summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0;}
-  .sum-box{background:#e6fcf5;padding:12px;border-radius:9px;border-left:4px solid #0ca678;}
-  .sum-box.l{font-size:11px;color:#666;margin-bottom:4px;}
-  .sum-box.v{font-size:16px;font-weight:700;color:#087f5b;}
+ .summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0;}
+ .sum-box{background:#e6fcf5;padding:12px;border-radius:9px;border-left:4px solid #0ca678;}
+ .sum-box.l{font-size:11px;color:#666;margin-bottom:4px;}
+ .sum-box.v{font-size:16px;font-weight:700;color:#087f5b;}
     table{width:100%;border-collapse:collapse;font-size:12px;}
     th{background:#087f5b;color:#fff;padding:10px;text-align:left;}
     td{padding:9px;border-bottom:1px solid #eee;}
-  .text-right{text-align:right;}
-  .kop{display:flex;align-items:center;gap:15px;margin-bottom:15px;border-bottom:2px solid #087f5b;padding-bottom:10px;}
-  .kop img{width:55px;height:55px;}
+ .text-right{text-align:right;}
+ .kop{display:flex;align-items:center;gap:15px;margin-bottom:15px;border-bottom:2px solid #087f5b;padding-bottom:10px;}
+ .kop img{width:55px;height:55px;}
     @media print{.btn-print{display:none;} }
     </style>
     </head><body>
-
     <div class="kop">
         <img src="img/icon-192.png">
         <div style="text-align:center; flex:1;">
             <h2 style="margin:0;">KOPERASI ARFA Sejahtera </h2>
             <p style="margin:0; font-size:12px;">LAPORAN PERHITUNGAN SHU TAHUNAN</p>
-            <p style="margin:0; font-size:12px;">Periode: ${tglAwalVal} s/d ${tglAkhirVal}</p>
+            <p style="margin:0; font-size:12px;">Periode: ${dataGlobal.tglAwalVal} s/d ${dataGlobal.tglAkhirVal}</p>
         </div>
     </div>
-
     <div class="summary">
-        <div class="sum-box"><div class="l">Total SHU Bersih</div><div class="v">Rp ${formatRp(shuBersih)}</div></div>
-        <div class="sum-box"><div class="l">SHU Untuk Anggota ${document.getElementById('pShuAnggota').value}%</div><div class="v">Rp ${formatRp(shuUntukAnggota)}</div></div>
+        <div class="sum-box"><div class="l">Total SHU Bersih</div><div class="v">Rp ${formatRp(dataGlobal.shuBersih)}</div></div>
+        <div class="sum-box"><div class="l">SHU Untuk Anggota ${dataGlobal.pShuAnggota}%</div><div class="v">Rp ${formatRp(dataGlobal.shuUntukAnggota)}</div></div>
     </div>
-
     <table>
         <thead><tr>
             <th>No</th><th>ID Anggota</th><th>Nama</th>
             <th class="text-right">Simpanan Sukarela</th><th class="text-right">Jasa Bayar</th>
             <th class="text-right">SHU Simpanan</th><th class="text-right">SHU Jasa</th><th class="text-right">TOTAL SHU</th>
         </tr></thead>
-        <tbody>${rowsHTML}</tbody>
+        <tbody>${dataGlobal.rowsHTML}</tbody>
     </table>
-
     <div style="margin-top:40px;text-align:right;"><p>Jakarta, ${new Date().toLocaleDateString('id-ID')}<br>Ketua Koperasi<br><br><br>____________________</p></div>
     <button class="btn-print" onclick="window.print()" style="position:fixed;top:10px;right:10px;padding:10px 15px;background:#087f5b;color:#fff;border:none;border-radius:6px;cursor:pointer;">🖨️ Cetak</button>
     </body></html>
@@ -278,12 +294,46 @@ async function hitungSHU(){
     win.document.close();
 }
 
-function exportPDF(){
-    if(dataSHU.length === 0){
-        alert("Hitung SHU dulu baru bisa export PDF");
-        return;
-    }
-    alert("Fitur export PDF dari tab baru. Silakan klik tombol Cetak di tab baru lalu pilih 'Save as PDF'");
+async function exportPDF(){
+    const ok = await prosesData();
+    if(!ok){ alert("Hitung SHU dulu"); return; }
+
+    const pdfDiv = document.getElementById('pdfContent');
+    pdfDiv.innerHTML = `
+    <div class="pdf-wrap">
+        <div class="pdf-kop">
+            <img src="img/icon-192.png">
+            <div style="text-align:center; flex:1;">
+                <h2>KOPERASI ARFA Sejahtera</h2>
+                <p style="margin:0; font-size:12px;">LAPORAN PERHITUNGAN SHU TAHUNAN</p>
+                <p style="margin:0; font-size:12px;">Periode: ${dataGlobal.tglAwalVal} s/d ${dataGlobal.tglAkhirVal}</p>
+            </div>
+        </div>
+        <div class="pdf-summary">
+            <div class="pdf-sum-box"><div class="l">Total SHU Bersih</div><div class="v">Rp ${formatRp(dataGlobal.shuBersih)}</div></div>
+            <div class="pdf-sum-box"><div class="l">SHU Untuk Anggota ${dataGlobal.pShuAnggota}%</div><div class="v">Rp ${formatRp(dataGlobal.shuUntukAnggota)}</div></div>
+        </div>
+        <table class="pdf-table">
+            <thead><tr>
+                <th>No</th><th>ID</th><th>Nama</th>
+                <th class="pdf-text-right">Simpanan</th><th class="pdf-text-right">Jasa</th>
+                <th class="pdf-text-right">SHU Simpanan</th><th class="pdf-text-right">SHU Jasa</th><th class="pdf-text-right">TOTAL</th>
+            </tr></thead>
+            <tbody>${dataGlobal.rowsHTML}</tbody>
+        </table>
+        <div style="margin-top:30px;text-align:right;font-size:11px;">Jakarta, ${new Date().toLocaleDateString('id-ID')}<br><br><br>____________________<br>Ketua Koperasi</div>
+    </div>
+    `;
+
+    const opt = {
+      margin: 10,
+      filename: `SHU_ARFA_${dataGlobal.tglAwalVal}_${dataGlobal.tglAkhirVal}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opt).from(pdfDiv).save();
 }
 
 /* SIDEBAR */

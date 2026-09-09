@@ -367,7 +367,7 @@ button:hover {
 <header>
   <div class="brand">
     <img src="img/icon-192.png">
-    <div>ANGGOTA</div>
+    <div>SIMPANAN ANGGOTA</div>
   </div>
   <span class="menu-btn" onclick="toggleSidebar()">☰</span>
 </header>
@@ -428,16 +428,8 @@ button:hover {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
-  getDatabase, 
-  ref, 
-  onValue, 
-  push, 
-  set,
-  update, 
-  remove 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
+import { getDatabase, ref, onValue, push, set, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  
 const firebaseConfig = {
   apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
   authDomain: "arfa-c7dee.firebaseapp.com",
@@ -651,82 +643,72 @@ onValue(simpananRef, snapshot => {
 
 });
 /* ================= TAMBAH ================= */
-/* ================= TAMBAH ================= */
 document.getElementById("btnSimpan").addEventListener("click", async () => {
-
   try {
-
     const select = document.getElementById("anggotaSelect");
-
-    if (!select.value) {
-      alert("Pilih anggota");
-      return;
-    }
+    if (!select.value) { alert("Pilih anggota"); return; }
 
     const anggota = anggotaMap[select.value];
-
-    if (!anggota) {
-      alert("Data anggota tidak ditemukan");
-      return;
-    }
+    if (!anggota) { alert("Data anggota tidak ditemukan"); return; }
 
     const jumlah = Number(document.getElementById("jumlah").value);
-
-    if (!jumlah || jumlah <= 0) {
-      alert("Jumlah tidak valid");
-      return;
-    }
+    if (!jumlah || jumlah <= 0) { alert("Jumlah tidak valid"); return; }
 
     const jenis = document.getElementById("jenis").value;
     const metode = document.getElementById("metode").value;
     const ket = document.getElementById("keterangan").value || "-";
-
     const waktu = Date.now();
 
-   /* ================= SIMPAN SIMPANAN ================= */
+    /* ================= 1. SIMPAN SIMPANAN ================= */
+    const simpananBaru = push(ref(db, "/simpanan"));
+    await set(simpananBaru, {
+      anggotaId: select.value,
+      idAnggota: anggota.id || "-",
+      nama: anggota.nama || "-",
+      jenis,
+      jumlah,
+      metode,
+      keterangan: ket,
+      tanggal: waktu
+    });
 
-const simpananBaru = push(ref(db, "/simpanan"));
+    /* ================= 2. SIMPAN KAS ================= */
+    const kasBaru = push(ref(db, "/kas/transaksi"));
+    const keteranganKas = `Simpanan ${jenis} - ${anggota.nama}${ket && ket !== "-" ? " - " + ket : ""}`;
+    await set(kasBaru, {
+      simpananId: simpananBaru.key,
+      anggotaId: select.value,
+      namaAnggota: anggota.nama,
+      tanggal: waktu,
+      tipe: "masuk",
+      kategori: `simpanan ${jenis}`,
+      sumberKas: metode,
+      jumlah: Number(jumlah),
+      keterangan: keteranganKas
+    });
 
-await set(simpananBaru, {
-  anggotaId: select.value,
-  idAnggota: anggota.id || "-",
-  nama: anggota.nama || "-",
-  jenis,
-  jumlah,
-  metode,
-  keterangan: ket,
-  tanggal: waktu
-});
-
-/* ================= SIMPAN KAS ================= */
-
-const kasBaru = push(ref(db, "/kas/transaksi"));
-
-await set(kasBaru, {
-  simpananId: simpananBaru.key,
-  tanggal: waktu,
-  tipe: "masuk",
-  kategori: `simpanan ${jenis}`,
-  sumberKas: metode,
-  jumlah: Number(jumlah),
-  keterangan: `Simpanan ${jenis} - ${anggota.nama}`
-});
-
+    /* ================= 3. SIMPAN KE AUDIT LOG BARU ================= */
+    await push(ref(db,"/audit/log"),{
+      tanggal: waktu,
+      aksi: "SETOR SIMPANAN",
+      user: localStorage.getItem("username") || "Admin",
+      role: role,
+      keterangan: `${anggota.nama} - ${jenis} Rp ${jumlah.toLocaleString("id-ID")} via ${metode}`,
+      jumlah: jumlah,
+      anggotaId: select.value,
+      refSimpanan: simpananBaru.key
+    });
 
     /* ================= RESET ================= */
-
     document.getElementById("jumlah").value = "";
     document.getElementById("keterangan").value = "";
-
-    alert("Simpanan berhasil disimpan");
+    document.getElementById("anggotaSelect").value = "";
+    alert("Simpanan berhasil disimpan ✅");
 
   } catch (err) {
-
     console.error(err);
     alert("Gagal menyimpan data : " + err.message);
-
   }
-
 });
 /* ================= DETAIL ================= */
 window.bukaDetail = function(id){
@@ -745,8 +727,8 @@ window.bukaDetail = function(id){
         ${role === "admin"? `
         <br>
         <div style="display:flex;gap:6px;margin-top:6px">
-          <button style="flex:1" onclick="editItem('${item.id}','${item.jenis}',${item.jumlah},'${item.metode || "cash"}')">Edit</button>
-          <button style="flex:1" class="btn-danger" onclick="hapusItem('${item.id}')">Hapus</button>
+        <button style="flex:1" onclick="editItem('${item.id}','${item.jenis}',${item.jumlah},'${item.metode || "cash"}',${item.tanggal || 0})">Edit</button>
+        <button style="flex:1" class="btn-danger" onclick="hapusItem('${item.id}')">Hapus</button>
         </div>
         ` : ''}
       </div>
@@ -756,11 +738,20 @@ window.bukaDetail = function(id){
   document.getElementById("modalForm").style.display = "flex";
   document.querySelector(".modal-content").innerHTML = html;
 };
+  
 /* ================= EDIT ================= */
-window.editItem = function(id,jenis,jumlah,metode){
+window.editItem = function(id,jenis,jumlah,metode,tanggal){
   if(role!== "admin") return alert("Akses ditolak!");
+
+  // format tanggal ke yyyy-mm-dd
+  const tglFormat = tanggal? new Date(tanggal).toISOString().split("T")[0] : new Date().toISOString().split("T")[0];
+
   let html = `
     <h3>Edit Simpanan</h3>
+    <div class="form-group">
+      <label>Tanggal</label>
+      <input type="date" id="eTanggal" value="${tglFormat}">
+    </div>
     <div class="form-group">
       <label>Jenis</label>
       <select id="eJenis">
@@ -785,109 +776,126 @@ window.editItem = function(id,jenis,jumlah,metode){
   `;
   document.querySelector(".modal-content").innerHTML = html;
 };
-
-window.simpanEdit = async function(id){
-
-  if(role !== "admin"){
+  
+  window.simpanEdit = async function(id){
+  if(role!== "admin"){
     return alert("Akses ditolak!");
   }
 
   const jenis = document.getElementById("eJenis").value;
-
-  const jumlah =
-    Number(document.getElementById("eJumlah").value);
-
-  const metode =
-    document.getElementById("eMetode").value;
+  const jumlah = Number(document.getElementById("eJumlah").value);
+  const metode = document.getElementById("eMetode").value;
+  const tanggalInput = document.getElementById("eTanggal").value;
+  const tanggal = new Date(tanggalInput).getTime();
 
   if(!jumlah || jumlah <= 0){
     return alert("Jumlah tidak valid");
   }
+  if(!tanggalInput){
+    return alert("Tanggal wajib diisi");
+  }
 
   try{
+    // 1. AMBIL DATA LAMA
+    const simpananSnap = await get(ref(db, "/simpanan/" + id));
+    const dataLama = simpananSnap.val();
+    if(!dataLama) return alert("Data simpanan tidak ditemukan");
 
-    // UPDATE DATA SIMPANAN
-    await update(ref(db, "/simpanan/" + id), {
-      jenis,
-      jumlah,
-      metode,
-      tanggal: Date.now()
-    });
+    const updateSimpanan = {};
+    const updateKas = {};
 
-    // CARI DATA KAS TERKAIT
-    const kasItem =
-      kasList.find(k => k.simpananId === id);
+    // 2. BANDINGKAN & MASUKKAN YG BERUBAH SAJA
+    // update keterangan kalau ada yg berubah
+    if(jenis!== dataLama.jenis || jumlah!== Number(dataLama.jumlah) || tanggal!== Number(dataLama.tanggal)){
+      const ketLama = dataLama.keterangan || "-";
+      updateKas.keterangan = `Simpanan ${jenis} - ${dataLama.nama}${ketLama && ketLama !== "-" ? " - " + ketLama : ""}`;
+    }
+    if(jumlah!== Number(dataLama.jumlah)) {
+      updateSimpanan.jumlah = jumlah;
+      updateKas.jumlah = jumlah;
+    }
+    if(metode!== (dataLama.metode || "cash")) {
+      updateSimpanan.metode = metode;
+      updateKas.sumberKas = metode;
+    }
+    if(tanggal!== Number(dataLama.tanggal)) {
+      updateSimpanan.tanggal = tanggal;
+      updateKas.tanggal = tanggal;
+    }
 
-    // UPDATE KAS
-    if(kasItem){
+    // update keterangan kalau ada yg berubah
+    if(jenis!== dataLama.jenis || jumlah!== Number(dataLama.jumlah)){
+      updateKas.keterangan = `Simpanan ${jenis} - ${dataLama.nama}`;
+    }
 
-      await update(
-        ref(db, "/kas/transaksi/" + kasItem.id),
-        {
-          jumlah,
-          sumberKas: metode,
-          kategori: `simpanan ${jenis}`,
-          keterangan: `Simpanan ${jenis}`,
-          tanggal: Date.now()
-        }
-      );
+    // 3. UPDATE KE FIREBASE HANYA JIKA ADA PERUBAHAN
+    if(Object.keys(updateSimpanan).length > 0){
+      await update(ref(db, "/simpanan/" + id), updateSimpanan);
+    }
 
+    const kasItem = kasList.find(k => k.simpananId === id);
+    if(kasItem && Object.keys(updateKas).length > 0){
+      await update(ref(db, "/kas/transaksi/" + kasItem.id), updateKas);
     }
 
     alert("Berhasil diupdate");
-
     tutupModal();
 
   }catch(err){
-
     console.error(err);
-
     alert("Gagal update : " + err.message);
-
   }
-
+    await push(ref(db,"/audit/log"),{
+  tanggal: Date.now(),
+  aksi: "EDIT SIMPANAN",
+  user: localStorage.getItem("username") || "Admin",
+  role: role,
+  keterangan: `${dataLama.nama} - ${jenis} Rp ${jumlah.toLocaleString("id-ID")}`,
+  jumlah: jumlah,
+  anggotaId: dataLama.anggotaId
+});
 };
 
 window.hapusItem = async function(id){
-
-  if(role !== "admin"){
-    return alert("Akses ditolak!");
-  }
-
-  if(!confirm("Yakin hapus data?")){
-    return;
-  }
+  if(role !== "admin"){ return alert("Akses ditolak!"); }
+  if(!confirm("Yakin hapus data?")){ return; }
 
   try{
+    // 1. AMBIL DATA DULU SEBELUM DIHAPUS
+    const simpananSnap = await get(ref(db, "/simpanan/" + id));
+    const dataLama = simpananSnap.val();
+    if(!dataLama) return alert("Data tidak ditemukan");
 
-    // HAPUS DATA SIMPANAN
+    // 2. HAPUS DATA SIMPANAN
     await remove(ref(db, "/simpanan/" + id));
 
-    // CARI DATA KAS TERKAIT
-    const kasItem = kasList.find(
-      k => k.simpananId === id
-    );
-
-    // HAPUS DATA KAS
+    // 3. HAPUS DATA KAS TERKAIT
+    const kasItem = kasList.find(k => k.simpananId === id);
     if(kasItem){
-      await remove(
-        ref(db, "/kas/transaksi/" + kasItem.id)
-      );
+      await remove(ref(db, "/kas/transaksi/" + kasItem.id));
     }
 
-    alert("Berhasil dihapus");
+    // 4. CATAT KE AUDIT LOG - TARUH DISINI
+    await push(ref(db,"/audit/log"),{
+      tanggal: Date.now(),
+      aksi: "HAPUS SIMPANAN",
+      user: localStorage.getItem("username") || "Admin",
+      role: role,
+      keterangan: `${dataLama.nama} - ${dataLama.jenis} Rp ${Number(dataLama.jumlah).toLocaleString("id-ID")}`,
+      jumlah: Number(dataLama.jumlah),
+      anggotaId: dataLama.anggotaId
+    });
 
+    alert("Berhasil dihapus");
     tutupModal();
 
   }catch(err){
-
     console.error(err);
-
     alert("Gagal hapus : " + err.message);
-
   }
-
 };
+  
+  
 /* ================= MODAL ================= */
 window.tutupModal = function(){
   document.getElementById("modalForm").style.display = "none";
@@ -944,7 +952,7 @@ window.logout = () => {
 }
 
 window.kembali = () => {
-  window.location.href = "dash.html";
+  window.location.href = "dashboard.html";
 }
 window.onclick = function(e){
   const modal = document.getElementById("modalForm");
