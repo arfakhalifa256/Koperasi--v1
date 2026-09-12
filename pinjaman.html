@@ -79,9 +79,63 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 <header><div class="brand"><img src="img/icon-192.png" alt="Koperasi ARFA"><div>DATA PINJAMAN <br>ANGGOTA</div></div><div class="header-right"><span id="roleBadge" class="role-badge">USER</span><span class="menu-btn" onclick="toggleSidebar()">☰</span></div></header>
 
 <div class="container">
-  <div class="card"><div class="summary-grid"><div class="summary-item"><b>Total Pinjaman</b><span>Rp <span id="totalPinjaman">0</span></span></div><div class="summary-item"><b>Saldo Cash</b><span>Rp <span id="saldoCash">0</span></span></div><div class="summary-item"><b>Saldo Bank</b><span>Rp <span id="saldoBank">0</span></span></div></div></div>
-  <div class="card" id="formPinjaman"><h3>Tambah Pinjaman</h3><div class="form-grid"><div class="form-group"><label>Anggota</label><select id="anggota" onchange="isiTelepon()"></select></div><div class="form-group"><label>No Telepon</label><input type="text" id="telepon" readonly></div><div class="form-group"><label>No Pinjaman</label><input type="text" id="noPinjaman" value="Loading..." disabled></div><div class="form-group"><label>Tanggal</label><input type="date" id="tanggal"></div><div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih metode</option><option value="cash">Cash</option><option value="bank">Bank</option><option value="e-wallet">E-Wallet</option><option value="lainnya">Lainnya</option></select></div><div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()"></div><div class="form-group"><label>Jasa (20% otomatis)</label><input type="number" id="jasa" min="0" value="0" readonly></div><div class="form-group full"><label>Keterangan</label><input type="text" id="ket" placeholder="Keterangan opsional"></div><div class="form-group full"><button class="btn-primary" onclick="simpanPinjaman()">Simpan Pinjaman</button><div id="notif"></div></div></div></div>
-  <div class="card"><h3>Daftar Pinjaman</h3><div id="tabelPinjaman"><div class="loading">Loading data...</div></div></div>
+    <div class="card" id="formPinjaman">
+      <h3>Tambah Pinjaman</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Anggota</label>
+          <select id="anggota" onchange="isiTelepon()">
+            </select>
+          </div>
+        <div class="form-group">
+          <label>No Telepon</label>
+          <input type="text" id="telepon" readonly>
+          
+        </div>
+        <div class="form-group">
+          <label>No Pinjaman</label>
+          <input type="text" id="noPinjaman" value="Loading..." disabled>
+          
+        </div>
+        <div class="form-group">
+          <label>Tanggal</label>
+          <input type="date" id="tanggal">        
+        </div>
+        <div class="form-group">
+          <label>Metode</label>
+          <select id="metode">
+            <option value="">Pilih metode</option>
+            <option value="cash">Cash</option>
+            <option value="bank">Bank</option>
+            <option value="e-wallet">E-Wallet</option>
+            <option value="lainnya">Lainnya</option>            
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Jumlah</label>
+          <input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()">         
+        </div>
+        <div class="form-group">
+          <label>Jasa (20% otomatis)</label>
+          <input type="number" id="jasa" min="0" value="0" readonly>         
+        </div>
+        <div class="form-group full">
+          <label>Keterangan</label>
+          <input type="text" id="ket" placeholder="Keterangan opsional">         
+        </div>
+        <div class="form-group full"><button class="btn-primary" onclick="simpanPinjaman()">Simpan Pinjaman</button>
+          <div id="notif">           
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  <div class="card">
+    <h3>Daftar Pinjaman</h3>
+    <div id="tabelPinjaman">
+      <div class="loading">Loading data...</div>    
+    </div>
+  </div>
 </div>
 
 <div id="popupEdit" class="popup"><div class="popup-box"><h3>Edit Pinjaman</h3><div class="form-grid"><div class="form-group"><label>No Pinjaman</label><input type="text" id="editNoPinjaman" disabled></div><div class="form-group"><label>Anggota</label><select id="editAnggota"></select></div><div class="form-group"><label>Tanggal</label><input type="date" id="editTanggal"></div><div class="form-group"><label>Metode</label><select id="editMetode"><option value="cash">Cash</option><option value="bank">Bank</option><option value="e-wallet">E-Wallet</option><option value="lainnya">Lainnya</option></select></div><div class="form-group"><label>Jumlah</label><input type="number" id="editJumlah" oninput="hitungJasaEdit()"></div><div class="form-group"><label>Jasa (20% otomatis)</label><input type="number" id="editJasa" readonly></div><div class="form-group full"><label>Keterangan</label><input type="text" id="editKet"></div></div><div class="popup-btns"><button class="btn-update" onclick="updatePinjaman()">Update</button><button class="btn-cancel" onclick="tutupPopup()">Batal</button></div></div></div>
