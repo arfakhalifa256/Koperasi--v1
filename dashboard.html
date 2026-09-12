@@ -110,7 +110,26 @@ body{background:#f1f5f9;padding-bottom:80px;}
 .search-box button:active{transform:scale(0.95)}
 
 .search-hint{font-size:9px;color:rgba(255,255,255,.8);margin-top:6px;}
-
+.btn-aksi-cari{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+.btn-aksi-cari button{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  font-size:11px;
+  font-weight:600;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+}
+.btn-pinjaman{background:#f59e0b;color:#fff;}
+.btn-cair{background:#10b981;color:#fff;}
 /* ========== HASIL CARI ========== */
 #hasilCariDashboard{margin-top:10px;max-height:55vh;overflow-y:auto}
 
@@ -245,6 +264,15 @@ body{background:#f1f5f9;padding-bottom:80px;}
 
     </div>
 
+
+<div class="btn-aksi-cari" id="btnAksiCari" style="display:none;">
+  <button class="btn-pinjaman" onclick="location.href='pinjaman.html'">
+    <span class="material-icons" style="font-size:16px">add_card</span> Ajukan Pinjaman
+  </button>
+  <button class="btn-cair" onclick="location.href='cair.html'">
+    <span class="material-icons" style="font-size:16px">payments</span> Pencairan
+  </button>
+</div>
     
 
   </div>
@@ -308,17 +336,7 @@ body{background:#f1f5f9;padding-bottom:80px;}
 
   </div>
 
-  <div class="btn-pill">
-
-    <button onclick="location.href='pinjaman.html'">
-      💰 Ajukan Pinjaman
-    </button>
-
-    <button onclick="location.href='cair.html'">
-      💵 Pencairan
-    </button>
-
-  </div>
+  
 
 </div>
 
@@ -438,7 +456,7 @@ body{background:#f1f5f9;padding-bottom:80px;}
       >
         close
       </span>
-
+      <span></span>
     </div>
 
     <div class="list-riwayat" id="listRiwayatKas"></div>
@@ -643,19 +661,15 @@ function pinjamanMilikAnggota(
 /* =====================================================
    NORMALISASI ID PINJAMAN
 ===================================================== */
-
 function getIdPinjaman(obj,key=""){
-
   return safeText(
-    obj?.id ??
-    obj?.idPinjaman ??
-    obj?.pinjamanId ??
-    obj?.nomor ??
+    obj?.idPinjaman ??  // kode baru
+    obj?.nomor ??       // kode lama kamu PJ021, PJ022
+    obj?.noPinjaman ??
+    obj?.id ??          // key firebase paling akhir
     key
   );
-
 }
-
 
 /* =====================================================
    COCOKKAN ID
@@ -754,15 +768,19 @@ function hitungPinjamanAnggota(
          ID PINJAMAN
       --------------------------------------------- */
 
-      const idPinjaman =
-        safeText(
-          p?.id ??
-          p?.idPinjaman ??
-          p?.noPinjaman ??
-          p?.nomor ??
-          pid
-        );
+      /* ---------------------------------------------
+         ID PINJAMAN
+      --------------------------------------------- */
 
+const idPinjaman =
+  safeText(
+    p?.idPinjaman ??  // 1. Kode baru
+    p?.nomor ??       // 2. Kode lama kamu PJ021, PJ022
+    p?.noPinjaman ??
+    p?.pid ??
+    p?.id ??          // 5. Key firebase paling akhir
+    pid
+  );
 
       /* ---------------------------------------------
          ALIAS PINJAMAN
@@ -1209,109 +1227,57 @@ function hitungSimpananAnggota(idAnggota){
    PENCARIAN
 ===================================================== */
 
-window.cariAnggotaDashboard =
-function(){
+let anggotaTerdeteksi = null; // taruh di atas, luar fungsi
 
-  const keyword =
-    safeText(
-      document.getElementById(
-        "keywordDashboard"
-      ).value
-    ).toLowerCase();
+/* =====================================================
+   PENCARIAN
+===================================================== */
 
-  const hasilDiv =
-    document.getElementById(
-      "hasilCariDashboard"
-    );
+window.cariAnggotaDashboard = function(){
+  document.getElementById("btnAksiCari").style.display = "none"; // SEMBUNYIKAN DULU
+  anggotaTerdeteksi = null;
 
+  const keyword = safeText(document.getElementById("keywordDashboard").value).toLowerCase();
+  const hasilDiv = document.getElementById("hasilCariDashboard");
 
   if(!keyword){
-
     hasilDiv.innerHTML="";
     return;
-
   }
 
-
-  const hasil =
-    Object.entries(dataAnggotaD)
-      .filter(([key,a]) => {
-
-        const nama =
-          safeText(a.nama)
-            .toLowerCase();
-
-        const id =
-          getIdAnggota(a,key)
-            .toLowerCase();
-
-        const hp =
-          safeText(
-            a.telepon ??
-            a.noHp ??
-            a.hp ??
-            a.nomorHp
-          ).toLowerCase();
-
-        return (
-          nama.includes(keyword) ||
-          id.includes(keyword) ||
-          hp.includes(keyword)
-        );
-
-      });
-
+  const hasil = Object.entries(dataAnggotaD).filter(([key,a]) => {
+    const nama = safeText(a.nama).toLowerCase();
+    const id = getIdAnggota(a,key).toLowerCase();
+    const hp = safeText(a.telepon?? a.noHp?? a.hp?? a.nomorHp).toLowerCase();
+    return nama.includes(keyword) || id.includes(keyword) || hp.includes(keyword);
+  });
 
   if(!hasil.length){
-
-    hasilDiv.innerHTML = `
-
-      <div class="empty-result error">
-
-        <span class="material-icons">
-          person_off
-        </span>
-
-        Anggota tidak ditemukan
-
-        <div style="
-          font-size:9px;
-          margin-top:4px;
-          color:#64748b;
-        ">
-          Coba nama, nomor anggota,
-          atau nomor HP
-        </div>
-
-      </div>
-
-    `;
-
+    hasilDiv.innerHTML = `<div class="empty-result error"><span class="material-icons">person_off</span>Anggota tidak ditemukan<div style="font-size:9px;margin-top:4px;color:#64748b;">Coba nama, nomor anggota, atau nomor HP</div></div>`;
     return;
-
   }
 
+  hasilDiv.innerHTML = `<div class="search-result-box"><div class="search-result-title">${hasil.length} anggota ditemukan</div>${hasil.map(([key,a]) => buatKartuAnggota(key,a)).join("")}</div>`;
 
-  hasilDiv.innerHTML = `
+  // BARU: MUNCULIN TOMBOL CUMA KALAU 1 HASIL
+  if(hasil.length === 1){
+    const [key, a] = hasil[0];
+    anggotaTerdeteksi = { key,...a };
+    document.getElementById("btnAksiCari").style.display = "flex";
 
-    <div class="search-result-box">
+    const idAnggota = getIdAnggota(a, key);
 
-      <div class="search-result-title">
-        ${hasil.length}
-        anggota ditemukan
-      </div>
-
-      ${hasil.map(
-        ([key,a]) =>
-          buatKartuAnggota(key,a)
-      ).join("")}
-
-    </div>
-
-  `;
-
+    // Klik tombol langsung lempar ke halaman + bawa ID
+    document.getElementById("btnPinjamanSatu").onclick = () => {
+      localStorage.setItem("idAnggotaPinjaman", idAnggota);
+      location.href = 'pinjaman.html';
+    }
+    document.getElementById("btnCairSatu").onclick = () => {
+      localStorage.setItem("idAnggotaCair", idAnggota);
+      location.href = 'cair.html';
+    }
+  }
 };
-
 
 /* =====================================================
    REFRESH PENCARIAN
