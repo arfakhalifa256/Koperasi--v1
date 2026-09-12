@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set Saldo Awal - Koperasi ARFA</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#f1f5f9;color:#1f2937;font-size:13px}
+header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px}
+.container{padding:16px;max-width:600px;margin:0 auto}
+.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card h3{margin:0 0 14px;font-size:15px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px}
+.form-group input{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px}
+.btn{width:100%;padding:11px;border:none;border-radius:8px;background:#1e90ff;color:white;font-weight:600;cursor:pointer;margin-top:5px}
+.btn.danger{background:#dc2626}
+.btn.secondary{background:#64748b}
+.note{font-size:10px;color:#6b7280;margin-top:5px}
+.back-btn{display:inline-flex;align-items:center;gap:5px;color:#1e90ff;text-decoration:none;font-size:12px;margin-bottom:10px}
+.summary{background:#eff6ff;padding:12px;border-radius:8px;margin-bottom:12px}
+.summary b{font-size:16px;color:#1d4ed8}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><img src="img/icon-192.png">SET SALDO AWAL</div>
+</header>
+
+<div class="container">
+  <a href="kas.html" class="back-btn"><span class="material-icons" style="font-size:18px">arrow_back</span> Kembali ke Kas</a>
+  
+  <div class="card">
+    <h3>💰 Saldo Saat Ini</h3>
+    <div class="summary">Cash: <b id="saldoCash">Rp 0</b><br>Bank: <b id="saldoBank">Rp 0</b><br>Total Modal: <b id="modalAwal">Rp 0</b></div>
+  </div>
+
+  <div class="card" id="cardSet">
+    <h3>⚙️ Set / Koreksi Saldo Awal</h3>
+    <div class="form-group"><label>Tanggal Saldo Awal</label><input type="datetime-local" id="tanggalSaldoAwal"></div>
+    <div class="form-group"><label>Saldo Cash</label><input type="number" id="inputSaldoCash" placeholder="500000"></div>
+    <div class="form-group"><label>Saldo Bank</label><input type="number" id="inputSaldoBank" placeholder="820000"></div>
+    <div class="form-group"><label>Total Modal Awal</label><input type="text" id="inputModalAwal" disabled></div>
+    <button class="btn" id="btnSimpanSaldo">💾 Simpan Saldo Awal</button>
+    <div class="note">*Data ini hanya diisi 1x di awal. Hati-hati mengubah.</div>
+  </div>
+
+  <div class="card" id="cardReset" style="display:none">
+    <h3>🔄 Reset Saldo Awal</h3>
+    <p style="font-size:11px;margin-bottom:10px">Gunakan ini jika salah input saldo awal. Semua transaksi akan tetap ada.</p>
+    <button class="btn danger" id="btnResetSaldo">Reset Saldo Awal</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const role = localStorage.getItem("role");
+if(role !== "admin"){ alert("Hanya admin"); location.href="kas.html"; }
+
+const saldoAwalRef = ref(db, "kas/saldoAwal");
+
+function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
+
+document.getElementById("inputSaldoCash").addEventListener("input", updateTotal);
+document.getElementById("inputSaldoBank").addEventListener("input", updateTotal);
+function updateTotal(){
+  const cash = Number(document.getElementById("inputSaldoCash").value) || 0;
+  const bank = Number(document.getElementById("inputSaldoBank").value) || 0;
+  document.getElementById("inputModalAwal").value = formatRp(cash + bank);
+}
+
+document.getElementById("btnSimpanSaldo").onclick = async () => {
+  const cash = Number(document.getElementById("inputSaldoCash").value) || 0;
+  const bank = Number(document.getElementById("inputSaldoBank").value) || 0;
+  const tanggalInput = document.getElementById("tanggalSaldoAwal").value;
+  const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
+  if(cash === 0 && bank === 0){ alert("Isi minimal salah satu saldo awal"); return; }
+  await set(saldoAwalRef, { cash, bank, tanggal, updatedAt: Date.now() });
+  await set(ref(db, "global/modalAwal"), cash + bank);
+  alert("Saldo awal berhasil disimpan");
+  location.reload();
+};
+
+document.getElementById("btnResetSaldo").onclick = async () => {
+  if(!confirm("Yakin reset saldo awal? Transaksi tidak akan dihapus.")) return;
+  await set(saldoAwalRef, null);
+  await set(ref(db, "global/modalAwal"), 0);
+  alert("Saldo awal berhasil direset");
+  location.reload();
+};
+
+onValue(saldoAwalRef, snap => {
+  const data = snap.val() || {};
+  document.getElementById("saldoCash").innerText = "Rp " + formatRp(data.cash);
+  document.getElementById("saldoBank").innerText = "Rp " + formatRp(data.bank);
+  document.getElementById("modalAwal").innerText = "Rp " + formatRp((data.cash||0)+(data.bank||0));
+  
+  if(data.cash > 0 || data.bank > 0){
+    document.getElementById("cardReset").style.display = "block";
+    document.getElementById("inputSaldoCash").value = data.cash || 0;
+    document.getElementById("inputSaldoBank").value = data.bank || 0;
+    updateTotal();
+  }
+  
+  if(data.tanggal){
+    const t = new Date(data.tanggal);
+    const iso = new Date(t.getTime() - t.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+    document.getElementById("tanggalSaldoAwal").value = iso;
+  } else {
+    document.getElementById("tanggalSaldoAwal").value = new Date().toISOString().slice(0,16);
+  }
+});
+</script>
+</body>
+</html>

@@ -5,10 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kas Koperasi</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
-  <style>
-/* CSS sama */
+<style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--primary:#1e90ff;--primary-dark:#0f3057;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);--radius:12px;--success:#16a34a;--danger:#dc2626}
@@ -22,7 +21,7 @@ header{background:linear-gradient(to right,var(--primary),var(--primary-dark));c
 .container{padding:14px;max-width:1200px;margin:0 auto}
 .page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark)}
 .card{background:var(--card);padding:14px;border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
-.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700}
+.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
 .summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
 .summary-grid.total{grid-template-columns:1fr}
 .summary-item{background:#f8fafc;padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center}
@@ -36,6 +35,7 @@ header{background:linear-gradient(to right,var(--primary),var(--primary-dark));c
 .form-group input,.form-group select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Poppins',sans-serif}
 .btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif}
 .btn-danger{background:var(--danger)}
+.btn-secondary{background:#64748b}
 .table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--border);border-radius:8px}
 table{width:100%;border-collapse:collapse;font-size:11px;min-width:750px}
 th{background:#f8fafc;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border);white-space:nowrap}
@@ -74,7 +74,7 @@ tr:hover{background:#f8fafc;cursor:pointer}
   <div class="sidebar-logo"><img src="img/icon-192.png" alt="Logo"><h3>Menu Koperasi</h3></div>
   <a href="dashboard.html"><span class="material-icons">home</span>Beranda</a>
   <div class="sidebar-section">Data Master</div>
-  <a href="anggota.html">👤 Data Anggota</a><a href="kas.html">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
+  <a href="anggota.html">👤 Data Anggota</a><a href="kas.html" class="active">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
   <div class="sidebar-section">Keuangan</div>
   <a href="pinjaman.html">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
   <div class="sidebar-section">Laporan</div>
@@ -95,18 +95,6 @@ tr:hover{background:#f8fafc;cursor:pointer}
 <div class="container">
   <h3 class="page-title">KAS</h3>
 
-  <div class="card" id="cardSaldoAwal">
-    <h3>Set Saldo Awal Koperasi</h3>
-    <div class="form-grid">
-      <div class="form-group"><label>Tanggal Saldo Awal</label><input type="datetime-local" id="tanggalSaldoAwal"></div>
-      <div class="form-group"><label>Saldo Cash</label><input type="number" id="inputSaldoCash" placeholder="500000"></div>
-      <div class="form-group"><label>Saldo Bank</label><input type="number" id="inputSaldoBank" placeholder="820000"></div>
-      <div class="form-group"><label>Modal Awal</label><input type="text" id="inputModalAwal" disabled placeholder="Otomatis: Cash + Bank"></div>
-      <div class="form-group full"><button class="btn-primary" id="btnSimpanSaldo">Simpan Saldo Awal</button><div class="note">*Hanya bisa diisi 1x. Untuk koreksi pakai tombol Reset di bawah.</div></div>
-      <div class="form-group full" id="resetBtnWrap" style="display:none"><button class="btn-primary btn-danger" id="btnResetSaldo">Reset Saldo Awal</button></div>
-    </div>
-  </div>
-
   <div class="card">
     <div class="summary-grid total"><div class="summary-item total"><div class="label">Total Saldo</div><div class="value">Rp <span id="saldoTotal">0</span></div></div></div>
     <div class="summary-grid">
@@ -118,7 +106,13 @@ tr:hover{background:#f8fafc;cursor:pointer}
   </div>
 
   <div class="card">
-    <h3>Input Transaksi</h3>
+    <h3>⚙️ Pengaturan Saldo Awal</h3>
+    <p style="font-size:11px;color:#6b7280;margin-bottom:10px">Atur saldo awal koperasi. Hanya bisa diakses Admin.</p>
+    <button class="btn-primary" onclick="location.href='set-saldo.html'">Buka Halaman Set Saldo Awal</button>
+  </div>
+
+  <div class="card">
+    <h3>💵 Input Transaksi Kas</h3>
     <div class="form-grid">
       <div class="form-group"><label>Sumber Kas</label><select id="sumberKas"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
       <div class="form-group"><label>Tipe</label><select id="tipe" onchange="toggleKategori()"><option value="masuk">Kas Masuk</option><option value="keluar">Kas Keluar</option><option value="biaya">Biaya Operasional</option></select></div>
@@ -127,12 +121,12 @@ tr:hover{background:#f8fafc;cursor:pointer}
       <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="tanggal"></div>
       <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" placeholder="0"></div>
       <div class="form-group full"><label>Keterangan</label><input type="text" id="keterangan" placeholder="Otomatis: Nama Anggota - Kategori"></div>
-      <div class="form-group full"><button class="btn-primary" id="btnSimpan">Simpan Transaksi</button></div>
+      <div class="form-group full"><button class="btn-primary" id="btnSimpan">💾 Simpan Transaksi</button></div>
     </div>
   </div>
 
   <div class="card">
-    <h3>Riwayat Transaksi</h3>
+    <h3>📒 Riwayat Transaksi</h3>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Tipe</th><th class="text-right">Jumlah</th><th>Sumber</th><th>Kategori</th><th>Anggota</th></tr></thead>
@@ -184,6 +178,8 @@ let dataSaldoAwal = {};
 let dataTransaksi = {};
 let dataAnggota = {};
 
+function toWIB(ms){ return ms + (7*60*60*1000); } // fungsi tambah 7 jam
+
 onValue(anggotaRef, snap => {
   dataAnggota = snap.val() || {};
   const sel = document.getElementById("anggotaSelect");
@@ -228,34 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
   el.innerHTML = `${salam}, <b>${username}</b>`;
 });
 
-document.getElementById("inputSaldoCash").addEventListener("input", updateModalAwal);
-document.getElementById("inputSaldoBank").addEventListener("input", updateModalAwal);
-function updateModalAwal(){
-  const cash = Number(document.getElementById("inputSaldoCash").value) || 0;
-  const bank = Number(document.getElementById("inputSaldoBank").value) || 0;
-  document.getElementById("inputModalAwal").value = formatRp(cash + bank);
-}
-
-document.getElementById("btnSimpanSaldo").onclick = async () => {
-  const cash = Number(document.getElementById("inputSaldoCash").value) || 0;
-  const bank = Number(document.getElementById("inputSaldoBank").value) || 0;
-  const tanggalInput = document.getElementById("tanggalSaldoAwal").value;
-  const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
-  if(cash === 0 && bank === 0){ alert("Isi minimal salah satu saldo awal"); return; }
-  await set(saldoAwalRef, { cash, bank, tanggal, updatedAt: Date.now() });
-  await set(ref(db, "global/modalAwal"), cash + bank);
-  alert("Saldo awal & Modal Awal berhasil disimpan");
-  location.reload();
-};
-
-document.getElementById("btnResetSaldo").onclick = async () => {
-  if(!confirm("Yakin reset saldo awal?")) return;
-  await set(saldoAwalRef, null);
-  await set(ref(db, "global/modalAwal"), 0);
-  alert("Saldo awal berhasil direset");
-  location.reload();
-};
-
 function isiOpsiKategori(el, tipe, selected=""){
   let html = "";
   if(tipe === "masuk"){
@@ -264,12 +232,15 @@ function isiOpsiKategori(el, tipe, selected=""){
     <option value="simpanan_sukarela" ${selected==="simpanan_sukarela"?"selected":""}>Simpanan Sukarela</option>
     <option value="angsuran_pokok" ${selected==="angsuran_pokok"?"selected":""}>Angsuran Pokok</option>
     <option value="pendapatan_jasa" ${selected==="pendapatan_jasa"?"selected":""}>Pendapatan Jasa</option>
-    <option value="pendapatan_lain" ${selected==="pendapatan_lain"?"selected":""}>Pendapatan Lain-lain</option>`;
+    <option value="pendapatan_lain" ${selected==="pendapatan_lain"?"selected":""}>Pendapatan Lain-lain</option>
+    <option value="pembayaran_shu" ${selected==="pembayaran_shu"?"selected":""}>Pembayaran SHU</option>`;
   } else {
     html = `<option value="konsumsi" ${selected==="konsumsi"?"selected":""}>Konsumsi</option>
     <option value="biaya_operasional" ${selected==="biaya_operasional"?"selected":""}>Biaya Operasional</option>
     <option value="pinjaman" ${selected==="pinjaman"?"selected":""}>Pinjaman</option>
     <option value="pengambilan_simpanan" ${selected==="pengambilan_simpanan"?"selected":""}>Pengambilan Simpanan</option>
+    <option value="pengembalian_simpanan" ${selected==="pengembalian_simpanan"?"selected":""}>Pengembalian Simpanan</option>
+    <option value="pembayaran_shu" ${selected==="pembayaran_shu"?"selected":""}>Pembayaran SHU</option>
     <option value="transfer_bank" ${selected==="transfer_bank"?"selected":""}>Transfer Bank</option>`;
   }
   el.innerHTML = html;
@@ -290,7 +261,7 @@ document.getElementById("btnSimpan").onclick = async()=>{
   let tipe = document.getElementById("tipe").value;
   const jumlah = Number(document.getElementById("jumlah").value);
   let ket = document.getElementById("keterangan").value;
-  const tanggalInput = document.getElementById("tanggal").value;
+  const tanggalInput = document.getElementById("tanggal").value; // FIX: deklarasi dulu
   const kategori = document.getElementById("kategori").value || "";
   const anggotaId = document.getElementById("anggotaSelect").value;
   const username = localStorage.getItem("username") || "Unknown";
@@ -300,7 +271,7 @@ document.getElementById("btnSimpan").onclick = async()=>{
   let namaAnggota = "";
   let keteranganFinal = ket;
 
-  if(kategori.includes("simpanan") || kategori.includes("angsuran")){
+  if(kategori.includes("simpanan") || kategori.includes("angsuran") || kategori.includes("shu")){
     if(!anggotaId){ alert("Pilih anggota dulu"); return; }
     namaAnggota = dataAnggota[anggotaId]?.nama || "-";
     keteranganFinal = `${namaAnggota} - ${ket || kategori}`;
@@ -315,9 +286,8 @@ document.getElementById("btnSimpan").onclick = async()=>{
   }
 
   if(tipe === "biaya") tipe = "keluar";
-  const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
+  const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now()); // FIX: cuma 1x deklarasi + tambah 7 jam
 
-  // 1. DATA YANG MAU DISIMPAN
   const dataTransaksiBaru = {
     sumberKas, tipe, jumlah, kategori,
     keterangan: keteranganFinal,
@@ -326,12 +296,10 @@ document.getElementById("btnSimpan").onclick = async()=>{
     tanggal
   }
 
-  // 2. SIMPAN KE KAS
   const snapKas = await push(kasTransaksiRef, dataTransaksiBaru);
 
-  // 3. CATAT AUDIT LOG
   await push(ref(db,"audit/log"),{
-    tanggal: Date.now(),
+    tanggal: toWIB(Date.now()),
     aksi: tipe === "masuk"? "KAS MASUK" : "KAS KELUAR",
     user: username,
     role: role,
@@ -346,24 +314,11 @@ document.getElementById("btnSimpan").onclick = async()=>{
   alert("Data berhasil disimpan");
   document.getElementById("jumlah").value="";
   document.getElementById("keterangan").value="";
-  document.getElementById("anggotaSelect").value="";
+  document.getElementById("anggotaSelect").value=""
 }
 
 onValue(saldoAwalRef, snap => {
   dataSaldoAwal = snap.val() || {};
-  document.getElementById("inputSaldoCash").value = dataSaldoAwal.cash || 0;
-  document.getElementById("inputSaldoBank").value = dataSaldoAwal.bank || 0;
-  updateModalAwal();
-  if (dataSaldoAwal.tanggal) {
-    const t = new Date(dataSaldoAwal.tanggal);
-    const iso = new Date(t.getTime() - t.getTimezoneOffset() * 60000).toISOString().slice(0,16);
-    document.getElementById("tanggalSaldoAwal").value = iso;
-  }
-  if(role === "admin" && (dataSaldoAwal.cash > 0 || dataSaldoAwal.bank > 0)){
-    document.getElementById("resetBtnWrap").style.display = "block";
-  } else if(dataSaldoAwal.cash > 0 || dataSaldoAwal.bank > 0){
-    document.getElementById("cardSaldoAwal").style.display = "none";
-  }
   hitungDanRender();
 });
 
@@ -384,7 +339,10 @@ function hitungDanRender(){
     let tipe = String(i.tipe || "").toLowerCase();
     const sumber = String(i.sumberKas || "cash").toLowerCase();
     if(tipe === "biaya") tipe = "keluar";
-    const tanggal = i.tanggal? new Date(Number(i.tanggal)).toLocaleString("id-ID",{ day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit" }) : "-";
+    const tanggal = i.tanggal? new Date(Number(i.tanggal)).toLocaleString("id-ID",{ 
+        day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit",
+        timeZone: "Asia/Jakarta"  // PAKSA WIB
+    }) : "-";
     if (tipe === "masuk") totalMasuk += jumlah; else totalKeluar += jumlah;
     if (sumber === "cash") { if (tipe === "masuk") saldoCash += jumlah; else saldoCash -= jumlah; }
     if (sumber === "bank") { if (tipe === "masuk") saldoBank += jumlah; else saldoBank -= jumlah; }
@@ -393,7 +351,7 @@ function hitungDanRender(){
     const namaKategori = {
       'angsuran_pokok': 'Angsuran Pokok','pendapatan_jasa': 'Pendapatan Jasa','simpanan_sukarela': 'Simpanan Sukarela',
       'simpanan_pokok': 'Simpanan Pokok','simpanan_wajib': 'Simpanan Wajib','biaya_operasional': 'Biaya Operasional',
-      'pengambilan_simpanan': 'Ambil Simpanan'
+      'pengambilan_simpanan': 'Ambil Simpanan','pengembalian_simpanan': 'Kembalikan Simpanan','pembayaran_shu': 'Pembayaran SHU'
     }[i.kategori] || i.kategori || '-';
 
     const namaAnggota = i.namaAnggota || "-";
@@ -427,8 +385,8 @@ window.editKas = async function(key){
   document.getElementById("editKasJumlah").value = d.jumlah || 0;
   document.getElementById("editKasKeterangan").value = d.keterangan || "";
   if(d.tanggal){
-    const t = new Date(d.tanggal);
-    const iso = new Date(t.getTime()-t.getTimezoneOffset()*60000).toISOString().slice(0,16);
+    const t = new Date(Number(d.tanggal) - 7*60*60*1000); // KURANGI 7 JAM BUAT EDIT
+    const iso = t.toISOString().slice(0,16);
     document.getElementById("editKasTanggal").value = iso;
   }
   document.getElementById("modalEditKas").classList.add("show");
@@ -439,7 +397,7 @@ window.tutupModalKas = function(){ document.getElementById("modalEditKas").class
 window.updateKas = async function(){
   const key = document.getElementById("editKasKey").value;
   const username = localStorage.getItem("username") || "Unknown";
-  const snapLama = await get(ref(db,"kas/transaksi/"+key)); // ambil data lama
+  const snapLama = await get(ref(db,"kas/transaksi/"+key));
   const dataLama = snapLama.val();
 
   const sumber = document.getElementById("editKasSumber").value;
@@ -448,14 +406,13 @@ window.updateKas = async function(){
   const jumlah = Number(document.getElementById("editKasJumlah").value);
   const keterangan = document.getElementById("editKasKeterangan").value;
   const tanggalInput = document.getElementById("editKasTanggal").value;
-  const tanggal = tanggalInput? new Date(tanggalInput).getTime() : Date.now();
+  const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now()); // FIX WIB
   if(tipe === "biaya") tipe = "keluar";
 
   await update(ref(db,"kas/transaksi/"+key), { sumberKas: sumber, tipe, kategori, jumlah, keterangan: keterangan||"Transaksi Kas", tanggal });
 
-  // LOG EDIT
   await push(ref(db,"audit/log"),{
-    tanggal: Date.now(),
+    tanggal: toWIB(Date.now()),
     aksi: "EDIT TRANSAKSI",
     user: username,
     role: role,
@@ -473,15 +430,13 @@ window.hapusKasModal = async function(){
   const username = localStorage.getItem("username") || "Unknown";
   if(!key) return;
 
-  const snapLama = await get(ref(db,"kas/transaksi/"+key)); // ambil data sebelum hapus
+  const snapLama = await get(ref(db,"kas/transaksi/"+key));
   const dataLama = snapLama.val();
 
   if(confirm("Yakin ingin menghapus transaksi ini?")){
     await remove(ref(db,"kas/transaksi/"+key));
-
-    // LOG HAPUS
     await push(ref(db,"audit/log"),{
-      tanggal: Date.now(),
+      tanggal: toWIB(Date.now()),
       aksi: "HAPUS TRANSAKSI",
       user: username,
       role: role,
@@ -489,13 +444,15 @@ window.hapusKasModal = async function(){
       jumlah: dataLama.jumlah,
       refKas: key
     });
-
     alert("Data berhasil dihapus");
     tutupModalKas();
   }
 }
 
-document.getElementById("tanggal").value = new Date(Date.now() - new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
+// FIX DEFAULT TANGGAL WIB
+const now = new Date();
+now.setHours(now.getHours() + 7);
+document.getElementById("tanggal").value = now.toISOString().slice(0,16);
 toggleKategori();
 </script>
 </body>

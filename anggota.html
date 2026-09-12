@@ -68,6 +68,7 @@ body.role-anggota .anggota-only{display:block;}
 .btn-action{border:none;padding:9px;border-radius:8px;font-family:'Poppins';font-size:11px;font-weight:600;cursor:pointer;}
 .btn-edit{background:#dbeafe;color:#1d4ed8;}
 .btn-keluar{background:#fee2e2;color:#b91c1c;}
+.btn-proses-keluar{background:#ffedd5;color:#9a3412;} /* TOMBOL BARU */
 .btn-aktif{background:#dcfce7;color:#166534;}
 .view-only{text-align:center;width:100%;padding:8px;background:#f8fafc;color:#64748b;border-radius:8px;font-size:10px;}
 
@@ -86,7 +87,7 @@ body.role-anggota .anggota-only{display:block;}
   .sidebar{left:0;}
   .overlay{display:none!important;}
   .menu-btn{display:none;}
-  .anggota-actions{grid-template-columns:1fr 1fr;}
+  .anggota-actions{grid-template-columns:1fr 1fr 1fr;} /* JADI 3 KOLOM */
 }
 </style>
 </head>
@@ -186,24 +187,19 @@ const anggotaRef = ref(db,"/anggota");
 const isLogin = localStorage.getItem("login");
 let role = (localStorage.getItem("role") || "").toLowerCase().trim();
 let username = localStorage.getItem("username") || "";
-let userId = localStorage.getItem("userId") || ""; // WAJIB isi ini saat login
+let userId = localStorage.getItem("userId") || "";
 
 if(isLogin !== "true" || !username || !role){
   window.location.href = "index.html";
 }
-
 if(role !== "admin" && role !== "anggota"){
   alert("Role pengguna tidak valid.");
   localStorage.clear();
   window.location.href = "index.html";
 }
-
 document.body.classList.add("role-" + role);
-
-/* ROLE BADGE */
 document.getElementById("roleBadge").textContent = role.toUpperCase();
 
-/* ROLE INFO */
 const roleInfo = document.getElementById("roleInfo");
 if(role === "admin"){
   roleInfo.innerHTML = "👑 <b>Admin</b> — Anda memiliki akses penuh untuk mengelola data anggota.";
@@ -231,6 +227,16 @@ document.getElementById("btnLogout").addEventListener("click", (e)=>{
 let anggotaList = [];
 let editKey = null;
 
+/* FORMAT */
+function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
+function bulatRibu(n){ return Math.round(Number(n||0) / 1000) * 1000; }
+function formatTanggal(tanggal){
+  if(!tanggal) return "-";
+  const d = new Date(tanggal);
+  if(isNaN(d)) return tanggal;
+  return d.toLocaleDateString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric"});
+}
+
 /* GENERATE ID */
 async function generateId(){
   const snapshot = await get(anggotaRef);
@@ -242,14 +248,6 @@ async function generateId(){
     if(nomor > max) max = nomor;
   });
   return "AG" + String(max + 1).padStart(3,"0");
-}
-
-/* FORMAT TANGGAL */
-function formatTanggal(tanggal){
-  if(!tanggal) return "-";
-  const d = new Date(tanggal);
-  if(isNaN(d)) return tanggal;
-  return d.toLocaleDateString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric"});
 }
 
 /* LOAD DATA */
@@ -270,20 +268,13 @@ window.renderAnggota=function(){
   const search = document.getElementById("search").value.toLowerCase().trim();
 
   let arr = anggotaList.filter(a => {
-    // JIKA ROLE ANGGOTA, HANYA TAMPILKAN DATA DIRI SENDIRI
-    if(role === 'anggota' && a.id !== userId){
-      return false;
-    }
+    if(role === 'anggota' && a.id !== userId){ return false; }
     const nama = String(a.nama || "").toLowerCase();
     const id = String(a.id || "").toLowerCase();
     return nama.includes(search) || id.includes(search);
   });
 
-  arr.sort((a,b)=>{
-    const noA = parseInt(String(a.id || "AG0").replace(/\D/g,"")) || 0;
-    const noB = parseInt(String(b.id || "AG0").replace(/\D/g,"")) || 0;
-    return noA - noB;
-  });
+  arr.sort((a,b)=>{ const noA = parseInt(String(a.id || "AG0").replace(/\D/g,"")) || 0; const noB = parseInt(String(b.id || "AG0").replace(/\D/g,"")) || 0; return noA - noB; });
 
   if(arr.length === 0){
     container.innerHTML = `<div class="empty-state"><p>Belum ada data anggota.</p></div>`;
@@ -303,18 +294,15 @@ window.renderAnggota=function(){
         <div class="anggota-info"><b>ID Anggota</b><span>${escapeHtml(a.id || "-")}</span></div>
         <div class="anggota-info"><b>Alamat</b><span>${escapeHtml(a.alamat || "-")}</span></div>
         <div class="anggota-info"><b>Telepon</b><span>${escapeHtml(a.telepon || "-")}</span></div>
-        
         ${keluar ? `<div class="anggota-info"><b>Tanggal Keluar</b><span>${formatTanggal(a.tanggalKeluar)}</span></div>` : ""}
 
         ${role === "admin" ? `
         <div class="anggota-actions">
           <button class="btn-action btn-edit" onclick="editAnggota('${a.key}')">✏️ Edit</button>
-          ${keluar ? `<button class="btn-action btn-aktif" onclick="aktifkanAnggota('${a.key}')">🔄 Aktifkan Kembali</button>` : `<button class="btn-action btn-keluar" onclick="keluarkanAnggota('${a.key}')">🚪 Keluarkan Anggota</button>`}
+          ${keluar ? `<button class="btn-action btn-aktif" onclick="aktifkanAnggota('${a.key}')">🔄 Aktifkan</button>` : `<button class="btn-action btn-proses-keluar" onclick="prosesKeluarAnggota('${a.key}')">🚪 Proses Keluar</button>`}
         </div>
         ` : `
-        <div class="anggota-actions">
-          <div class="view-only">👁️ Mode lihat — Anggota tidak dapat mengubah data</div>
-        </div>
+        <div class="anggota-actions"><div class="view-only">👁️ Mode lihat — Anggota tidak dapat mengubah data</div></div>
         `}
       </div>
     `;
@@ -326,7 +314,7 @@ function escapeHtml(text){ return String(text || "").replace(/&/g,"&amp;").repla
 
 /* TAMBAH ANGGOTA */
 window.tambahAnggota = async function(){
-  if(role !== "admin"){ alert("Akses ditolak.\n\nHanya Admin yang dapat menambah anggota."); return; }
+  if(role !== "admin"){ alert("Akses ditolak."); return; }
   const nama = document.getElementById("nama").value.trim();
   const telepon = document.getElementById("telepon").value.trim();
   const alamat = document.getElementById("alamat").value.trim();
@@ -334,16 +322,14 @@ window.tambahAnggota = async function(){
   try{
     const idBaru = await generateId();
     await push(anggotaRef,{id:idBaru,nama:nama,telepon:telepon,alamat:alamat,status:"aktif",tanggalMasuk:new Date().toISOString().slice(0,10),tanggalKeluar:"",tanggalMasukKembali:""});
-    document.getElementById("nama").value = "";
-    document.getElementById("telepon").value = "";
-    document.getElementById("alamat").value = "";
+    document.getElementById("nama").value = ""; document.getElementById("telepon").value = ""; document.getElementById("alamat").value = "";
     alert("Anggota berhasil ditambahkan.\n\nID Anggota: " + idBaru);
   }catch(error){ alert("Gagal menyimpan anggota:\n"+ error.message); }
 };
 
 /* EDIT */
 window.editAnggota = async function(key){
-  if(role !== "admin"){ alert("Akses ditolak.\n\nHanya Admin yang dapat mengedit anggota."); return; }
+  if(role !== "admin"){ alert("Akses ditolak."); return; }
   const snapshot = await get(ref(db,"/anggota/" + key));
   if(!snapshot.exists()){ alert("Data anggota tidak ditemukan."); return; }
   const d = snapshot.val();
@@ -367,7 +353,6 @@ function updateStatusInfo(d){
   }
   document.getElementById("statusInfo").innerHTML = html;
 }
-
 document.getElementById("editStatus").addEventListener("change", async function(){
   if(!editKey) return;
   const snapshot = await get(ref(db,"/anggota/" + editKey));
@@ -388,43 +373,107 @@ window.simpanEdit = async function(){
     if(!oldSnapshot.exists()) return;
     const oldData = oldSnapshot.val();
     const dataUpdate = {nama:nama,alamat:alamat,telepon:telepon,status:status};
-    if(status === "keluar" && String(oldData.status || "aktif").toLowerCase() !== "keluar"){
-      dataUpdate.tanggalKeluar = new Date().toISOString().slice(0,10);
-    }
-    if(status === "aktif" && String(oldData.status || "aktif").toLowerCase() === "keluar"){
-      dataUpdate.tanggalMasukKembali = new Date().toISOString().slice(0,10);
-    }
+    if(status === "keluar" && String(oldData.status || "aktif").toLowerCase() !== "keluar"){ dataUpdate.tanggalKeluar = new Date().toISOString().slice(0,10); }
+    if(status === "aktif" && String(oldData.status || "aktif").toLowerCase() === "keluar"){ dataUpdate.tanggalMasukKembali = new Date().toISOString().slice(0,10); }
     await update(ref(db,"/anggota/" + editKey), dataUpdate);
     tutupPopup();
     alert("Data anggota berhasil diperbarui.");
   }catch(error){ alert("Gagal menyimpan:\n"+ error.message); }
 };
 
-/* KELUARKAN ANGGOTA */
-window.keluarkanAnggota = async function(key){
-  if(role !== "admin"){ alert("Akses ditolak.\n\nHanya Admin yang dapat mengeluarkan anggota."); return; }
-  const snapshot = await get(ref(db,"/anggota/" + key));
-  if(!snapshot.exists()) return;
-  const d = snapshot.val();
-  const yakin = confirm(`KELUARKAN ANGGOTA?\n\nID   : ${d.id || "-"}\nNama : ${d.nama || "-"}\n\nData anggota TIDAK akan dihapus.\nRiwayat transaksi tetap tersimpan.\n\nLanjutkan?`);
-  if(!yakin) return;
-  try{
-    await update(ref(db,"/anggota/" + key),{status:"keluar",tanggalKeluar:new Date().toISOString().slice(0,10)});
-    alert("Anggota telah berstatus KELUAR.\n\nData tetap tersimpan di database.");
-  }catch(error){ alert("Gagal mengubah status:\n"+ error.message); }
+/* ========== FUNGSI BARU: PROSES KELUAR LENGKAP ========== */
+window.prosesKeluarAnggota = async function(key){
+  if(role !== "admin"){ alert("Akses ditolak."); return; }
+  
+  const snapAnggota = await get(ref(db,"/anggota/" + key));
+  if(!snapAnggota.exists()) return;
+  const dataAnggota = snapAnggota.val();
+  const idAnggota = dataAnggota.id;
+  const nama = dataAnggota.nama;
+
+  if(confirm(`Yakin mau PROSES KELUAR untuk ${nama}?\n\nSemua Simpanan + Sisa SHU akan dibayarkan dan Kas akan berkurang.`)){
+    
+    // 1. AMBIL DATA SIMPANAN
+    const snapSimpanan = await get(ref(db,"simpanan"));
+    let totalSimpanan = 0;
+    let rincianSimpanan = { pokok: 0, wajib: 0, sukarela: 0 };
+    Object.values(snapSimpanan.val() || {}).forEach(s => {
+        let id = s.idAnggota || s.anggotaId;
+        if(id === idAnggota){
+            const jumlah = Number(s.jumlah || 0);
+            const jenis = String(s.jenis).toLowerCase();
+            if(jenis.includes('pokok')) rincianSimpanan.pokok += jumlah;
+            if(jenis.includes('wajib')) rincianSimpanan.wajib += jumlah;
+            if(jenis.includes('sukarela')) rincianSimpanan.sukarela += jumlah;
+            totalSimpanan += jumlah;
+        }
+    });
+
+    // 2. AMBIL SISA SHU TERAKHIR DARI RIWAYAT
+    const snapSHU = await get(ref(db,"shu_riwayat"));
+    let sisaSHU = 0;
+    const arrSHU = Object.values(snapSHU.val() || {}).sort((a,b)=>b.tanggalBagi - a.tanggalBagi);
+    if(arrSHU.length > 0){
+        // Catatan: Ini butuh fungsi hitung manual per anggota. Sementara 0 dulu
+        // Idealnya panggil fungsi hitungSHU dari shu.html
+        alert("Catatan: Sisa SHU dihitung manual. Pastikan sudah bagi SHU di menu SHU.");
+    }
+
+    const totalBayar = totalSimpanan + sisaSHU;
+
+    if(totalBayar === 0){
+        // Kalau ga ada bayaran, langsung ganti status
+        await update(ref(db,"/anggota/" + key),{status:"keluar",tanggalKeluar:new Date().toISOString().slice(0,10)});
+        alert("Anggota telah berstatus KELUAR.");
+        return;
+    }
+
+    // 3. CEK SALDO KAS
+    const snapKas = await get(ref(db,"kas/saldoAwal"));
+    let saldoCash = Number(snapKas.val()?.cash || 0);
+    if(saldoCash < totalBayar){
+        alert(`Saldo Kas tidak cukup!\nButuh: Rp ${formatRp(totalBayar)}\nSaldo: Rp ${formatRp(saldoCash)}`);
+        return;
+    }
+
+    // 4. KONFIRMASI RINCIAN
+    const konfirmasi = `RINCIAN PEMBAYARAN KELUAR: ${nama}\n------------------------------------\n1. Simpanan Pokok    : Rp ${formatRp(rincianSimpanan.pokok)}\n2. Simpanan Wajib    : Rp ${formatRp(rincianSimpanan.wajib)}\n3. Simpanan Sukarela : Rp ${formatRp(rincianSimpanan.sukarela)}\n------------------------------------\n   Subtotal Simpanan : Rp ${formatRp(totalSimpanan)}\n4. Sisa SHU          : Rp ${formatRp(sisaSHU)}\n------------------------------------\n   TOTAL BAYAR       : Rp ${formatRp(totalBayar)}\n\nLanjutkan?`;
+    if(!confirm(konfirmasi)){ return; }
+
+    // 5. EKSEKUSI
+    const tgl = new Date().getTime();
+    const updates = {};
+    const keyKas1 = push(ref(db,'kas/transaksi')).key;
+    const keyKas2 = push(ref(db,'kas/transaksi')).key;
+
+    if(totalSimpanan > 0){
+        updates['kas/transaksi/' + keyKas1] = {tanggal:tgl,keterangan:`Pengembalian Simpanan - ${nama} - ${idAnggota}`,tipe:'keluar',jumlah:totalSimpanan,sumberKas:'cash',kategori:'Pengembalian Simpanan',idAnggota:idAnggota,oleh:username};
+    }
+    if(sisaSHU > 0){
+        updates['kas/transaksi/' + keyKas2] = {tanggal:tgl,keterangan:`Pembayaran SHU Keluar - ${nama} - ${idAnggota}`,tipe:'keluar',jumlah:sisaSHU,sumberKas:'cash',kategori:'Pembayaran SHU',idAnggota:idAnggota,oleh:username};
+    }
+    updates['anggota/' + key + '/status'] = 'keluar';
+    updates['anggota/' + key + '/tanggalKeluar'] = new Date().toISOString().slice(0,10);
+
+    await update(ref(db), updates);
+    alert(`SUKSES!\nAnggota ${nama} sudah diproses keluar.\nTotal dibayar: Rp ${formatRp(totalBayar)}`);
+  }
 };
+
+/* KELUARKAN ANGGOTA LAMA - HAPUS SAJA GANTI DENGAN PROSES KELUAR */
+window.keluarkanAnggota = window.prosesKeluarAnggota; 
 
 /* AKTIFKAN KEMBALI */
 window.aktifkanAnggota = async function(key){
-  if(role !== "admin"){ alert("Akses ditolak.\n\nHanya Admin yang dapat mengaktifkan anggota."); return; }
+  if(role !== "admin"){ alert("Akses ditolak."); return; }
   const snapshot = await get(ref(db,"/anggota/" + key));
   if(!snapshot.exists()) return;
   const d = snapshot.val();
-  const yakin = confirm(`AKTIFKAN KEMBALI ANGGOTA?\n\nID   : ${d.id || "-"}\nNama : ${d.nama || "-"}\n\nID anggota tetap ${d.id || "-"}.\nTidak membuat ID baru.`);
+  const yakin = confirm(`AKTIFKAN KEMBALI ANGGOTA?\n\nID   : ${d.id || "-"}\nNama : ${d.nama || "-"}`);
   if(!yakin) return;
   try{
     await update(ref(db,"/anggota/" + key),{status:"aktif",tanggalMasukKembali:new Date().toISOString().slice(0,10)});
-    alert("Anggota berhasil diaktifkan kembali.\n\nID anggota tetap " + (d.id || "-") + ".");
+    alert("Anggota berhasil diaktifkan kembali.");
   }catch(error){ alert("Gagal mengaktifkan anggota:\n"+ error.message); }
 };
 
