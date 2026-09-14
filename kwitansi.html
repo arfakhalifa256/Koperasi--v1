@@ -5,7 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kwitansi Koperasi ARFA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+  :root{
+  --primary:#3b82f6;
+  --primary-dark:#2563eb;
+  --bg:#f1f5f9;
+  --card:#fff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --danger:#dc2626;
+  --success:#10b981;
+  --warning:#f59e0b;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-size:13px;
+}
+
+header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+  color:white;
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:700;
+}
+
+.container{
+  padding:15px;
+  max-width:900px;
+  margin:0 auto;
+}
+
+
 .card{background:#f8fafc;padding:20px;border-radius:10px;margin-bottom:20px;border:1px solid #e5e7eb;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
 label.form{font-size:12px;font-weight:600;display:block;margin-bottom:6px;}
@@ -27,11 +80,25 @@ input,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8p
 .ttd{text-align:center;font-size:12px;width:200px;background:#fff;}
 .ttd img{max-width:150px;max-height:60px;margin:5px auto;display:block;}
 @media print{.no-print{display:none!important;}.watermark-preview{opacity:0.06!important;}}
-</style>
+
+  </style>
 </head>
 <body>
 
+<header>
+  <div class="brand">
+    <span class="material-icons">note</span>
+    KWITANSI
+  </div>
 
+  <span
+    onclick="window.location='dashboard.html'"
+    class="material-icons"
+    style="cursor:pointer">
+    home
+  </span>
+</header>
+  
 <div class="card no-print">
 <h3>1. Data Kwitansi</h3>
 
@@ -185,7 +252,7 @@ function downloadPDF(){
   let y = 45 + offsetY;
 
   // SUDAH TERIMA DARI - Auto wrap
-  doc.setFont("helvetica", "bolditalic"); doc.setFontSize(10);
+  doc.setFont("helvetica", "bolditalic"); doc.setFontSize(14);
   doc.text("Sudah terima dari :", 20, y);
   doc.setFont("helvetica", "normal");
   const dariLines = doc.splitTextToSize(dari, 125);

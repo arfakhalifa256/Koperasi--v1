@@ -52,26 +52,21 @@ body{font-family:sans-serif;background:#f5f7fa;margin:0;}
 .pengurus-input{background:#F8F9FC;padding:10px;border-radius:12px;}
 .pengurus-input label{margin-top:0;margin-bottom:4px;}
 .judul-form-pengurus{margin-top:18px;margin-bottom:5px;padding:10px;background:#EAF1FA;border-radius:10px;color:#1A4D8F;font-size:13px;font-weight:700;}
-.layanan-form{margin-top:8px;display:flex;flex-direction:column;gap:12px;}
-.layanan-input{background:#F8F9FC;padding:12px;border-radius:12px;}
-.layanan-input label{margin-top:0;margin-bottom:6px;}
-.layanan-input textarea{resize:vertical;}
+
+/* CSS BARU BUAT LAYAN DINAMIS */
+.layanan-form-item{background:#F8F9FC;padding:12px;border-radius:12px;margin-bottom:10px;position:relative;border:1px dashed #ddd;}
+.btn-hapus-layanan{position:absolute;top:8px;right:8px;background:#ff4d4d;color:#fff;border:none;border-radius:8px;padding:4px 8px;font-size:11px;cursor:pointer;}
+.btn-hapus-layanan:hover{background:#d93636;}
+.btn-tambah-layanan{width:100%;background:#1A4D8F;color:#fff;border:2px dashed #1A4D8F;border-radius:10px;padding:10px;font-weight:600;font-size:13px;cursor:pointer;margin-top:8px;}
+.btn-tambah-layanan:hover{background:#0B1F3A;}
 </style>
 </head>
 <body>
 
-<div class="profile-header">
-  <div class="back-btn" onclick="goBack()">←</div>
-  <h1>Profil Koperasi</h1>
-</div>
+<div class="profile-header"><div class="back-btn" onclick="goBack()">←</div><h1>Profil Koperasi</h1></div>
 
 <div class="profile-card">
-  <div class="profile-logo">
-    <img id="logoKoperasi" src="./img/icon-192.png" alt="Logo Koperasi">
-    <h2 id="namaKoperasiJudul"></h2>
-    <span class="status-badge">AKTIF</span>
-  </div>
-
+  <div class="profile-logo"><img id="logoKoperasi" src="./img/icon-192.png" alt="Logo Koperasi"><h2 id="namaKoperasiJudul"></h2><span class="status-badge">AKTIF</span></div>
   <div class="profile-info">
     <div class="info-item"><div class="icon">🏢</div><div><label>Nama Koperasi</label><p id="namaKoperasi">-</p></div></div>
     <div class="info-item"><div class="icon">📍</div><div><label>Alamat Kantor</label><p id="alamat">-</p></div></div>
@@ -80,22 +75,9 @@ body{font-family:sans-serif;background:#f5f7fa;margin:0;}
     <div class="info-item"><div class="icon">📜</div><div><label>No. Badan Hukum</label><p id="badanHukum">-</p></div></div>
     <div class="info-item"><div class="icon">📅</div><div><label>Tanggal Berdiri</label><p id="tanggalBerdiri">-</p></div></div>
   </div>
-
-  <div class="visi-misi">
-    <h3>Visi</h3><p id="visi">-</p>
-    <h3>Misi</h3><ul id="misiList"></ul>
-  </div>
-
-  <div class="susunan-pengurus">
-    <h3>👥 Susunan Pengurus</h3>
-    <div class="pengurus-list" id="pengurusList"></div>
-  </div>
-
-  <div class="layanan-keterangan">
-    <h3>💼 Layanan Kami</h3>
-    <div class="layanan-list" id="layananList"></div> <!-- INI DIKOSONGIN BUAT DIISI JS -->
-  </div>
-
+  <div class="visi-misi"><h3>Visi</h3><p id="visi">-</p><h3>Misi</h3><ul id="misiList"></ul></div>
+  <div class="susunan-pengurus"><h3>👥 Susunan Pengurus</h3><div class="pengurus-list" id="pengurusList"></div></div>
+  <div class="layanan-keterangan"><h3>💼 Layanan Kami</h3><div class="layanan-list" id="layananList"></div></div>
   <button class="btn-edit" id="btnEdit">✏️ Edit Profil</button>
 </div>
 
@@ -115,18 +97,16 @@ body{font-family:sans-serif;background:#f5f7fa;margin:0;}
 
       <div class="judul-form-pengurus">👥 Susunan Pengurus</div>
       <div class="pengurus-form">
-        <div class="pengurus-input"><label>Ketua</label><input type="text" id="inputKetua" placeholder="Nama Ketua"></div>
-        <div class="pengurus-input"><label>Wakil Ketua</label><input type="text" id="inputWakilKetua" placeholder="Nama Wakil Ketua"></div>
-        <div class="pengurus-input"><label>Sekretaris</label><input type="text" id="inputSekretaris" placeholder="Nama Sekretaris"></div>
-        <div class="pengurus-input"><label>Bendahara</label><input type="text" id="inputBendahara" placeholder="Nama Bendahara"></div>
-        <div class="pengurus-input"><label>Pengawas</label><input type="text" id="inputPengawas" placeholder="Nama Pengawas"></div>
+        <div class="pengurus-input"><label>Ketua</label><input type="text" id="inputKetua"></div>
+        <div class="pengurus-input"><label>Wakil Ketua</label><input type="text" id="inputWakilKetua"></div>
+        <div class="pengurus-input"><label>Sekretaris</label><input type="text" id="inputSekretaris"></div>
+        <div class="pengurus-input"><label>Bendahara</label><input type="text" id="inputBendahara"></div>
+        <div class="pengurus-input"><label>Pengawas</label><input type="text" id="inputPengawas"></div>
       </div>
 
       <div class="judul-form-pengurus">💼 Layanan Koperasi</div>
-      <div class="layanan-form">
-        <div class="layanan-input"><label>Simpanan</label><textarea id="inputLayananSimpanan" rows="3" placeholder="Contoh: Simpanan Pokok, Wajib, dan Sukarela. Bunga kompetitif & aman."></textarea></div>
-        <div class="layanan-input"><label>Pinjaman</label><textarea id="inputLayananPinjaman" rows="3" placeholder="Contoh: Pinjaman operasional anggota. Proses cepat."></textarea></div>
-      </div>
+      <div id="layananFormContainer"></div> <!-- WADAH LAYAN DINAMIS -->
+      <button type="button" class="btn-tambah-layanan" id="btnTambahLayanan">+ Tambah Layanan</button>
 
       <button type="submit" class="btn-simpan">💾 Simpan Perubahan</button>
     </form>
@@ -145,11 +125,51 @@ const profilRef = ref(db,"profil_koperasi");
 const role = (localStorage.getItem("role") || "").trim().toLowerCase();
 const isAdmin = role === "admin";
 
+let layananCounter = 0; // buat id unik
+
 function formatTanggalIndo(tanggal){
   if(!tanggal){return "-";}
   const date = new Date(tanggal);
   if(isNaN(date)){return tanggal;}
   return date.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+}
+
+function renderFormLayanan(layananArray = []){
+  const container = document.getElementById("layananFormContainer");
+  container.innerHTML = "";
+  layananCounter = 0;
+  
+  if(layananArray.length === 0){
+    tambahFormLayananKosong(); // kasih 1 form kosong
+  }else{
+    layananArray.forEach(l => tambahFormLayanan(l.nama, l.icon, l.deskripsi));
+  }
+}
+
+function tambahFormLayananKosong(){
+  tambahFormLayanan("", "💰", "");
+}
+
+function tambahFormLayanan(nama="", icon="💰", deskripsi=""){
+  layananCounter++;
+  const container = document.getElementById("layananFormContainer");
+  const div = document.createElement("div");
+  div.className = "layanan-form-item";
+  div.id = `layanan-item-${layananCounter}`;
+  div.innerHTML = `
+    <button type="button" class="btn-hapus-layanan" onclick="hapusFormLayanan(${layananCounter})">✕</button>
+    <label>Icon Emoji</label>
+    <input type="text" class="input-icon" value="${icon}" placeholder="Contoh: 💰 🏦 📈" maxlength="4">
+    <label>Nama Layanan</label>
+    <input type="text" class="input-nama" value="${nama}" placeholder="Contoh: Simpanan" required>
+    <label>Deskripsi</label>
+    <textarea class="input-deskripsi" rows="2" placeholder="Penjelasan layanan...">${deskripsi}</textarea>
+  `;
+  container.appendChild(div);
+}
+
+window.hapusFormLayanan = function(id){
+  document.getElementById(`layanan-item-${id}`).remove();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -159,17 +179,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const formProfil = document.getElementById("formProfil");
   const pengurusList = document.getElementById("pengurusList");
   const layananList = document.getElementById("layananList");
+  const btnTambahLayanan = document.getElementById("btnTambahLayanan");
 
   if(!isAdmin){
-    btnEdit.disabled = true;
-    btnEdit.innerHTML = "🔒 Hanya Admin";
-    btnEdit.style.opacity = "0.6";
-    btnEdit.style.cursor = "not-allowed";
+    btnEdit.disabled = true; btnEdit.innerHTML = "🔒 Hanya Admin";
+    btnEdit.style.opacity = "0.6"; btnEdit.style.cursor = "not-allowed";
   }
+
+  btnTambahLayanan.addEventListener("click", tambahFormLayananKosong);
 
   onValue(profilRef, (snapshot) => {
     const data = snapshot.val() || {};
-    
     document.getElementById("namaKoperasi").textContent = data.nama || "-";
     document.getElementById("namaKoperasiJudul").textContent = data.nama || "Koperasi ARFA";
     document.getElementById("alamat").textContent = data.alamat || "-";
@@ -179,21 +199,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("tanggalBerdiri").textContent = formatTanggalIndo(data.tanggalBerdiri);
     document.getElementById("visi").textContent = data.visi || "-";
 
-    const misiList = document.getElementById("misiList");
-    misiList.innerHTML = "";
-    if(Array.isArray(data.misi)){
-      data.misi.forEach(misi => { if(misi && misi.trim() !== ""){ const li = document.createElement("li"); li.textContent = misi; misiList.appendChild(li); } });
-    }else if(typeof data.misi === "string" && data.misi.trim() !== ""){
-      data.misi.split(",").map(x => x.trim()).filter(x => x).forEach(misi => { const li = document.createElement("li"); li.textContent = misi; misiList.appendChild(li); });
-    }
+    const misiList = document.getElementById("misiList"); misiList.innerHTML = "";
+    if(Array.isArray(data.misi)){ data.misi.forEach(misi => { if(misi && misi.trim() !== ""){ const li = document.createElement("li"); li.textContent = misi; misiList.appendChild(li); } }); }
 
     pengurusList.innerHTML = "";
     const pengurus = data.pengurus || {};
     const daftarPengurus = [
-      {jabatan:"Ketua",nama:pengurus.ketua || ""},
-      {jabatan:"Wakil Ketua",nama:pengurus.wakilKetua || ""},
-      {jabatan:"Sekretaris",nama:pengurus.sekretaris || ""},
-      {jabatan:"Bendahara",nama:pengurus.bendahara || ""},
+      {jabatan:"Ketua",nama:pengurus.ketua || ""}, {jabatan:"Wakil Ketua",nama:pengurus.wakilKetua || ""},
+      {jabatan:"Sekretaris",nama:pengurus.sekretaris || ""}, {jabatan:"Bendahara",nama:pengurus.bendahara || ""},
       {jabatan:"Pengawas",nama:pengurus.pengawas || ""}
     ];
     let jumlahPengurus = 0;
@@ -210,18 +223,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ================================ LAYAN ================================
     layananList.innerHTML = "";
-    const layanan = data.layanan || {};
-    const daftarLayanan = [
-      {icon: "💰", nama: "Simpanan", desc: layanan.simpanan || "Simpanan Pokok, Wajib, dan Sukarela. Bunga kompetitif & aman."},
-      {icon: "🏦", nama: "Pinjaman", desc: layanan.pinjaman || "Pinjaman operasional anggota. Proses cepat."}
-    ];
-    daftarLayanan.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "layanan-item";
-      div.innerHTML = `<div class="icon">${item.icon}</div><div><b>${item.nama}</b><p>${item.desc}</p></div>`;
-      layananList.appendChild(div);
-    });
-
+    const layanan = Array.isArray(data.layanan) ? data.layanan : [];
+    if(layanan.length === 0){
+      layananList.innerHTML = `<div class="layanan-item"><div class="icon">ℹ️</div><div><b>Belum ada layanan</b><p>Silahkan tambah layanan di menu edit</p></div></div>`;
+    }else{
+      layanan.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "layanan-item";
+        div.innerHTML = `<div class="icon">${item.icon || "💼"}</div><div><b>${item.nama}</b><p>${item.deskripsi}</p></div>`;
+        layananList.appendChild(div);
+      });
+    }
   });
 
   btnEdit.addEventListener("click", async () => {
@@ -245,12 +257,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("inputBendahara").value = pengurus.bendahara || "";
     document.getElementById("inputPengawas").value = pengurus.pengawas || "";
 
-    const layanan = data.layanan || {};
-    document.getElementById("inputLayananSimpanan").value = layanan.simpanan || "";
-    document.getElementById("inputLayananPinjaman").value = layanan.pinjaman || "";
+    const layanan = Array.isArray(data.layanan) ? data.layanan : [];
+    renderFormLayanan(layanan);
 
-    modalEdit.style.display = "block";
-    document.body.style.overflow = "hidden";
+    modalEdit.style.display = "block"; document.body.style.overflow = "hidden";
   });
 
   closeModal.addEventListener("click", () => { modalEdit.style.display = "none"; document.body.style.overflow = ""; });
@@ -277,10 +287,14 @@ document.addEventListener("DOMContentLoaded", () => {
       pengawas: document.getElementById("inputPengawas").value.trim()
     };
 
-    const layanan = {
-      simpanan: document.getElementById("inputLayananSimpanan").value.trim(),
-      pinjaman: document.getElementById("inputLayananPinjaman").value.trim()
-    };
+    // AMBIL DATA LAYAN DINAMIS
+    const layananArray = [];
+    document.querySelectorAll(".layanan-form-item").forEach(item => {
+      const nama = item.querySelector(".input-nama").value.trim();
+      const icon = item.querySelector(".input-icon").value.trim();
+      const deskripsi = item.querySelector(".input-deskripsi").value.trim();
+      if(nama){ layananArray.push({nama, icon, deskripsi}); }
+    });
 
     if(!nama){ alert("Nama koperasi wajib diisi."); return; }
     if(!alamat){ alert("Alamat kantor wajib diisi."); return; }
@@ -292,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try{
       await update(profilRef, {
-        nama:nama, alamat:alamat, telepon:telepon, email:email, badanHukum:badanHukum, tanggalBerdiri:tanggalBerdiri, visi:visi, misi:misiArray, pengurus:pengurus, layanan:layanan // <-- UDAH ADA KOMANYA
+        nama, alamat, telepon, email, badanHukum, tanggalBerdiri, visi, misi:misiArray, pengurus, layanan:layananArray // SIMPAN SEBAGAI ARRAY
       });
       modalEdit.style.display = "none"; document.body.style.overflow = "";
       alert("✅ Profil koperasi berhasil disimpan.");

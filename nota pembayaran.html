@@ -3,184 +3,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nota Angsuran</title>
+<title>Nota Angsuran - Koperasi ARFA</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Poppins',sans-serif;
+  font-size:12px;
+  color:#000;
+  background:#f1f5f9;
+  padding:20px;
+}
+.container{max-width:400px;margin:0 auto}
+.card-form{
+  background:#fff;border-radius:12px;padding:15px;margin-bottom:15px;
+  box-shadow:0 2px 8px rgba(0,0,0,.08)
+}
+.card-form h3{margin-bottom:12px;font-size:14px;color:#1e88e5}
+label{display:block;margin-top:10px;margin-bottom:4px;font-size:12px;font-weight:600}
+select,input{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:'Poppins'}
+.btn-buat{
+  width:100%;margin-top:15px;padding:12px;background:#10b981;color:#fff;
+  border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px
+}
+.btn-buat:hover{background:#059669}
+
+.nota{
+  max-width:320px;
+  margin:0 auto;
+  background:#fff;
+  border:1px dashed #333;
+  padding:15px;
+  display:none; /* disembunyikan dulu */
+}
+.header{text-align:center;border-bottom:1px dashed #333;padding-bottom:10px;margin-bottom:10px}
+.header img{width:40px;height:40px;margin-bottom:4px}
+.header h2{font-size:15px;font-weight:700}
+.header p{font-size:10px;color:#555}
+
+.row{display:flex;justify-content:space-between;margin-bottom:5px}
+.row span:first-child{color:#555}
+.row.total{font-size:14px;font-weight:700;margin-top:6px}
+
+.divider{border-top:1px dashed #333;margin:10px 0}
+
+.footer{text-align:center;margin-top:15px;font-size:10px;color:#555}
+
+.btn-print{
+  display:block;width:100%;max-width:320px;margin:20px auto 0;padding:12px;
+  background:#1e88e5;color:#fff;border:none;border-radius:8px;font-weight:600;
+  cursor:pointer;font-family:'Poppins',sans-serif;font-size:14px
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  color: #000;
-  background: #fff;
-  padding: 20px;
-}
-
-.nota {
-  max-width: 320px;
-  margin: 0 auto;
-  border: 1px dashed #000;
-  padding: 15px;
-}
-
-.header {
-  text-align: center;
-  border-bottom: 1px dashed #000;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-}
-
-.header h2 {
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 3px;
-}
-
-.header p {
-  font-size: 10px;
-  color: #555;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-}
-
-.row.label {
-  font-weight: 600;
-}
-
-.divider {
-  border-top: 1px dashed #000;
-  margin: 10px 0;
-}
-
-.total {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.footer {
-  text-align: center;
-  margin-top: 15px;
-  font-size: 10px;
-  color: #555;
-}
-
-.btn-print {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-top: 20px;
-  background: #1e88e5;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'Poppins', sans-serif;
-}
-
-@media print {
-  body {
-    padding: 0;
-  }
- .btn-print {
-    display: none;
-  }
- .nota {
-    border: none;
-  }
-}
-
-@media (max-width: 400px) {
-  body {
-    padding: 10px;
-  }
-}
+@media print{
+  @page { size: 80mm 200mm; margin: 0; } /* ukuran kertas struk */
+  body{background:#fff;padding:0}
+ .container{display:none} /* sembunyikan form saat print */
+ .btn-print{display:none}
+ .nota{display:block!important;border:none;max-width:100%;margin:0}
 </style>
 </head>
 <body>
 
-<div class="nota" id="nota">
-  <div class="header">
-    <h2>KOPERASI ARFA DRIVER</h2>
-    <p>BUKTI PEMBAYARAN ANGSURAN</p>
+<div class="container">
+  <!-- FORM INPUT -->
+  <div class="card-form">
+    <h3>Buat Nota Angsuran</h3>
+
+    <label>Pilih Anggota</label>
+    <select id="selectAnggota">
+      <option value="">-- Memuat data... --</option>
+    </select>
+
+    <label>Pilih Pinjaman</label>
+    <select id="selectPinjaman" disabled>
+      <option value="">Pilih anggota dulu</option>
+    </select>
+
+    <label>Tanggal Bayar</label>
+    <input type="date" id="tanggalBayar">
+
+    <label>Bayar Pokok (Rp)</label>
+    <input type="number" id="inputPokok" placeholder="0">
+
+    <label>Bayar Jasa (Rp)</label>
+    <input type="number" id="inputJasa" placeholder="0">
+
+    <label>Metode</label>
+    <select id="inputMetode">
+      <option value="cash">CASH</option>
+      <option value="transfer">TRANSFER</option>
+    </select>
+
+    <button class="btn-buat" onclick="buatNota()">📄 Buat Nota</button>
   </div>
 
-  <div class="row">
-    <span>Nama</span>
-    <span id="nama">-</span>
+  <!-- NOTA STRUK -->
+  <div class="nota" id="nota">
+    <div class="header">
+      <img src="./img/icon-192.png" alt="Logo">
+      <h2>KOPERASI ARFA DRIVER</h2>
+      <p>BUKTI PEMBAYARAN ANGSURAN</p>
+    </div>
+
+    <div class="row"><span>No Nota</span><span id="noNota">-</span></div>
+    <div class="row"><span>Tanggal</span><span id="tanggal">-</span></div>
+    <div class="row"><span>Nama</span><span id="nama">-</span></div>
+    <div class="row"><span>ID Pinjaman</span><span id="idPinjaman">-</span></div>
+    <div class="row"><span>Metode</span><span id="metode">-</span></div>
+
+    <div class="divider"></div>
+
+    <div class="row"><span>Bayar Pokok</span><span id="pokok">Rp 0</span></div>
+    <div class="row"><span>Bayar Jasa</span><span id="jasa">Rp 0</span></div>
+
+    <div class="divider"></div>
+
+    <div class="row total">
+      <span>TOTAL BAYAR</span>
+      <span id="total">Rp 0</span>
+    </div>
+
+    <div class="footer">
+      <p>Terima kasih</p>
+      <p>Simpan sebagai bukti sah</p>
+    </div>
   </div>
 
-  <div class="row">
-    <span>ID Pinjaman</span>
-    <span id="idPinjaman">-</span>
-  </div>
-
-  <div class="row">
-    <span>Tanggal</span>
-    <span id="tanggal">-</span>
-  </div>
-
-  <div class="row">
-    <span>Metode</span>
-    <span id="metode">-</span>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="row">
-    <span>Bayar Pokok</span>
-    <span id="pokok">Rp 0</span>
-  </div>
-
-  <div class="row">
-    <span>Bayar Jasa</span>
-    <span id="jasa">Rp 0</span>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="row total">
-    <span>Total Bayar</span>
-    <span id="total">Rp 0</span>
-  </div>
-
-  <div class="footer">
-    <p>Terima kasih atas pembayarannya</p>
-    <p>Simpan nota ini sebagai bukti yang sah</p>
-  </div>
+  <button class="btn-print" id="btnPrint" style="display:none" onclick="window.print()">🖨️ Cetak / Simpan PDF</button>
 </div>
 
-<button class="btn-print" onclick="window.print()">Cetak Nota</button>
-
 <script>
-function formatRupiah(n){
-  return Number(n || 0).toLocaleString("id-ID", {style:"currency", currency:"IDR"});
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function formatRupiah(n){ return "Rp " + Number(n || 0).toLocaleString("id-ID"); }
+function formatTanggalIndo(tanggal) {
+  if(!tanggal) return "-";
+  const date = new Date(tanggal);
+  if(isNaN(date)) return tanggal;
+  return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-const params = new URLSearchParams(window.location.search);
+let dataPinjaman = {}; // simpan semua pinjaman
 
-document.getElementById('nama').innerText = params.get('nama') || '-';
-document.getElementById('idPinjaman').innerText = params.get('idPinjaman') || '-';
-document.getElementById('tanggal').innerText = params.get('tanggal') || '-';
-document.getElementById('metode').innerText = (params.get('metode') || 'cash').toUpperCase();
-document.getElementById('pokok').innerText = formatRupiah(params.get('pokok'));
-document.getElementById('jasa').innerText = formatRupiah(params.get('jasa'));
-document.getElementById('total').innerText = formatRupiah(params.get('total'));
+// 1. LOAD DROPDOWN ANGGOTA
+function loadAnggota(){
+  db.ref("pinjaman").once("value").then(snap=>{
+    const select = document.getElementById("selectAnggota");
+    let html = `<option value="">-- Pilih Anggota --</option>`;
+    dataPinjaman = {};
+    snap.forEach(d=>{
+      const p = d.val();
+      const id = d.key;
+      dataPinjaman[id] = p;
+      html += `<option value="${id}">${p.nama || '-'} - ${p.nomor || id}</option>`;
+    });
+    select.innerHTML = html;
+  });
+}
+loadAnggota();
 
-// Auto print saat halaman dibuka
-window.onload = () => {
-  setTimeout(() => window.print(), 500);
+// 2. SAAT PILIH ANGGOTA -> LOAD PINJAMAN
+document.getElementById("selectAnggota").onchange = function(){
+  const id = this.value;
+  const selectPinjam = document.getElementById("selectPinjaman");
+  if(!id){
+    selectPinjam.innerHTML = `<option value="">Pilih anggota dulu</option>`;
+    selectPinjam.disabled = true;
+    return;
+  }
+  const p = dataPinjaman[id];
+  selectPinjam.innerHTML = `<option value="${id}">${p.nomor || id} - Rp ${Number(p.jumlah).toLocaleString('id-ID')}</option>`;
+  selectPinjam.disabled = false;
+  // set default tanggal hari ini
+  document.getElementById("tanggalBayar").valueAsDate = new Date();
+}
+
+// 3. FUNGSI BUAT NOTA
+window.buatNota = function(){
+  const idPinjaman = document.getElementById("selectPinjaman").value;
+  if(!idPinjaman){ alert("Pilih anggota dulu"); return; }
+
+  const p = dataPinjaman[idPinjaman];
+  const tanggal = document.getElementById("tanggalBayar").value;
+  const pokok = Number(document.getElementById("inputPokok").value) || 0;
+  const jasa = Number(document.getElementById("inputJasa").value) || 0;
+  const metode = document.getElementById("inputMetode").value;
+  const total = pokok + jasa;
+  const noNota = 'ARFA' + Date.now();
+
+  // Isi ke nota
+  document.getElementById('noNota').innerText = noNota;
+  document.getElementById('nama').innerText = p.nama || '-';
+  document.getElementById('idPinjaman').innerText = p.nomor || idPinjaman;
+  document.getElementById('tanggal').innerText = formatTanggalIndo(tanggal);
+  document.getElementById('metode').innerText = metode.toUpperCase();
+  document.getElementById('pokok').innerText = formatRupiah(pokok);
+  document.getElementById('jasa').innerText = formatRupiah(jasa);
+  document.getElementById('total').innerText = formatRupiah(total);
+
+  // Tampilkan nota + tombol print
+  document.getElementById("nota").style.display = "block";
+  document.getElementById("btnPrint").style.display = "block";
+
+  // Scroll ke nota
+  document.getElementById("nota").scrollIntoView({behavior:"smooth"});
+
+  // Simpan ke DB angsuran otomatis
+  db.ref("angsuran").push({
+    pinjamanId: idPinjaman,
+    nama: p.nama,
+    tanggal: tanggal,
+    pokok: pokok,
+    jasa: jasa,
+    total: total,
+    metode: metode,
+    noNota: noNota,
+    createdAt: Date.now()
+  });
 }
 </script>
-
 </body>
 </html>

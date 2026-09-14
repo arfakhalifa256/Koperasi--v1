@@ -3,256 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Manajemen User</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+<title>Kelola User - Koperasi ARFA</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
-:root{
-  --primary:#1e90ff; --primary-dark:#0f6ecf; --danger:#ef4444;
-  --success:#16a34a; --warning:#f59e0b; --bg:#f4f7fb;
-  --card:#ffffff; --text:#1f2937; --muted:#6b7280;
-  --border:#e5e7eb; --shadow:0 4px 12px rgba(15,23,42,.06); --radius:14px
-}
-
-html, body {width: 100%;max-width: 100%;overflow-x: hidden;font-family:'Poppins',Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;}
-*{box-sizing: border-box;}
-
-/* ===== HEADER ===== */
-header {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: #fff; padding: 14px 16px; display: flex;
-  justify-content: space-between; align-items: center;
-  box-shadow: 0 4px 16px rgba(30,144,255,0.25); position: sticky; top: 0; z-index: 100;
-}
-.brand {display: flex; align-items: center; gap: 12px;}
-.brand img {width: 42px; height: 42px; border-radius: 14px; background: #fff; padding: 4px;}
-.brand-text.subtitle {font-size: 10px; opacity: 0.85; letter-spacing:0.8px;}
-.brand-text.title {font-size: 18px; font-weight: 700;}
-.header-right{display:flex; align-items:center; gap:12px;}
-.user-info{text-align:right; display:none;}
-.user-name{font-size:13px; font-weight:700;}
-.user-role{font-size:10px; background:rgba(255,255,255,0.25); padding:3px 8px; border-radius:20px; font-weight:600;}
-.btn-back {background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: #fff; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor:pointer}
-@media(min-width:480px){.user-info{display:block}}
-
-.content{padding:16px; max-width:760px; margin:0 auto; padding-bottom:100px}
-h2{text-align:center;color:var(--primary);margin:16px 0;font-size:18px; font-weight:700}
-
-.card{
-  background:var(--card); border-radius:var(--radius);
-  padding:18px; margin-bottom:16px;
-  box-shadow:var(--shadow); border:1px solid var(--border);
-}
-
-label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;margin-top:12px;color:#374151}
-input,select{
-  width:100%;border:1.5px solid var(--border); border-radius:12px;
-  padding:12px 14px; font-size:14px; outline:none; background:#fff;
-  font-family:'Poppins',sans-serif; transition:.2s; margin-bottom:10px
-}
-input:focus,select:focus{border-color:var(--primary); box-shadow:0 0 0 4px rgba(30,144,255,.12)}
-
-.btn{
-  width:100%;border:none;border-radius:12px; padding:13px 14px;
-  font-size:14px; font-weight:700;color:#fff;cursor:pointer;
-  margin-top:14px; transition:.2s; background:var(--primary)
-}
-.btn:hover{transform:translateY(-1px); background:var(--primary-dark)}
-.btn-cancel{background:#9ca3af}
-
-.row{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:8px;}
-.small{font-size:12px; color:var(--muted);}
-.icon-btn{width:34px; height:34px; border:none; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer; color:#fff; transition:.2s}
-.icon-btn.edit{background:var(--warning);}
-.icon-btn.hapus{background:var(--danger);}
-
-/* ===== POPUP ===== */
-.popup{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:9998}
-.popup-box{width:100%;max-width:420px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25); animation:pop.2s}
-@keyframes pop{from{transform:scale(0.9); opacity:0}}
-.popup-title{font-size:18px;font-weight:700;margin-bottom:12px;color:#111827}
-
-.toast{position:fixed;left:50%;bottom:24px; transform:translateX(-50%); background:#111827;color:#fff; padding:12px 18px;border-radius:10px; opacity:0;pointer-events:none; transition:.25s;z-index:9999; font-weight:600}
-.toast.show{opacity:1}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:#f1f5f9;color:#1f2937;font-size:13px;margin:0;}
+header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;}
+.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;}
+.menu-btn{cursor:pointer;font-size:22px;}
+.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:.3s;z-index:9999;overflow-y:auto;}
+.sidebar.open{left:0;}
+.sidebar-logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.2);}
+.sidebar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
+.sidebar-logo h3{color:#fff;margin:0;font-size:15px;font-weight:600;}
+.sidebar-section{color:rgba(255,255,255,.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px;}
+.sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:.2s;}
+.sidebar a:hover{background:rgba(255,255,255,.15);transform:translateX(4px);}
+.sidebar a.active{background:rgba(255,255,255,.2);}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
+.overlay.active{display:block;}
+.container{padding:16px;max-width:900px;margin:auto;}
+.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+.card h3{margin:0 0 14px;font-size:15px;}
+.form-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px;}
+.form-group input, .form-group select{width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-family:'Poppins',sans-serif;}
+.btn-primary{width:100%;padding:11px;border:none;border-radius:8px;background:#1e90ff;color:white;font-weight:600;cursor:pointer;}
+table{width:100%;border-collapse:collapse;font-size:11px;background:#fff;}
+th{background:#087f5b;color:#fff;padding:10px;text-align:left;}
+td{padding:10px;border-bottom:1px solid #eee;}
+.action-btns{display:flex;gap:5px;}
+.icon-btn{border:none;background:none;cursor:pointer;font-size:16px;}
+.icon-btn.delete{color:#dc2626;}
+.icon-btn.reset{color:#f59e0b;}
+.badge-admin{background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+.badge-anggota{background:#dcfce7;color:#166534;padding:3px 8px;border-radius:20px;font-size:9px;font-weight:700;}
+@media(min-width:768px){body{margin-left:240px;}.sidebar{left:0;}.overlay{display:none!important;}.menu-btn{display:none;}.form-grid{grid-template-columns:1fr 1fr 1fr .8fr;}}
 </style>
 </head>
 <body>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-logo"><img src="img/icon-192.png"><h3>Menu Koperasi</h3></div>
+  <a href="dashboard.html">🏠 Beranda</a>
+  <div class="sidebar-section">Data Master</div>
+  <a href="anggota.html">👤 Data Anggota</a>
+  <a href="kas.html">💵 Kas</a>
+  <div class="sidebar-section">Pengaturan</div>
+  <a href="user.html" class="active">⚙️ Kelola User</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
+</div>
+<div id="overlay" class="overlay"></div>
+
 <header>
-  <div class="brand">
-    <img src="img/icon-192.png">
-    <div class="brand-text">
-      <div class="subtitle">SCHOOL BUS</div>
-      <div class="title">ARFA</div>
-    </div>
-  </div>
-  <div class="header-right">
-    <div class="user-info">
-      <div class="user-name" id="namaHeader">Admin</div>
-      <div class="user-role" id="roleHeader">ADMIN</div>
-    </div>
-    <button class="btn-back" onclick="kembali()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    </button>
-  </div>
+  <div class="brand"><img src="img/icon-192.png"><div>KELOLA USER</div></div>
+  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
 </header>
 
-<div class="content">
-  <h2>👤 Manajemen User</h2>
+<div class="container">
   <div class="card">
-    <label>Username</label>
-    <input type="text" id="username" placeholder="Username" readonly>
-    <label>Password Baru</label>
-    <input type="text" id="password" placeholder="Kosongkan jika tidak ganti">
-    <button class="btn" onclick="simpanUser()">💾 Tambah User Baru</button>
+    <h3>➕ Tambah User Baru</h3>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Pilih Anggota</label>
+        <select id="selectAnggota">
+          <option value="">-- Pilih Anggota --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Contoh: budi01" disabled>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="text" id="password" placeholder="123456">
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select id="role">
+          <option value="anggota">Anggota</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="tambahUser()" style="margin-top:12px;">💾 Simpan User</button>
   </div>
-  <div id="listUser"></div>
-</div>
 
-<!-- ===== POPUP EDIT ===== -->
-<div id="popupEdit" class="popup">
-  <div class="popup-box">
-    <div class="popup-title">✏️ Edit User</div>
-    <label>Username</label>
-    <input type="text" id="editUsername" readonly>
-    <label>Password Baru</label>
-    <input type="text" id="editPassword" placeholder="Kosongkan jika tidak ganti">
-    <label>Role</label>
-    <select id="editRole" onchange="toggleDriverEdit()">
-      <option value="admin">Admin</option>
-      <option value="driver">Driver</option>
-    </select>
-    <label id="labelDriverEdit" style="display:none">Pilih Driver</label>
-    <select id="editDriverId" style="display:none">
-      <option value="">-- Pilih Driver --</option>
-    </select>
-    <button class="btn" onclick="updateUser()">Update</button>
-    <button class="btn btn-cancel" onclick="closePopup()">Batal</button>
+  <div class="card">
+    <h3>📋 Daftar User</h3>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Nama Anggota</th><th>Username</th><th>Role</th><th>Aksi</th></tr></thead>
+        <tbody id="userTable"></tbody>
+      </table>
+    </div>
   </div>
 </div>
-
-<div id="toast" class="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, deleteDoc, doc, updateDoc, getDoc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getDatabase, ref, push, onValue, get, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig = {apiKey: "AIzaSy...", authDomain: "schoolbus-6a7fd.firebaseapp.com", projectId: "schoolbus-6a7fd"};
+const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = getDatabase(app);
+const usersRef = ref(db,"/users");
+const anggotaRef = ref(db,"/anggota");
 
-const roleLogin = (localStorage.getItem("role") || "").toLowerCase();
-const userLogin = localStorage.getItem("username") || "Admin";
-document.getElementById("namaHeader").innerText = userLogin;
-document.getElementById("roleHeader").innerText = roleLogin.toUpperCase();
+const usernameLogin = localStorage.getItem("username");
+const roleLogin = localStorage.getItem("role");
 
-if (localStorage.getItem("login")!== "true") window.location.href = "index.html";
-if (roleLogin!== "admin") {alert("Akses ditolak!"); window.location.href = "dashboard.html";}
+if(roleLogin !== 'admin'){ alert("Akses ditolak. Hanya Admin"); location.href='dashboard.html'; }
 
-let editId = null; let driverMap = {};
+let daftarAnggota = {}; // untuk simpan id -> nama
 
-function showToast(msg){const t = document.getElementById("toast"); t.innerText = msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 2500);}
-
-function loadDriverRealtime() {
-  const select = document.getElementById("editDriverId");
-  onSnapshot(collection(db, "drivers"), (snapshot) => {
-    select.innerHTML = '<option value="">-- Pilih Driver --</option>';
-    driverMap = {};
-    snapshot.forEach((docSnap) => {
-      const d = docSnap.data(); const nama = d.nama || d.namaDriver || "-";
-      driverMap[docSnap.id] = nama;
-      const opt = document.createElement("option"); opt.value = docSnap.id; opt.textContent = nama;
-      select.appendChild(opt);
+/* LOAD DATA ANGGOTA KE DROPDOWN */
+onValue(anggotaRef, snapshot=>{
+  const select = document.getElementById("selectAnggota");
+  select.innerHTML = '<option value="">-- Pilih Anggota --</option>';
+  daftarAnggota = {};
+  if(snapshot.exists()){
+    snapshot.forEach(child=>{
+      const a = child.val();
+      if(a.id && a.nama){
+        daftarAnggota[a.id] = a.nama; // AG001: Budi
+        select.innerHTML += `<option value="${a.id}">${a.id} - ${a.nama}</option>`;
+      }
     });
-  });
-}
+  }
+});
 
-window.toggleDriverEdit = function () {
-  const roleInput = document.getElementById("editRole").value;
-  const show = roleInput === "driver";
-  document.getElementById("editDriverId").style.display = show? "block" : "none";
-  document.getElementById("labelDriverEdit").style.display = show? "block" : "none";
-}
+/* AUTO ISI USERNAME SAAT PILIH ANGGOTA */
+document.getElementById("selectAnggota").addEventListener("change", function(){
+  const id = this.value;
+  document.getElementById("username").value = id.toLowerCase(); // default username = ag001
+});
 
-function loadUserRealtime() {
-  const list = document.getElementById("listUser");
-  onSnapshot(collection(db, "users"), (snapshot) => {
-    list.innerHTML = "";
-    snapshot.forEach((docSnap) => {
-      const u = docSnap.data();
-      if (u.role === "admin" && u.username!== "admin") return;
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="row"><b>${u.username}</b>
-          <span class="small" style="background:#eff6ff; color:#1e40af; padding:3px 8px; border-radius:20px;">${u.role}</span>
-        </div>
-        <div class="row small">Driver: ${u.namaDriver || driverMap[u.driverId] || "-"}</div>
-        <div class="row">
-          <button class="icon-btn edit" onclick='editUser(${JSON.stringify(u)})'>✏️</button>
-          <button class="icon-btn hapus" onclick="hapusUser('${docSnap.id}')">🗑️</button>
-        </div>
+/* LOAD DATA USER KE TABEL */
+onValue(usersRef, snapshot=>{
+  const table = document.getElementById("userTable");
+  table.innerHTML = "";
+  if(snapshot.exists()){
+    const users = snapshot.val();
+    for(const key in users){
+      const u = users[key];
+      const isMe = u.username === usernameLogin;
+      const namaAnggota = daftarAnggota[u.userId] || '-'; // cari nama dari id
+      table.innerHTML += `
+        <tr>
+          <td><b>${namaAnggota}</b><br><span style="font-size:10px;color:#666;">ID: ${u.userId || '-'}</span></td>
+          <td>${u.username} ${isMe? '<span style="color:green;font-size:10px;">(Anda)</span>':''}</td>
+          <td>
+            <select onchange="ubahRole('${key}', this.value)" ${isMe?'disabled':''}>
+              <option value="anggota" ${u.role==='anggota'?'selected':''}>Anggota</option>
+              <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
+            </select>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="icon-btn reset" onclick="resetPassword('${key}')" title="Reset Password">🔑</button>
+              <button class="icon-btn delete" onclick="hapusUser('${key}','${u.username}')" title="Hapus User" ${isMe?'disabled':''}>🗑️</button>
+            </div>
+          </td>
+        </tr>
       `;
-      list.appendChild(card);
-    });
-  });
-}
+    }
+  } else {
+    table.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#999;padding:20px;">Belum ada user</td></tr>`;
+  }
+});
 
-async function simpanUser() {
-  const username = document.getElementById("username").value.trim().toLowerCase();
+/* TAMBAH USER */
+window.tambahUser = async function(){
+  const userId = document.getElementById("selectAnggota").value;
+  const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
-  if (!username ||!password) { showToast("Username & password wajib"); return; }
-  try {
-    await setDoc(doc(db, "users", username), {
-      username, password, role: "driver", // default driver
-      driverId: "", namaDriver: "", createdAt: Date.now()
-    });
-    showToast("✅ User berhasil ditambah");
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
-  } catch (err) { alert("Gagal: " + err.message); }
-}
-window.simpanUser = simpanUser;
+  const role = document.getElementById("role").value;
 
-window.editUser = function (u) {
-  editId = u.username;
-  document.getElementById("editUsername").value = u.username;
-  document.getElementById("editPassword").value = "";
-  document.getElementById("editRole").value = u.role;
-  document.getElementById("editDriverId").value = u.driverId || "";
-  toggleDriverEdit();
-  document.getElementById("popupEdit").style.display = "flex";
-}
+  if(!userId){ alert("Pilih anggota dulu"); return; }
+  if(!username){ alert("Username wajib diisi"); return; }
+  if(!password){ alert("Password wajib diisi"); return; }
 
-window.updateUser = async function () {
-  const password = document.getElementById("editPassword").value.trim();
-  const roleInput = document.getElementById("editRole").value;
-  const driverId = document.getElementById("editDriverId").value;
-  const namaDriver = driverMap[driverId] || "";
+  // cek username sudah ada
+  const snap = await get(usersRef);
+  let ada = false;
+  snap.forEach(c=>{ if(c.val().username === username) ada=true; });
+  if(ada){ alert("Username sudah digunakan"); return; }
 
-  const payload = { role: roleInput, updatedAt: Date.now() };
-  if(password) payload.password = password; // cuma update kalau diisi
-  payload.driverId = roleInput === "driver"? driverId : "";
-  payload.namaDriver = roleInput === "driver"? namaDriver : "";
+  await push(usersRef, {
+    username: username,
+    password: password,
+    role: role,
+    userId: userId // <-- INI PENTING UNTUK FILTER
+  });
 
-  try {
-    await updateDoc(doc(db, "users", editId), payload);
-    showToast("✅ User berhasil diupdate");
-    closePopup();
-  } catch (err) { alert("Gagal: " + err.message); }
+  document.getElementById("selectAnggota").value = "";
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+  alert("User berhasil ditambahkan");
 }
 
-window.hapusUser = async function (id) {
-  if (!confirm("Hapus user ini?")) return;
-  try { await deleteDoc(doc(db, "users", id)); showToast("✅ User dihapus"); }
-  catch (err) { alert("Gagal hapus: " + err.message); }
+/* UBAH ROLE */
+window.ubahRole = async function(key, roleBaru){
+  await update(ref(db,"/users/" + key), {role: roleBaru});
 }
 
-window.closePopup = function(){document.getElementById("popupEdit").style.display = "none"; editId = null;}
-window.kembali=function(){window.location.href="dashboard.html";}
+/* RESET PASSWORD */
+window.resetPassword = async function(key){
+  const passBaru = prompt("Masukkan password baru:");
+  if(passBaru){
+    await update(ref(db,"/users/" + key), {password: passBaru});
+    alert("Password berhasil direset");
+  }
+}
 
-loadDriverRealtime();
-loadUserRealtime();
+/* HAPUS USER */
+window.hapusUser = async function(key, username){
+  if(confirm(`Yakin hapus user ${username}?`)){
+    await remove(ref(db,"/users/" + key));
+  }
+}
+
+/* SIDEBAR & LOGOUT */
+window.toggleSidebar = function(){
+  document.getElementById("sidebar").classList.toggle("open");
+  document.getElementById("overlay").classList.toggle("active");
+};
+document.getElementById("overlay").addEventListener("click", toggleSidebar);
+document.getElementById("btnLogout").addEventListener("click", (e)=>{
+  e.preventDefault();
+  if(confirm("Yakin mau logout?")){
+    localStorage.clear();
+    location.href = "index.html";
+  }
+});
 </script>
 </body>
 </html>
