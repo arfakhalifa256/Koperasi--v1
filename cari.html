@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Perjalanan Firebase</title>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e90ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="School Bus App">
+  
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root{
+  --primary:#1e90ff;
+  --primary-dark:#0f6ecf;
+  --danger:#ef4444;
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --shadow:0 4px 12px rgba(15,23,42,.06);
+  --radius:14px
+}
+
+html, body {
+  width: 100%;max-width: 100%;overflow-x: hidden;
+  font-family:'Poppins',Arial,sans-serif;
+  background:var(--bg);color:var(--text);margin:0;
+}
+*{box-sizing: border-box;}
+
+/* ===== HEADER GOJEK STYLE ===== */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(30,144,255,0.25);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {display: flex; align-items: center; gap: 10px;}
+.brand {display: flex; align-items: center; gap: 12px;}
+
+.brand img {
+  width: 42px; height: 42px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #fff;
+  padding: 4px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15)
+}
+
+.brand-text.subtitle {
+  font-size: 10px;
+  opacity: 0.85;
+  line-height: 1;
+  letter-spacing:0.8px; font-weight:500
+}
+
+.brand-text.title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.header-right{display:flex; align-items:center; gap:12px;}
+.user-info{text-align:right; display:none;}
+.user-name{font-size:13px; font-weight:700; line-height:1.2;}
+.user-role{
+  font-size:10px; background:rgba(255,255,255,0.25);
+  padding:3px 8px; border-radius:20px; font-weight:600;
+  letter-spacing:0.5px; margin-top:2px
+}
+.header-actions.btn-back {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  width: 38px; height: 38px;
+  padding: 0; border-radius: 12px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.header-actions.btn-back:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+@media(min-width:480px){.user-info{display:block}}
+@media(max-width:768px){
+ .brand-text.title{font-size:16px}
+ .brand img{width:38px;height:38px}
+}
+.btn-back {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; width: 38px; height: 38px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; cursor:pointer
+}
+/* ===== CONTENT ===== */
+body{padding:0; max-width:100%;}
+.content{padding:16px; max-width:760px; margin:0 auto; padding-bottom:100px}
+h2{text-align:center;color:var(--primary);margin:16px 0;font-size:18px; font-weight:700}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+}
+
+.mini-note{
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  color:#1e40af;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:14px;
+  font-size:11px; font-weight:500
+}
+
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;margin-top:12px;color:#374151}
+input,select,textarea{
+  width:100%;border:1.5px solid var(--border);
+  border-radius:12px;padding:12px 14px;
+  font-size:14px;outline:none;background:#fff;
+  font-family:'Poppins',sans-serif; transition:.2s
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px rgba(30,144,255,.12)
+}
+textarea{min-height:90px;resize:vertical}
+input[readonly]{background:#f8fafc;color:#6b7280;font-weight:700}
+
+.btn{
+  width:100%;border:none;border-radius:12px;
+  padding:13px 14px;font-size:14px;
+  font-weight:700;color:#fff;cursor:pointer;
+  margin-top:14px; transition:.2s
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-danger{background:var(--danger)}
+.btn-success{background:var(--success)}
+.btn-warning{background:var(--warning);color:#111827}
+
+.student-card{
+  padding:14px;border:1px solid var(--border);
+  border-radius:14px;margin-top:12px;
+  background:#fff;cursor:pointer;
+  transition:.2s
+}
+.student-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(15,23,42,.08);
+  border-color:var(--primary)
+}
+.student-title{font-weight:700;color:#111827;margin-bottom:4px; font-size:15px}
+.student-sub{font-size:12px;color:var(--muted);line-height:1.6}
+.empty{text-align:center;color:var(--muted);padding:20px;font-size:14px}
+
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:9998}
+.popup-box{width:100%;max-width:520px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.popup-title{font-size:18px;font-weight:700;margin-bottom:12px;color:#111827}
+.popup-info{font-size:14px;line-height:1.8;color:#374151;margin-bottom:14px}
+.popup-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.section-box{padding:14px;border:1px dashed var(--border);border-radius:14px;margin-top:12px;background:#fafcff}
+.hidden{display:none!important}
+
+.toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%);
+  background:#111827;color:#fff;
+  padding:12px 18px;border-radius:10px;
+  opacity:0;pointer-events:none;
+  transition:.25s;z-index:9999;
+  max-width:90%;text-align:center;
+  font-weight:600; box-shadow:0 10px 30px rgba(0,0,0,.2)
+}
+.toast.show{opacity:1}
+
+/* Mobile fix */
+@media(max-width:768px){
+  body{padding:0}
+ .content{padding:12px}
+ .card{padding:14px}
+  th, td{font-size:11px;padding:6px;white-space:nowrap}
+ .btn{width:100%; margin-bottom:8px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">SCHOOL BUS</div>
+        <div class="title">ARFA</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="header-right">
+    <div class="user-info">
+      <div class="user-name" id="namaHeader">Admin</div>
+      <div class="user-role" id="roleHeader">ADMIN</div>
+    </div>
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+
+<h2>Edit Data Perjalanan</h2>
+<div class="card" id="listSection">
+  <label>Cari Data</label>
+  <input type="text" id="searchBox" placeholder="Cari nama siswa / driver / tanggal">
+  <div class="mini-note" id="infoHarga">Memuat konfigurasi harga...</div>
+  <div id="resultList"></div>
+</div>
+
+<div class="card hidden" id="editSection">
+  <label>Driver</label><select id="editDriver"></select>
+  <label>Tanggal</label><input type="date" id="editTgl">
+  <label>Nama Siswa</label><input type="text" id="editSiswa">
+  <label>Kelas</label><input type="text" id="editKelas">
+  <label>Alamat</label><textarea id="editAlamat"></textarea>
+  <label>No Telepon</label><input type="tel" id="editNoTelepon" placeholder="0812xxxx"> <!-- 🔥 BARU -->
+  <label>Jarak (Km)</label><input type="number" id="editJarak" step="0.1">
+  <label>Trayek</label>
+  <select id="editTrayek"><option value="pergi">Pergi</option><option value="pulang">Pulang</option><option value="pp">PP</option></select>
+  <div id="editOneWayBox" class="section-box">
+    <label>Harga One Way (Rp)</label><input type="text" id="editHargaOneWay" readonly> <!-- 🔥 jadi text biar ada Rp -->
+    <label>Diskon (%)</label><input type="number" id="editDiscOneWay" value="0">
+    <label>Total One Way (Rp)</label><input type="text" id="editTotalOneWay" readonly> <!-- 🔥 jadi text -->
+  </div>
+  <div id="editPPBox" class="section-box hidden">
+    <label>Harga PP (Rp)</label><input type="text" id="editHargaPP" readonly> <!-- 🔥 jadi text -->
+    <label>Diskon PP (%)</label><input type="number" id="editDiscPP" value="0">
+    <label>Total PP (Rp)</label><input type="text" id="editTotalPP" readonly> <!-- 🔥 jadi text -->
+  </div>
+  <label>Total Akhir (Rp)</label><input type="text" id="editTotal" readonly> <!-- 🔥 jadi text -->
+  <button class="btn btn-success" onclick="saveChange()">💾 Simpan Perubahan</button>
+  <button class="btn btn-warning" onclick="cancelEdit()">↩️ Batal</button>
+</div>
+
+<div class="popup" id="popupDetail"><div class="popup-box">
+  <div class="popup-title">Detail Perjalanan</div><div class="popup-info" id="popupInfo"></div>
+  <div class="popup-actions">
+    <button class="btn btn-primary" onclick="openEditForm()" style="margin-top:0;">Edit</button>
+    <button class="btn btn-danger" onclick="deleteSelected()" style="margin-top:0;">Hapus</button>
+    <button class="btn btn-warning" onclick="closePopup()" style="margin-top:0;">Tutup</button>
+  </div>
+</div></div>
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, getDoc, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {apiKey:"AIzaSyBxbArCZ6iIWQ8wS7QIonZOeN4t_r9o2WU",authDomain:"schoolbus-6a7fd.firebaseapp.com",databaseURL:"https://schoolbus-6a7fd-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"schoolbus-6a7fd",storageBucket:"schoolbus-6a7fd.firebasestorage.app",messagingSenderId:"486602913199",appId:"1:486602913199:web:9547f39f5f57f9c87b2b5a"};
+const app = initializeApp(firebaseConfig);const db = getFirestore(app);
+
+const isLogin = localStorage.getItem("login");const username = (localStorage.getItem("username")||"").toLowerCase();const role = (localStorage.getItem("role") || "").toLowerCase();const driverIdUser = localStorage.getItem("driverId");
+if(isLogin!== "true" ||!username ||!role){window.location.href = "index.html";}
+window.logout = function(){localStorage.clear();window.location.href = "login.html";}
+
+const DEFAULT_HARGA_DASAR = 608000;const DEFAULT_KENAIKAN = 7800;
+let allPerjalanan = [];let allDrivers = [];let selectedDocId = null;let selectedData = null;
+let configHarga = {hargaDasar: DEFAULT_HARGA_DASAR,kenaikanPerTitik: DEFAULT_KENAIKAN};
+
+const searchBox = document.getElementById("searchBox");const resultList = document.getElementById("resultList");const popupDetail = document.getElementById("popupDetail");const popupInfo = document.getElementById("popupInfo");const listSection = document.getElementById("listSection");const editSection = document.getElementById("editSection");
+const editDriver = document.getElementById("editDriver");const editTgl = document.getElementById("editTgl");const editSiswa = document.getElementById("editSiswa");const editKelas = document.getElementById("editKelas");const editAlamat = document.getElementById("editAlamat");const editNoTelepon = document.getElementById("editNoTelepon"); // 🔥 BARU
+const editJarak = document.getElementById("editJarak");const editTrayek = document.getElementById("editTrayek");
+const editOneWayBox = document.getElementById("editOneWayBox");const editPPBox = document.getElementById("editPPBox");
+const editHargaOneWay = document.getElementById("editHargaOneWay");const editDiscOneWay = document.getElementById("editDiscOneWay");const editTotalOneWay = document.getElementById("editTotalOneWay");
+const editHargaPP = document.getElementById("editHargaPP");const editDiscPP = document.getElementById("editDiscPP");const editTotalPP = document.getElementById("editTotalPP");const editTotal = document.getElementById("editTotal");
+
+function showToast(message){const toast = document.getElementById("toast");toast.textContent = message;toast.classList.add("show");setTimeout(() => toast.classList.remove("show"), 2500);}
+function rupiah(angka){return "Rp " + Number(angka || 0).toLocaleString("id-ID");}
+function unRupiah(str){ return Number(String(str).replace(/[^0-9]/g,'')) || 0 } // 🔥 buat convert balik
+function escapeHtml(text){return String(text?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");}
+
+async function loadConfigHarga(){try{const ref = doc(db, "config", "harga");const snap = await getDoc(ref);if(snap.exists()){const data = snap.data();configHarga.hargaDasar = Number(data.hargaDasar?? DEFAULT_HARGA_DASAR);configHarga.kenaikanPerTitik = Number(data.kenaikanPerTitik?? DEFAULT_KENAIKAN);}
+document.getElementById("infoHarga").textContent = `Harga dasar 1 km = ${rupiah(configHarga.hargaDasar)} | Kenaikan per 0.1 km= ${rupiah(configHarga.kenaikanPerTitik)}`;}catch(error){console.error(error);document.getElementById("infoHarga").textContent = `Gagal memuat konfigurasi. Dipakai default: ${rupiah(DEFAULT_HARGA_DASAR)} / ${rupiah(DEFAULT_KENAIKAN)}`;}}
+
+function hitungHargaDasar(jarak){const km = Number(jarak || 0);if(km <= 0) return 0;if(km <= 1) return configHarga.hargaDasar;const titik = Math.ceil((km - 1) / 0.1);return configHarga.hargaDasar + (titik * configHarga.kenaikanPerTitik);}
+
+async function loadDrivers(){try{
+  const snapshot = await getDocs(collection(db, "drivers"));
+  allDrivers = [];
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    if(role!== "admin"){if(driverIdUser && docSnap.id!== driverIdUser) return;}
+    allDrivers.push({docId: docSnap.id,idAnggota: data.idAnggota || "",nama: data.nama || ""});
+  });
+  allDrivers.sort((a, b) => a.nama.localeCompare(b.nama, "id"));
+  renderDriverOptions();
+}catch(error){console.error(error);showToast("Gagal memuat driver");}}
+
+function renderDriverOptions(selectedId = "", selectedNama = ""){editDriver.innerHTML = '<option value="">-- Pilih Driver --</option>';let ketemu = false;allDrivers.forEach(driver => {const opt = document.createElement("option");opt.value = driver.docId;opt.textContent = `${driver.nama}${driver.idAnggota? " (" + driver.idAnggota + ")" : ""}`;if(selectedId && selectedId === driver.docId){opt.selected = true;ketemu = true;} else if(!ketemu && selectedNama && driver.nama.toLowerCase() === selectedNama.toLowerCase()){opt.selected = true;ketemu = true;}editDriver.appendChild(opt);});
+if(!ketemu && selectedNama){const optLama = document.createElement("option");optLama.value = selectedData?.driverId || "";optLama.textContent = `Pertahankan: ${selectedNama}`;optLama.selected = true;editDriver.prepend(optLama);}}
+
+async function loadPerjalanan(){
+  try{
+    const q = query(collection(db, "perjalanan"), orderBy("tanggal", "desc"));
+    const snapshot = await getDocs(q);
+    allPerjalanan = [];
+    snapshot.forEach((docSnap) => {
+      const d = docSnap.data();
+      if(role!== "admin"){
+        const namaDiData = (d.namaDriver || "").toLowerCase();
+        if(namaDiData && namaDiData!== username) return;
+      }
+      allPerjalanan.push({docId: docSnap.id,...d});
+    });
+    searchData();
+  } catch (error) {
+    console.error(error);
+    resultList.innerHTML = '<div class="empty">Gagal memuat data perjalanan</div>';
+  }
+}
+
+function applyRoleUI(){if(role === "driver"){document.querySelectorAll('a[href="driver.html"]').forEach(e=>e.style.display="none");document.querySelectorAll('a[href="backup.html"]').forEach(e=>e.style.display="none");document.querySelectorAll('a[href="config.html"]').forEach(e=>e.style.display="none");}}
+applyRoleUI();
+
+function searchData(){const key = searchBox.value.trim().toLowerCase();resultList.innerHTML = "";const filtered = allPerjalanan.filter(d => {const teks = `${d.namaSiswa || ""} ${d.namaDriver || ""} ${d.tanggal || ""} ${d.kelas || ""} ${d.alamat || ""} ${d.trayek || ""}`.toLowerCase();return teks.includes(key);});
+if(filtered.length === 0){resultList.innerHTML = '<div class="empty">Data tidak ditemukan</div>';return;}
+filtered.forEach(d => {const div = document.createElement("div");div.className = "student-card";div.innerHTML = `<div class="student-title">${escapeHtml(d.namaSiswa || "-")}</div><div class="student-sub">Driver: ${escapeHtml(d.namaDriver || "-")}<br>Tanggal: ${escapeHtml(d.tanggal || "-")}<br>Kelas: ${escapeHtml(d.kelas || "-")}<br>Trayek: ${escapeHtml((d.trayek || "-").toUpperCase())} | Total: ${escapeHtml(rupiah(d.total || 0))}</div>`;div.onclick = () => openPopup(d.docId);resultList.appendChild(div);});}
+
+function openPopup(docId){selectedDocId = docId;selectedData = allPerjalanan.find(item => item.docId === docId);if(!selectedData){showToast("Data tidak ditemukan");return;}
+popupInfo.innerHTML = `<b>Driver:</b> ${escapeHtml(selectedData.namaDriver || "-")}<br><b>Siswa:</b> ${escapeHtml(selectedData.namaSiswa || "-")}<br><b>Kelas:</b> ${escapeHtml(selectedData.kelas || "-")}<br><b>No HP:</b> ${escapeHtml(selectedData.noTelepon || "-")}<br><b>Alamat:</b> ${escapeHtml(selectedData.alamat || "-")}<br><b>Tanggal:</b> ${escapeHtml(selectedData.tanggal || "-")}<br><b>Jarak:</b> ${escapeHtml(selectedData.jarak || 0)} Km<br><b>Trayek:</b> ${escapeHtml((selectedData.trayek || "-").toUpperCase())}<br><b>Total:</b> ${escapeHtml(rupiah(selectedData.total || 0))}`;popupDetail.style.display = "flex";} // 🔥 TAMPILIN NO HP
+function closePopup(){popupDetail.style.display = "none";}
+
+function openEditForm(){if(role!== "admin"){editDriver.disabled = true;} else {editDriver.disabled = false;}if(!selectedData){showToast("Data belum dipilih");return;}
+closePopup();listSection.classList.add("hidden");editSection.classList.remove("hidden");
+renderDriverOptions(selectedData.driverId || "", selectedData.namaDriver || "");
+editTgl.value = selectedData.tanggal || "";editSiswa.value = selectedData.namaSiswa || "";editKelas.value = selectedData.kelas || "";editAlamat.value = selectedData.alamat || "";editNoTelepon.value = selectedData.noTelepon || ""; // 🔥 LOAD NO HP
+editJarak.value = selectedData.jarak || "";editTrayek.value = selectedData.trayek || "pergi";
+if(selectedData.trayek === "pp"){editDiscPP.value = Number(selectedData.diskon || 0);editDiscOneWay.value = 0;}else{editDiscOneWay.value = Number(selectedData.diskon || 0);editDiscPP.value = 0;}
+recalc();}
+
+function updateTrayekView(){const trayek = editTrayek.value;if(trayek === "pp"){editOneWayBox.classList.add("hidden");editPPBox.classList.remove("hidden");}else{editOneWayBox.classList.remove("hidden");editPPBox.classList.add("hidden");}}
+
+function recalc(){const jarak = Number(editJarak.value || 0);const trayek = editTrayek.value;const hargaOneWay = hitungHargaDasar(jarak);updateTrayekView();if(trayek === "pp"){const hargaPP = hargaOneWay * 2;const disc = Number(editDiscPP.value || 0);const totalPP = Math.round(hargaPP - (hargaPP * disc / 100));editHargaPP.value = rupiah(Math.round(hargaPP)); // 🔥 FORMAT RP
+editTotalPP.value = rupiah(totalPP); // 🔥 FORMAT RP
+editHargaOneWay.value = "";editTotalOneWay.value = "";editTotal.value = rupiah(totalPP); // 🔥 FORMAT RP
+}else{const disc = Number(editDiscOneWay.value || 0);const totalOW = Math.round(hargaOneWay - (hargaOneWay * disc / 100));editHargaOneWay.value = rupiah(Math.round(hargaOneWay)); // 🔥 FORMAT RP
+editTotalOneWay.value = rupiah(totalOW); // 🔥 FORMAT RP
+editHargaPP.value = "";editTotalPP.value = "";editTotal.value = rupiah(totalOW); // 🔥 FORMAT RP
+}}
+
+async function saveChange(){if(!selectedDocId){showToast("Data belum dipilih");return;}
+const driverId = editDriver.value;let driverObj = allDrivers.find(d => d.docId === driverId);
+if(!driverObj && selectedData){driverObj = {docId: selectedData.driverId || "",nama: selectedData.namaDriver || "",idAnggota: selectedData.idAnggotaDriver || ""}}
+if(!driverObj.nama ||!editTgl.value ||!editSiswa.value.trim() ||!editKelas.value.trim() ||!editAlamat.value.trim() ||!editNoTelepon.value.trim() ||!Number(editJarak.value || 0) ||!editTrayek.value){showToast("Lengkapi semua data");return;} // 🔥 CEK NO HP
+const jarak = Number(editJarak.value || 0);const trayek = editTrayek.value;const hargaDasar = hitungHargaDasar(jarak);
+let diskon = 0;let hargaPP = 0;let total = 0;
+if(trayek === "pp"){diskon = Number(editDiscPP.value || 0);hargaPP = hargaDasar * 2;total = Math.round(hargaPP - (hargaPP * diskon / 100));}else{diskon = Number(editDiscOneWay.value || 0);total = Math.round(hargaDasar - (hargaDasar * diskon / 100));}
+const payload = {driverId: driverObj?.docId || "",idAnggotaDriver: driverObj?.idAnggota || "",namaDriver: driverObj?.nama || "",tanggal: editTgl.value,namaSiswa: editSiswa.value.trim(),kelas: editKelas.value.trim(),alamat: editAlamat.value.trim(),noTelepon: editNoTelepon.value.trim(), // 🔥 SIMPAN NO HP
+jarak,trayek,hargaDasar,hargaPP,diskon,total,hargaConfigAwal: configHarga.hargaDasar,kenaikanPerTitik: configHarga.kenaikanPerTitik};
+try{await updateDoc(doc(db, "perjalanan", selectedDocId), payload);showToast("Data berhasil diperbarui");cancelEdit();await loadPerjalanan();}catch(error){console.error(error);showToast("Gagal menyimpan perubahan");}}
+
+function cancelEdit(){editSection.classList.add("hidden");listSection.classList.remove("hidden");selectedData = null;selectedDocId = null;}
+async function deleteSelected(){if(!selectedDocId){showToast("Data belum dipilih");return;}const yakin = confirm("Hapus data perjalanan ini?");if(!yakin) return;
+try{await deleteDoc(doc(db, "perjalanan", selectedDocId));closePopup();selectedData = null;selectedDocId = null;showToast("Data berhasil dihapus");await loadPerjalanan();}catch(error){console.error(error);showToast("Gagal menghapus data");}}
+
+searchBox.addEventListener("input", searchData);editJarak.addEventListener("input", recalc);editTrayek.addEventListener("change", recalc);editDiscOneWay.addEventListener("input", recalc);editDiscPP.addEventListener("input", recalc);
+popupDetail.addEventListener("click", (e)=>{if(e.target === popupDetail){closePopup();}});
+
+window.openEditForm = openEditForm;window.closePopup = closePopup;window.deleteSelected = deleteSelected;window.saveChange = saveChange;window.cancelEdit = cancelEdit;
+window.toggleMenu=function(){document.getElementById("sidebar").classList.toggle("show");}
+document.addEventListener("click",(e)=>{const sb=document.getElementById("sidebar");const btn=document.querySelector(".menu-toggle");if(!sb.contains(e.target) &&!btn.contains(e.target)){sb.classList.remove("show");}});
+
+document.addEventListener("DOMContentLoaded", async () => {await loadConfigHarga();await loadDrivers();await loadPerjalanan();});
+window.kembali=function(){
+  window.location.href="dashboard.html";
+}
+  </script>
+</body>
+</html>

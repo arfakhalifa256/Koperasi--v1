@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator HPP School Bus</title>
+
+<style>
+
+  
+
+  
+  .card h4{margin-bottom:12px;color:#1e293b;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  .card label{display:block;margin-top:10px;font-size:13px;font-weight:600;color:#4b5563;}
+  .card input{
+    width:100%;padding:10px;margin-top:5px;border:1px solid #ddd;
+    border-radius:10px;font-size:14px;
+  }
+  .card button{
+    margin-top:15px;width:100%;padding:12px;border:none;
+    background:#1e90ff;color:#fff;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;
+  }
+  .card button:hover{background:#2563eb;}
+
+  /* ===== HASIL ===== */
+  .hasil{background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.06);}
+  .hasil h3{margin-bottom:12px;color:#1e293b;border-bottom:2px solid #e5e7eb;padding-bottom:8px;}
+  .hasil p{margin:8px 0;font-size:14px;display:flex;justify-content:space-between;}
+  .hasil hr{margin:10px 0;border:none;border-top:1px dashed #ddd;}
+  .hasil .total{font-weight:700;font-size:16px;color:#1e90ff;background:#eff6ff;padding:10px;border-radius:8px;}
+  .hasil .murid{font-weight:700;font-size:18px;color:#10b981;background:#ecfdf5;padding:10px;border-radius:8px;}
+  .note{font-size:12px;color:#ef4444;margin-top:8px;}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root{
+  --primary:#1e90ff;
+  --primary-dark:#0f6ecf;
+  --danger:#ef4444;
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --shadow:0 4px 12px rgba(15,23,42,.06);
+  --radius:14px
+}
+
+html, body {
+  width: 100%;max-width: 100%;overflow-x: hidden;
+  font-family:'Poppins',Arial,sans-serif;
+  background:var(--bg);color:var(--text);margin:0;
+}
+*{box-sizing: border-box;}
+
+/* ===== HEADER GOJEK STYLE ===== */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(30,144,255,0.25);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {display: flex; align-items: center; gap: 10px;}
+.brand {display: flex; align-items: center; gap: 12px;}
+
+.brand img {
+  width: 42px; height: 42px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #fff;
+  padding: 4px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15)
+}
+
+.brand-text.subtitle {
+  font-size: 10px;
+  opacity: 0.85;
+  line-height: 1;
+  letter-spacing:0.8px; font-weight:500
+}
+
+.brand-text.title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.header-right{display:flex; align-items:center; gap:12px;}
+.user-info{text-align:right; display:none;}
+.user-name{font-size:13px; font-weight:700; line-height:1.2;}
+.user-role{
+  font-size:10px; background:rgba(255,255,255,0.25);
+  padding:3px 8px; border-radius:20px; font-weight:600;
+  letter-spacing:0.5px; margin-top:2px
+}
+.header-actions.btn-back {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  width: 38px; height: 38px;
+  padding: 0; border-radius: 12px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.header-actions.btn-back:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+@media(min-width:480px){.user-info{display:block}}
+@media(max-width:768px){
+ .brand-text.title{font-size:16px}
+ .brand img{width:38px;height:38px}
+}
+
+/* ===== CONTENT ===== */
+body{padding:0; max-width:100%;}
+.content{padding:16px; max-width:760px; margin:0 auto; padding-bottom:100px}
+h2{text-align:center;color:var(--primary);margin:16px 0;font-size:18px; font-weight:700}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+}
+
+.mini-note{
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  color:#1e40af;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:14px;
+  font-size:11px; font-weight:500
+}
+  .btn-back {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; width: 38px; height: 38px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; cursor:pointer
+}
+
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;margin-top:12px;color:#374151}
+input,select,textarea{
+  width:100%;border:1.5px solid var(--border);
+  border-radius:12px;padding:12px 14px;
+  font-size:14px;outline:none;background:#fff;
+  font-family:'Poppins',sans-serif; transition:.2s
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px rgba(30,144,255,.12)
+}
+textarea{min-height:90px;resize:vertical}
+input[readonly]{background:#f8fafc;color:#6b7280;font-weight:700}
+
+.btn{
+  width:100%;border:none;border-radius:12px;
+  padding:13px 14px;font-size:14px;
+  font-weight:700;color:#fff;cursor:pointer;
+  margin-top:14px; transition:.2s
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-danger{background:var(--danger)}
+.btn-success{background:var(--success)}
+.btn-warning{background:var(--warning);color:#111827}
+
+.student-card{
+  padding:14px;border:1px solid var(--border);
+  border-radius:14px;margin-top:12px;
+  background:#fff;cursor:pointer;
+  transition:.2s
+}
+.student-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(15,23,42,.08);
+  border-color:var(--primary)
+}
+.student-title{font-weight:700;color:#111827;margin-bottom:4px; font-size:15px}
+.student-sub{font-size:12px;color:var(--muted);line-height:1.6}
+.empty{text-align:center;color:var(--muted);padding:20px;font-size:14px}
+
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:9998}
+.popup-box{width:100%;max-width:520px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.popup-title{font-size:18px;font-weight:700;margin-bottom:12px;color:#111827}
+.popup-info{font-size:14px;line-height:1.8;color:#374151;margin-bottom:14px}
+.popup-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.section-box{padding:14px;border:1px dashed var(--border);border-radius:14px;margin-top:12px;background:#fafcff}
+.hidden{display:none!important}
+
+.toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%);
+  background:#111827;color:#fff;
+  padding:12px 18px;border-radius:10px;
+  opacity:0;pointer-events:none;
+  transition:.25s;z-index:9999;
+  max-width:90%;text-align:center;
+  font-weight:600; box-shadow:0 10px 30px rgba(0,0,0,.2)
+}
+.toast.show{opacity:1}
+
+/* Mobile fix */
+@media(max-width:768px){
+  body{padding:0}
+ .content{padding:12px}
+ .card{padding:14px}
+  th, td{font-size:11px;padding:6px;white-space:nowrap}
+ .btn{width:100%; margin-bottom:8px}
+  
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">SCHOOL BUS</div>
+        <div class="title">ARFA</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="header-right">
+    <div class="user-info">
+      <div class="user-name" id="namaHeader">Admin</div>
+      <div class="user-role" id="roleHeader">ADMIN</div>
+    </div>
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+ 
+
+
+<div class="main">
+  <h2 class="title">Kalkulator HPP School Bus</h2>
+
+  <div class="card">
+    <h4>Data Rute & BBM</h4>
+    <div class="grid-3">
+      <div>
+        <label>Jarak/Hari (km)</label>
+        <input type="number" id="jarakHari" placeholder="80">
+      </div>
+      <div>
+        <label>Hari Kerja</label>
+        <input type="number" id="hariKerja" value="20">
+      </div>
+      <div>
+        <label>Jumlah Murid</label>
+        <input type="number" id="jumlahMurid" placeholder="15">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div>
+        <label>Harga BBM (Rp/L)</label>
+        <input type="number" id="hargaBBM" value="10000">
+      </div>
+      <div>
+        <label>Efisiensi Bus (km/L)</label>
+        <input type="number" id="kmPerLiter" value="5">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Biaya Operasional</h4>
+    <div class="grid-2">
+      <div>
+        <label>Service/10.000km (Rp)</label>
+        <input type="number" id="service" value="1500000">
+      </div>
+      <div>
+        <label>Cadangan Ban/Bulan (Rp)</label>
+        <input type="number" id="ban" value="250000">
+      </div>
+    </div>
+    <label>Cadangan Kerusakan (%)</label>
+    <input type="number" id="cadangan" value="8">
+    <button onclick="hitung()">Hitung HPP</button>
+  </div>
+
+  <div class="hasil" id="hasil" style="display:none;"></div>
+
+</div>
+
+<script>
+function hitung(){
+  const jarakHari = parseFloat(document.getElementById("jarakHari").value) || 0;
+  const hariKerja = parseFloat(document.getElementById("hariKerja").value) || 20;
+  const jumlahMurid = parseFloat(document.getElementById("jumlahMurid").value) || 0;
+  const hargaBBM = parseFloat(document.getElementById("hargaBBM").value) || 10000;
+  const kmPerLiter = parseFloat(document.getElementById("kmPerLiter").value) || 5;
+  const service10rb = parseFloat(document.getElementById("service").value) || 1500000;
+  const biayaBanBulan = parseFloat(document.getElementById("ban").value) || 250000;
+  const cadanganPersen = (parseFloat(document.getElementById("cadangan").value) || 8) / 100;
+
+  if(jarakHari <= 0){
+    alert("Isi Jarak per Hari dulu ya");
+    return;
+  }
+
+  const rupiah = n => new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",minimumFractionDigits:0}).format(n);
+
+  // 1. PER BULAN
+  const totalKmBulan = jarakHari * hariKerja;
+  const literBulan = totalKmBulan / kmPerLiter;
+  const biayaBBMBulan = literBulan * hargaBBM;
+  const biayaServiceBulan = (totalKmBulan / 10000) * service10rb;
+  
+  const biayaOperasional = biayaBBMBulan + biayaServiceBulan + biayaBanBulan;
+  const cadangan = biayaOperasional * cadanganPersen;
+  const totalBulan = biayaOperasional + cadangan;
+  const totalHari = totalBulan / hariKerja;
+
+  // 2. PER MURID
+  const hppPerMurid = jumlahMurid > 0 ? totalBulan / jumlahMurid : 0;
+
+  let html = `
+    <h3>Rincian HPP School Bus</h3>
+    <p><span>Total KM/Bulan</span> <b>${totalKmBulan.toLocaleString('id-ID')} km</b></p>
+    <p><span>Asumsi BBM</span> <b>1:${kmPerLiter} km/L</b></p>
+    <hr>
+    <p><span>BBM/Bulan</span> <span>${literBulan.toFixed(0)} L = ${rupiah(biayaBBMBulan)}</span></p>
+    <p><span>Service/Bulan</span> <span>${rupiah(biayaServiceBulan)}</span></p>
+    <p><span>Cadangan Ban/Bulan</span> <span>${rupiah(biayaBanBulan)}</span></p>
+    <p><span>Cadangan Rusak ${cadanganPersen*100}%</span> <span>${rupiah(cadangan)}</span></p>
+    <hr>
+    <p class="total"><span>TOTAL HPP/BULAN</span> <span>${rupiah(totalBulan)}</span></p>
+    <p><span>Rata-rata/Hari Kerja</span> <b>${rupiah(totalHari)}</b></p>
+  `;
+
+  if(jumlahMurid > 0){
+    html += `
+    <hr>
+    <p class="murid"><span>IURAN PER MURID/BULAN</span> <span>${rupiah(hppPerMurid)}</span></p>
+    <p style="font-size:12px;color:#666"><span>Dari ${jumlahMurid} murid</span></p>
+    `;
+  }
+
+  html += `<p class="note">*Belum termasuk Gaji Driver + Cicilan Bus + Parkir/Tol</p>`;
+  
+  document.getElementById("hasil").style.display = 'block';
+  document.getElementById("hasil").innerHTML = html;
+}
+
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("show");
+  document.getElementById("overlay").classList.toggle("show");
+}
+
+function logout(){
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+
+document.querySelectorAll(".sidebar a").forEach(a=>{
+  a.addEventListener("click", ()=>{
+    if(window.innerWidth <= 768){ toggleSidebar(); }
+  });
+});
+  window.kembali=function(){
+  window.location.href="dashboard.html";
+}
+</script>
+
+</body>
+</html>

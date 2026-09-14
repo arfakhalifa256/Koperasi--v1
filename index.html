@@ -1,176 +1,320 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/img/icon-192.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Bus App</title>
 
-  <meta name="theme-color" content="#0091ff">
-  <title>Login - Koperasi Arfa Sejahtera</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-*{box-sizing:border-box;}
-body{font-family:'Poppins',sans-serif;background:linear-gradient(to right,#1e90ff,#0f3057);display:flex;justify-content:center;align-items:center;height:100vh;margin:0;padding:15px;color:#fff;} /* TEKS PUTIH */
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#1e90ff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="School Bus App">
 
-.box{background:transparent;padding:0;border-radius:0;width:100%;max-width:380px;box-shadow:none;} /* HAPUS KOTAK PUTIH */
-.box img{width:90px;height:90px;margin:0 auto 15px;display:block;border-radius:50%;object-fit:contain;background:rgba(255,255,255,0.15);padding:10px;border:2px solid rgba(255,255,255,0.3);} /* LOGO LINGKARAN */
-.box h2{text-align:center;color:#fff;margin:0 0 20px;font-size:20px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3);} /* JUDUL PUTIH */
-
-.form-group{margin-bottom:14px;}
-.form-group label{font-size:12px;font-weight:600;color:#e0f2ff;display:block;margin-bottom:6px;} /* LABEL PUTIH BIRU */
-.form-group input, .form-group select{width:100%;padding:11px;border:1px solid rgba(255,255,255,0.3);border-radius:10px;font-family:'Poppins';font-size:14px;background:rgba(255,255,255,0.15);color:#fff;backdrop-filter:blur(5px);} /* INPUT TRANSPARAN */
-.form-group input::placeholder{color:rgba(255,255,255,0.7);} /* PLACEHOLDER PUTIH */
-.form-group input:focus, .form-group select:focus{outline:none;border-color:#fff;background:rgba(255,255,255,0.25);}
-
-.btn{width:100%;padding:12px;border:none;border-radius:10px;background:#fff;color:#0f3057;font-weight:700;cursor:pointer;margin-top:8px;font-size:15px;transition:0.2s;} /* TOMBOL PUTIH */
-.btn:hover{background:#e0f2ff;transform:translateY(-2px);}
-
-.tabs{display:flex;margin-bottom:20px;background:rgba(255,255,255,0.1);border-radius:10px;padding:4px;} /* TABS TRANSPARAN */
-.tabs button{flex:1;padding:10px;border:none;background:transparent;cursor:pointer;font-weight:600;color:rgba(255,255,255,0.7);font-size:13px;border-radius:8px;transition:0.2s;}
-.tabs button.active{color:#0f3057;background:#fff;} /* TAB AKTIF PUTIH */
-
-.note{font-size:11px;color:#fff;background:rgba(255,193,7,0.2);padding:10px;border-radius:8px;margin-top:12px;border:1px solid rgba(255,193,7,0.3);} /* NOTE TRANSPARAN */
-</style>
-</head>
-<body>
-
-<div class="box">
-  <img src="img/icon-192.png">
-  <h2>Koperasi Arfa Sejahtera</h2>
-
-  <div class="tabs">
-    <button id="tabLogin" class="active" onclick="showTab('login')">Login</button>
-    <button id="tabDaftar" onclick="showTab('daftar')">Daftar</button>
-    <button id="tabLupa" onclick="showTab('lupa')">Lupa Pass</button>
-  </div>
-
-  <div id="formLogin">
-    <div class="form-group"><label>Username</label><input type="text" id="loginUser" placeholder="Username"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Password"></div>
-    <button class="btn" onclick="login()">Masuk</button>
-  </div>
-
-  <div id="formDaftar" style="display:none;">
-    <div class="form-group"><label>Pilih Nama Anda</label><select id="daftarAnggota"><option>Loading...</option></select></div>
-    <div class="form-group"><label>Buat Username</label><input type="text" id="daftarUser" placeholder="Contoh: budi01"></div>
-    <div class="form-group"><label>Buat Password</label><input type="password" id="daftarPass" placeholder="Minimal 6 karakter"></div>
-    <button class="btn" onclick="daftar()">Daftar Akun</button>
-    <div class="note">* Hanya anggota yang terdaftar di admin yang bisa daftar</div>
-  </div>
-
-  <div id="formLupa" style="display:none;">
-    <div class="form-group"><label>Pilih Nama Anda</label><select id="lupaAnggota"><option>Loading...</option></select></div>
-    <div class="form-group"><label>Username</label><input type="text" id="lupaUser" placeholder="Username yang terdaftar"></div>
-    <div class="form-group"><label>Password Baru</label><input type="password" id="lupaPass" placeholder="Password baru"></div>
-    <button class="btn" onclick="resetPassword()">Reset Password</button>
-  </div>
-
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-window.showTab = function(tab){
-  ['login','daftar','lupa'].forEach(t=>{
-    document.getElementById('form'+t.charAt(0).toUpperCase()+t.slice(1)).style.display = t===tab?'block':'none';
-    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
-  })
+    <style>
+  /* 🔥 FIX ANTI LUBER DI APK */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* kunci geser ke samping */
 }
 
-/* LOAD DATA ANGGOTA - FIX: YANG GAK ADA STATUS DIANGGAP AKTIF */
-async function loadAnggota(){
-  const snap = await get(ref(db,"/anggota"));
-  let options = '<option value="">-- Pilih dari Data Anggota --</option>';
+* {
+  box-sizing: border-box; /* biar padding ga nambahin lebar */
+}
+
+.card, .table-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+.table-wrapper {
+  overflow-x: auto; /* tabel boleh scroll ke samping, tapi halamannya jangan */
+  -webkit-overflow-scrolling: touch; /* biar smooth di HP */
+}
+
+table {
+  min-width: 100%; /* 🔥 JANGAN 700px. Biar ngikutin layar */
+  width: max-content; /* tapi kalau isinya banyak tetap bisa scroll */
+}
+  @media(max-width:768px){
+  body{margin-left:0; padding:10px} /* 🔥 padding dikecilin biar ga luber */
+  .sidebar{left:-240px;transition:.3s}
+  .sidebar.show{left:0}
+  .menu-toggle{display:block;position:fixed;top:10px;left:10px;background:#1e90ff;color:#fff;border:none;padding:8px 10px;border-radius:8px;z-index:1100}
   
-  if(snap.exists()){
-    snap.forEach(child=>{
-      const a = child.val();
-      const id = a.id;
-      const nama = a.nama;
-      const status = String(a.status || 'aktif').toLowerCase(); // <-- KUNCI: kalau kosong = aktif
-      
-      if(status !== 'keluar'){ // tampilkan semua kecuali yang status keluar
-        options += `<option value="${id}">${id} - ${nama}</option>`;
-      }
-    });
+  th, td{font-size:11px;padding:6px;white-space:nowrap}
+  h2{font-size:16px}
+  .card{padding:10px}
+  
+  /* 🔥 TAMBAHAN BUAT APK */
+  .filter-container{flex-direction:column} /* filter numpuk ke bawah */
+  .btn{width:100%; margin-bottom:8px} /* tombol full */
+}
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+  
+  *{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+  }
+
+  :root{
+    --primary:#1e90ff;
+    --primary-dark:#187bdb;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --shadow:0 10px 30px rgba(15,23,42,.10);
+    --radius:22px;
+  }
+
+  body{
+    font-family:'Poppins', sans-serif;
+    background:linear-gradient(180deg,#eaf4ff 0%, #f4f7fb 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:16px;
+    color:var(--text);
+  }
+
+  .wrap{
+    width:100%;
+    max-width:420px;
+    animation: fadeIn 0.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:28px 20px;
+    text-align:center;
+    border:1px solid #eaf0f6;
+  }
+
+  /* ===== WAKTU & SALAM ===== */
+  .time-box {
+    background: linear-gradient(135deg, var(--primary) 0%, #0ea5e9 100%);
+    color: #fff;
+    padding: 12px 14px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    box-shadow: 0 6px 16px rgba(30,144,255,0.22);
+  }
+
+  #jam {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+    line-height: 1.2;
   }
   
-  document.getElementById('daftarAnggota').innerHTML = options;
-  document.getElementById('lupaAnggota').innerHTML = options;
+  
+  
+
+  .logo{
+    width:90px;
+    height:90px;
+    border-radius:24px;
+    margin:0 auto 18px;
+    display:block;
+    object-fit:cover;
+    background:#fff;
+    box-shadow:0 12px 25px rgba(30,144,255,.18);
+    border:2px solid #dbeafe;
+    padding:8px;
+  }
+
+  h1{
+    font-size:26px;
+    font-weight:700;
+    color:var(--primary);
+    margin-bottom:10px;
+  }
+
+  p{
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .btn{
+    display:block;
+    width:100%;
+    text-decoration:none;
+    background:linear-gradient(135deg, var(--primary) 0%, #0ea5e9 100%);
+    color:#fff;
+    padding:14px 16px;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:600;
+    transition:all 0.3s ease;
+    margin-top:10px;
+    box-shadow: 0 4px 15px rgba(30,144,255,0.3);
+  }
+
+  .btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(30,144,255,0.4);
+  }
+
+  .sub-btn{
+    display:block;
+    width:100%;
+    text-decoration:none;
+    background:#fff;
+    color:var(--primary);
+    padding:13px 16px;
+    border-radius:14px;
+    font-size:14px;
+    font-weight:600;
+    transition:all 0.3s ease;
+    margin-top:10px;
+    border:2px solid #e0f2fe;
+  }
+
+  .sub-btn:hover{
+    background:#f0f9ff;
+    border-color:var(--primary);
+    transform: translateY(-2px);
+  }
+
+  .footer{
+    margin-top:16px;
+    text-align:center;
+    color:#94a3b8;
+    font-size:11px;
+    font-weight:500;
+  }
+
+  @media (max-width:480px){
+    body{ padding:12px; }
+    .card{ padding:24px 18px; }
+    h1{ font-size:22px; }
+    p{ font-size: 10.5px; }
+    #jam{ font-size:22px; 
+      color:yellow;
+    }
+    #salam{ font-size:14px; }
+    .logo{ width:80px; height:80px; }
+    .btn{ font-size:14px; padding:13px 16px; }
+    .sub-btn{ font-size:13px; padding:12px 16px; }
+  }
+  
+  </style>
+</head>
+<body>
+  
+  <div class="wrap">
+    <div class="card">
+      <!-- 🔥 TAMBAH INI -->
+      <div class="time-box">
+        <div id="jam">00:00:00</div>
+        <div id="salam">Selamat datang</div>
+      </div>
+
+      <img src="./img/icon-512.png" alt="Logo School Bus App" class="logo">
+
+      <h1>School Bus App</h1>
+      
+      <p>
+        Aplikasi pengelolaan perjalanan school bus KHALFA IMS.
+        Input data, edit perjalanan, lihat laporan, dan cetak PDF dalam satu sistem.
+      </p>
+
+      <a href="login.html" class="btn">Login ke Aplikasi</a>
+      <a href="input.html" class="sub-btn">Masuk ke Input data perjalanan</a>
+    </div>
+
+    <div class="footer">
+      Versi 1.0 • Mobile Friendly
+    </div>
+  </div>
+
+  <script>
+  // Kalau udah login, langsung lempar ke input
+if(localStorage.getItem("login") === "true" && localStorage.getItem("role") === "driver") {
+  window.location.href = "input.html";
 }
-loadAnggota();
+  // 🔥 JAM + SALAM REALTIME
+function updateWaktu() {
+  const now = new Date();
+  const jam = now.getHours();
+  const menit = String(now.getMinutes()).padStart(2, '0');
+  const detik = String(now.getSeconds()).padStart(2, '0');
+  
+  // Ambil username dari localStorage
+  const username = localStorage.getItem("username");
+  
+  // Update jam
+  document.getElementById("jam").textContent = `${jam}:${menit}:${detik}`;
+  
+  // Update salam + username
+  let salam = "Selamat datang";
+  if(jam < 11) salam = "Selamat pagi";
+  else if(jam < 15) salam = "Selamat siang";
+  else if(jam < 18) salam = "Selamat sore";
+  else salam = "Selamat malam";
+  
+  // Tempelin username kalau ada, kalau ga ada biarin aja
+  document.getElementById("salam").textContent = username 
+    ? `${salam}, ${username}` 
+    : salam;
+}
+  
 
-/* LOGIN */
-window.login = async function(){
-  const username = document.getElementById('loginUser').value.trim();
-  const password = document.getElementById('loginPass').value.trim();
-  if(!username || !password){ alert("Username dan Password wajib diisi"); return; }
+updateWaktu();
+setInterval(updateWaktu, 1000);
+  
+// 🔥 JAGA2: Kalau udah logout tapi pencet back
+history.pushState(null, null, location.href);
+window.onpopstate = function () {
+    history.go(1);
+};
 
-  const snap = await get(ref(db,"/users"));
-  let ketemu = null;
-  snap.forEach(child=>{
-    const u = child.val();
-    if(u.username === username && u.password === password) ketemu = u;
-  });
-
-  if(ketemu){
-    localStorage.setItem('login', 'true');
-    localStorage.setItem('username', ketemu.username);
-    localStorage.setItem('role', ketemu.role);
-    localStorage.setItem('userId', ketemu.userId);
-    location.href = 'dashboard.html';
-  } else { alert("Username atau Password salah"); }
+// Kalau udah login, langsung lempar ke input
+if(localStorage.getItem("login") === "true") {
+  const role = localStorage.getItem("role");
+  if(role === "driver") {
+    window.location.replace("input.html");
+  } else {
+    window.location.replace("dashboard.html");
+  }
 }
 
-/* DAFTAR */
-window.daftar = async function(){
-  const userId = document.getElementById('daftarAnggota').value;
-  const username = document.getElementById('daftarUser').value.trim();
-  const password = document.getElementById('daftarPass').value.trim();
-  if(!userId){ alert("Pilih nama Anda dulu"); return; }
-  if(!username){ alert("Buat username dulu"); return; }
-  if(password.length < 6){ alert("Password minimal 6 karakter"); return; }
-
-  const snap = await get(ref(db,"/users"));
-  let ada = false, adaAkun = false;
-  snap.forEach(c=>{ 
-    if(c.val().username === username) ada=true; 
-    if(c.val().userId === userId) adaAkun=true;
-  });
-  if(ada){ alert("Username sudah digunakan"); return; }
-  if(adaAkun){ alert("Anggota ini sudah punya akun"); return; }
-
-  await push(ref(db,"/users"), {username, password, role:'anggota', userId});
-  alert("Pendaftaran berhasil. Silakan login");
-  showTab('login');
+// 🔥 JAM + SALAM REALTIME
+function updateWaktu() {
+  const now = new Date();
+  const jam = now.getHours();
+  const menit = String(now.getMinutes()).padStart(2, '0');
+  const detik = String(now.getSeconds()).padStart(2, '0');
+  
+  const username = localStorage.getItem("username");
+  document.getElementById("jam").textContent = `${jam}:${menit}:${detik}`;
+  
+  let salam = "Selamat datang";
+  if(jam < 11) salam = "Selamat pagi";
+  else if(jam < 15) salam = "Selamat siang";
+  else if(jam < 18) salam = "Selamat sore";
+  else salam = "Selamat malam";
+  
+  document.getElementById("salam").textContent = username ? `${salam}, ${username}` : salam;
 }
-
-/* LUPA PASSWORD */
-window.resetPassword = async function(){
-  const userId = document.getElementById('lupaAnggota').value;
-  const username = document.getElementById('lupaUser').value.trim();
-  const passwordBaru = document.getElementById('lupaPass').value.trim();
-  if(!userId || !username || !passwordBaru){ alert("Semua field wajib diisi"); return; }
-
-  const snap = await get(ref(db,"/users"));
-  let ketemuKey = null;
-  snap.forEach(child=>{
-    const u = child.val();
-    if(u.userId === userId && u.username === username) ketemuKey = child.key;
-  });
-
-  if(ketemuKey){
-    await update(ref(db,"/users/" + ketemuKey), {password: passwordBaru});
-    alert("Password berhasil direset");
-    showTab('login');
-  } else { alert("Data tidak cocok"); }
-}
-</script>
+updateWaktu();
+setInterval(updateWaktu, 1000);
+  
+  </script>
 </body>
 </html>

@@ -1,697 +1,314 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Restore Backup Koperasi</title>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backup & Restore Firebase</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e90ff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="School Bus App">
+
   <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+    /* 🔥 FIX ANTI LUBER DI APK */
+    html, body {width: 100%; max-width: 100%; overflow-x: hidden;}
+    * {box-sizing: border-box;}
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    :root{
+      --primary:#1e90ff; --primary-dark:#187bdb;
+      --success:#16a34a; --danger:#ef4444; --warning:#f59e0b;
+      --bg:#f4f7fb; --card:#ffffff; --text:#1f2937;
+      --muted:#6b7280; --border:#dbe3ee;
+      --shadow:0 8px 24px rgba(15,23,42,.08); --radius:18px;
+    }
 
-:root {
-  --primary: #1e90ff;
-  --primary-dark: #0f3057;
-  --card: #ffffff;
-  --bg: #f1f5f9;
-  --text: #1f2937;
-  --muted: #6b7280;
-  --border: #e2e8f0;
-  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
-  --radius: 16px;
-  --success: #16a34a;
-  --danger: #dc2626;
-  --warning: #f59e0b;
-}
+    body{
+      font-family:'Poppins',Arial,sans-serif;
+      background:var(--bg); color:var(--text);
+      padding:0; padding-bottom:95px; max-width:760px; margin:0 auto;
+    }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
+    /* ===== HEADER BARU ===== */
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff; padding: 12px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 4px 12px rgba(30,144,255,0.3); position: sticky; top: 0; z-index: 100;
+    }
+    .header-left {display: flex; align-items: center; gap: 10px;}
+    .brand {display: flex; align-items: center; gap: 10px;}
+    .brand img {
+      width: 40px; height: 40px; border-radius: 12px;
+      object-fit: cover; background: #fff; padding: 3px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1)
+    }
+    .brand-text .subtitle {font-size: 10px; opacity: 0.9; letter-spacing:0.5px}
+    .brand-text .title {font-size: 16px; font-weight: 700; line-height: 1.2;}
+    .header-right{display:flex; align-items:center; gap:10px;}
+    .user-info{text-align:right; display:none;}
+    .user-name{font-size:12px; font-weight:700; line-height:1.2;}
+    .user-role{font-size:9px; background:rgba(255,255,255,0.25); padding:2px 6px; border-radius:20px; font-weight:600;}
+    .btn-back {
+      background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.3); color: #fff;
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; cursor:pointer; transition: .2s;
+    }
+    .btn-back:hover {background: rgba(255,255,255,0.3); transform: translateX(-2px);}
+    @media(min-width:480px){.user-info{display:block}}
+    @media(max-width:768px){.brand-text .title{font-size:14px}.brand img{width:36px;height:36px}}
 
-body {
-  font-family: 'Poppins', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 13px;
-  padding-bottom: 20px;
-  min-height: 100vh;
-}
+    .content{padding:16px;}
+    .card{
+      background:var(--card); border-radius:var(--radius); padding:16px;
+      margin-bottom:16px; box-shadow:var(--shadow); border:1px solid #edf2f7;
+    }
+    .card h3{font-size:18px; margin-bottom:10px; color:#111827;}
+    .note{font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:12px;}
 
-/* ===== HEADER ===== */
-header {
-  background: linear-gradient(to right, var(--primary), var(--primary-dark));
-  color: white;
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+    .btn{width:100%; border:none; border-radius:12px; padding:13px 14px; font-size:14px; font-weight:700; cursor:pointer; margin-top:10px; transition:.2s ease;}
+    .btn-primary{background:var(--primary); color:#fff;}
+    .btn-primary:hover{background:var(--primary-dark);}
+    .btn-success{background:var(--success); color:#fff;}
+    .btn-warning{background:var(--warning); color:#111827;}
+    .btn-danger{background:var(--danger); color:#fff;}
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    input[type="file"]{
+      width:100%; border:1px solid var(--border); border-radius:12px;
+      padding:12px; background:#fff; font-size:14px; margin-top:10px; outline:none;
+    }
 
-.header-right,h1 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  font-weight: 600;
-}
+    .stats{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;}
+    .stat-box{background:#f8fbff; border:1px solid #dcecff; border-radius:14px; padding:14px; text-align:center;}
+    .stat-box .label{font-size:12px; color:var(--muted); margin-bottom:6px;}
+    .stat-box .value{font-size:20px; font-weight:800; color:var(--primary);}
 
-.btn-back, .btn-menu {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #fff;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 12px;
-}
+    .log{
+      background:#0f172a; color:#e2e8f0; border-radius:14px; padding:14px;
+      font-size:12px; line-height:1.6; min-height:120px; max-height:260px;
+      overflow:auto; white-space:pre-wrap; margin-top:10px;
+    }
 
-.btn-back:hover, .btn-menu:hover {
-  background: rgba(255,255,255,0.25);
-  transform: translateX(-2px);
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.brand img {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #fff;
-  padding: 2px;
-}
-
-.brand-text .subtitle {
-  font-size: 10px;
-  opacity: 0.9;
-  line-height: 1;
-}
-
-.brand-text .title {
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-/* ===== SIDEBAR ===== */
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: -260px;
-  width: 240px;
-  height: 100%;
-  background: #0f3057;
-  padding: 16px;
-  transition: 0.3s ease;
-  z-index: 9999;
-  overflow-y: auto;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.2);
-}
-
-.sidebar.open {
-  left: 0;
-}
-
-.sidebar-logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-bottom: 16px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-
-.sidebar-logo img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #fff;
-  padding: 2px;
-}
-
-.sidebar-logo h3 {
-  color: #fff;
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.sidebar-section {
-  color: rgba(255,255,255,0.6);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 16px 0 8px 12px;
-}
-
-.sidebar a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #fff;
-  text-decoration: none;
-  padding: 11px 12px;
-  border-radius: 8px;
-  margin-bottom: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  transition: 0.2s;
-}
-
-.sidebar a:hover {
-  background: rgba(255,255,255,0.15);
-  transform: translateX(4px);
-}
-
-.sidebar a.active {
-  background: rgba(255,255,255,0.2);
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,.4);
-  display: none;
-  z-index: 999;
-}
-
-/* ===== CONTAINER ===== */
-.container {
-  padding: 14px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-/* ===== CARD ===== */
-.card {
-  background: var(--card);
-  padding: 16px;
-  border-radius: var(--radius);
-  margin-bottom: 14px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-}
-
-.card h3 {
-  margin: 0 0 14px 0;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.card p {
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 12px;
-  line-height: 1.5;
-}
-
-/* ===== BUTTON ===== */
-button {
-  padding: 9px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  width: 100%;
-}
-
-.btn-primary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(30,144,255,0.3);
-}
-
-.btn-danger {
-  background: var(--danger);
-  color: white;
-  width: 100%;
-}
-
-.btn-danger:hover {
-  background: #c0392b;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(220,53,69,0.3);
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-/* ===== INPUT FILE ===== */
-input[type=file] {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1.5px dashed var(--border);
-  border-radius: 8px;
-  font-size: 12px;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-input[type=file]:hover {
-  border-color: var(--primary);
-  background: #f8fafc;
-}
-
-input[type=file]::file-selector-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  background: var(--primary);
-  color: white;
-  font-weight: 600;
-  font-size: 11px;
-  cursor: pointer;
-  margin-right: 10px;
-  font-family: 'Poppins', sans-serif;
-}
-
-/* ===== LOG ===== */
-#logContainer {
-  max-height: 300px;
-  overflow-y: auto;
-  background: #f8fafc;
-  border-radius: 8px;
-  padding: 10px;
-  border: 1px solid var(--border);
-}
-
-.log-item {
-  font-size: 11px;
-  padding: 6px 8px;
-  margin-bottom: 4px;
-  background: white;
-  border-radius: 6px;
-  border-left: 3px solid var(--primary);
-  color: var(--text);
-}
-
-.log-item:last-child {
-  margin-bottom: 0;
-}
-
-/* ===== ALERT ===== */
-.alert {
-  padding: 10px 12px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  font-size: 11px;
-  font-weight: 500;
-  display: flex;
-  align-items: start;
-  gap: 8px;
-}
-
-.alert.warning {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
-}
-
-.alert.info {
-  background: #dbeafe;
-  color: #1e40af;
-  border: 1px solid #bfdbfe;
-}
-
-/* ===== WELCOME CARD ===== */
-.welcome-card {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: white;
-  padding: 20px;
-  border-radius: var(--radius);
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-}
-
-.welcome-card h2 {
-  font-size: 18px;
-  margin-bottom: 4px;
-}
-
-.welcome-card p {
-  font-size: 12px;
-  opacity: 0.9;
-}
-
-/* ===== FOOTER ===== */
-.footer {
-  text-align: center;
-  padding: 20px;
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 40px;
-}
-
-/* ===== MOBILE ===== */
-@media (max-width:768px){
-  body { font-size: 12px; }
-  .container { padding: 12px; }
-  .card { padding: 14px; }
-  .brand img { width: 32px; height: 32px; }
-  .brand-text .title { font-size: 13px; }
-}
+    .toast{
+      position:fixed; left:50%; bottom:84px; transform:translateX(-50%);
+      background:#111827; color:#fff; padding:12px 16px; border-radius:10px;
+      opacity:0; pointer-events:none; transition:.25s; z-index:9999;
+      max-width:90%; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.18);
+    }
+    .toast.show{opacity:1;}
   </style>
 </head>
 <body>
-  
-<!-- SIDEBAR -->
-<div id="sidebar" class="sidebar">
-  <div class="sidebar-logo">
-    <img src="img/icon-192.png" alt="Logo">
-    <h3>Menu Koperasi</h3>
-  </div>
 
-  <a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
-
-  <div class="sidebar-section">Data Master</div>
-  <a href="anggota.html">👤 Data Anggota</a>
- <a href="kas.html">💵 Kas</a>
- <a href="angsuran.html">📄 Angsuran</a>
-  <a href="simpanan.html">📊 Simpanan</a>
-  
-  <div class="sidebar-section">Keuangan</div>
-     <a href="pinjaman.html">💰 Pinjaman</a>
-     <a href="cair.html">💸 Pencairan Simpanan</a>
-    <a href="neraca.html">📖 Neraca</a>
-<a href="labarugi.html">📊 Laba Rugi</a>
-
-  
-  <div class="sidebar-section">Laporan</div>
-   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
-  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
-  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
-    <a href="transaksi.html">📊 Lap transaksi</a>
-
-  <div class="sidebar-section">Pengaturan</div>
-     <a href="backup.html">💾 Backup Data</a>
-  <a href="user.html">⚙️ Kelola User</a>
-  <a href="#" id="btnLogout">🚪 Logout</a>
-</div>
-<div id="overlay" class="overlay"></div>
-
- <header>
+<header>
   <div class="header-left">
-    <h1>Backup Data</h1>
+    <div class="brand">
+      <img src="img/icon-192.png" alt="logo">
+      <div class="brand-text">
+        <div class="subtitle">SCHOOL BUS</div>
+        <div class="title">ARFA</div>
+      </div>
+    </div>
   </div>
   <div class="header-right">
-    <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-  </div>
-</header>
-  
-  <button class="btn-menu" onclick="toggleSidebar()">☰</button>
-  
+    <div class="user-info">
+      <div class="user-name" id="namaHeader">Admin</div>
+      <div class="user-role" id="roleHeader">ADMIN</div>
     </div>
-  </div>
-</header>
-<div class="container">
-
-  <div class="card">
-    <h3>📥 Backup Data</h3>
-    <p>Download seluruh data koperasi ke file JSON. Simpan file ini sebagai backup aman.</p>
-    <div class="alert info">
-      <span class="material-icons" style="font-size:18px">info</span>
-      <span>Backup akan otomatis tersimpan ke folder Download</span>
-    </div>
-    <button class="btn-primary" id="btnBackup">
-      <span class="material-icons" style="font-size:18px">download</span>
-      Backup Sekarang
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
     </button>
   </div>
+</header>
+
+<div class="content">
+  <div class="card">
+    <h3>Backup Data</h3>
+    <div class="note">Tombol ini akan mengambil data dari beberapa collection Firestore lalu menyimpannya ke file JSON.</div>
+    <button class="btn btn-primary" onclick="backupFirestore()">📦 Backup Firestore</button>
+
+    <div class="stats">
+      <div class="stat-box"><div class="label">Jumlah Collection</div><div class="value" id="totalCollection">0</div></div>
+      <div class="stat-box"><div class="label">Jumlah Dokumen</div><div class="value" id="totalDokumen">0</div></div>
+    </div>
+  </div>
 
   <div class="card">
-    <h3>📤 Restore Data</h3>
-    <p>Upload file backup JSON untuk mengembalikan data. Data lama akan ditimpa.</p>
-    <div class="alert warning">
-      <span class="material-icons" style="font-size:18px">warning</span>
-      <span>Sistem akan backup otomatis data saat ini sebelum restore</span>
-    </div>
+    <h3>Restore Data</h3>
+    <div class="note">Pilih file backup JSON, lalu tekan restore. Bisa pilih restore biasa atau hapus dulu isi collection lalu isi ulang.</div>
     <input type="file" id="fileRestore" accept=".json">
-    <button class="btn-primary" id="btnRestore">
-      <span class="material-icons" style="font-size:18px">upload</span>
-      Restore Otomatis
-    </button>
+    <button type="button" class="btn btn-success" onclick="restoreFirestore(false)">♻️ Restore / Tambah Data</button>
+    <button type="button" class="btn btn-warning" onclick="restoreFirestore(true)">📥 Hapus Lalu Restore</button>
+    <button type="button" class="btn btn-danger" onclick="hapusSemuaFirestore()">🗑️ Hapus Semua Data</button>
   </div>
 
   <div class="card">
-    <h3>🗑️ Reset / Hapus Semua Data</h3>
-    <p>Hapus seluruh data koperasi dari database. Aksi ini tidak bisa dibatalkan.</p>
-    <div class="alert warning">
-      <span class="material-icons" style="font-size:18px">warning</span>
-      <span>Pastikan sudah backup sebelum reset</span>
-    </div>
-    <button class="btn-danger" id="btnReset">
-      <span class="material-icons" style="font-size:18px">delete_forever</span>
-      Hapus Semua Data
-    </button>
+    <h3>Log Proses</h3>
+    <div id="logBox" class="log">Siap digunakan...</div>
   </div>
-
-  <div class="card">
-    <h3>📋 Log Aktivitas Terakhir</h3>
-    <div id="logContainer">Memuat log...</div>
-  </div>
-
 </div>
 
+<div id="toast" class="toast"></div>
+
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getDatabase, ref, get, set, onValue, query, limitToLast
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* CONFIG */
 const firebaseConfig = {
-  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
-  authDomain: "arfa-c7dee.firebaseapp.com",
-  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
-  projectId: "arfa-c7dee",
-  storageBucket: "arfa-c7dee.firebasestorage.app",
-  messagingSenderId: "468058520812",
-  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+  apiKey: "AIzaSyBxbArCZ6iIWQ8wS7QIonZOeN4t_r9o2WU",
+  authDomain: "schoolbus-6a7fd.firebaseapp.com",
+  databaseURL: "https://schoolbus-6a7fd-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "schoolbus-6a7fd",
+  storageBucket: "schoolbus-6a7fd.firebasestorage.app",
+  messagingSenderId: "486602913199",
+  appId: "1:486602913199:web:9547f39f5f57f9c87b2b5a"
 };
 
-/* INIT */
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-// Sidebar toggle
-window.toggleSidebar = function(){
-  const s = document.getElementById("sidebar");
-  const o = document.getElementById("overlay");
-  s.classList.toggle("open");
-  o.style.display = s.classList.contains("open") ? "block" : "none";
-}
-document.getElementById("overlay").addEventListener("click", toggleSidebar);
+const db = getFirestore(app);
 
-// Logout
-document.getElementById("btnLogout").addEventListener("click", (e)=>{
-  e.preventDefault();
-  if(confirm("Yakin mau logout?")){
-    localStorage.clear();
-    location.href = "index.html";
-  }
-});
+const COLLECTIONS = ["drivers", "perjalanan", "config"];
 
-/* LOGIN */
-const username = localStorage.getItem("username");
-let role = localStorage.getItem("role");
-if(role) role = role.toLowerCase().trim();
+// 🔥 TAMPILIN NAMA DI HEADER
+const username = localStorage.getItem("username") || "Admin";
+const role = localStorage.getItem("role") || "admin";
+document.getElementById("namaHeader").innerText = username;
+document.getElementById("roleHeader").innerText = role.toUpperCase();
 
-console.log("USER:", username);
-console.log("ROLE:", role);
-
-if(!username){
-  alert("Session habis, silakan login ulang!");
-  window.location.href = "index.html";
+function showToast(message){
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => toast.classList.remove("show"), 2500);
 }
 
-if(role!== "admin"){
-  alert("Akses ditolak! Hanya admin");
-  window.location.href = "dashboard.html.html";
+function setLog(text){ document.getElementById("logBox").textContent = text; }
+function addLog(text){
+  const box = document.getElementById("logBox");
+  box.textContent += "\n" + text;
+  box.scrollTop = box.scrollHeight;
 }
 
-window.kembali = function(){
-  window.location.href="dash.html";
+function getFileName(){
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,"0");
+  const d = String(now.getDate()).padStart(2,"0");
+  const hh = String(now.getHours()).padStart(2,"0");
+  const mm = String(now.getMinutes()).padStart(2,"0");
+  return `backup-schoolbus-${y}-${m}-${d}-${hh}-${mm}.json`;
 }
 
-/* ===== LOG SIMPAN ===== */
-function simpanLog(aksi){
-  const logRef = ref(db,"/log/" + Date.now());
-  set(logRef,{
-    user: username || "unknown",
-    aksi: aksi,
-    waktu: new Date().toISOString()
-  });
-}
+async function backupFirestore(){
+  try{
+    setLog("Memulai backup Firestore...");
+    let totalCollection = 0; let totalDokumen = 0;
+    const backupData = { app: "School Bus App", dibuatPada: new Date().toISOString(), collections: {} };
 
-/* ===== LOG TAMPIL ===== */
-const logRef = query(ref(db,"/log"), limitToLast(50));
-
-onValue(logRef, (snap)=>{
-  const container = document.getElementById("logContainer");
-  container.innerHTML = "";
-
-  if(!snap.exists()){
-    container.innerHTML = "<div style='text-align:center;color:#6b7280;padding:20px'>Belum ada log</div>";
-    return;
-  }
-
-  let logs = [];
-  snap.forEach(child=>{
-    logs.push(child.val());
-  });
-
-  logs.reverse();
-
-  logs.forEach(l=>{
-    const div = document.createElement("div");
-    div.className = "log-item";
-    const tgl = new Date(l.waktu).toLocaleString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
-    div.innerText = `${tgl} • ${l.user} • ${l.aksi}`;
-    container.appendChild(div);
-  });
-});
-
-/* ===== BACKUP ===== */
-document.getElementById("btnBackup").onclick = async ()=>{
-  const snap = await get(ref(db,"/"));
-  if(!snap.exists()){
-    alert("Data kosong!");
-    return;
-  }
-
-  const data = snap.val();
-  const jsonStr = JSON.stringify(data,null,2);
-  const blob = new Blob([jsonStr], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.style.display = "none";
-  a.target = "_blank";
-
-  const today = new Date().toLocaleDateString("id-ID").replace(/\//g,"-");
-  a.download = `backup_koperasi_${today}.json`;
-
-  document.body.appendChild(a);
-  a.click();
-
-  setTimeout(()=>{
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }, 1500);
-
-  alert("Backup diproses, cek folder Download");
-  simpanLog("Backup data");
-};
-
-/* ===== RESTORE ===== */
-document.getElementById("btnRestore").onclick = ()=>{
-  const file = document.getElementById("fileRestore").files[0];
-  if(!file) return alert("Pilih file dulu!");
-
-  const reader = new FileReader();
-  reader.onload = async (e)=>{
-    try{
-      const json = JSON.parse(e.target.result);
-
-      if(typeof json!== "object" || json === null){
-        alert("File tidak valid!");
-        return;
-      }
-
-      if(!json.kas &&!json.anggota &&!json.pinjaman){
-        alert("Struktur data tidak sesuai!");
-        return;
-      }
-
-      if(!confirm("⚠️ Data lama akan diganti. Lanjutkan?")) return;
-
-      // backup otomatis
-      const oldSnap = await get(ref(db,"/"));
-      if(oldSnap.exists()){
-        const blob = new Blob([JSON.stringify(oldSnap.val(),null,2)],{type:"application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "backup_sebelum_restore.json";
-        a.click();
-        URL.revokeObjectURL(url);
-      }
-
-      // restore
-      await set(ref(db,"/"), json);
-      simpanLog("Restore data");
-      alert("✅ Restore berhasil!");
-      location.reload();
-
-    }catch(err){
-      console.error(err);
-      alert("❌ File rusak / format salah!");
+    for(const namaCollection of COLLECTIONS){
+      addLog("Mengambil collection: " + namaCollection);
+      const snapshot = await getDocs(collection(db, namaCollection));
+      backupData.collections[namaCollection] = [];
+      snapshot.forEach((docSnap) => {
+        backupData.collections[namaCollection].push({ id: docSnap.id, data: docSnap.data() });
+        totalDokumen++;
+      });
+      totalCollection++;
+      addLog(`Selesai ${namaCollection}: ${backupData.collections[namaCollection].length} dokumen`);
     }
-  };
-  reader.readAsText(file);
-};
 
-/* ===== RESET ===== */
-document.getElementById("btnReset").onclick = async ()=>{
-  if(confirm("Hapus semua data? Aksi ini tidak bisa dibatalkan!")){
-    await set(ref(db,"/"), null);
-    simpanLog("Reset semua data");
-    alert("Semua data dihapus!");
-    location.reload();
+    document.getElementById("totalCollection").textContent = totalCollection;
+    document.getElementById("totalDokumen").textContent = totalDokumen;
+
+    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = getFileName(); a.click();
+    URL.revokeObjectURL(url);
+
+    addLog("Backup selesai dan file berhasil diunduh.");
+    showToast("Backup berhasil");
+  }catch(error){
+    console.error(error); addLog("Error backup: " + error.message); showToast("Backup gagal");
   }
-};
+}
 
+async function hapusIsiCollection(namaCollection){
+  const snapshot = await getDocs(collection(db, namaCollection));
+  const jobs = [];
+  snapshot.forEach((docSnap) => { jobs.push(deleteDoc(doc(db, namaCollection, docSnap.id))); });
+  await Promise.all(jobs);
+}
+
+async function restoreFirestore(hapusDulu = false){
+  const input = document.getElementById("fileRestore");
+  const file = input.files[0];
+  if(!file){ showToast("Pilih file JSON dulu"); return; }
+
+  try{
+    setLog("Membaca file backup...");
+    const text = await file.text();
+    const json = JSON.parse(text);
+    if(!json.collections || typeof json.collections !== "object"){ showToast("Format file tidak valid"); addLog("Format JSON tidak sesuai"); return; }
+
+    let totalRestore = 0;
+    for(const namaCollection of Object.keys(json.collections)){
+      const items = json.collections[namaCollection];
+      if(!Array.isArray(items)) continue;
+      addLog("Proses collection: " + namaCollection);
+
+      if(hapusDulu){ addLog("Menghapus isi collection lama: " + namaCollection); await hapusIsiCollection(namaCollection); }
+
+      for(const item of items){
+        if(!item.id || !item.data) continue;
+        await setDoc(doc(db, namaCollection, item.id), item.data);
+        totalRestore++;
+      }
+      addLog(`Restore selesai ${namaCollection}: ${items.length} dokumen`);
+    }
+    addLog("Restore selesai. Total dokumen: " + totalRestore);
+    showToast("Restore berhasil");
+  }catch(error){
+    console.error(error); addLog("Error restore: " + error.message); showToast("Restore gagal");
+  }
+}
+
+async function hapusSemuaFirestore(){
+  const yakin = confirm("Yakin ingin menghapus semua data Firebase?");
+  if(!yakin) return;
+  try{
+    setLog("Memulai hapus semua data Firebase...");
+    let totalHapus = 0;
+    for(const namaCollection of COLLECTIONS){
+      addLog("Menghapus collection: " + namaCollection);
+      const snapshot = await getDocs(collection(db, namaCollection));
+      const jobs = [];
+      snapshot.forEach((docSnap) => { jobs.push(deleteDoc(doc(db, namaCollection, docSnap.id))); totalHapus++; });
+      await Promise.all(jobs);
+      addLog("Selesai hapus collection: " + namaCollection);
+    }
+    document.getElementById("totalDokumen").textContent = 0;
+    addLog("Semua data berhasil dihapus. Total dokumen dihapus: " + totalHapus);
+    showToast("Semua data berhasil dihapus");
+  }catch(error){
+    console.error(error); addLog("Error hapus: " + error.message); showToast("Gagal menghapus data");
+  }
+}
+
+window.backupFirestore = backupFirestore;
+window.restoreFirestore = restoreFirestore;
+window.hapusSemuaFirestore = hapusSemuaFirestore;
+window.kembali=function(){ window.location.href="dashboard.html"; }
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try { await navigator.serviceWorker.register("./service-worker.js"); }
+    catch (error) { console.error("Service Worker gagal:", error); }
+  });
+}
 </script>
 </body>
 </html>

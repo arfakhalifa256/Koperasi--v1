@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Perjalanan - FIX</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+ /* 🔥 FIX ANTI LUBER DI APK */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden; /* kunci geser ke samping */
+}
+
+* {
+  box-sizing: border-box; /* biar padding ga nambahin lebar */
+}
+
+.card, .table-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+.table-wrapper {
+  overflow-x: auto; /* tabel boleh scroll ke samping, tapi halamannya jangan */
+  -webkit-overflow-scrolling: touch; /* biar smooth di HP */
+}
+
+table {
+  min-width: 100%; /* 🔥 JANGAN 700px. Biar ngikutin layar */
+  width: max-content; /* tapi kalau isinya banyak tetap bisa scroll */
+}
+ @media(max-width:768px){
+  body{margin-left:0; padding:10px} /* 🔥 padding dikecilin biar ga luber */
+  .sidebar{left:-240px;transition:.3s}
+  .sidebar.show{left:0}
+  .menu-toggle{display:block;position:fixed;top:10px;left:10px;background:#1e90ff;color:#fff;border:none;padding:8px 10px;border-radius:8px;z-index:1100}
+  
+  th, td{font-size:11px;padding:6px;white-space:nowrap}
+  h2{font-size:16px}
+  .card{padding:10px}
+  
+  /* 🔥 TAMBAHAN BUAT APK */
+  .filter-container{flex-direction:column} /* filter numpuk ke bawah */
+  .btn{width:100%; margin-bottom:8px} /* tombol full */
+}
+body{font-family:Arial;background:#f4f7fb;padding:16px;margin:0}
+h2{text-align:center;color:#1e90ff}
+.card{background:#fff;padding:16px;border-radius:16px;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #ddd;font-size:13px;text-align:left}
+th{background:#1e90ff;color:white}
+.btn{padding:10px;border:none;border-radius:10px;cursor:pointer}
+.btn-primary{background:#1e90ff;color:#fff}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-success{background:#16a34a;color:#fff}
+.filter-container{display:flex;flex-wrap:wrap;gap:10px}
+input,select{padding:8px;color:#111;font-weight:600}
+.label-bold{font-weight:bold;margin-bottom:4px;font-size:13px}
+.filter-container div{display:flex;flex-direction:column;font-size:13px}
+.table-wrapper{overflow-x:auto}
+table{min-width:600px}
+.header-driver{background:#cbd5f5;color:#111;font-weight:700;font-size:16px}
+.row-total td{background:#dbeafe;font-weight:700}
+.row-potongan td{background:#fee2e2}
+.row-bayar td{background:#dcfce7;font-weight:700}
+tbody tr:nth-child(even){background:#f8fafc}
+ body{margin-left:0}
+.menu-toggle{display:block;position:fixed;top:10px;left:10px;background:#1e90ff;color:#fff;border:none;padding:8px 10px;border-radius:8px;z-index:1100}
+ th, td{font-size:11px;padding:6px;white-space:nowrap}
+ h2{font-size:16px}
+.card{padding:10px}
+  
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root{
+  --primary:#1e90ff;
+  --primary-dark:#0f6ecf;
+  --danger:#ef4444;
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --shadow:0 4px 12px rgba(15,23,42,.06);
+  --radius:14px
+}
+
+html, body {
+  width: 100%;max-width: 100%;overflow-x: hidden;
+  font-family:'Poppins',Arial,sans-serif;
+  background:var(--bg);color:var(--text);margin:0;
+}
+*{box-sizing: border-box;}
+
+/* ===== HEADER GOJEK STYLE ===== */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(30,144,255,0.25);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {display: flex; align-items: center; gap: 10px;}
+.brand {display: flex; align-items: center; gap: 12px;}
+
+.brand img {
+  width: 42px; height: 42px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: #fff;
+  padding: 4px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15)
+}
+
+.brand-text.subtitle {
+  font-size: 10px;
+  opacity: 0.85;
+  line-height: 1;
+  letter-spacing:0.8px; font-weight:500
+}
+
+.brand-text.title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.btn-back {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; width: 38px; height: 38px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; cursor:pointer
+}
+.header-right{display:flex; align-items:center; gap:12px;}
+.user-info{text-align:right; display:none;}
+.user-name{font-size:13px; font-weight:700; line-height:1.2;}
+.user-role{
+  font-size:10px; background:rgba(255,255,255,0.25);
+  padding:3px 8px; border-radius:20px; font-weight:600;
+  letter-spacing:0.5px; margin-top:2px
+}
+.header-actions.btn-back {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  width: 38px; height: 38px;
+  padding: 0; border-radius: 12px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.header-actions.btn-back:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+@media(min-width:480px){.user-info{display:block}}
+@media(max-width:768px){
+ .brand-text.title{font-size:16px}
+ .brand img{width:38px;height:38px}
+}
+
+/* ===== CONTENT ===== */
+body{padding:0; max-width:100%;}
+.content{padding:16px; max-width:760px; margin:0 auto; padding-bottom:100px}
+h2{text-align:center;color:var(--primary);margin:16px 0;font-size:18px; font-weight:700}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+}
+
+.mini-note{
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  color:#1e40af;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:14px;
+  font-size:11px; font-weight:500
+}
+
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;margin-top:12px;color:#374151}
+input,select,textarea{
+  width:100%;border:1.5px solid var(--border);
+  border-radius:12px;padding:12px 14px;
+  font-size:14px;outline:none;background:#fff;
+  font-family:'Poppins',sans-serif; transition:.2s
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px rgba(30,144,255,.12)
+}
+textarea{min-height:90px;resize:vertical}
+input[readonly]{background:#f8fafc;color:#6b7280;font-weight:700}
+
+.btn{
+  width:100%;border:none;border-radius:12px;
+  padding:13px 14px;font-size:14px;
+  font-weight:700;color:#fff;cursor:pointer;
+  margin-top:14px; transition:.2s
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-danger{background:var(--danger)}
+.btn-success{background:var(--success)}
+.btn-warning{background:var(--warning);color:#111827}
+
+.student-card{
+  padding:14px;border:1px solid var(--border);
+  border-radius:14px;margin-top:12px;
+  background:#fff;cursor:pointer;
+  transition:.2s
+}
+.student-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(15,23,42,.08);
+  border-color:var(--primary)
+}
+.student-title{font-weight:700;color:#111827;margin-bottom:4px; font-size:15px}
+.student-sub{font-size:12px;color:var(--muted);line-height:1.6}
+.empty{text-align:center;color:var(--muted);padding:20px;font-size:14px}
+
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px;z-index:9998}
+.popup-box{width:100%;max-width:520px;background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.popup-title{font-size:18px;font-weight:700;margin-bottom:12px;color:#111827}
+.popup-info{font-size:14px;line-height:1.8;color:#374151;margin-bottom:14px}
+.popup-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.section-box{padding:14px;border:1px dashed var(--border);border-radius:14px;margin-top:12px;background:#fafcff}
+.hidden{display:none!important}
+
+.toast{
+  position:fixed;left:50%;bottom:24px;
+  transform:translateX(-50%);
+  background:#111827;color:#fff;
+  padding:12px 18px;border-radius:10px;
+  opacity:0;pointer-events:none;
+  transition:.25s;z-index:9999;
+  max-width:90%;text-align:center;
+  font-weight:600; box-shadow:0 10px 30px rgba(0,0,0,.2)
+}
+.toast.show{opacity:1}
+
+/* Mobile fix */
+@media(max-width:768px){
+  body{padding:0}
+ .content{padding:12px}
+ .card{padding:14px}
+  th, td{font-size:11px;padding:6px;white-space:nowrap}
+ .btn{width:100%; margin-bottom:8px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">SCHOOL BUS</div>
+        <div class="title">ARFA</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="header-right">
+    <div class="user-info">
+      <div class="user-name" id="namaHeader">Admin</div>
+      <div class="user-role" id="roleHeader">ADMIN</div>
+    </div>
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<h2>Laporan Perjalanan</h2>
+
+<div class="card">
+  <div class="filter-container">
+    <div>
+      <label class="label-bold">Driver</label>
+      <select id="filterDriver">
+        <option value="">Semua Driver</option>
+      </select>
+    </div>
+    <div>
+      <label class="label-bold">Dari</label>
+      <input type="date" id="tglAwal">
+    </div>
+    <div>
+      <label class="label-bold">Sampai</label>
+      <input type="date" id="tglAkhir">
+    </div>
+    <div>
+      <label class="label-bold">Cari Siswa</label>
+      <input type="text" id="searchSiswa" placeholder="Ketik nama siswa...">
+    </div>
+    <div>
+      <label class="label-bold">Sort</label>
+      <select id="sortData">
+        <option value="new">Terbaru</option>
+        <option value="old">Terlama</option>
+        <option value="besar">Total Terbesar</option>
+        <option value="kecil">Total Terkecil</option>
+      </select>
+    </div>
+  </div>
+  <br>
+  <button class="btn btn-primary" onclick="applyFilter()">Tampilkan</button>
+  <button class="btn btn-danger" onclick="exportPDF()">PDF</button>
+  <button class="btn btn-success" onclick="exportWA()">WA</button>
+  <p>Total Data: <b id="totalData">0</b></p>
+  <p>Pendapatan: <b id="totalUang">Rp 0</b></p>
+</div>
+
+<div class="card">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Siswa</th>
+          <th>Kelas</th>
+         <th>Trayek</th>
+          <th>Alamat</th>
+          <th>No tlp</th>
+          <th>Jarak</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="laporanBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBxbArCZ6iIWQ8wS7QIonZOeN4t_r9o2WU",
+  authDomain: "schoolbus-6a7fd.firebaseapp.com",
+  projectId: "schoolbus-6a7fd",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const role = localStorage.getItem("role");
+const driverIdLogin = localStorage.getItem("driverId");
+const usernameLogin = localStorage.getItem("username");
+
+if (!role) {
+  alert("Harus login");
+  window.location.href = "index.html";
+}
+
+let allData = [];
+let filteredData = [];
+let driverList = [];
+
+function rupiah(n) {
+  return "Rp " + Number(n || 0).toLocaleString("id-ID");
+}
+
+// 🔥 TAMBAHIN INI BIAR SIDEBAR JALAN
+window.toggleMenu = function () {
+  document.querySelector(".sidebar").classList.toggle("show");
+  document.getElementById("overlay").classList.toggle("show");
+};
+
+window.closeSidebar = function () {
+  document.querySelector(".sidebar").classList.remove("show");
+  document.getElementById("overlay").classList.remove("show");
+};
+
+// 🔥 FUNGSI BULAN SEBELUMNYA - TYPO UDAH DIBENERIN
+function getBulanSebelumnya() {
+  const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  const now = new Date();
+  let bulanIdx = now.getMonth() - 1;
+  let tahun = now.getFullYear();
+
+  if (bulanIdx < 0) {
+    bulanIdx = 11;
+    tahun = tahun - 1;
+  }
+
+  return bulan[bulanIdx] + " " + tahun;
+}
+
+async function loadData() {
+  const snap = await getDocs(collection(db, "perjalanan"));
+  allData = [];
+  driverList = [];
+
+  snap.forEach(d => {
+    const x = d.data();
+    if (role!== "admin") {
+      const cocokId = x.driverId && driverIdLogin && String(x.driverId) === String(driverIdLogin);
+      const cocokNama = (x.namaDriver || x.owner || x.username) === usernameLogin;
+      if (!cocokId &&!cocokNama) return;
+    }
+    allData.push(x);
+    const idDriver = x.driverId || x.namaDriver || x.owner || x.username;
+    const namaDriver = (x.namaDriver || x.owner || x.username || idDriver).trim();
+
+    // 🔥 FIX: Cek berdasarkan NAMA bukan ID. Biar gak dobel
+    const namaLower = namaDriver.toLowerCase();
+    if (namaDriver && !driverList.some(v => v.nama.toLowerCase() === namaLower)) {
+      driverList.push({ id: idDriver, nama: namaDriver });
+    }
+  });
+
+  // 🔥 Tambahan: Sort nama A-Z biar rapi
+  driverList.sort((a,b) => a.nama.localeCompare(b.nama));
+
+  renderDriver();
+  applyFilter();
+}
+
+function renderDriver() {
+  const el = document.getElementById("filterDriver");
+  el.innerHTML = `<option value="">Semua Driver</option>`;
+  driverList.forEach(d => {
+    // 🔥 value diganti jadi nama, bukan id
+    el.innerHTML += `<option value="${d.nama}">${d.nama}</option>`;
+  });
+  if (role!== "admin") {
+    el.value = usernameLogin || ""; // pake nama login
+    el.disabled = true;
+  }
+}
+
+window.applyFilter = function () {
+  const driver = document.getElementById("filterDriver").value; // ini sekarang valuenya NAMA
+  const awal = document.getElementById("tglAwal").value;
+  const akhir = document.getElementById("tglAkhir").value;
+  const search = document.getElementById("searchSiswa").value.toLowerCase().trim();
+  const sort = document.getElementById("sortData").value;
+
+  filteredData = allData.filter(d => {
+    if (driver) {
+      // 🔥 FIX: Bandingin pake namaDriver, bukan id
+      const namaDriver = String(d.namaDriver || d.owner || d.username || d.driverId || "").trim();
+      if (namaDriver.toLowerCase() !== driver.toLowerCase()) return false;
+    }
+    const tglStr = d.tanggal || d.createdAt || d.tglInput || "";
+    const tglData = new Date(tglStr);
+    const tglAwal = awal? new Date(awal) : null;
+    const tglAkhir = akhir? new Date(akhir + " 23:59:59") : null;
+    if (tglAwal &&!isNaN(tglData) && tglData < tglAwal) return false;
+    if (tglAkhir &&!isNaN(tglData) && tglData > tglAkhir) return false;
+    const namaSiswa = String(d.namaSiswa || d.nama || d.siswa || "").toLowerCase();
+    if (search &&!namaSiswa.includes(search)) return false;
+    return true;
+  });
+
+  if (sort === "new") filteredData.sort((a, b) => new Date(b.tanggal || b.createdAt || b.tglInput) - new Date(a.tanggal || a.createdAt || a.tglInput));
+  if (sort === "old") filteredData.sort((a, b) => new Date(a.tanggal || a.createdAt || a.tglInput) - new Date(b.tanggal || b.createdAt || b.tglInput));
+  if (sort === "besar") filteredData.sort((a, b) => Number(b.total || 0) - Number(a.total || 0));
+  if (sort === "kecil") filteredData.sort((a, b) => Number(a.total || 0) - Number(b.total || 0));
+
+  renderTable();
+};
+
+document.getElementById("searchSiswa").addEventListener("input", applyFilter);
+
+function renderTable() {
+  const body = document.getElementById("laporanBody");
+  body.innerHTML = "";
+  let group = {};
+  let grandTotal = 0;
+
+  filteredData.forEach(d => {
+    const keyDriver = d.namaDriver || d.owner || d.username || d.driverId || "Driver";
+    if (!group[keyDriver]) group[keyDriver] = [];
+    group[keyDriver].push(d);
+  });
+
+  if (filteredData.length === 0) {
+    body.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:20px">Data tidak ditemukan</td></tr>`;
+  }
+
+  Object.keys(group).forEach(driver => {
+    let total = 0;
+    body.innerHTML += `<tr><td colspan="8" class="header-driver">🚐 ${driver}</td></tr>`;
+    group[driver].forEach((d, i) => {
+      total += Number(d.total || 0);
+      grandTotal += Number(d.total || 0);
+      body.innerHTML += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${d.namaSiswa || d.nama || d.siswa || "-"}</td>
+          <td>${d.kelas || "-"}</td>
+          <td>${(d.trayek || "-").toUpperCase()}</td>
+          <td>${d.alamat || "-"}</td>
+          <td>${d.noTelepon || "-"}</td>
+          <td>${d.jarak || 0} Km</td>
+          <td>${rupiah(d.total)}</td>
+        </tr>
+      `;
+    });
+    const potongan = total * 0.1;
+    const dibayar = total - potongan;
+    body.innerHTML += `
+      <tr class="row-total"><td colspan="7">Total</td><td>${rupiah(total)}</td></tr>
+      <tr class="row-potongan"><td colspan="7">Potongan 10%</td><td>${rupiah(potongan)}</td></tr>
+      <tr class="row-bayar"><td colspan="7">Dibayarkan</td><td>${rupiah(dibayar)}</td></tr>
+    `;
+  });
+
+  document.getElementById("totalData").innerText = filteredData.length;
+  document.getElementById("totalUang").innerText = rupiah(grandTotal);
+}
+window.exportWA = function () {
+  const bulanLalu = getBulanSebelumnya();
+
+  let group = {};
+  let grandTotal = 0;
+
+  filteredData.forEach(d => {
+    const keyDriver = d.namaDriver || d.owner || d.username || d.driverId || "Driver";
+    if (!group[keyDriver]) group[keyDriver] = [];
+    group[keyDriver].push(d);
+  });
+
+  let text = `📊 LAPORAN PERJALAN\nBulan: ${bulanLalu}\n\n`;
+
+  Object.keys(group).forEach(driver => {
+    text += `🚐 ${driver}\n`;
+    let total = 0;
+
+    group[driver].forEach((d, i) => {
+      let biaya = Number(d.total || 0);
+      total += biaya;
+      grandTotal += biaya;
+      // 🔥 tanpa bintang biar nggak bold, jadi kelihatan kecil
+      text += `${i + 1}. ${d.namaSiswa || d.nama} - ${rupiah(biaya)}\n`;
+    });
+
+    const potongan = total * 0.1;
+    const dibayar = total - potongan;
+
+    text += `\nSubtotal: ${rupiah(total)}`;
+    text += `\nPotongan 10%: ${rupiah(potongan)}`;
+    text += `\nDibayar: ${rupiah(dibayar)}\n\n────────────────\n\n`;
+  });
+
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+};
+
+window.exportPDF = function () {
+
+  // Loading
+  const loading = document.createElement("div");
+  loading.id = "loadingPDF";
+  loading.innerHTML = `
+  <div style="
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.45);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    color:#fff;
+    font-size:18px;
+    font-weight:bold;">
+    📄 Membuat PDF...
+  </div>`;
+  document.body.appendChild(loading);
+
+  // Beri waktu agar loading sempat tampil
+  setTimeout(() => {
+
+    const bulanLalu = getBulanSebelumnya();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text("Laporan Perjalanan School Bus", 105, 10, { align: "center" });
+
+    doc.setFontSize(12);
+    doc.text("KHALIFA IMS", 105, 18, { align: "center" });
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Periode : ${bulanLalu}`, 105, 25, { align: "center" });
+    doc.text(`Tanggal Cetak : ${new Date().toLocaleDateString("id-ID")}`, 105, 31, { align: "center" });
+
+    let y = 40;
+
+    let group = {};
+
+    filteredData.forEach(d => {
+      const keyDriver = d.namaDriver || d.owner || d.username || d.driverId || "Driver";
+      if (!group[keyDriver]) group[keyDriver] = [];
+      group[keyDriver].push(d);
+    });
+
+    Object.keys(group).forEach(driver => {
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(11);
+      doc.text("Driver : " + driver, 14, y);
+
+      y += 5;
+
+      let total = 0;
+
+      const rows = group[driver].map((d, i) => {
+
+        total += Number(d.total || 0);
+
+        return [
+          i + 1,
+          d.namaSiswa || d.nama || "-",
+          d.kelas || "-",
+          (d.trayek || "-").toUpperCase(),
+          d.alamat || "-",
+          d.noTelepon || "-",
+          (d.jarak || 0) + " Km",
+               rupiah(d.total)
+        ];
+
+      });
+
+      doc.autoTable({
+        startY: y,
+        head: [["No","Siswa","Kelas","Trayek","Alamat","No.Tlp","Jarak","Total"]],
+        body: rows,
+        styles:{fontSize:9},
+        headStyles:{fillColor:[30,144,255]}
+      });
+
+      y = doc.lastAutoTable.finalY + 5;
+
+      const potongan = total * 0.1;
+      const dibayar = total - potongan;
+
+      doc.setFont("helvetica","normal");
+      doc.text("Subtotal : " + rupiah(total),14,y);
+      y += 5;
+
+      doc.text("Potongan 10% : " + rupiah(potongan),14,y);
+      y += 5;
+
+      doc.setFont("helvetica","bold");
+      doc.text("Dibayarkan : " + rupiah(dibayar),14,y);
+      y += 10;
+
+      if(y > 260){
+        doc.addPage();
+        y = 15;
+      }
+
+    });
+
+    // Nama file
+    const driverSelect = document.getElementById("filterDriver");
+    let namaDriver = "Semua_Driver";
+
+    if(driverSelect.value){
+      namaDriver = driverSelect.options[driverSelect.selectedIndex].text
+        .replace(/\s+/g,"_")
+        .replace(/[^\w-]/g,"");
+    }
+
+    const namaBulan = bulanLalu.replace(/\s+/g,"_");
+
+    // Tutup loading
+    document.getElementById("loadingPDF")?.remove();
+
+    // Simpan PDF
+    doc.save(`Laporan_${namaDriver}_${namaBulan}.pdf`);
+
+  },100);
+
+};
+window.addEventListener("DOMContentLoaded", loadData);
+window.logout = function(){
+  localStorage.clear();
+  window.location.href = "index.html";
+};
+  window.kembali=function(){
+  window.location.href="dashboard.html";
+}
+</script>
+</body>
+</html>
+

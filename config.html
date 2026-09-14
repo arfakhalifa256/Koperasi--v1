@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konfigurasi Harga</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e90ff">
+  <style>
+:root{
+  --primary:#1e90ff; --primary-dark:#0f6ecf;
+  --warning:#f59e0b; --success:#16a34a; --danger:#ef4444;
+  --bg:#f4f7fb; --card:#ffffff; --text:#1f2937;
+  --muted:#6b7280; --border:#e5e7eb;
+  --shadow:0 4px 12px rgba(15,23,42,.06); --radius:14px
+}
+
+html, body {
+  width: 100%;max-width: 100%;overflow-x: hidden;
+  font-family:'Poppins',Arial,sans-serif;
+  background:var(--bg);color:var(--text);margin:0;
+}
+*{box-sizing: border-box;}
+
+/* ===== HEADER ===== */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff; padding: 14px 16px; display: flex;
+  justify-content: space-between; align-items: center;
+  box-shadow: 0 4px 16px rgba(30,144,255,0.25);
+  position: sticky; top: 0; z-index: 100;
+}
+.brand {display: flex; align-items: center; gap: 12px;}
+.brand img {width: 42px; height: 42px; border-radius: 14px; background: #fff; padding: 4px;}
+.brand-text .subtitle {font-size: 10px; opacity: 0.85; letter-spacing:0.8px;}
+.brand-text .title {font-size: 18px; font-weight: 700;}
+.header-right{display:flex; align-items:center; gap:12px;}
+.user-info{text-align:right; display:none;}
+.user-name{font-size:13px; font-weight:700;}
+.user-role{font-size:10px; background:rgba(255,255,255,0.25); padding:3px 8px; border-radius:20px; font-weight:600;}
+.btn-back {
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; width: 38px; height: 38px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; cursor:pointer
+}
+@media(min-width:480px){.user-info{display:block}}
+@media(max-width:768px){.brand-text .title{font-size:16px} .brand img{width:38px;height:38px}}
+
+/* ===== CONTENT ===== */
+.content{padding:16px; max-width:600px; margin:0 auto; padding-bottom:100px}
+h2{text-align:center;color:var(--primary);margin:0 0 16px;font-size:18px; font-weight:700}
+
+.card{
+  background:var(--card); border-radius:var(--radius);
+  padding:18px; box-shadow:var(--shadow); border:1px solid var(--border);
+}
+
+label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;margin-top:12px;color:#374151}
+input{
+  width:100%;border:1.5px solid var(--border); border-radius:12px;
+  padding:12px 14px; font-size:14px; outline:none; background:#fff;
+  transition:.2s
+}
+input:focus{border-color:var(--primary); box-shadow:0 0 0 4px rgba(30,144,255,.12)}
+
+.btn{
+  width:100%;border:none;border-radius:12px; padding:13px 14px;
+  font-size:14px; font-weight:700;color:#fff;cursor:pointer;
+  margin-top:14px; transition:.2s
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-warning{background:var(--warning); color:#111827}
+.btn-success{background:var(--success)}
+
+.info{
+  margin-top:16px; font-size:12px; color:var(--muted);
+  background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af;
+  padding:10px 12px; border-radius:10px; line-height:1.5;
+}
+
+/* TOAST */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;border-radius:10px;opacity:0;transition:.25s;z-index:9999;font-weight:600}
+.toast.show{opacity:1}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="header-left">
+    <div class="brand">
+      <img src="img/icon-192.png">
+      <div class="brand-text">
+        <div class="subtitle">SCHOOL BUS</div>
+        <div class="title">ARFA</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="header-right">
+    <div class="user-info">
+      <div class="user-name" id="namaHeader">Admin</div>
+      <div class="user-role" id="roleHeader">ADMIN</div>
+    </div>
+    <button class="btn-back" onclick="kembali()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+  </div>
+</header>
+  
+  <div class="card">
+    <h2>Konfigurasi Harga</h2>
+
+    <label>Password Admin</label>
+    <input type="password" id="password" placeholder="Masukkan password">
+
+    <label>Harga Dasar (0–1 km)</label>
+    <input type="number" id="hargaDasar" placeholder="Masukkan harga dasar">
+
+    <label>Kenaikan per 0.1 km</label>
+    <input type="number" id="kenaikanPerTitik" placeholder="Masukkan kenaikan">
+
+<button class="btn btn-primary" onclick="simpanHarga()">💾 Simpan Harga</button>
+<button class="btn btn-warning" onclick="resetHarga()">♻️ Reset ke Default</button>
+<button class="btn btn-success" onclick="keinput()">➡️ Lanjut ke input</button>
+    <div class="info">
+      Data harga akan disimpan ke Firestore:
+      <b>config / harga</b>
+    </div>
+  </div>
+
+<div id="toast" class="toast"></div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxbArCZ6iIWQ8wS7QIonZOeN4t_r9o2WU",
+      authDomain: "schoolbus-6a7fd.firebaseapp.com",
+      databaseURL: "https://schoolbus-6a7fd-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "schoolbus-6a7fd",
+      storageBucket: "schoolbus-6a7fd.firebasestorage.app",
+      messagingSenderId: "486602913199",
+      appId: "1:486602913199:web:9547f39f5f57f9c87b2b5a"
+    };
+const role = localStorage.getItem("role");
+
+if(role !== "admin"){
+  alert("Akses ditolak");
+  window.location.href = "dashboard.html";
+}
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const PASSWORD_ADMIN = "ali123";
+    const DEFAULT_HARGA_DASAR = 608000;
+    const DEFAULT_KENAIKAN = 7800;
+
+    function showToast(message){
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    async function muatHarga(){
+      try{
+        const ref = doc(db, "config", "harga");
+        const snap = await getDoc(ref);
+
+        if(snap.exists()){
+          const data = snap.data();
+
+          document.getElementById("hargaDasar").value =
+            Number(data.hargaDasar) || DEFAULT_HARGA_DASAR;
+
+          document.getElementById("kenaikanPerTitik").value =
+            Number(data.kenaikanPerTitik) || DEFAULT_KENAIKAN;
+        }else{
+          document.getElementById("hargaDasar").value = DEFAULT_HARGA_DASAR;
+          document.getElementById("kenaikanPerTitik").value = DEFAULT_KENAIKAN;
+        }
+      }catch(error){
+        console.error("Gagal memuat harga:", error);
+        showToast("Gagal memuat harga dari Firebase");
+      }
+    }
+
+    async function simpanHarga(){
+      const pass = document.getElementById("password").value;
+      if(pass !== PASSWORD_ADMIN){
+        showToast("Password salah");
+        return;
+      }
+
+      const hargaDasar = Number(document.getElementById("hargaDasar").value);
+      const kenaikan = Number(document.getElementById("kenaikanPerTitik").value);
+
+      if(isNaN(hargaDasar) || isNaN(kenaikan) || hargaDasar <= 0 || kenaikan < 0){
+        showToast("Input harga tidak valid");
+        return;
+      }
+
+      try{
+        await setDoc(doc(db, "config", "harga"), {
+          hargaDasar,
+          kenaikanPerTitik: kenaikan,
+          updatedAt: serverTimestamp()
+        });
+
+        document.getElementById("password").value = "";
+        showToast("Harga berhasil diperbarui");
+      }catch(error){
+        console.error("Gagal simpan harga:", error);
+        showToast("Gagal menyimpan harga ke Firebase");
+      }
+    }
+
+    async function resetHarga(){
+      const pass = document.getElementById("password").value;
+      if(pass !== PASSWORD_ADMIN){
+        showToast("Password salah");
+        return;
+      }
+
+      try{
+        await setDoc(doc(db, "config", "harga"), {
+          hargaDasar: DEFAULT_HARGA_DASAR,
+          kenaikanPerTitik: DEFAULT_KENAIKAN,
+          updatedAt: serverTimestamp()
+        });
+
+        await muatHarga();
+        document.getElementById("password").value = "";
+        showToast("Harga di-reset ke default");
+      }catch(error){
+        console.error("Gagal reset harga:", error);
+        showToast("Gagal reset harga di Firebase");
+      }
+    }
+
+    function keinput(){
+      location.href = "input.html";
+    }
+
+    function goBack(){
+      if(window.history.length > 1){
+        window.history.back();
+      }else{
+        window.location.href = "index.html";
+      }
+    }
+
+    window.simpanHarga = simpanHarga;
+    window.resetHarga = resetHarga;
+    window.keinput = keinput;
+    window.goBack = goBack;
+
+    document.addEventListener("DOMContentLoaded", muatHarga);
+  
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", async () => {
+      try {
+        await navigator.serviceWorker.register("./service-worker.js");
+        console.log("Service Worker berhasil didaftarkan");
+      } catch (error) {
+        console.error("Service Worker gagal:", error);
+      }
+    });
+  } 
+  // ===== SIDEBAR =====
+window.toggleSidebar = function(){
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  sidebar.classList.toggle("show");
+  overlay.classList.toggle("show");
+}
+
+window.logout = function(){
+  localStorage.clear();
+  window.location.href = "index.html";
+}
+  document.querySelectorAll(".sidebar a").forEach(link=>{
+  link.addEventListener("click", ()=>{
+    document.getElementById("sidebar").classList.remove("show");
+    document.getElementById("overlay").classList.remove("show");
+  });
+});
+  // Set header
+document.getElementById("namaHeader").innerText = localStorage.getItem("username") || "Admin";
+document.getElementById("roleHeader").innerText = (localStorage.getItem("role") || "admin").toUpperCase();
+
+window.kembali=function(){
+  window.location.href="dashboard.html";
+}
+</script>
+</body>
+</html>
