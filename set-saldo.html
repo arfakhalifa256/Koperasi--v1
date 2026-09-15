@@ -13,18 +13,18 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .brand{display:flex;align-items:center;gap:10px;font-weight:700}
 .brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px}
 .container{padding:16px;max-width:600px;margin:0 auto}
-.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-.card h3{margin:0 0 14px;font-size:15px;display:flex;align-items:center;gap:8px}
+.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid #e2e8f0;box-shadow:0 2px 8px rgba(0,0,0,.04);font-size:10px}
+.card h3{margin:0 0 14px;font-size:12px;display:flex;align-items:center;gap:8px}
 .form-group{margin-bottom:12px}
 .form-group label{display:block;font-size:11px;font-weight:600;color:#6b7280;margin-bottom:4px}
-.form-group input{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px}
+.form-group input{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px}
 .btn{width:100%;padding:11px;border:none;border-radius:8px;background:#1e90ff;color:white;font-weight:600;cursor:pointer;margin-top:5px}
 .btn.danger{background:#dc2626}
 .btn.secondary{background:#64748b}
-.note{font-size:10px;color:#6b7280;margin-top:5px}
+.note{font-size:12px;color:#6b7280;margin-top:5px}
 .back-btn{display:inline-flex;align-items:center;gap:5px;color:#1e90ff;text-decoration:none;font-size:12px;margin-bottom:10px}
 .summary{background:#eff6ff;padding:12px;border-radius:8px;margin-bottom:12px}
-.summary b{font-size:16px;color:#1d4ed8}
+.summary b{font-size:12px;color:#1d4ed8}
 </style>
 </head>
 <body>
@@ -33,7 +33,7 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 </header>
 
 <div class="container">
-  <a href="kas.html" class="back-btn"><span class="material-icons" style="font-size:18px">arrow_back</span> Kembali ke Kas</a>
+  <a href="kas.html" class="back-btn"><span class="material-icons" style="font-size:12px">arrow_back</span> Kembali ke Kas</a>
   
   <div class="card">
     <h3>💰 Saldo Saat Ini</h3>
@@ -52,25 +52,42 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 
   <div class="card" id="cardReset" style="display:none">
     <h3>🔄 Reset Saldo Awal</h3>
-    <p style="font-size:11px;margin-bottom:10px">Gunakan ini jika salah input saldo awal. Semua transaksi akan tetap ada.</p>
+    <p style="font-size:10px;margin-bottom:10px">Gunakan ini jika salah input saldo awal. Semua transaksi akan tetap ada.</p>
     <button class="btn danger" id="btnResetSaldo">Reset Saldo Awal</button>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, set, get, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const role = localStorage.getItem("role");
+const username = localStorage.getItem("username") || "Admin";
 if(role !== "admin"){ alert("Hanya admin"); location.href="kas.html"; }
 
 const saldoAwalRef = ref(db, "kas/saldoAwal");
 
 function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
+
+/* ========== LOG TERPUSAT - BARU ========== */
+function simpanLog(aksi, data){
+  try{
+    const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
+    push(ref(db, "/log_aktivitas"), {
+      waktu: Date.now(),
+      waktu_baca: waktu,
+      aksi: aksi,
+      oleh: username,
+      role: role,
+      username: username,
+     ...data
+    }).catch(e=> console.log("Log gagal:", e.message));
+  }catch(e){ console.log(e); }
+}
 
 document.getElementById("inputSaldoCash").addEventListener("input", updateTotal);
 document.getElementById("inputSaldoBank").addEventListener("input", updateTotal);
@@ -80,6 +97,8 @@ function updateTotal(){
   document.getElementById("inputModalAwal").value = formatRp(cash + bank);
 }
 
+let saldoLama = {cash:0, bank:0};
+
 document.getElementById("btnSimpanSaldo").onclick = async () => {
   const cash = Number(document.getElementById("inputSaldoCash").value) || 0;
   const bank = Number(document.getElementById("inputSaldoBank").value) || 0;
@@ -88,20 +107,67 @@ document.getElementById("btnSimpanSaldo").onclick = async () => {
   if(cash === 0 && bank === 0){ alert("Isi minimal salah satu saldo awal"); return; }
   await set(saldoAwalRef, { cash, bank, tanggal, updatedAt: Date.now() });
   await set(ref(db, "global/modalAwal"), cash + bank);
+  
+  await push(ref(db,"audit/log"),{
+    tanggal: Date.now(),
+    aksi: "SET SALDO AWAL",
+    user: username,
+    role: role,
+    keterangan: `Cash: Rp ${formatRp(cash)} | Bank: Rp ${formatRp(bank)} | Total: Rp ${formatRp(cash+bank)}`,
+    jumlah: cash + bank
+  });
+
+  simpanLog("SET_SALDO_AWAL", {
+    userId: "-",
+    nama: "Saldo Awal Koperasi",
+    cash: cash,
+    bank: bank,
+    jumlah: cash + bank,
+    cashLama: saldoLama.cash,
+    bankLama: saldoLama.bank,
+    keterangan: `Dari Cash Rp ${formatRp(saldoLama.cash)} Bank Rp ${formatRp(saldoLama.bank)} -> Cash Rp ${formatRp(cash)} Bank Rp ${formatRp(bank)}`
+  });
+
   alert("Saldo awal berhasil disimpan");
   location.reload();
 };
 
 document.getElementById("btnResetSaldo").onclick = async () => {
   if(!confirm("Yakin reset saldo awal? Transaksi tidak akan dihapus.")) return;
+  
+  const cashLama = saldoLama.cash;
+  const bankLama = saldoLama.bank;
+
   await set(saldoAwalRef, null);
   await set(ref(db, "global/modalAwal"), 0);
+  
+  await push(ref(db,"audit/log"),{
+    tanggal: Date.now(),
+    aksi: "RESET SALDO AWAL",
+    user: username,
+    role: role,
+    keterangan: `Reset saldo Cash Rp ${formatRp(cashLama)} Bank Rp ${formatRp(bankLama)}`,
+    jumlah: 0
+  });
+
+  simpanLog("RESET_SALDO_AWAL", {
+    userId: "-",
+    nama: "Reset Saldo Awal",
+    cash: 0,
+    bank: 0,
+    jumlah: 0,
+    cashLama: cashLama,
+    bankLama: bankLama,
+    keterangan: `Reset dari Cash Rp ${formatRp(cashLama)} Bank Rp ${formatRp(bankLama)} ke 0`
+  });
+
   alert("Saldo awal berhasil direset");
   location.reload();
 };
 
 onValue(saldoAwalRef, snap => {
   const data = snap.val() || {};
+  saldoLama = {cash: data.cash||0, bank: data.bank||0};
   document.getElementById("saldoCash").innerText = "Rp " + formatRp(data.cash);
   document.getElementById("saldoBank").innerText = "Rp " + formatRp(data.bank);
   document.getElementById("modalAwal").innerText = "Rp " + formatRp((data.cash||0)+(data.bank||0));

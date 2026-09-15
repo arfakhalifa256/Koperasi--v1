@@ -68,7 +68,7 @@ body.role-anggota .anggota-only{display:block;}
 .btn-action{border:none;padding:9px;border-radius:8px;font-family:'Poppins';font-size:11px;font-weight:600;cursor:pointer;}
 .btn-edit{background:#dbeafe;color:#1d4ed8;}
 .btn-keluar{background:#fee2e2;color:#b91c1c;}
-.btn-proses-keluar{background:#ffedd5;color:#9a3412;} /* TOMBOL BARU */
+.btn-proses-keluar{background:#ffedd5;color:#9a3412;}
 .btn-aktif{background:#dcfce7;color:#166534;}
 .view-only{text-align:center;width:100%;padding:8px;background:#f8fafc;color:#64748b;border-radius:8px;font-size:10px;}
 
@@ -87,7 +87,7 @@ body.role-anggota .anggota-only{display:block;}
   .sidebar{left:0;}
   .overlay{display:none!important;}
   .menu-btn{display:none;}
-  .anggota-actions{grid-template-columns:1fr 1fr 1fr;} /* JADI 3 KOLOM */
+  .anggota-actions{grid-template-columns:1fr 1fr 1fr;}
 }
 </style>
 </head>
@@ -115,6 +115,7 @@ body.role-anggota .anggota-only{display:block;}
   <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
   <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
   <a href="transaksi.html">📊 Lap transaksi</a>
+  <a href="log-aktivitas.html">📋 Log Aktivitas</a>
   
   <div class="sidebar-section admin-only">Pengaturan</div>
   <a href="backup.html" class="admin-only">💾 Backup Data</a>
@@ -205,6 +206,19 @@ if(role === "admin"){
   roleInfo.innerHTML = "👑 <b>Admin</b> — Anda memiliki akses penuh untuk mengelola data anggota.";
 }else{
   roleInfo.innerHTML = "👤 <b>Anggota</b> — Anda hanya dapat melihat data Anda sendiri.";
+}
+
+/* FUNGSI SIMPAN LOG */
+async function simpanLog(aksi, data){
+  const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
+  await push(ref(db, "/log_aktivitas"), {
+    waktu: Date.now(),
+    waktu_baca: waktu,
+    aksi: aksi, // TAMBAH_ANGGOTA, EDIT_ANGGOTA, PROSES_KELUAR, AKTIFKAN_ANGGOTA
+    oleh: username,
+    role: role,
+    ...data
+  });
 }
 
 /* SIDEBAR */
@@ -322,6 +336,10 @@ window.tambahAnggota = async function(){
   try{
     const idBaru = await generateId();
     await push(anggotaRef,{id:idBaru,nama:nama,telepon:telepon,alamat:alamat,status:"aktif",tanggalMasuk:new Date().toISOString().slice(0,10),tanggalKeluar:"",tanggalMasukKembali:""});
+    
+    // SIMPAN LOG
+    await simpanLog("TAMBAH_ANGGOTA", {idAnggota: idBaru, nama: nama});
+
     document.getElementById("nama").value = ""; document.getElementById("telepon").value = ""; document.getElementById("alamat").value = "";
     alert("Anggota berhasil ditambahkan.\n\nID Anggota: " + idBaru);
   }catch(error){ alert("Gagal menyimpan anggota:\n"+ error.message); }
@@ -376,12 +394,16 @@ window.simpanEdit = async function(){
     if(status === "keluar" && String(oldData.status || "aktif").toLowerCase() !== "keluar"){ dataUpdate.tanggalKeluar = new Date().toISOString().slice(0,10); }
     if(status === "aktif" && String(oldData.status || "aktif").toLowerCase() === "keluar"){ dataUpdate.tanggalMasukKembali = new Date().toISOString().slice(0,10); }
     await update(ref(db,"/anggota/" + editKey), dataUpdate);
+
+    // SIMPAN LOG
+    await simpanLog("EDIT_ANGGOTA", {idAnggota: oldData.id, nama: nama, status: status});
+
     tutupPopup();
     alert("Data anggota berhasil diperbarui.");
   }catch(error){ alert("Gagal menyimpan:\n"+ error.message); }
 };
 
-/* ========== FUNGSI BARU: PROSES KELUAR LENGKAP ========== */
+/* PROSES KELUAR LENGKAP */
 window.prosesKeluarAnggota = async function(key){
   if(role !== "admin"){ alert("Akses ditolak."); return; }
   
@@ -409,21 +431,19 @@ window.prosesKeluarAnggota = async function(key){
         }
     });
 
-    // 2. AMBIL SISA SHU TERAKHIR DARI RIWAYAT
+    // 2. AMBIL SISA SHU TERAKHIR
     const snapSHU = await get(ref(db,"shu_riwayat"));
     let sisaSHU = 0;
     const arrSHU = Object.values(snapSHU.val() || {}).sort((a,b)=>b.tanggalBagi - a.tanggalBagi);
     if(arrSHU.length > 0){
-        // Catatan: Ini butuh fungsi hitung manual per anggota. Sementara 0 dulu
-        // Idealnya panggil fungsi hitungSHU dari shu.html
         alert("Catatan: Sisa SHU dihitung manual. Pastikan sudah bagi SHU di menu SHU.");
     }
 
     const totalBayar = totalSimpanan + sisaSHU;
 
     if(totalBayar === 0){
-        // Kalau ga ada bayaran, langsung ganti status
         await update(ref(db,"/anggota/" + key),{status:"keluar",tanggalKeluar:new Date().toISOString().slice(0,10)});
+        await simpanLog("PROSES_KELUAR", {idAnggota: idAnggota, nama: nama, totalBayar: 0});
         alert("Anggota telah berstatus KELUAR.");
         return;
     }
@@ -456,12 +476,13 @@ window.prosesKeluarAnggota = async function(key){
     updates['anggota/' + key + '/tanggalKeluar'] = new Date().toISOString().slice(0,10);
 
     await update(ref(db), updates);
+
+    // SIMPAN LOG
+    await simpanLog("PROSES_KELUAR", {idAnggota: idAnggota, nama: nama, totalBayar: totalBayar});
+
     alert(`SUKSES!\nAnggota ${nama} sudah diproses keluar.\nTotal dibayar: Rp ${formatRp(totalBayar)}`);
   }
 };
-
-/* KELUARKAN ANGGOTA LAMA - HAPUS SAJA GANTI DENGAN PROSES KELUAR */
-window.keluarkanAnggota = window.prosesKeluarAnggota; 
 
 /* AKTIFKAN KEMBALI */
 window.aktifkanAnggota = async function(key){
@@ -473,6 +494,10 @@ window.aktifkanAnggota = async function(key){
   if(!yakin) return;
   try{
     await update(ref(db,"/anggota/" + key),{status:"aktif",tanggalMasukKembali:new Date().toISOString().slice(0,10)});
+
+    // SIMPAN LOG
+    await simpanLog("AKTIFKAN_ANGGOTA", {idAnggota: d.id, nama: d.nama});
+
     alert("Anggota berhasil diaktifkan kembali.");
   }catch(error){ alert("Gagal mengaktifkan anggota:\n"+ error.message); }
 };

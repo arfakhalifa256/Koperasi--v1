@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kas Koperasi</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -35,12 +33,11 @@ header{background:linear-gradient(to right,var(--primary),var(--primary-dark));c
 .form-group input,.form-group select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Poppins',sans-serif}
 .btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif}
 .btn-danger{background:var(--danger)}
-.btn-secondary{background:#64748b}
 .table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--border);border-radius:8px}
 table{width:100%;border-collapse:collapse;font-size:11px;min-width:750px}
 th{background:#f8fafc;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border);white-space:nowrap}
 td{padding:7px 8px;border-bottom:1px solid var(--border)}
-tr:hover{background:#f8fafc;cursor:pointer}
+tr:hover{background:#f8fafc}
 .text-right{text-align:right}
 .masuk{color:var(--success);font-weight:600}
 .keluar{color:var(--danger);font-weight:600}
@@ -64,7 +61,6 @@ tr:hover{background:#f8fafc;cursor:pointer}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
 .overlay.active{display:block;}
 .menu-btn{cursor:pointer;font-size:22px;padding:4px 8px;border-radius:6px}
-.note{font-size:10px;color:var(--muted);margin-top:5px}
 @media(max-width:768px){body{font-size:12px}.container{padding:10px}.summary-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -75,12 +71,9 @@ tr:hover{background:#f8fafc;cursor:pointer}
   <a href="dashboard.html"><span class="material-icons">home</span>Beranda</a>
   <div class="sidebar-section">Data Master</div>
   <a href="anggota.html">👤 Data Anggota</a><a href="kas.html" class="active">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
-  <div class="sidebar-section">Keuangan</div>
-  <a href="pinjaman.html">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
-  <div class="sidebar-section">Laporan</div>
-  <a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a>
-  <div class="sidebar-section">Pengaturan</div>
-  <a href="backup.html">💾 Backup Data</a><a href="user.html">⚙️ Kelola User</a><a href="#" id="btnLogout">🚪 Logout</a>
+  <div class="sidebar-section">Keuangan</div><a href="pinjaman.html">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
+  <div class="sidebar-section">Laporan</div><a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a><a href="log-aktivitas.html">📋 Log Aktivitas</a>
+  <div class="sidebar-section">Pengaturan</div><a href="backup.html">💾 Backup Data</a><a href="user.html">⚙️ Kelola User</a><a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
 
@@ -94,7 +87,6 @@ tr:hover{background:#f8fafc;cursor:pointer}
 
 <div class="container">
   <h3 class="page-title">KAS</h3>
-
   <div class="card">
     <div class="summary-grid total"><div class="summary-item total"><div class="label">Total Saldo</div><div class="value">Rp <span id="saldoTotal">0</span></div></div></div>
     <div class="summary-grid">
@@ -104,14 +96,14 @@ tr:hover{background:#f8fafc;cursor:pointer}
       <div class="summary-item"><div class="label">Kas Keluar</div><div class="value keluar">Rp <span id="totalKeluar">0</span></div></div>
     </div>
   </div>
-
-  <div class="card">
+  
+  <div class="card" id="cardSaldoAwal">
     <h3>⚙️ Pengaturan Saldo Awal</h3>
     <p style="font-size:11px;color:#6b7280;margin-bottom:10px">Atur saldo awal koperasi. Hanya bisa diakses Admin.</p>
     <button class="btn-primary" onclick="location.href='set-saldo.html'">Buka Halaman Set Saldo Awal</button>
   </div>
 
-  <div class="card">
+  <div class="card" id="cardInputKas">
     <h3>💵 Input Transaksi Kas</h3>
     <div class="form-grid">
       <div class="form-group"><label>Sumber Kas</label><select id="sumberKas"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
@@ -133,6 +125,7 @@ tr:hover{background:#f8fafc;cursor:pointer}
         <tbody id="riwayat"></tbody>
       </table>
     </div>
+    <p id="infoAkses" style="font-size:10px;color:#6b7280;margin-top:8px;display:none">*Mode User: Hanya lihat, tidak bisa input/edit</p>
   </div>
 </div>
 
@@ -156,34 +149,51 @@ tr:hover{background:#f8fafc;cursor:pointer}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, onValue, update, remove, get, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const role = localStorage.getItem("role") || "user";
-if(role!== "admin") {
-  document.querySelector("#btnSimpan").style.display="none";
-  document.querySelectorAll("input,select,button").forEach(el => { if(el.id!== "btnLogout") el.disabled=true; });
+const username = localStorage.getItem("username") || "Unknown";
+
+// ====== FIX AKSES HANYA ADMIN ======
+if(role !== "admin"){
+  document.getElementById("cardInputKas").style.display = "none";
+  document.getElementById("cardSaldoAwal").style.display = "none";
+  document.getElementById("infoAkses").style.display = "block";
 }
 
 const kasTransaksiRef = ref(db,"kas/transaksi");
 const saldoAwalRef = ref(db, "kas/saldoAwal");
 const anggotaRef = ref(db,"anggota");
 
-let editKey = null;
 let saldoCash = 0, saldoBank = 0, totalMasuk = 0, totalKeluar = 0;
 let dataSaldoAwal = {};
 let dataTransaksi = {};
 let dataAnggota = {};
 
-function toWIB(ms){ return ms + (7*60*60*1000); } // fungsi tambah 7 jam
+function toWIB(ms){ return ms + (7*60*60*1000); }
+
+function simpanLog(aksi, data){
+  try{
+    const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
+    push(ref(db, "/log_aktivitas"), {
+      waktu: Date.now(),
+      waktu_baca: waktu,
+      aksi: aksi,
+      oleh: username,
+      role: role,
+      username: data.namaAnggota || username,
+      ...data
+    });
+  }catch(e){ console.log(e); }
+}
 
 onValue(anggotaRef, snap => {
   dataAnggota = snap.val() || {};
   const sel = document.getElementById("anggotaSelect");
-  if(!sel) return;
   sel.innerHTML = "<option value=''>Pilih Anggota</option>";
   Object.entries(dataAnggota).forEach(([key, ag])=>{
     sel.innerHTML += `<option value="${key}">${ag.nama} - ${ag.id || ag.idAnggota || ''}</option>`;
@@ -193,14 +203,7 @@ onValue(anggotaRef, snap => {
 window.toggleAnggota = function(){
   const kat = document.getElementById("kategori").value;
   const formAnggota = document.getElementById("formAnggota");
-  const ket = document.getElementById("keterangan");
-  if(kat.includes("simpanan") || kat.includes("angsuran")){
-    formAnggota.style.display = "block";
-    ket.placeholder = "Contoh: Setoran Januari";
-  } else {
-    formAnggota.style.display = "none";
-    ket.placeholder = "Contoh: Listrik Januari";
-  }
+  formAnggota.style.display = (kat.includes("simpanan") || kat.includes("angsuran") || kat.includes("shu")) ? "block" : "none";
 }
 
 function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
@@ -216,12 +219,9 @@ document.getElementById("btnLogout").addEventListener("click", ()=>{ localStorag
 
 document.addEventListener("DOMContentLoaded", () => {
   const el = document.getElementById("userInfo");
-  const username = localStorage.getItem("username");
-  const role = localStorage.getItem("role");
-  if(!username ||!role){ el.innerHTML = "⚠️ Belum login"; return; }
   const jam = new Date().getHours();
   let salam = jam < 11? "Pagi" : jam < 15? "Siang" : jam < 18? "Sore" : "Malam";
-  el.innerHTML = `${salam}, <b>${username}</b>`;
+  el.innerHTML = `${salam}, <b>${username}</b> (${role})`;
 });
 
 function isiOpsiKategori(el, tipe, selected=""){
@@ -232,15 +232,12 @@ function isiOpsiKategori(el, tipe, selected=""){
     <option value="simpanan_sukarela" ${selected==="simpanan_sukarela"?"selected":""}>Simpanan Sukarela</option>
     <option value="angsuran_pokok" ${selected==="angsuran_pokok"?"selected":""}>Angsuran Pokok</option>
     <option value="pendapatan_jasa" ${selected==="pendapatan_jasa"?"selected":""}>Pendapatan Jasa</option>
-    <option value="pendapatan_lain" ${selected==="pendapatan_lain"?"selected":""}>Pendapatan Lain-lain</option>
-    <option value="pembayaran_shu" ${selected==="pembayaran_shu"?"selected":""}>Pembayaran SHU</option>`;
+    <option value="pendapatan_lain" ${selected==="pendapatan_lain"?"selected":""}>Pendapatan Lain-lain</option>`;
   } else {
     html = `<option value="konsumsi" ${selected==="konsumsi"?"selected":""}>Konsumsi</option>
     <option value="biaya_operasional" ${selected==="biaya_operasional"?"selected":""}>Biaya Operasional</option>
     <option value="pinjaman" ${selected==="pinjaman"?"selected":""}>Pinjaman</option>
     <option value="pengambilan_simpanan" ${selected==="pengambilan_simpanan"?"selected":""}>Pengambilan Simpanan</option>
-    <option value="pengembalian_simpanan" ${selected==="pengembalian_simpanan"?"selected":""}>Pengembalian Simpanan</option>
-    <option value="pembayaran_shu" ${selected==="pembayaran_shu"?"selected":""}>Pembayaran SHU</option>
     <option value="transfer_bank" ${selected==="transfer_bank"?"selected":""}>Transfer Bank</option>`;
   }
   el.innerHTML = html;
@@ -249,34 +246,30 @@ function isiOpsiKategori(el, tipe, selected=""){
 window.toggleKategori = function(){
   const tipe = document.getElementById("tipe").value;
   isiOpsiKategori(document.getElementById("kategori"), tipe === "biaya"? "keluar" : tipe);
+  toggleAnggota();
 }
-
 window.toggleEditKategori = function(){
   const tipe = document.getElementById("editKasTipe").value;
   isiOpsiKategori(document.getElementById("editKasKategori"), tipe === "biaya"? "keluar" : tipe);
 }
 
 document.getElementById("btnSimpan").onclick = async()=>{
+  if(role !== "admin"){ alert("Hanya admin yang bisa input kas!"); return; }
   const sumberKas = document.getElementById("sumberKas").value;
   let tipe = document.getElementById("tipe").value;
   const jumlah = Number(document.getElementById("jumlah").value);
   let ket = document.getElementById("keterangan").value;
-  const tanggalInput = document.getElementById("tanggal").value; // FIX: deklarasi dulu
+  const tanggalInput = document.getElementById("tanggal").value;
   const kategori = document.getElementById("kategori").value || "";
   const anggotaId = document.getElementById("anggotaSelect").value;
-  const username = localStorage.getItem("username") || "Unknown";
-
   if(!jumlah){ alert("Jumlah wajib diisi"); return; }
-
   let namaAnggota = "";
-  let keteranganFinal = ket;
-
+  let keteranganFinal = ket || kategori;
   if(kategori.includes("simpanan") || kategori.includes("angsuran") || kategori.includes("shu")){
     if(!anggotaId){ alert("Pilih anggota dulu"); return; }
     namaAnggota = dataAnggota[anggotaId]?.nama || "-";
     keteranganFinal = `${namaAnggota} - ${ket || kategori}`;
   }
-
   if((tipe==="keluar" || tipe==="biaya")){
     let saldoSaatIni = sumberKas === "cash"? saldoCash : saldoBank;
     if(jumlah > saldoSaatIni){
@@ -284,44 +277,17 @@ document.getElementById("btnSimpan").onclick = async()=>{
       return;
     }
   }
-
   if(tipe === "biaya") tipe = "keluar";
-  const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now()); // FIX: cuma 1x deklarasi + tambah 7 jam
-
-  const dataTransaksiBaru = {
-    sumberKas, tipe, jumlah, kategori,
-    keterangan: keteranganFinal,
-    anggotaId: anggotaId || null,
-    namaAnggota: namaAnggota || null,
-    tanggal
-  }
-
+  const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now());
+  const dataTransaksiBaru = { sumberKas, tipe, jumlah, kategori, keterangan: keteranganFinal, anggotaId: anggotaId || null, namaAnggota: namaAnggota || null, tanggal }
   const snapKas = await push(kasTransaksiRef, dataTransaksiBaru);
-
-  await push(ref(db,"audit/log"),{
-    tanggal: toWIB(Date.now()),
-    aksi: tipe === "masuk"? "KAS MASUK" : "KAS KELUAR",
-    user: username,
-    role: role,
-    keterangan: keteranganFinal,
-    jumlah: jumlah,
-    sumberKas: sumberKas,
-    kategori: kategori,
-    anggotaId: anggotaId || null,
-    refKas: snapKas.key
-  });
-
+  await push(ref(db,"audit/log"),{ tanggal: toWIB(Date.now()), aksi: tipe === "masuk"? "KAS MASUK" : "KAS KELUAR", user: username, role: role, keterangan: keteranganFinal, jumlah: jumlah, sumberKas: sumberKas, kategori: kategori, anggotaId: anggotaId || null, refKas: snapKas.key });
+  simpanLog(tipe === "masuk"? "KAS_MASUK" : "KAS_KELUAR", { idAnggota: anggotaId || "-", nama: namaAnggota || "-", namaAnggota: namaAnggota || keteranganFinal, jumlah: jumlah, kategori: kategori, sumberKas: sumberKas, keterangan: keteranganFinal });
   alert("Data berhasil disimpan");
-  document.getElementById("jumlah").value="";
-  document.getElementById("keterangan").value="";
-  document.getElementById("anggotaSelect").value=""
+  document.getElementById("jumlah").value=""; document.getElementById("keterangan").value=""; document.getElementById("anggotaSelect").value=""
 }
 
-onValue(saldoAwalRef, snap => {
-  dataSaldoAwal = snap.val() || {};
-  hitungDanRender();
-});
-
+onValue(saldoAwalRef, snap => { dataSaldoAwal = snap.val() || {}; hitungDanRender(); });
 onValue(kasTransaksiRef, snap => { dataTransaksi = snap.val() || {}; hitungDanRender(); });
 
 function hitungDanRender(){
@@ -331,33 +297,21 @@ function hitungDanRender(){
   const riwayat = document.getElementById("riwayat");
   riwayat.innerHTML = "";
   if (!dataTransaksi || Object.keys(dataTransaksi).length === 0) { updateSummary(); return; }
-
   const data = Object.entries(dataTransaksi).sort((a,b)=> Number(b[1].tanggal) - Number(a[1].tanggal));
-
   data.forEach(([key, i]) => {
     let jumlah = Number(i.jumlah) || 0;
     let tipe = String(i.tipe || "").toLowerCase();
-    const sumber = String(i.sumberKas || "cash").toLowerCase();
     if(tipe === "biaya") tipe = "keluar";
-    const tanggal = i.tanggal? new Date(Number(i.tanggal)).toLocaleString("id-ID",{ 
-        day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit",
-        timeZone: "Asia/Jakarta"  // PAKSA WIB
-    }) : "-";
+    const sumber = String(i.sumberKas || "cash").toLowerCase();
+    const tanggal = i.tanggal? new Date(Number(i.tanggal)).toLocaleString("id-ID",{ day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", timeZone: "Asia/Jakarta" }) : "-";
     if (tipe === "masuk") totalMasuk += jumlah; else totalKeluar += jumlah;
     if (sumber === "cash") { if (tipe === "masuk") saldoCash += jumlah; else saldoCash -= jumlah; }
     if (sumber === "bank") { if (tipe === "masuk") saldoBank += jumlah; else saldoBank -= jumlah; }
     let className = tipe === "masuk"? "masuk" : "keluar";
     let labelTipe = tipe === "masuk"? "MASUK" : "KELUAR";
-    const namaKategori = {
-      'angsuran_pokok': 'Angsuran Pokok','pendapatan_jasa': 'Pendapatan Jasa','simpanan_sukarela': 'Simpanan Sukarela',
-      'simpanan_pokok': 'Simpanan Pokok','simpanan_wajib': 'Simpanan Wajib','biaya_operasional': 'Biaya Operasional',
-      'pengambilan_simpanan': 'Ambil Simpanan','pengembalian_simpanan': 'Kembalikan Simpanan','pembayaran_shu': 'Pembayaran SHU'
-    }[i.kategori] || i.kategori || '-';
-
     const namaAnggota = i.namaAnggota || "-";
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${tanggal}</td><td>${i.keterangan || "-"}</td><td class="${className}">${labelTipe}</td><td class="text-right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${namaKategori}</td><td>${namaAnggota}</td>`;
-
+    tr.innerHTML = `<td>${tanggal}</td><td>${i.keterangan || "-"}</td><td class="${className}">${labelTipe}</td><td class="text-right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${i.kategori || '-'}</td><td>${namaAnggota}</td>`;
     if (role === "admin") { tr.style.cursor = "pointer"; tr.addEventListener("click", () => editKas(key)); }
     riwayat.appendChild(tr);
   });
@@ -373,10 +327,9 @@ function updateSummary(){
 }
 
 window.editKas = async function(key){
+  if(role !== "admin"){ return; }
   const snap = await get(ref(db, "kas/transaksi/"+key));
-  const d = snap.val();
-  if(!d) return;
-  editKey = key;
+  const d = snap.val(); if(!d) return;
   document.getElementById("editKasKey").value = key;
   document.getElementById("editKasSumber").value = d.sumberKas || "cash";
   document.getElementById("editKasTipe").value = d.tipe === "keluar"? "keluar" : "masuk";
@@ -384,74 +337,37 @@ window.editKas = async function(key){
   document.getElementById("editKasKategori").value = d.kategori || "";
   document.getElementById("editKasJumlah").value = d.jumlah || 0;
   document.getElementById("editKasKeterangan").value = d.keterangan || "";
-  if(d.tanggal){
-    const t = new Date(Number(d.tanggal) - 7*60*60*1000); // KURANGI 7 JAM BUAT EDIT
-    const iso = t.toISOString().slice(0,16);
-    document.getElementById("editKasTanggal").value = iso;
-  }
+  if(d.tanggal){ const t = new Date(Number(d.tanggal) - 7*60*60*1000); document.getElementById("editKasTanggal").value = t.toISOString().slice(0,16); }
   document.getElementById("modalEditKas").classList.add("show");
 }
-
 window.tutupModalKas = function(){ document.getElementById("modalEditKas").classList.remove("show"); }
-
 window.updateKas = async function(){
+  if(role !== "admin"){ alert("Hanya admin!"); return; }
   const key = document.getElementById("editKasKey").value;
-  const username = localStorage.getItem("username") || "Unknown";
-  const snapLama = await get(ref(db,"kas/transaksi/"+key));
-  const dataLama = snapLama.val();
-
+  const snapLama = await get(ref(db,"kas/transaksi/"+key)); const dataLama = snapLama.val();
   const sumber = document.getElementById("editKasSumber").value;
   let tipe = document.getElementById("editKasTipe").value;
   const kategori = document.getElementById("editKasKategori").value || "";
   const jumlah = Number(document.getElementById("editKasJumlah").value);
   const keterangan = document.getElementById("editKasKeterangan").value;
   const tanggalInput = document.getElementById("editKasTanggal").value;
-  const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now()); // FIX WIB
+  const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now());
   if(tipe === "biaya") tipe = "keluar";
-
   await update(ref(db,"kas/transaksi/"+key), { sumberKas: sumber, tipe, kategori, jumlah, keterangan: keterangan||"Transaksi Kas", tanggal });
-
-  await push(ref(db,"audit/log"),{
-    tanggal: toWIB(Date.now()),
-    aksi: "EDIT TRANSAKSI",
-    user: username,
-    role: role,
-    keterangan: `Dari: ${dataLama.keterangan} -> Ke: ${keterangan}`,
-    jumlah: jumlah,
-    refKas: key
-  });
-
-  alert("Data berhasil diperbarui");
-  tutupModalKas();
+  simpanLog("EDIT_KAS", { idAnggota: dataLama.anggotaId || "-", nama: dataLama.namaAnggota || "-", namaAnggota: dataLama.namaAnggota || keterangan, jumlah: jumlah, jumlahLama: dataLama.jumlah, kategori: kategori, keterangan: keterangan });
+  alert("Data berhasil diperbarui"); tutupModalKas();
 }
-
 window.hapusKasModal = async function(){
-  const key = document.getElementById("editKasKey").value;
-  const username = localStorage.getItem("username") || "Unknown";
-  if(!key) return;
-
-  const snapLama = await get(ref(db,"kas/transaksi/"+key));
-  const dataLama = snapLama.val();
-
+  if(role !== "admin"){ alert("Hanya admin!"); return; }
+  const key = document.getElementById("editKasKey").value; if(!key) return;
+  const snapLama = await get(ref(db,"kas/transaksi/"+key)); const dataLama = snapLama.val();
   if(confirm("Yakin ingin menghapus transaksi ini?")){
     await remove(ref(db,"kas/transaksi/"+key));
-    await push(ref(db,"audit/log"),{
-      tanggal: toWIB(Date.now()),
-      aksi: "HAPUS TRANSAKSI",
-      user: username,
-      role: role,
-      keterangan: dataLama.keterangan,
-      jumlah: dataLama.jumlah,
-      refKas: key
-    });
-    alert("Data berhasil dihapus");
-    tutupModalKas();
+    simpanLog("HAPUS_KAS", { idAnggota: dataLama.anggotaId || "-", nama: dataLama.namaAnggota || "-", namaAnggota: dataLama.namaAnggota || dataLama.keterangan, jumlah: dataLama.jumlah, kategori: dataLama.kategori, keterangan: dataLama.keterangan });
+    alert("Data berhasil dihapus"); tutupModalKas();
   }
 }
-
-// FIX DEFAULT TANGGAL WIB
-const now = new Date();
-now.setHours(now.getHours() + 7);
+const now = new Date(); now.setHours(now.getHours() + 7);
 document.getElementById("tanggal").value = now.toISOString().slice(0,16);
 toggleKategori();
 </script>

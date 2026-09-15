@@ -12,9 +12,9 @@
 :root{--primary:#1e90ff;--primary-dark:#0f3057;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--shadow:0 2px 8px rgba(0,0,0,0.06);--radius:14px;--success:#10b981;--danger:#dc2626;--warning:#f59e0b;}
 body{background:var(--bg);color:var(--text);font-size:13px;padding-bottom:20px;}
 header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 12px rgba(30,144,255,.25);position:sticky;top:0;z-index:100}
-.brand {display: flex;align-items: center;gap: 10px;font-weight:700;}
-.brand img {width: 36px;height: 36px;border-radius: 50%;background: #fff;padding: 2px;}
-.menu-btn {cursor: pointer;font-size: 22px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.15);}
+.brand {display:flex;align-items:center;gap:10px;font-weight:700;}
+.brand img {width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;}
+.menu-btn {cursor:pointer;font-size:22px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.15);}
 .container{padding:15px;max-width:900px;margin:0 auto}
 .card{background:#fff;padding:18px;border-radius:var(--radius);margin-bottom:15px;box-shadow:var(--shadow)}
 h2{margin-bottom:15px;font-size:16px;color:var(--primary-dark)}
@@ -43,7 +43,7 @@ button:hover{transform:translateY(-1px)}
 .modal-content{background:#fff;width:95%;max-width:500px;border-radius:16px;padding:20px;max-height:90vh;overflow:auto}
 .btn-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
 .info-box{background:#eff6ff;padding:12px;border-radius:12px;margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center}
-.info-box div b{font-size:15px;color:var(--primary-dark)}
+.info-box div b{font-size:12px;color:var(--primary-dark)}
 .info-box div small{color:var(--muted)}
 .sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:var(--primary-dark);padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;}
 .sidebar.open{left:0;}
@@ -67,7 +67,7 @@ button:hover{transform:translateY(-1px)}
   <div class="sidebar-section">Data Master</div>
   <a href="anggota.html">👤 Data Anggota</a><a href="kas.html">💵 Kas</a><a href="angsuran.html" class="active">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
   <div class="sidebar-section">Keuangan</div><a href="pinjaman.html">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
-  <div class="sidebar-section">Laporan</div><a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a>
+  <div class="sidebar-section">Laporan</div><a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a><a href="log-aktivitas.html">📋 Log Aktivitas</a>
   <div class="sidebar-section">Pengaturan</div><a href="backup.html">💾 Backup Data</a><a href="user.html">⚙️ Kelola User</a><a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
@@ -84,18 +84,14 @@ button:hover{transform:translateY(-1px)}
     <div class="form-group"><label>Tanggal</label><input type="date" id="tanggal"></div>
     <div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih</option><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
     <div class="form-group"><label>Tagihan Bulan Ini</label><input type="text" id="tagihan" disabled></div>
-
-    <!-- INI FIELD BARU -->
     <div class="form-group">
       <label>Jumlah Bayar <small style="color:var(--warning)">*Isi sesuai uang yang diterima</small></label>
       <input type="text" id="jumlahBayar" placeholder="Rp 0">
       <div class="hint">Contoh: Tagihan 200rb, bayar 300rb. Maka 100rb masuk simpanan</div>
     </div>
-
     <div class="form-group"><label>Alokasi Pokok <small>(auto)</small></label><input type="text" id="pokok" disabled></div>
     <div class="form-group"><label>Alokasi Jasa <small>(auto)</small></label><input type="text" id="jasa" disabled></div>
     <div class="form-group"><label>Masuk Simpanan Sukarela <small>(auto dari kelebihan)</small></label><input type="text" id="simpanan" disabled></div>
-
     <div class="info-box">
       <div>Total Bayar<br><b id="totalBayar">Rp0</b></div>
       <div>Sisa Pokok<br><b id="sisaPokok">Rp0</b></div>
@@ -146,7 +142,7 @@ const db = getDatabase(app);
 const role = (localStorage.getItem("role") || "user").toLowerCase();
 const username = localStorage.getItem("username");
 if(!username){ alert("Silakan login dulu"); window.location.href = "index.html"; }
-if(role!== "admin"){ document.getElementById("formInput").style.display = "none"; document.querySelectorAll('.sidebar a[href="kas.html"],.sidebar a[href="pinjaman.html"],.sidebar a[href="user.html"]').forEach(el=> el.style.display = "none"); }
+if(role!== "admin"){ document.getElementById("formInput").style.display = "none"; }
 
 const pinjamanRef = ref(db,"pinjaman");
 const angsuranRef = ref(db,"angsuran");
@@ -168,6 +164,22 @@ function rupiah(n){ return Number(n || 0).toLocaleString("id-ID", {style:"curren
 function getNumber(v){ return parseInt(String(v).replace(/\D/g,'')) || 0; }
 function formatRupiahInput(el){ el.addEventListener("input", function(){ let angka = this.value.replace(/\D/g,''); this.value = angka? "Rp " + Number(angka).toLocaleString("id-ID") : ""; hitungAlokasi(); }); }
 formatRupiahInput(jumlahBayarEl);
+
+/* ========== LOG AKTIVITAS TERPUSAT - BARU ========== */
+function simpanLog(aksi, data){
+  try{
+    const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
+    push(ref(db, "/log_aktivitas"), {
+      waktu: Date.now(),
+      waktu_baca: waktu,
+      aksi: aksi,
+      oleh: username || "Admin",
+      role: role,
+      username: data.nama || username,
+    ...data
+    }).catch(e=> console.log("Log gagal:", e.message));
+  }catch(e){ console.log(e); }
+}
 
 function showToast(msg,error=false){ const toast = document.getElementById("toast"); toast.innerText = msg; toast.className = "toast show" + (error? " error" : ""); setTimeout(()=>{ toast.className = "toast"; },2500); }
 
@@ -206,29 +218,23 @@ function updateInfo(){
   document.getElementById("tagihan").value = rupiah(pokokTagihan + jasaTagihan);
   document.getElementById("sisaPokok").innerText = rupiah(sisaPokok);
   document.getElementById("sisaJasa").innerText = rupiah(sisaJasa);
-  hitungAlokasi(); // hitung ulang
+  hitungAlokasi();
 }
 
-// INI FUNGSI BARU: HITUNG ALOKASI OTOMATIS
 function hitungAlokasi(){
   if(!pinIdAktif) return;
   const jumlahBayar = getNumber(jumlahBayarEl.value);
   const { pokokTagihan, jasaTagihan } = hitungTagihanBerjalan(pinIdAktif);
   const wajib = pokokTagihan + jasaTagihan;
-
   let alokasiPokok = 0; let alokasiJasa = 0; let alokasiSimpanan = 0;
-
   if(jumlahBayar <= wajib){
-    // Bayar kurang / pas
     alokasiPokok = Math.min(jumlahBayar, pokokTagihan);
     alokasiJasa = Math.min(jumlahBayar - alokasiPokok, jasaTagihan);
   } else {
-    // Bayar lebih
     alokasiPokok = pokokTagihan;
     alokasiJasa = jasaTagihan;
     alokasiSimpanan = jumlahBayar - wajib;
   }
-
   pokokEl.value = rupiah(alokasiPokok);
   jasaEl.value = rupiah(alokasiJasa);
   simpananEl.value = rupiah(alokasiSimpanan);
@@ -237,7 +243,6 @@ function hitungAlokasi(){
 
 jumlahBayarEl.addEventListener("input", hitungAlokasi);
 
-// SIMPAN
 document.getElementById("btnSimpan").onclick = async ()=>{
   if(role!== "admin"){ showToast("Akses ditolak. Hanya Admin", true); return; }
   if(!pinIdAktif) return showToast("Pilih peminjam",true);
@@ -253,21 +258,32 @@ document.getElementById("btnSimpan").onclick = async ()=>{
     if (pokokInput > 0) { const kasPokok = push(kasRef); await set(kasPokok, { jumlah: pokokInput, kategori: "angsuran_pokok", tipe: "masuk", sumberKas: metode, tanggal, keterangan: `Angsuran Pokok ${anggota.nama} (${p.nomor})`, angsuranId: angsuranBaru.key, anggotaId: anggota.key, idAnggota: anggota.idAnggota }); await updateData(ref(db,"angsuran/" + angsuranBaru.key), { kasPokokId: kasPokok.key }); }
     if (jasaInput > 0) { const kasJasa = push(kasRef); await set(kasJasa, { jumlah: jasaInput, kategori: "pendapatan_jasa", tipe: "masuk", sumberKas: metode, tanggal, keterangan: `Pendapatan Jasa ${anggota.nama} (${p.nomor})`, angsuranId: angsuranBaru.key, anggotaId: anggota.key, idAnggota: anggota.idAnggota }); await updateData(ref(db,"angsuran/" + angsuranBaru.key), { kasJasaId: kasJasa.key }); }
     if (simpananInput > 0) { const kasSimpanan = push(kasRef); await set(kasSimpanan, { jumlah: simpananInput, kategori: "simpanan_sukarela", tipe: "masuk", sumberKas: metode, tanggal, keterangan: `Simpanan Sukarela ${anggota.nama} (${p.nomor})`, angsuranId: angsuranBaru.key, anggotaId: anggota.key, idAnggota: anggota.idAnggota }); await updateData(ref(db,"angsuran/" + angsuranBaru.key), { kasSimpananId: kasSimpanan.key }); const simpananBaru = push(ref(db, "/simpanan")); await set(simpananBaru, { anggotaId: anggota.key, idAnggota: anggota.idAnggota, nama: anggota.nama, jenis: "sukarela", jumlah: simpananInput, metode, keterangan: `Kelebihan bayar angsuran ${p.nomor}`, tanggal, angsuranId: angsuranBaru.key }); }
-    
-    // 4. CATAT KE AUDIT LOG
+
     await push(ref(db,"/audit/log"),{
-  tanggal: tanggal,
-  aksi: "BAYAR ANGSURAN",
-  user: username || "Admin",
-  role: role,
-  keterangan: `${anggota.nama} - Angsuran ke-? Pinj:${p.nomor} Rp ${jumlahBayarInput.toLocaleString("id-ID")}`,
-  jumlah: jumlahBayarInput,
-  anggotaId: anggota.key,
-  refPinjaman: pinIdAktif,
-  refAngsuran: angsuranBaru.key,
-  detail: `Pokok:${pokokInput} Jasa:${jasaInput} Simpanan:${simpananInput}`
-});
-    
+      tanggal: tanggal,
+      aksi: "BAYAR ANGSURAN",
+      user: username || "Admin",
+      role: role,
+      keterangan: `${anggota.nama} - Pinj:${p.nomor} Rp ${jumlahBayarInput.toLocaleString("id-ID")}`,
+      jumlah: jumlahBayarInput,
+      anggotaId: anggota.key,
+      refPinjaman: pinIdAktif,
+      refAngsuran: angsuranBaru.key,
+      detail: `Pokok:${pokokInput} Jasa:${jasaInput} Simpanan:${simpananInput}`
+    });
+
+    simpanLog("BAYAR_ANGSURAN", {
+      idAnggota: anggota.idAnggota,
+      userId: anggota.idAnggota,
+      nama: anggota.nama,
+      nomor: p.nomor,
+      jumlah: jumlahBayarInput,
+      pokok: pokokInput,
+      jasa: jasaInput,
+      simpanan: simpananInput,
+      metode: metode
+    });
+
     showToast(`Pokok ${rupiah(pokokInput)} + Jasa ${rupiah(jasaInput)} + Simpanan ${rupiah(simpananInput)} tersimpan`);
     angsuranTerakhirId = angsuranBaru.key; btnNota.disabled = false;
     cetakNotaAngsuran(angsuranBaru.key);
@@ -277,61 +293,45 @@ document.getElementById("btnSimpan").onclick = async ()=>{
 
 window.cetakNotaAngsuran = function(id){
   const a = dataAngsuran[id]; if(!a) return;
-  const { jsPDF } = window.jspdf; 
+  const { jsPDF } = window.jspdf;
   const doc = new jsPDF("p","mm","a4");
-
   const pageWidth = doc.internal.pageSize.getWidth();
   let y = 15;
-
-  // 1. KOP
   doc.setFontSize(16); doc.setFont("helvetica", 'bold');
   doc.text("KOPERASI ARFA DRIVER", pageWidth/2, y, { align: "center" }); y += 6;
   doc.setFontSize(10); doc.setFont("helvetica", 'normal');
   doc.text("Bukti Pembayaran Angsuran", pageWidth/2, y, { align: "center" }); y += 8;
   doc.line(15, y, 195, y); y += 7;
-
-  // 2. DATA - INI YANG DIUBAH
   doc.setFontSize(11);
-  
-  // Bikin No Bukti yang rapi: AGS/09092026/001
   const tgl = new Date(a.tanggal);
-  const tglFormat = tgl.toLocaleDateString("id-ID").replace(/\//g,""); // 09092026
-  const noUrut = String(Object.keys(dataAngsuran).indexOf(id) + 1).padStart(3, '0'); // 001, 002 dst
+  const tglFormat = tgl.toLocaleDateString("id-ID").replace(/\//g,"");
+  const noUrut = String(Object.keys(dataAngsuran).indexOf(id) + 1).padStart(3, '0');
   const noBukti = `AGS/${tglFormat}/${noUrut}`;
-
   doc.text("No. Bukti", 15, y); doc.text(": " + noBukti, 55, y); y += 6;
   doc.text("Tanggal", 15, y); doc.text(": " + tgl.toLocaleDateString("id-ID"), 55, y); y += 6;
   doc.text("Nama Anggota", 15, y); doc.text(": " + a.nama, 55, y); y += 6;
   doc.text("No. Pinjaman", 15, y); doc.text(": " + (a.idPinjaman || '-'), 55, y); y += 6;
   doc.text("Metode", 15, y); doc.text(": " + (a.metode || 'cash').toUpperCase(), 55, y); y += 8;
-
-  // 3. RINCIAN
   doc.line(15, y, 195, y); y += 6;
-  doc.setFont("helvetica", 'bold'); 
+  doc.setFont("helvetica", 'bold');
   doc.text("RINCIAN PEMBAYARAN", pageWidth/2, y, { align: "center" }); y += 7;
-  doc.setFont("helvetica", 'normal'); 
+  doc.setFont("helvetica", 'normal');
   doc.text("Uraian", 20, y); doc.text("Jumlah", 190, y, { align: "right" }); y += 2;
   doc.line(15, y, 195, y); y += 6;
-
   doc.text("Jumlah Diterima", 20, y); doc.text(rupiah(a.jumlahBayar), 190, y, { align: "right" }); y += 6;
   doc.text("Angsuran Pokok", 20, y); doc.text(rupiah(a.pokok), 190, y, { align: "right" }); y += 6;
   doc.text("Angsuran Jasa", 20, y); doc.text(rupiah(a.jasa), 190, y, { align: "right" }); y += 6;
-  if(Number(a.bayarSimpanan) > 0){ 
-    doc.text("Simpanan Sukarela", 20, y); doc.text(rupiah(a.bayarSimpanan), 190, y, { align: "right" }); y += 6; 
-  }
-  
+  if(Number(a.bayarSimpanan) > 0){ doc.text("Simpanan Sukarela", 20, y); doc.text(rupiah(a.bayarSimpanan), 190, y, { align: "right" }); y += 6; }
   doc.line(15, y, 195, y); y += 6;
-  doc.setFont("helvetica", 'bold'); 
+  doc.setFont("helvetica", 'bold');
   doc.text("SISA KEMBALI", 20, y); doc.text(rupiah(0), 190, y, { align: "right" }); y += 10;
-
-  // 4. FOOTER
-  doc.setFontSize(9); doc.setFont("helvetica", 'normal'); 
+  doc.setFontSize(9); doc.setFont("helvetica", 'normal');
   doc.text("Terima kasih atas pembayarannya", pageWidth/2, y, { align: "center" }); y += 15;
   doc.text("Petugas", 30, y); doc.text("Anggota", 180, y, { align: "right" }); y += 15;
   doc.text("(___________)", 30, y); doc.text("(___________)", 180, y, { align: "right" });
-
-  doc.save("nota_angsuran_" + noBukti.replace(/\//g,"-") + ".pdf"); // nama file juga ikut rapi
+  doc.save("nota_angsuran_" + noBukti.replace(/\//g,"-") + ".pdf");
 };
+
 window.kirimNotaRiwayat = async function(angsuranId){ const a = dataAngsuran[angsuranId]; if(!a){ showToast("Data angsuran tidak ditemukan", true); return; } const anggota = await getAnggotaByPinjaman(a.pinjamanId); if(!anggota ||!anggota.telepon){ showToast("Nomor telepon anggota belum diisi", true); return; } let nohp = String(anggota.telepon).replace(/[^0-9]/g, ''); if(nohp.startsWith('0')){ nohp = '62' + nohp.slice(1); } const pesan = `*BUKTI ANGSURAN*\nKoperasi ARFA DRIVER\nNama: ${anggota.nama}\nNo. Pinjaman: ${a.idPinjaman || '-'}\nTanggal: ${new Date(a.tanggal).toLocaleDateString('id-ID')}\nJumlah Bayar: ${rupiah(a.jumlahBayar)}\nPokok: ${rupiah(a.pokok)}\nJasa: ${rupiah(a.jasa)}\nSimpanan: ${rupiah(a.bayarSimpanan || 0)}\nMetode: ${(a.metode || 'cash').toUpperCase()}\n\nTerima kasih.`; window.open(`https://wa.me/${nohp}?text=${encodeURIComponent(pesan)}`, '_blank'); }
 
 window.editAngsuran = function(id){ if(role!== "admin"){ showToast("Akses ditolak. Hanya Admin", true); return; } const a = dataAngsuran[id]; if(!a) return; document.getElementById("editAngsuranId").value = id; document.getElementById("editAngsuranNama").value = a.nama || "-"; document.getElementById("editAngsuranTanggal").value = a.tanggal? new Date(a.tanggal).toISOString().split("T")[0] : ""; document.getElementById("editAngsuranMetode").value = a.metode || "cash"; document.getElementById("editJumlahBayar").value = a.jumlahBayar? "Rp " + a.jumlahBayar.toLocaleString("id-ID") : ""; document.getElementById("editAngsuranPokok").value = a.pokok? "Rp " + a.pokok.toLocaleString("id-ID") : ""; document.getElementById("editAngsuranJasa").value = a.jasa? "Rp " + a.jasa.toLocaleString("id-ID") : ""; document.getElementById("editAngsuranSimpanan").value = a.bayarSimpanan? "Rp " + a.bayarSimpanan.toLocaleString("id-ID") : ""; document.getElementById("modalEditAngsuran").classList.add("show"); };
@@ -341,78 +341,39 @@ document.getElementById("editJumlahBayar").addEventListener("input",function(){ 
 
 document.getElementById("btnUpdateAngsuran").onclick = async ()=>{
   if(role!== "admin"){ showToast("Akses ditolak. Hanya Admin", true); return; }
-
   const id = document.getElementById("editAngsuranId").value;
   const jumlahBayarBaru = getNumber(document.getElementById("editJumlahBayar").value);
   const tanggalBaru = new Date(document.getElementById("editAngsuranTanggal").value).getTime();
   const metodeBaru = document.getElementById("editAngsuranMetode").value;
-
   if(!id || jumlahBayarBaru <= 0) return showToast("Data tidak valid", true);
-
   try{
     const aLama = dataAngsuran[id];
-    const p = dataPinjaman[aLama.pinjamanId];
-
-    // Hitung ulang alokasi
-    const wajib = Number(aLama.pokok) + Number(aLama.jasa) + Number(aLama.bayarSimpanan || 0);
-    // Sederhananya: kita update jumlah bayar total saja. Alokasi detail biar manual dulu
-
-    await updateData(ref(db,"angsuran/" + id),{
-      jumlahBayar: jumlahBayarBaru,
-      tanggal: tanggalBaru,
-      metode: metodeBaru
-    });
-
-    // CATAT AUDIT
-    await push(ref(db,"/audit/log"),{
-      tanggal: Date.now(),
-      aksi: "EDIT ANGSURAN",
-      user: username,
-      role: role,
-      keterangan: `${aLama.nama} - Edit Angsuran Rp ${jumlahBayarBaru.toLocaleString("id-ID")}`,
-      jumlah: jumlahBayarBaru,
-      anggotaId: aLama.anggotaId,
-      refAngsuran: id
-    });
-
+    await updateData(ref(db,"angsuran/" + id),{ jumlahBayar: jumlahBayarBaru, tanggal: tanggalBaru, metode: metodeBaru });
+    await push(ref(db,"/audit/log"),{ tanggal: Date.now(), aksi: "EDIT ANGSURAN", user: username, role: role, keterangan: `${aLama.nama} - Edit Angsuran Rp ${jumlahBayarBaru.toLocaleString("id-ID")}`, jumlah: jumlahBayarBaru, anggotaId: aLama.anggotaId, refAngsuran: id });
+    simpanLog("EDIT_ANGSURAN", { idAnggota: aLama.idAnggota, userId: aLama.idAnggota, nama: aLama.nama, nomor: aLama.idPinjaman, jumlah: jumlahBayarBaru, jumlahLama: aLama.jumlahBayar, metode: metodeBaru });
     showToast("Data angsuran berhasil diupdate");
     window.tutupEditAngsuran();
   }catch(err){ console.error(err); showToast("Gagal update: " + err.message,true); }
 };
-  
-  document.getElementById("btnHapusAngsuran").onclick = async ()=>{
+
+document.getElementById("btnHapusAngsuran").onclick = async ()=>{
   if(role!== "admin"){ showToast("Akses ditolak. Hanya Admin", true); return; }
   const id = document.getElementById("editAngsuranId").value;
   if(!id) return;
   if(!confirm("Yakin hapus data angsuran ini? Data kas juga akan dihapus")) return;
-
   try{
     const a = dataAngsuran[id];
-
-    // Hapus kas terkait
     if(a.kasPokokId) await remove(ref(db,"kas/transaksi/" + a.kasPokokId));
     if(a.kasJasaId) await remove(ref(db,"kas/transaksi/" + a.kasJasaId));
     if(a.kasSimpananId) await remove(ref(db,"kas/transaksi/" + a.kasSimpananId));
-
-    // Hapus angsuran
     await remove(ref(db,"angsuran/" + id));
-
-    // CATAT AUDIT
-    await push(ref(db,"/audit/log"),{
-      tanggal: Date.now(),
-      aksi: "HAPUS ANGSURAN",
-      user: username,
-      role: role,
-      keterangan: `${a.nama} - Hapus Angsuran Rp ${Number(a.jumlahBayar).toLocaleString("id-ID")}`,
-      jumlah: Number(a.jumlahBayar),
-      anggotaId: a.anggotaId,
-      refAngsuran: id
-    });
-
+    await push(ref(db,"/audit/log"),{ tanggal: Date.now(), aksi: "HAPUS ANGSURAN", user: username, role: role, keterangan: `${a.nama} - Hapus Angsuran Rp ${Number(a.jumlahBayar).toLocaleString("id-ID")}`, jumlah: Number(a.jumlahBayar), anggotaId: a.anggotaId, refAngsuran: id });
+    simpanLog("HAPUS_ANGSURAN", { idAnggota: a.idAnggota, userId: a.idAnggota, nama: a.nama, nomor: a.idPinjaman, jumlah: Number(a.jumlahBayar), metode: a.metode });
     showToast("Data angsuran berhasil dihapus");
     window.tutupEditAngsuran();
   }catch(err){ console.error(err); showToast("Gagal hapus: " + err.message,true); }
-};tanggalEl.value = new Date().toISOString().split("T")[0];
+};
+tanggalEl.value = new Date().toISOString().split("T")[0];
 </script>
 </body>
 </html>

@@ -8,7 +8,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <style>
-/* CSS KAMU TETAP SAMA */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--primary:#3b82f6;--primary-dark:#2563eb;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);--radius:12px;--success:#10b981;--danger:#dc2626;--warning:#f59e0b;--gray-50:#f8fafc;--gray-200:#e5e7eb}
@@ -63,16 +62,15 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:.2s;}
 .sidebar a:hover{background:rgba(255,255,255,.15);transform:translateX(4px);}
 .sidebar a.active{background:rgba(255,255,255,.2);}
-
-  </style>
+</style>
 </head>
 <body>
 
 <div id="sidebar" class="sidebar"> <div class="sidebar-logo"><img src="img/icon-192.png" alt="Logo"><h3>Menu Koperasi</h3></div>
 <a href="dashboard.html"><span class="material-icons">home</span>Beranda</a>
 <div class="sidebar-section">Data Master</div><a href="anggota.html">👤 Data Anggota</a><a href="kas.html">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
-<div class="sidebar-section">Keuangan</div><a href="pinjaman.html">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
-<div class="sidebar-section">Laporan</div><a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a>
+<div class="sidebar-section">Keuangan</div><a href="pinjaman.html" class="active">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
+<div class="sidebar-section">Laporan</div><a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a><a href="log-aktivitas.html">📋 Log Aktivitas</a>
 <div class="sidebar-section">Pengaturan</div><a href="backup.html">💾 Backup Data</a><a href="user.html">⚙️ Kelola User</a><a href="#" id="btnLogout">🚪 Logout</a></div>
 <div id="overlay" class="overlay"></div>
 
@@ -82,60 +80,18 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
     <div class="card" id="formPinjaman">
       <h3>Tambah Pinjaman</h3>
       <div class="form-grid">
-        <div class="form-group">
-          <label>Anggota</label>
-          <select id="anggota" onchange="isiTelepon()">
-            </select>
-          </div>
-        <div class="form-group">
-          <label>No Telepon</label>
-          <input type="text" id="telepon" readonly>
-          
-        </div>
-        <div class="form-group">
-          <label>No Pinjaman</label>
-          <input type="text" id="noPinjaman" value="Loading..." disabled>
-          
-        </div>
-        <div class="form-group">
-          <label>Tanggal</label>
-          <input type="date" id="tanggal">        
-        </div>
-        <div class="form-group">
-          <label>Metode</label>
-          <select id="metode">
-            <option value="">Pilih metode</option>
-            <option value="cash">Cash</option>
-            <option value="bank">Bank</option>
-            <option value="e-wallet">E-Wallet</option>
-            <option value="lainnya">Lainnya</option>            
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Jumlah</label>
-          <input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()">         
-        </div>
-        <div class="form-group">
-          <label>Jasa (20% otomatis)</label>
-          <input type="number" id="jasa" min="0" value="0" readonly>         
-        </div>
-        <div class="form-group full">
-          <label>Keterangan</label>
-          <input type="text" id="ket" placeholder="Keterangan opsional">         
-        </div>
-        <div class="form-group full"><button class="btn-primary" onclick="simpanPinjaman()">Simpan Pinjaman</button>
-          <div id="notif">           
-          </div>
-        </div>
+        <div class="form-group"><label>Anggota</label><select id="anggota" onchange="isiTelepon()"></select></div>
+        <div class="form-group"><label>No Telepon</label><input type="text" id="telepon" readonly></div>
+        <div class="form-group"><label>No Pinjaman</label><input type="text" id="noPinjaman" value="Loading..." disabled></div>
+        <div class="form-group"><label>Tanggal</label><input type="date" id="tanggal"></div>
+        <div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih metode</option><option value="cash">Cash</option><option value="bank">Bank</option><option value="e-wallet">E-Wallet</option><option value="lainnya">Lainnya</option></select></div>
+        <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()"></div>
+        <div class="form-group"><label>Jasa (20% otomatis)</label><input type="number" id="jasa" min="0" value="0" readonly></div>
+        <div class="form-group full"><label>Keterangan</label><input type="text" id="ket" placeholder="Keterangan opsional"></div>
+        <div class="form-group full"><button class="btn-primary" onclick="simpanPinjaman()">Simpan Pinjaman</button><div id="notif"></div></div>
       </div>
     </div>
-  
-  <div class="card">
-    <h3>Daftar Pinjaman</h3>
-    <div id="tabelPinjaman">
-      <div class="loading">Loading data...</div>    
-    </div>
-  </div>
+  <div class="card"><h3>Daftar Pinjaman</h3><div id="tabelPinjaman"><div class="loading">Loading data...</div></div></div>
 </div>
 
 <div id="popupEdit" class="popup"><div class="popup-box"><h3>Edit Pinjaman</h3><div class="form-grid"><div class="form-group"><label>No Pinjaman</label><input type="text" id="editNoPinjaman" disabled></div><div class="form-group"><label>Anggota</label><select id="editAnggota"></select></div><div class="form-group"><label>Tanggal</label><input type="date" id="editTanggal"></div><div class="form-group"><label>Metode</label><select id="editMetode"><option value="cash">Cash</option><option value="bank">Bank</option><option value="e-wallet">E-Wallet</option><option value="lainnya">Lainnya</option></select></div><div class="form-group"><label>Jumlah</label><input type="number" id="editJumlah" oninput="hitungJasaEdit()"></div><div class="form-group"><label>Jasa (20% otomatis)</label><input type="number" id="editJasa" readonly></div><div class="form-group full"><label>Keterangan</label><input type="text" id="editKet"></div></div><div class="popup-btns"><button class="btn-update" onclick="updatePinjaman()">Update</button><button class="btn-cancel" onclick="tutupPopup()">Batal</button></div></div></div>
@@ -155,6 +111,22 @@ document.getElementById("roleBadge").innerText = role.toUpperCase();
 
 async function catatanAudit(aksi, keterangan, jumlah, dataTambahan={}){
   await push(ref(db,"audit/log"),{ tanggal: Date.now(), aksi, user: username, role, keterangan, jumlah,...dataTambahan });
+}
+
+/* ========== LOG TERPUSAT - BARU ========== */
+function simpanLog(aksi, data){
+  try{
+    const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
+    push(ref(db, "/log_aktivitas"), {
+      waktu: Date.now(),
+      waktu_baca: waktu,
+      aksi: aksi,
+      oleh: username,
+      role: role,
+      username: data.nama || username,
+     ...data
+    }).catch(e=> console.log("Log gagal:", e.message));
+  }catch(e){ console.log(e); }
 }
 
 window.toggleSidebar = function(){ const sidebar = document.getElementById("sidebar"); const overlay = document.getElementById("overlay"); sidebar.classList.toggle("open"); overlay.style.display = sidebar.classList.contains("open")? "block" : "none"; }
@@ -186,7 +158,6 @@ window.tutupAlert = () => document.getElementById("customAlert").style.display =
 window.hitungJasa = () => { const jumlah = Number(document.getElementById("jumlah").value) || 0; document.getElementById("jasa").value = Math.round(jumlah * 0.2); }
 window.hitungJasaEdit = () => { const jumlah = Number(document.getElementById("editJumlah").value) || 0; document.getElementById("editJasa").value = Math.round(jumlah * 0.2); }
 
-// FUNGSI CEK SISA PINJAMAN - PINDAH KE SINI BIAR GLOBAL
 function cekSisaPinjaman(idAnggota){
   let totalSisa = 0;
   Object.values(dataPinjaman).forEach(p => {
@@ -204,7 +175,6 @@ function cekSisaPinjaman(idAnggota){
   return totalSisa;
 }
 
-// AUTO ISI TELEPON SAAT PILIH ANGGOTA
 window.isiTelepon = function(){
   const idAnggota = anggotaSelect.value;
   if(!idAnggota) { document.getElementById("telepon").value = ""; return; }
@@ -224,15 +194,11 @@ onValue(anggotaRef, snap => {
 
 onValue(pinjamanRef, snap => {
   dataPinjaman = {};
-  if(!snap.exists()){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Belum ada data pinjaman</div>`; hitungSummary(); return; }
+  if(!snap.exists()){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Belum ada data pinjaman</div>`; return; }
   snap.forEach(d => { let p = d.val(); p.id = d.key; dataPinjaman[d.key] = p; });
-  renderPinjaman(); hitungSummary(); hitungSaldo();
+  renderPinjaman();
 });
 onValue(angsuranRef, snap => { dataAngsuran = snap.val() || {}; renderPinjaman(); });
-onValue(saldoAwalRef, snap => { dataSaldoAwal = snap.val() || {}; hitungSaldo(); });
-onValue(kasTransaksiRef, snap => { dataTransaksi = snap.val() || {}; hitungSaldo(); });
-
-function hitungSaldo(){ let saldoCash = Number(dataSaldoAwal.cash || 0); let saldoBank = Number(dataSaldoAwal.bank || 0); Object.values(dataTransaksi).forEach(k => { let jumlah = Number(k.jumlah || 0); let tipe = (k.tipe || "").toLowerCase(); let sumber = (k.sumberKas || "cash").toLowerCase(); if(tipe === "biaya") tipe = "keluar"; if(sumber === "cash"){ if(tipe === "masuk") saldoCash += jumlah; else saldoCash -= jumlah; } if(sumber === "bank"){ if(tipe === "masuk") saldoBank += jumlah; else saldoBank -= jumlah; } }); document.getElementById("saldoCash").innerText = format(saldoCash); document.getElementById("saldoBank").innerText = format(saldoBank); }
 
 function renderPinjaman(){
   tabelPinjaman.innerHTML = "";
@@ -268,31 +234,25 @@ function renderPinjaman(){
   });
 }
 
-function hitungSummary(){ let totalPokok = 0; Object.values(dataPinjaman).forEach(p=>{ totalPokok += Number(p.jumlah || 0); }); document.getElementById("totalPinjaman").innerText = format(totalPokok); }
-
 async function previewNoPinjaman(){ const snap = await get(ref(db, "counter/pinjaman")); let no = (snap.val() || 0) + 1; return "PJ" + String(no).padStart(3,"0"); }
 async function generateNoPinjaman(){ const counterRef = ref(db, "counter/pinjaman"); const result = await runTransaction(counterRef, (current)=> (current || 0) + 1); let no = result.snapshot.val(); return "PJ" + String(no).padStart(3,"0"); }
 
-window.onload = async () => { document.getElementById("tanggal").value = new Date().toISOString().split("T")[0]; document.getElementById("noPinjaman").value = await previewNoPinjaman(); hitungSaldo(); }
+window.onload = async () => { document.getElementById("tanggal").value = new Date().toISOString().split("T")[0]; document.getElementById("noPinjaman").value = await previewNoPinjaman(); }
 
 window.simpanPinjaman = async () => {
   if(role!== "admin") return showAlert("Hanya admin!", "danger");
   let idAnggota = anggota.value; let nama = anggota.options[anggota.selectedIndex]?.text.split(" - ")[0] || "";
-
   const sisaLama = cekSisaPinjaman(idAnggota);
   if(sisaLama > 0){ return showAlert(`Gagal! ${nama} masih punya sisa pinjaman Rp ${format(sisaLama)}. Lunasi dulu.`, "danger"); }
-
   let tanggalInput = document.getElementById("tanggal").value; let jumlah = Number(document.getElementById("jumlah").value);
   let jasa = Number(document.getElementById("jasa").value) || 0; let metode = document.getElementById("metode").value; let ket = document.getElementById("ket").value;
   if(!idAnggota) return showAlert("Pilih anggota!", "warning"); if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
   if(!metode) return showAlert("Pilih metode!", "warning"); if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
-
   let nomor = await generateNoPinjaman(); document.getElementById("noPinjaman").value = nomor; let tanggal = new Date(tanggalInput).getTime();
   let kas = await push(kasTransaksiRef,{ tanggal, keterangan:`Pinjaman ${nama} (${nomor})`, tipe:"keluar", kategori:"pinjaman", sumberKas:metode, jumlah: jumlah });
   const snapPinjaman = await push(pinjamanRef,{ nomor, idAnggota, nama, tanggal, jumlah, jasa, sumberKas:metode, ket, kasId: kas.key, status:"belum" });
-
   await catatanAudit("PENGAJUAN PINJAMAN", `${nama} - No: ${nomor} - Rp ${format(jumlah)}`, jumlah, {anggotaId: idAnggota, refPinjaman: snapPinjaman.key});
-
+  simpanLog("PENGAJUAN_PINJAMAN", { idAnggota: idAnggota, userId: idAnggota, nama: nama, nomor: nomor, jumlah: jumlah, jasa: jasa, metode: metode });
   document.getElementById("notif").innerHTML = `<div class="alert success">Berhasil disimpan ✅</div>`;
   setTimeout(()=> document.getElementById("notif").innerHTML = "",3000);
   document.getElementById("jumlah").value = ""; document.getElementById("jasa").value = "0"; document.getElementById("ket").value = ""; document.getElementById("metode").value = "";
@@ -311,23 +271,25 @@ window.updatePinjaman = async () => {
   if(!tanggalInput) return showAlert("Isi tanggal!", "warning"); if(!metode) return showAlert("Pilih metode!", "warning"); if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
   let tanggal = new Date(tanggalInput).getTime();
   const updates = {}; updates[`/pinjaman/${editId}`] = {...pLama, nama, idAnggota: document.getElementById("editAnggota").value, tanggal, jumlah, jasa, sumberKas: metode, ket};
-  if(pLama.kasId){ updates[`/kas/transaksi/${pLama.kasId}`] = {...pLama, tanggal, jumlah, sumberKas: metode, keterangan: `Pinjaman ${nama} (${pLama.nomor})`}; }
+  if(pLama.kasId){ updates[`/kas/transaksi/${pLama.kasId}`] = { tanggal, jumlah, sumberKas: metode, keterangan: `Pinjaman ${nama} (${pLama.nomor})`, tipe:"keluar", kategori:"pinjaman" }; }
   await update(ref(db), updates);
   await catatanAudit("EDIT PINJAMAN", `${nama} - No: ${pLama.nomor} - Dari: Rp ${format(pLama.jumlah)} -> Rp ${format(jumlah)}`, jumlah, {anggotaId: pLama.idAnggota, refPinjaman: editId});
+  simpanLog("EDIT_PINJAMAN", { idAnggota: pLama.idAnggota, userId: pLama.idAnggota, nama: nama, nomor: pLama.nomor, jumlah: jumlah, jumlahLama: pLama.jumlah });
   tutupPopup(); showAlert("Update berhasil ✅", "success");
 }
 
 window.hapusPinjaman = async id => {
   if(role!== "admin") return; let p = dataPinjaman[id]; if(!confirm(`Hapus pinjaman ${p.nomor} atas nama ${p.nama}?`)) return;
-  try{ await remove(ref(db, `pinjaman/${id}`)); if(p.kasId){ await remove(ref(db, `kas/transaksi/${p.kasId}`)); }
+  try{
+    await remove(ref(db, `pinjaman/${id}`)); if(p.kasId){ await remove(ref(db, `kas/transaksi/${p.kasId}`)); }
     await catatanAudit("HAPUS PINJAMAN", `${p.nama} - No: ${p.nomor} - Rp ${format(p.jumlah)}`, p.jumlah, {anggotaId: p.idAnggota, refPinjaman: id});
-    delete dataPinjaman[id]; renderPinjaman(); hitungSummary(); hitungSaldo(); showAlert("Pinjaman & saldo kas berhasil diperbarui ✅", "success");
+    simpanLog("HAPUS_PINJAMAN", { idAnggota: p.idAnggota, userId: p.idAnggota, nama: p.nama, nomor: p.nomor, jumlah: p.jumlah });
+    delete dataPinjaman[id]; renderPinjaman(); showAlert("Pinjaman berhasil dihapus ✅", "success");
   }catch(err){ console.error(err); showAlert("Gagal menghapus data", "danger"); }
 }
 
 window.tutupPopup = () => { document.getElementById("popupEdit").style.display = "none"; editId = null; }
 window.cetakNota = id => { const p = dataPinjaman[id]; if(!p) return; const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" }); const tgl = new Date(Number(p.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}); const total = Number(p.jumlah) + Number(p.jasa || 0); doc.setFontSize(14); doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"}); doc.setFontSize(10); doc.text(`No: ${p.nomor}`, 15, 35); doc.text(`Nama: ${p.nama}`, 15, 42); doc.text(`Tanggal: ${tgl}`, 15, 49); doc.text(`Jumlah: Rp ${format(p.jumlah)}`, 15, 56); doc.text(`Jasa: Rp ${format(p.jasa || 0)}`, 15, 63); doc.text(`Total: Rp ${format(total)}`, 15, 70); doc.save(`Nota_${p.nomor}.pdf`); }
-
 </script>
 <div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div class="alert-icon" id="alertIcon">✓</div><div class="alert-text" id="alertText">Pesan alert</div><button onclick="tutupAlert()" id="alertBtn" style="background:var(--primary);border:none;padding:10px 18px;border-radius:10px;color:white;font-weight:700;cursor:pointer;width:100%">OK</button></div></div>
 </body>
