@@ -6,178 +6,221 @@
 <title>Kwitansi Koperasi ARFA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-  <style>
-  :root{
-  --primary:#3b82f6;
-  --primary-dark:#2563eb;
-  --bg:#f1f5f9;
-  --card:#fff;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --danger:#dc2626;
-  --success:#10b981;
-  --warning:#f59e0b;
-}
-
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Poppins',sans-serif;
-}
-
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-size:13px;
-}
-
-header{
-  background:linear-gradient(135deg,var(--primary),var(--primary-dark));
-  color:white;
-  padding:14px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:700;
-}
-
-.container{
-  padding:15px;
-  max-width:900px;
-  margin:0 auto;
-}
-
-
-.card{background:#f8fafc;padding:20px;border-radius:10px;margin-bottom:20px;border:1px solid #e5e7eb;}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
-label.form{font-size:12px;font-weight:600;display:block;margin-bottom:6px;}
-input,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font-size:12px;}
-#canvasTtd{width:100%;max-width:300px;height:100px;border:1px dashed #999;border-radius:8px;background:#fff;cursor:crosshair;touch-action:none;}
-.btn{padding:10px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;}
-.btn-pdf{background:#f97316;color:#fff;}.btn-print{background:#1e90ff;color:#fff;}.btn-clear{background:#ef4444;color:#fff;font-size:12px;padding:6px 10px;}
-.btn-group{display:flex;gap:10px;margin-top:15px;}
-.kwitansi-preview{border:2px solid #000;padding:20px;position:relative;background:#fff;min-height:380px;overflow:hidden;}
-.watermark-preview{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:260px;opacity:0.08;z-index:0;pointer-events:none;}
-.kwitansi-content{position:relative;z-index:1;}
-.header-k{display:flex;justify-content:space-between;margin-bottom:18px;}
-.row-k{display:flex;margin-bottom:10px;align-items:flex-start;}
-.row-k label{width:140px;font-size:12px;font-weight:600;padding-top:7px;}
-.row-k.kotak{flex:1;border:1px solid #000;padding:6px 8px;font-size:13px;min-height:26px;background:#fff;line-height:1.4;}
-.row-k.kotak-2baris{min-height:42px;}
-.row-bawah{display:flex;justify-content:space-between;margin-top:25px;}
-.box-rp{border:1px solid #000;padding:8px 10px;font-weight:bold;width:150px;text-align:center;background:#fff;}
-.ttd{text-align:center;font-size:12px;width:200px;background:#fff;}
-.ttd img{max-width:150px;max-height:60px;margin:5px auto;display:block;}
-@media print{.no-print{display:none!important;}.watermark-preview{opacity:0.06!important;}}
-
-  </style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+:root{--primary:#3b82f6;--primary-dark:#2563eb;--bg:#f1f5f9;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--danger:#dc2626;--success:#10b981}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:var(--bg);color:var(--text);font-size:13px;padding-bottom:20px}
+header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}
+.container{padding:15px;max-width:900px;margin:0 auto}
+.card{background:#fff;padding:18px;border-radius:12px;margin-bottom:15px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.card h3{font-size:14px;margin-bottom:12px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-card label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px}
+input,textarea,select{width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px}
+#canvasTtd{width:100%;max-width:300px;height:100px;border:1px dashed #999;border-radius:8px;background:#fff;cursor:crosshair;touch-action:none}
+.btn{padding:10px 16px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px;transition:.2s}
+.btn-pdf{background:#f97316;color:#fff}.btn-print{background:#1e90ff;color:#fff}.btn-clear{background:#ef4444;color:#fff}.btn-save{background:var(--success);color:#fff;width:100%;margin-top:10px}
+.btn:hover{transform:translateY(-1px)}
+.btn-group{display:flex;gap:10px;margin-top:15px;flex-wrap:wrap}
+.kwitansi-preview{border:2px solid #000;padding:20px;position:relative;background:#fff;min-height:380px;overflow:hidden}
+.watermark-preview{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:260px;opacity:0.08;z-index:0;pointer-events:none}
+.kwitansi-content{position:relative;z-index:1}
+.header-k{display:flex;justify-content:space-between;margin-bottom:18px}
+.row-k{display:flex;margin-bottom:10px;align-items:flex-start}
+.row-k label{width:140px;font-size:12px;font-weight:600;padding-top:7px}
+.row-k.kotak{flex:1;border:1px solid #000;padding:6px 8px;font-size:13px;min-height:26px;background:#fff;line-height:1.4}
+.row-k.kotak-2baris{min-height:42px}
+.row-bawah{display:flex;justify-content:space-between;margin-top:25px}
+.box-rp{border:1px solid #000;padding:8px 10px;font-weight:bold;width:150px;text-align:center;background:#fff}
+.ttd{text-align:center;font-size:12px;width:200px;background:#fff}
+.ttd img{max-width:150px;max-height:60px;margin:5px auto;display:block}
+.table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--border);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:700px}
+th{background:#f8fafc;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border)}
+td{padding:8px;border-bottom:1px solid var(--border)}
+tr:hover{background:#f8fafc}
+.badge{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:700;background:#e0f2fe;color:#0369a1}
+@media print{.no-print{display:none!important}}
+</style>
 </head>
 <body>
 
 <header>
-  <div class="brand">
-    <span class="material-icons">note</span>
-    KWITANSI
-  </div>
-
-  <span
-    onclick="window.location='dashboard.html'"
-    class="material-icons"
-    style="cursor:pointer">
-    home
-  </span>
+  <div class="brand"><span class="material-icons">note</span> KWITANSI ARFA</div>
+  <span onclick="window.location='dashboard.html'" class="material-icons" style="cursor:pointer">home</span>
 </header>
-  
+
+<div class="container">
+
 <div class="card no-print">
 <h3>1. Data Kwitansi</h3>
-
 <div class="form-grid">
-  <!-- CARD 1 -->
-  <div class="form-card">
-    <label class="form-label">🏢 Nama Perusahaan</label>
-    <input type="text" id="perusahaan" value="  " placeholder="Nama Koperasi">
-  </div>
-
-  <!-- CARD 2 -->
-  <div class="form-card">
-    <label class="form-label">📍 ALAMAT</label>
-    <input type="text" id="alamat" value="" placeholder="">
-  </div>
-
-  <!-- CARD 3 -->
-  <div class="form-card">
-    <label class="form-label">🧾 No. Kwitansi</label>
-    <input type="text" id="noKwitansi" value="0001" placeholder="0001">
-  </div>
-
-  <!-- CARD 4 -->
-  <div class="form-card">
-    <label class="form-label">📅 Tanggal</label>
-    <input type="date" id="tanggal">
-  </div>
-
-  <!-- CARD 5 -->
-  <div class="form-card">
-    <label class="form-label">👤 Sudah terima dari</label>
-    <input type="text" id="dari" placeholder=" ">
-  </div>
-
-  <!-- CARD 6 -->
-  <div class="form-card">
-    <label class="form-label">💰 Jumlah Rp</label>
-    <input type="number" id="jumlah" min="0" oninput="updatePreview()" placeholder="0">
-  </div>
+  <div class="form-card"><label>🏢 Nama Perusahaan</label><input type="text" id="perusahaan" value="KOPERASI ARFA DRIVER"></div>
+  <div class="form-card"><label>📍 ALAMAT</label><input type="text" id="alamat" value="Pondok Betung"></div>
+  <div class="form-card"><label>🧾 No. Kwitansi</label><input type="text" id="noKwitansi" value="0001"></div>
+  <div class="form-card"><label>📅 Tanggal</label><input type="date" id="tanggal"></div>
+  <div class="form-card"><label>👤 Sudah terima dari</label><input type="text" id="dari" placeholder="Nama anggota"></div>
+  <div class="form-card"><label>💰 Jumlah Rp</label><input type="number" id="jumlah" min="0" oninput="updatePreview()" placeholder="0"></div>
 </div>
-
-<!-- CARD FULL WIDTH -->
-<div class="form-card" style="margin-top:15px">
-  <label class="form-label">📝 Untuk Pembayaran</label>
-  <textarea id="untuk" rows="2" placeholder=""></textarea>
-</div>
+<div class="form-card" style="margin-top:12px"><label>📝 Untuk Pembayaran</label><textarea id="untuk" rows="2" placeholder="Contoh: Pembayaran angsuran..."></textarea></div>
+<button class="btn btn-save" id="btnSimpanKwitansi">💾 Simpan Kwitansi</button>
 </div>
 
 <div class="card no-print">
 <h3>2. Logo & Tanda Tangan</h3>
-<label class="form">Ganti Logo Watermark</label>
-<input type="file" id="uploadLogo" accept="image/*">
-<br><br>
-<label class="form">Upload Gambar TTD</label><input type="file" id="uploadTtd" accept="image/*">
-<label class="form" style="margin-top:15px">Atau Coret2 TTD</label>
-<canvas id="canvasTtd" width="600" height="200"></canvas><br><br>
-<button class="btn btn-clear" onclick="clearCanvas()">🗑️ Hapus Coretan</button>
-<label class="form" style="margin-top:15px">Nama Penandatangan</label><input type="text" id="ttd">
+<label style="font-size:11px;font-weight:600">Ganti Logo Watermark</label>
+<input type="file" id="uploadLogo" accept="image/*"><br><br>
+<label style="font-size:11px;font-weight:600">Upload Gambar TTD</label><input type="file" id="uploadTtd" accept="image/*">
+<label style="font-size:11px;font-weight:600;margin-top:12px;display:block">Atau Coret2 TTD</label>
+<canvas id="canvasTtd" width="600" height="200"></canvas><br>
+<button class="btn btn-clear" onclick="clearCanvas()" style="margin-top:8px">🗑️ Hapus Coretan</button>
+<label style="font-size:11px;font-weight:600;margin-top:12px;display:block">Nama Penandatangan</label><input type="text" id="ttd" value="Nur ali">
 </div>
 
+<div class="card">
 <h3>Preview Kwitansi</h3>
 <div class="kwitansi-preview" id="preview">
 <img id="watermarkImg" class="watermark-preview" src="" alt="watermark">
 <div class="kwitansi-content">
-<div class="header-k"><div><h2>KWITANSI</h2><p id="pPerusahaan2"></p><p id="pAlamat"></p></div><div>No. :<span id="pNo">0001</span></div></div>
+<div class="header-k"><div><h2>KWITANSI</h2><p id="pPerusahaan2"></p><p id="pAlamat"></p></div><div>No. : <span id="pNo">0001</span></div></div>
 <div class="row-k"><label>Sudah terima dari :</label><div class="kotak" id="pDari"></div></div>
 <div class="row-k"><label>Uang Sebesar :</label><div class="kotak" id="pTerbilang"></div></div>
 <div class="row-k"><label>Untuk Pembayaran :</label><div class="kotak kotak-2baris" id="pUntuk"></div></div>
 <div class="row-bawah"><div class="box-rp">Rp <span id="pJumlah">0</span></div><div class="ttd"><span id="pKotaTgl"></span><br><img id="previewTtd" src="" style="display:none"><div id="pTtd"></div></div></div>
 </div>
-
-
+</div>
 <div class="btn-group no-print"><button class="btn btn-print" onclick="window.print()">🖨️ Cetak</button><button class="btn btn-pdf" onclick="downloadPDF()">📄 Download PDF</button></div>
 </div>
+
+<div class="card no-print">
+<h3>📋 Riwayat Kwitansi Tersimpan</h3>
+<div class="table-wrap">
+<table>
+<thead><tr><th>No</th><th>Tanggal</th><th>Dari</th><th>Jumlah</th><th>Untuk</th><th>Aksi</th></tr></thead>
+<tbody id="riwayatKwitansi"><tr><td colspan="6" style="text-align:center;color:#6b7280">Loading...</td></tr></tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const role = localStorage.getItem("role") || "user";
+const username = localStorage.getItem("username") || "Unknown";
+
+const kwitansiRef = ref(db, "kwitansi");
+
+function simpanLog(aksi, data){
+  try{
+    const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
+    push(ref(db, "/log_aktivitas"), {
+      waktu: Date.now(),
+      waktu_baca: waktu,
+      aksi: aksi,
+      oleh: username,
+      role: role,
+      username: data.nama || data.dari || username,
+     ...data
+    });
+  }catch(e){ console.log(e); }
+}
+
+window.cetakUlang = function(id){
+  const item = window.dataKwitansiCache[id];
+  if(!item) return;
+  document.getElementById("perusahaan").value = item.perusahaan;
+  document.getElementById("alamat").value = item.alamat;
+  document.getElementById("noKwitansi").value = item.no;
+  document.getElementById("dari").value = item.dari;
+  document.getElementById("jumlah").value = item.jumlah;
+  document.getElementById("untuk").value = item.untuk;
+  document.getElementById("ttd").value = item.ttdNama || "";
+  document.getElementById("tanggal").value = item.tanggalInput || new Date().toISOString().split("T")[0];
+  updatePreview();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+window.hapusKwitansi = async function(id){
+  if(!confirm("Yakin hapus kwitansi ini?")) return;
+  const snap = await get(ref(db, "kwitansi/"+id));
+  const d = snap.val();
+  await remove(ref(db, "kwitansi/"+id));
+  simpanLog("HAPUS_KWITANSI", { nama: d?.dari || "-", no: d?.no || "-", jumlah: d?.jumlah || 0, keterangan: `Hapus kwitansi ${d?.no}` });
+  alert("Kwitansi dihapus");
+}
+
+onValue(kwitansiRef, snap=>{
+  const tbody = document.getElementById("riwayatKwitansi");
+  window.dataKwitansiCache = {};
+  if(!snap.exists()){ tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#6b7280">Belum ada kwitansi</td></tr>`; return; }
+  let html = "";
+  let list = [];
+  snap.forEach(d=>{ list.push({id:d.key,...d.val()}); window.dataKwitansiCache[d.key] = {id:d.key,...d.val()}; });
+  list.sort((a,b)=> b.waktu - a.waktu);
+  // auto nomor kwitansi = terakhir +1
+  const lastNo = list.length > 0? (parseInt(list[0].no) || list.length) : 0;
+  document.getElementById("noKwitansi").placeholder = String(lastNo+1).padStart(4,'0');
+
+  list.forEach(k=>{
+    const tgl = k.tanggalInput? new Date(k.tanggalInput).toLocaleDateString("id-ID") : new Date(k.waktu).toLocaleDateString("id-ID");
+    html += `<tr>
+      <td><span class="badge">${k.no}</span></td>
+      <td>${tgl}</td>
+      <td><b>${k.dari || '-'}</b></td>
+      <td>Rp ${Number(k.jumlah||0).toLocaleString("id-ID")}</td>
+      <td>${(k.untuk||'').substring(0,30)}...</td>
+      <td><button onclick="cetakUlang('${k.id}')" style="padding:4px 8px;border:none;background:#3b82f6;color:#fff;border-radius:6px;cursor:pointer;margin-right:4px">Lihat</button>
+      ${role==="admin"? `<button onclick="hapusKwitansi('${k.id}')" style="padding:4px 8px;border:none;background:#dc2626;color:#fff;border-radius:6px;cursor:pointer">Hapus</button>` : ''}</td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+});
+
+document.getElementById("btnSimpanKwitansi").onclick = async ()=>{
+  const no = document.getElementById("noKwitansi").value || "0001";
+  const perusahaan = document.getElementById("perusahaan").value;
+  const alamat = document.getElementById("alamat").value;
+  const dari = document.getElementById("dari").value;
+  const jumlah = Number(document.getElementById("jumlah").value) || 0;
+  const untuk = document.getElementById("untuk").value;
+  const ttdNama = document.getElementById("ttd").value;
+  const tanggalInput = document.getElementById("tanggal").value;
+
+  if(!dari ||!jumlah){ alert("Lengkapi nama dan jumlah!"); return; }
+
+  const data = {
+    no, perusahaan, alamat, dari, jumlah, untuk, ttdNama, tanggalInput,
+    waktu: Date.now(),
+    waktu_baca: new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'}),
+    oleh: username,
+    ttdImage: ttdImageBase64 || "",
+    logoImage: logoWatermarkBase64 || ""
+  };
+
+  await push(kwitansiRef, data);
+  simpanLog("BUAT_KWITANSI", { nama: dari, dari: dari, no: no, jumlah: jumlah, untuk: untuk, keterangan: `Buat kwitansi ${no} untuk ${dari} Rp ${jumlah}` });
+  alert("Kwitansi berhasil disimpan ✅");
+
+  // auto increment no
+  const nextNo = String((parseInt(no)||0)+1).padStart(4,'0');
+  document.getElementById("noKwitansi").value = nextNo;
+};
+
+</script>
 
 <script>
 const { jsPDF } = window.jspdf;
 let ttdImageBase64 = "";
-let logoWatermarkBase64 = ""; 
+let logoWatermarkBase64 = "";
 
 document.getElementById("tanggal").valueAsDate = new Date();
 updatePreview();
@@ -223,14 +266,11 @@ function updatePreview(){
   if(tanggal){const tgl = new Date(tanggal + "T00:00:00"); document.getElementById("pKotaTgl").innerText = "Pd Betung, " + tgl.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});}
 }
 
-function terbilangFix(n){n = Math.floor(n); if(n === 0) return "nol"; const angka = ["","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas"]; let result = ""; if(n < 12){result = angka[n];} else if(n < 20){result = terbilangFix(n - 10) + " belas";} else if(n < 100){result = terbilangFix(Math.floor(n / 10)) + " puluh " + terbilangFix(n % 10);} else if(n < 200){result = "seratus " + terbilangFix(n - 100);} else if(n < 1000){result = terbilangFix(Math.floor(n / 100)) + " ratus " + terbilangFix(n % 100);} else if(n < 2000){result = "seribu " + terbilangFix(n - 1000);} else if(n < 1000000){result = terbilangFix(Math.floor(n / 1000)) + " ribu " + terbilangFix(n % 1000);} else{result = terbilangFix(Math.floor(n / 1000000)) + " juta " + terbilangFix(n % 1000000);}
-return result.replace(/\bnol\b/g,"").replace(/\s+/g," ").trim();}
+function terbilangFix(n){n = Math.floor(n); if(n === 0) return "nol"; const angka = ["","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas"]; let result = ""; if(n < 12){result = angka[n];} else if(n < 20){result = terbilangFix(n - 10) + " belas";} else if(n < 100){result = terbilangFix(Math.floor(n / 10)) + " puluh " + terbilangFix(n % 10);} else if(n < 200){result = "seratus " + terbilangFix(n - 100);} else if(n < 1000){result = terbilangFix(Math.floor(n / 100)) + " ratus " + terbilangFix(n % 100);} else if(n < 2000){result = "seribu " + terbilangFix(n - 1000);} else if(n < 1000000){result = terbilangFix(Math.floor(n / 1000)) + " ribu " + terbilangFix(n % 1000);} else{result = terbilangFix(Math.floor(n / 1000000)) + " juta " + terbilangFix(n % 1000000);} return result.replace(/\bnol\b/g,"").replace(/\s+/g," ").trim();}
 
-// PDF
 function downloadPDF(){
   const doc = new jsPDF("p","mm","a4");
   const offsetY = 12;
-
   const no = document.getElementById("noKwitansi").value;
   const perusahaan = document.getElementById("perusahaan").value;
   const alamat = document.getElementById("alamat").value;
@@ -240,78 +280,55 @@ function downloadPDF(){
   const jumlah = document.getElementById("pJumlah").innerText;
   const kotaTgl = document.getElementById("pKotaTgl").innerText;
   const namaTtd = document.getElementById("ttd").value;
-
-  // HEADER
   doc.setFont("helvetica","bold"); doc.setFontSize(16);
   doc.text("KWITANSI", 20, 25 + offsetY);
   doc.setFont("helvetica","normal"); doc.setFontSize(11);
   doc.text(perusahaan, 20, 31 + offsetY);
   doc.text(alamat, 20, 36 + offsetY);
   doc.text(`No. : ${no}`, 160, 25 + offsetY);
-
   let y = 45 + offsetY;
-
-  // SUDAH TERIMA DARI - Auto wrap
-  doc.setFont("helvetica", "bolditalic"); doc.setFontSize(14);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(10);
   doc.text("Sudah terima dari :", 20, y);
   doc.setFont("helvetica", "normal");
   const dariLines = doc.splitTextToSize(dari, 125);
-  const dariHeight = 12; // tinggi box dasar 1 baris
-  doc.rect(60, y-4, 130, Math.max(dariHeight, dariLines.length * 5 + 2));
+  doc.rect(60, y-4, 130, Math.max(12, dariLines.length * 5 + 2));
   doc.text(dariLines, 62, y);
   y += Math.max(14, dariLines.length * 5 + 2);
-
-  // UANG SEBESAR - Auto wrap
-  doc.setFont("helvetica", "bolditalic");
+  doc.setFont("helvetica", "bold");
   doc.text("Uang Sebesar :", 20, y);
   doc.setFont("helvetica", "normal");
   const terbilangLines = doc.splitTextToSize(terbilang, 125);
   doc.rect(60, y-4, 130, Math.max(12, terbilangLines.length * 5 + 2));
   doc.text(terbilangLines, 62, y);
   y += Math.max(14, terbilangLines.length * 5 + 2);
-
-  // UNTUK PEMBAYARAN - 2 baris min, auto wrap
-  doc.setFont("helvetica", "bolditalic");
+  doc.setFont("helvetica", "bold");
   doc.text("Untuk Pembayaran :", 20, y);
   doc.setFont("helvetica", "normal");
   const untukLines = doc.splitTextToSize(untuk, 125);
-  const untukHeight = 12; // min 2 baris
-  doc.rect(60, y-4, 130, Math.max(12,untukHeight, untukLines.length * 5 + 2));
+  doc.rect(60, y-4, 130, Math.max(12, untukLines.length * 5 + 2));
   doc.text(untukLines, 62, y);
   y += Math.max(14, untukLines.length * 5 + 2);
-
-  // HITUNG AREA KWITANSI UNTUK WATERMARK
   const startY = 20 + offsetY;
   const endY = y + 35;
   const boxHeight = endY - startY;
   const boxWidth = 190;
-
-  // WATERMARK PAS TENGAH
   if(logoWatermarkBase64){
-    const imgW = 100;
-    const imgH = 100;
+    const imgW = 100; const imgH = 100;
     const x = 20 + (boxWidth - imgW) / 2;
     const yCenter = startY + (boxHeight - imgH) / 2;
     doc.setGState(new doc.GState({opacity: 0.08}));
-    doc.addImage(logoWatermarkBase64, 'JPEG', x, yCenter, imgW, imgH); // ganti ke JPEG karena logo kamu jpg
+    try{ doc.addImage(logoWatermarkBase64, 'JPEG', x, yCenter, imgW, imgH); }catch(e){ doc.addImage(logoWatermarkBase64, 'PNG', x, yCenter, imgW, imgH); }
     doc.setGState(new doc.GState({opacity: 1}));
   }
-
-  // NOMINAL
-  doc.setFont("helvetica","bolditalic");
+  doc.setFont("helvetica","bold");
   doc.rect(20, y, 48, 14);
   doc.text(`Rp ${jumlah}`, 23, y + 9);
-
-  // TANGGAL
   doc.setFont("helvetica","normal");
   doc.text(kotaTgl, 130, y + 5);
-
-  // TTD
   if(ttdImageBase64){
     try{doc.addImage(ttdImageBase64, "PNG", 125, y + 6, 40, 18);}catch(e){}
   }
-  doc.text(namaTtd, 145, y + 28);
-
+  doc.text(namaTtd, 130, y + 28);
   doc.save(`Kwitansi-${no || "0001"}.pdf`);
 }
 </script>
