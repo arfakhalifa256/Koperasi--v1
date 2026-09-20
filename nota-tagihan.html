@@ -10,13 +10,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script> <!-- TAMBAHAN BUAT WA -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Poppins',sans-serif;font-size:12px;color:#000;background:#f1f5f9;padding:20px;}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#f1f5f9;min-height:100vh;padding-bottom:20px}
 .topbar{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);}
 .brand-top{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;}
 .brand-top img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;}
 .btn-back{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+
+  header{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;padding:18px 16px;display:flex;justify-content:space-between;align-items:center;padding-top:calc(18px + env(safe-area-inset-top));position:sticky;top:0;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.15)}
 
 .container{max-width:400px;margin:0 auto}
 .card-form{background:#fff;border-radius:12px;padding:15px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
@@ -292,7 +293,7 @@ window.kirimWA = async function(){
   showToast("Gambar nota sudah didownload. Silahkan kirim gambarnya ke WA");
 }
 
-window.kembali = () => window.location.href = "dashboard.html";
+window.kembali = () => window.location.href = "nota.html";
 </script>
 </body>
 </html>

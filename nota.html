@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ARFA Koperasi - Cetak Nota</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#f1f5f9;min-height:100vh;padding-bottom:20px}
+.topbar{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.brand-top{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;}
+.brand-top img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;}
+.btn-back{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+
+  header{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;padding:18px 16px;display:flex;justify-content:space-between;align-items:center;padding-top:calc(18px + env(safe-area-inset-top));position:sticky;top:0;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.brand{font-weight:800;display:flex;gap:10px;align-items:center;font-size:18px}
+.btn-back{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.container{padding:16px;max-width:900px;margin:0 auto}
+.card-welcome{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 20px rgba(37,99,235,.3);margin-bottom:18px}
+.card-welcome h2{font-size:18px;font-weight:700}
+.card-welcome p{font-size:12px;opacity:.9;margin-top:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.menu{background:#fff;border-radius:16px;padding:22px 16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.06);cursor:pointer;transition:.2s;border:1px solid #e2e8f0}
+.menu:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.12);border-color:#2563eb}
+.menu .material-icons{font-size:42px;color:#2563eb;margin-bottom:10px;background:#eff6ff;width:64px;height:64px;line-height:64px;border-radius:14px}
+.menu b{display:block;font-size:13px;color:#1e293b;margin-bottom:2px}
+.menu small{color:#64748b;font-size:11px}
+.menu.kwitansi .material-icons{color:#16a34a;background:#f0fdf4}
+@media(max-width:600px){.grid{grid-template-columns:1fr 1fr}}
+.footer{text-align:center;margin-top:30px;color:#94a3b8;font-size:11px}
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+  <div class="brand-top">
+    <img src="img/icon-192.png" alt="Koperasi ARFA">
+    <div>NOTA & Kwitansi</div>
+  </div>
+  <button class="btn-back" onclick="location.href='dashboard.html'"><span class="material-icons">home</span></button>
+   </button>
+</header>
+
+
+
+  <div class="grid">
+    <div class="menu" onclick="location.href='nota-tagihan.html'">
+      <span class="material-icons">request_quote</span>
+      <b>Nota Tagihan</b>
+      <small>Tagihan Pinjaman</small>
+    </div>
+
+    <div class="menu" onclick="location.href='nota-pembayaran.html'">
+      <span class="material-icons">receipt</span>
+      <b>Nota Angsuran</b>
+      <small>Bukti Bayar Angsuran</small>
+    </div>
+
+    <div class="menu kwitansi" onclick="location.href='kwitansi.html'" style="grid-column: span 2;">
+      <span class="material-icons">task</span>
+      <b>Kwitansi</b>
+      <small>Kwitansi Umum Koperasi</small>
+    </div>
+  </div>
+
+  <p class="footer">ARFA v3.0 • PWA Standalone</p>
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
