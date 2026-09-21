@@ -217,14 +217,27 @@ async function prosesData(){
         db.ref('angsuran').once('value')
     ]);
 
+    // === LOGIKA SAMA KAYAK LABARUGI ===
+    function isPendapatan(k){
+        if(!k || k.tanggal < tglAwal || k.tanggal > tglAkhir) return false;
+        const kat = String(k.kategori||"").toLowerCase();
+        return k.tipe==='masuk' && (kat.includes('pendapatan') || kat.includes('jasa') || kat.includes('denda')) &&!kat.includes('simpanan') &&!kat.includes('angsuran');
+    }
+    function isBeban(k){
+        if(!k || k.tanggal < tglAwal || k.tanggal > tglAkhir) return false;
+        if(k.tipe!=='keluar' && k.tipe!=='biaya') return false;
+        const kat = String(k.kategori||"").toLowerCase();
+        return!["pinjaman","pengambilan","pencairan","transfer_bank","simpanan"].some(x=>kat.includes(x));
+    }
+
     let totPendapatan = 0, totBiaya = 0;
     Object.values(snapKas.val() || {}).forEach(k=>{
-        if(k.tanggal >= tglAwal && k.tanggal <= tglAkhir){
-            if(k.tipe === 'masuk') totPendapatan += Number(k.jumlah || 0);
-            if(k.tipe === 'keluar') totBiaya += Number(k.jumlah || 0);
-        }
+        if(isPendapatan(k)) totPendapatan += Number(k.jumlah||0);
+        if(isBeban(k)) totBiaya += Number(k.jumlah||0);
     });
+
     const shuBersih = bulatRibu(totPendapatan - totBiaya);
+    //... sisanya sama persis kayak kode kamu dibawah
     const shuUntukAnggota = bulatRibu(shuBersih * pShuAnggota);
     const danaShuSimpanan = bulatRibu(shuUntukAnggota * pSimpanan);
     const danaShuJasa = bulatRibu(shuUntukAnggota * pJasa);
@@ -277,11 +290,10 @@ async function prosesData(){
         }
     });
 
-    dataGlobal = {tglAwalVal, tglAkhirVal, shuBersih, shuUntukAnggota, danaShuSimpanan, danaShuJasa, pShuAnggota: document.getElementById('pShuAnggota').value, rowsHTML};
+    dataGlobal = {tglAwalVal, tglAkhirVal, shuBersih, totPendapatan, totBiaya, shuUntukAnggota, danaShuSimpanan, danaShuJasa, pShuAnggota: document.getElementById('pShuAnggota').value, rowsHTML};
     await cekSudahBagi();
-    return dataSHU.length > 0;
+    return dataSHU.length > 0 || shuBersih>0;
 }
-
 async function prosesBagiSHU(){
     if(role!== 'admin'){ alert('Hanya Admin yg bisa proses bagi SHU'); return; }
     const ok = await prosesData();

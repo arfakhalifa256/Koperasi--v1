@@ -1049,73 +1049,30 @@ function dalamPeriode(timestamp){
 ================================ */
 
 function apakahPendapatan(t){
-
-  /*
-   * Yang dianggap pendapatan:
-   *
-   * pendapatan_jasa
-   * pendapatan_lain
-   *
-   * BUKAN:
-   * simpanan pokok
-   * simpanan wajib
-   * simpanan sukarela
-   * angsuran pokok
-   */
-
+  const kategori = String(t.kategori || "").toLowerCase();
   return (
     t.tipe === "masuk" &&
     (
-      t.kategori === "pendapatan_jasa" ||
-      t.kategori === "pendapatan_lain"
-    )
+      kategori.includes("pendapatan") ||
+      kategori.includes("jasa") ||
+      kategori.includes("denda") ||
+      kategori === "pendapatan_jasa" ||
+      kategori === "pendapatan_lain"
+    ) &&
+   !kategori.includes("simpanan") &&
+   !kategori.includes("pokok") &&
+   !kategori.includes("angsuran")
   );
-
 }
-
-
-/* ================================
-   CEK BEBAN
-================================ */
 
 function apakahBeban(t){
-
-  /*
-   * Semua transaksi keluar/biaya
-   * dianggap beban KECUALI:
-   *
-   * pinjaman
-   * pengambilan simpanan
-   * transfer bank
-   */
-
-  if(
-    t.tipe !== "keluar" &&
-    t.tipe !== "biaya"
-  ){
-
-    return false;
-
-  }
-
-  const kategori =
-    String(t.kategori || "")
-      .toLowerCase();
-
-  if(
-    kategori === "pinjaman" ||
-    kategori === "pengambilan_simpanan" ||
-    kategori === "transfer_bank"
-  ){
-
-    return false;
-
-  }
-
+  if(t.tipe!== "keluar" && t.tipe!== "biaya") return false;
+  const kategori = String(t.kategori || "").toLowerCase();
+  // YANG BUKAN BEBAN LABARUGI:
+  const bukanBeban = ["pinjaman","pengambilan_simpanan","pencairan","transfer_bank","simpanan"];
+  if(bukanBeban.some(x => kategori.includes(x))) return false;
   return true;
-
 }
-
 
 /* ================================
    TAMPILKAN LAPORAN
@@ -1831,7 +1788,10 @@ window.exportPDF = function(){
 
 };
 
-
+// SIMPAN TOTAL LABARUGI UNTUK DI PAKAI HALAMAN SHU
+  localStorage.setItem("arfa_labarugi_cache", JSON.stringify({
+    awal, akhir, totalPendapatan, totalBeban, hasil, tglSimpan: Date.now()
+  }));
 /* ================================
    JALANKAN AWAL
 ================================ */

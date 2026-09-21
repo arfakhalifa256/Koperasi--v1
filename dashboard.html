@@ -191,8 +191,8 @@ body{background:#f1f5f9;padding-bottom:80px;}
   border-radius:16px;
   box-shadow:0 4px 12px rgba(0,0,0,.05);
   display:grid;
-  grid-template-columns:repeat(4,1fr); /* 4 KOLOM */
-  gap:14px;
+  grid-template-columns:repeat(3,1fr); /* 4 KOLOM */
+  gap:12px;
 }
 
 .menu-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;cursor:pointer;text-decoration:none;color:#1f2937;}
@@ -439,7 +439,10 @@ body{background:#f1f5f9;padding-bottom:80px;}
   </a>
 
 </div>
+  <p style="text-align:center;margin-top:30px;color:#94a3b8;font-size:11px">ARFA Kopersi v3.0 • PWA Standalone</p>
 </div>
+</div>
+
 
 <div id="modalRiwayatKas" class="modal">
 
@@ -2478,7 +2481,8 @@ document.addEventListener(
 
   }
 );
-
+ 
+  
 // 🔥 KUNCI 3: Kalau belum login, paksa ke login
 if(localStorage.getItem('login') !== 'true'){
   window.location.replace('login.html');
