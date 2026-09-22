@@ -8,82 +8,58 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;}
 body{font-family:'Poppins',sans-serif;background:#f0f6ff;margin:0;padding:15px;color:#333;}
-.container{max-width:1100px;margin:0 auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
-h2{text-align:center;color:#0f3057;margin-bottom:20px;font-size:12px}
-.header{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap;align-items:center;}
-.header input, .header select{flex:1;min-width:150px;padding:10px;border:1px solid #ccc;border-radius:8px;font-family:'Poppins';font-size:12px}
-.btn{padding:10px 15px;border:none;border-radius:8px;background:#0f3057;color:#fff;font-weight:600;cursor:pointer;}
+.container{max-width:1200px;margin:0 auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
+h2{text-align:center;color:#0f3057;margin-bottom:15px;font-size:16px}
+.header{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap;align-items:center;}
+.header input,.header select{padding:10px;border:1px solid #ccc;border-radius:8px;font-family:'Poppins';font-size:12px}
+.header input{flex:1;min-width:160px}
+.header select{min-width:140px}
+.btn{padding:10px 14px;border:none;border-radius:8px;background:#0f3057;color:#fff;font-weight:600;cursor:pointer;font-size:11px}
 .btn:hover{background:#1e90ff;}
-.btn-danger{background:#dc3545;}
-.btn-danger:hover{background:#c82333;}
-.table-wrap{overflow-x:auto;max-height:70vh;}
-table{width:100%;border-collapse:collapse;font-size:8px;}
+.btn-danger{background:#dc3545;}.btn-success{background:#16a34a;}.btn-warning{background:#f59e0b;color:#111}
+.table-wrap{overflow-x:auto;max-height:70vh;border:1px solid #eee;border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:11px;}
 th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap;}
-th{background:#0f3057;color:#fff;position:sticky;top:0;}
+th{background:#0f3057;color:#fff;position:sticky;top:0;z-index:2}
 tr:hover{background:#f8f9fa;}
-.badge{padding:4px 8px;border-radius:6px;font-size:8px;font-weight:700;color:#fff;display:inline-block;}
-.badge.LOGIN{background:#28a745;}
-.badge.DAFTAR{background:#17a2b8;}
-.badge.RESET_PASSWORD{background:#ffc107;color:#333;}
-.badge.GAGAL_LOGIN{background:#dc3545;}
-.badge.TAMBAH_ANGGOTA{background:#0d6efd;}
-.badge.EDIT_ANGGOTA{background:#6f42c1;}
-.badge.PROSES_KELUAR{background:#fd7e14;}
-.badge.AKTIFKAN_ANGGOTA{background:#20c997;}
-.badge.PENGAJUAN_PINJAMAN{background:#0d6efd;}
-.badge.EDIT_PINJAMAN{background:#6f42c1;}
-.badge.HAPUS_PINJAMAN{background:#dc3545;}
-.badge.BAYAR_ANGSURAN{background:#10b981;}
-.badge.EDIT_ANGSURAN{background:#f59e0b;}
-.badge.HAPUS_ANGSURAN{background:#ef4444;}
-.badge.KAS_MASUK{background:#16a34a;}
-.badge.KAS_KELUAR{background:#dc2626;}
-.badge.EDIT_KAS{background:#f59e0b;color:#333;}
-.badge.HAPUS_KAS{background:#991b1b;}
-.badge.SET_SALDO_AWAL{background:#1d4ed8;}
-.badge.RESET_SALDO_AWAL{background:#7f1d1d;}
-  .badge.CARI_ANGGOTA{background:#0ea5e9;}
-  .loading{text-align:center;padding:20px;color:#777;}
-
-  .small{font-size:8px;color:#888;}
+.badge{padding:4px 8px;border-radius:6px;font-size:9px;font-weight:700;color:#fff;display:inline-block;}
+.badge.LOGIN{background:#28a745;}.badge.DAFTAR{background:#17a2b8;}.badge.EDIT_PROFIL{background:#1A4D8F;}.badge.UPDATE_PROFIL{background:#1A4D8F;}
+.badge.TAMBAH_ANGGOTA{background:#0d6efd;}.badge.EDIT_ANGGOTA{background:#6f42c1;}.badge.PROSES_KELUAR{background:#fd7e14;}
+.badge.PENGAJUAN_PINJAMAN{background:#0d6efd;}.badge.BAYAR_ANGSURAN{background:#10b981;}.badge.KAS_MASUK{background:#16a34a;}.badge.KAS_KELUAR{background:#dc2626;}
+.badge.SHU{background:#7c3aed;}.badge.Backup{background:#0f3057;}.badge.Restore{background:#d97706;}.badge.Reset{background:#7f1d1d;}
+.loading{text-align:center;padding:20px;color:#777;}
+.small{font-size:9px;color:#888;}
+.info-bar{background:#eff6ff;border:1px solid #bfdbfe;padding:8px 12px;border-radius:8px;font-size:11px;margin-bottom:12px;display:flex;justify-content:space-between;flex-wrap:wrap}
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h2>📋 Log Aktivitas Koperasi</h2>
-  
+  <h2>📋 Pusat Log Aktivitas Koperasi ARFA</h2>
+
+  <div class="info-bar">
+    <span>Gabungan dari: <b>log_aktivitas + log + log_profil + shu_riwayat</b></span>
+    <span id="totalLog">0 log</span>
+  </div>
+
   <div class="header">
-    <input type="text" id="search" placeholder="Cari Username / UserID / Nama">
+    <input type="text" id="search" placeholder="Cari Username / Nama / Detail...">
+    <input type="date" id="filterTgl">
     <select id="filterAksi">
       <option value="">Semua Aksi</option>
       <option value="LOGIN">LOGIN</option>
-      <option value="GAGAL_LOGIN">GAGAL_LOGIN</option>
-      <option value="DAFTAR">DAFTAR</option>
-      <option value="RESET_PASSWORD">RESET_PASSWORD</option>
+      <option value="EDIT_PROFIL">EDIT_PROFIL</option>
+      <option value="Backup">Backup Data</option>
+      <option value="Restore">Restore Data</option>
+      <option value="SHU">Bagi SHU</option>
       <option value="TAMBAH_ANGGOTA">TAMBAH_ANGGOTA</option>
-      <option value="EDIT_ANGGOTA">EDIT_ANGGOTA</option>
-      <option value="PROSES_KELUAR">PROSES_KELUAR</option>
-      <option value="AKTIFKAN_ANGGOTA">AKTIFKAN_ANGGOTA</option>
-      <option value="SETOR_SIMPANAN">SETOR_SIMPANAN</option>
-      <option value="EDIT_SIMPANAN">EDIT_ANGGOTA</option>
-      <option value="HAPUS_SIMPANAN">HAPUS_SIMPANAN</option>
-      <option value="PENGAJUAN_PINJAMAN">PENGAJUAN_PINJAMAN</option>
-      <option value="EDIT_PINJAMAN">EDIT_PINJAMAN</option>
-      <option value="HAPUS_PINJAMAN">HAPUS_PINJAMAN</option>
       <option value="BAYAR_ANGSURAN">BAYAR_ANGSURAN</option>
-      <option value="EDIT_ANGSURAN">EDIT_ANGSURAN</option>
-      <option value="HAPUS_ANGSURAN">HAPUS_ANGSURAN</option>
       <option value="KAS_MASUK">KAS_MASUK</option>
       <option value="KAS_KELUAR">KAS_KELUAR</option>
-      <option value="EDIT_KAS">EDIT_KAS</option>
-      <option value="HAPUS_KAS">HAPUS_KAS</option>
-      <option value="SET_SALDO_AWAL">SET_SALDO_AWAL</option>
-      <option value="RESET_SALDO_AWAL">RESET_SALDO_AWAL</option>
-      <option value="CARI_ANGGOTA">CARI_ANGGOTA</option>
     </select>
     <button class="btn" onclick="loadLog()">🔄 Refresh</button>
-    <button class="btn btn-danger" onclick="hapusLogLama()">🗑️ Hapus >30 Hari</button>
+    <button class="btn btn-success" onclick="exportCSV()">📥 CSV</button>
+    <button class="btn btn-danger" onclick="hapusLogLama()">🗑️ >30 Hari</button>
     <button class="btn" onclick="location.href='dashboard.html'">Kembali</button>
   </div>
 
@@ -93,9 +69,9 @@ tr:hover{background:#f8f9fa;}
         <tr>
           <th>Waktu</th>
           <th>Aksi</th>
-          <th>UserID</th>
-          <th>Username</th>
-          <th>Detail / Oleh</th>
+          <th>User</th>
+          <th>Detail</th>
+          <th>Sumber</th>
           <th>Role</th>
         </tr>
       </thead>
@@ -115,95 +91,116 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let semuaLog = [];
-
-/* CEK LOGIN ADMIN - FIX ke index.html */
 const role = localStorage.getItem('role');
-if(role !== 'admin'){ 
-  alert("Akses ditolak. Halaman khusus admin");
-  location.href = 'index.html'; // <--- FIX tadinya login.html
+if(role!== 'admin'){ alert("Akses ditolak. Halaman khusus admin"); location.href='index.html'; }
+
+function parseWaktu(log){
+  if(log.waktu_baca) return log.waktu_baca;
+  if(log.waktu){
+    try{
+      const d = new Date(isNaN(log.waktu)? log.waktu : Number(log.waktu));
+      if(!isNaN(d)) return d.toLocaleString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    }catch(e){}
+    return log.waktu;
+  }
+  return "-";
 }
 
-/* LOAD LOG - FIX TANPA orderByChild BIAR GAK PERLU INDEX */
 window.loadLog = async function(){
-  document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Loading data dari Firebase...</td></tr>`;
+  document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Loading 4 sumber log...</td></tr>`;
   try{
-    const snap = await get(ref(db,"/log_aktivitas"));
-    
-    semuaLog = [];
-    if(snap.exists()){
-      snap.forEach(child=>{
-        semuaLog.push({key: child.key, ...child.val()});
-      });
-    } else {
-      document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Belum ada log aktivitas. Coba login/daftar dulu.</td></tr>`;
-      return;
-    }
-    
-    // Sort manual terbaru di atas, biar gak butuh orderByChild
-    semuaLog.sort((a,b)=> (b.waktu||0) - (a.waktu||0));
-    renderTabel();
+    const [snapAktivitas, snapLog, snapProfil, snapShu] = await Promise.all([
+      get(ref(db,"/log_aktivitas")),
+      get(ref(db,"/log")),
+      get(ref(db,"/log_profil")),
+      get(ref(db,"/shu_riwayat"))
+    ]);
 
+    semuaLog = [];
+
+    if(snapAktivitas.exists()){ snapAktivitas.forEach(c=> semuaLog.push({key:c.key, sumber:"log_aktivitas", ts: c.val().waktu || 0,...c.val()})); }
+    if(snapLog.exists()){ snapLog.forEach(c=>{
+      const v=c.val();
+      semuaLog.push({key:c.key, sumber:"log", aksi: v.aksi||"LOG", username:v.user, waktu:v.waktu, ts: new Date(v.waktu).getTime()||0, detail:v.aksi, role:"-" });
+    });}
+    if(snapProfil.exists()){ snapProfil.forEach(c=>{
+      const v=c.val();
+      semuaLog.push({key:c.key, sumber:"log_profil", aksi:"EDIT_PROFIL", username:v.user, waktu:v.waktu, ts: new Date(v.waktu).getTime()||0, detail:v.detail||v.aksi, role:v.role });
+    });}
+    if(snapShu.exists()){ snapShu.forEach(c=>{
+      const v=c.val();
+      semuaLog.push({key:c.key, sumber:"shu_riwayat", aksi:"SHU", username:v.oleh, waktu:v.tanggalBagi, ts: v.tanggalBagi||0, detail:`Bagi SHU ${v.periodeAwal} s/d ${v.periodeAkhir} Rp ${Number(v.shuDibagikan||0).toLocaleString()}`, role:"admin" });
+    });}
+
+    semuaLog.sort((a,b)=> (b.ts||0) - (a.ts||0));
+    document.getElementById("totalLog").innerText = `${semuaLog.length} log`;
+    renderTabel();
   }catch(err){
-    document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Gagal load: ${err.message}<br><br>Cek Rules Firebase harus .read=true</td></tr>`;
-    console.error(err);
+    document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Gagal: ${err.message}</td></tr>`;
   }
 }
 
-/* RENDER TABEL + FILTER */
 function renderTabel(){
   const search = document.getElementById('search').value.toLowerCase();
-  const filter = document.getElementById('filterAksi').value;
-  
+  const filter = document.getElementById('filterAksi').value.toLowerCase();
+  const filterTgl = document.getElementById('filterTgl').value;
+
   let data = semuaLog.filter(log => {
-    const gabung = `${log.username||''} ${log.userId||''} ${log.nama||''} ${log.idAnggota||''} ${log.oleh||''}`.toLowerCase();
+    const gabung = `${log.username||''} ${log.userId||''} ${log.aksi||''} ${log.detail||''} ${log.oleh||''} ${log.nama||''}`.toLowerCase();
     const cocokSearch = gabung.includes(search);
-    const cocokFilter = filter === '' || log.aksi === filter;
-    return cocokSearch && cocokFilter;
+    const cocokFilter = filter === '' || (log.aksi||'').toLowerCase().includes(filter) || (log.detail||'').toLowerCase().includes(filter);
+    let cocokTgl = true;
+    if(filterTgl){
+      const tglLog = new Date(log.ts||log.waktu).toISOString().slice(0,10);
+      cocokTgl = tglLog === filterTgl;
+    }
+    return cocokSearch && cocokFilter && cocokTgl;
   });
 
   if(data.length === 0){
-    document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Data tidak ditemukan untuk filter ini</td></tr>`;
-    return;
+    document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Tidak ditemukan</td></tr>`; return;
   }
 
   let html = '';
-  data.forEach(log=>{
-    const detail = log.nama ? `${log.idAnggota||''} - ${log.nama}` : (log.oleh || '-');
-    html += `
-    <tr>
-      <td>${log.waktu_baca || '-'}<div class="small">${log.key.slice(-6)}</div></td>
-      <td><span class="badge ${log.aksi}">${log.aksi}</span></td>
-      <td>${log.userId || log.idAnggota || '-'}</td>
-      <td>${log.username || '-'}</td>
-      <td>${detail} ${log.totalBayar ? '<br><b>Rp '+Number(log.totalBayar).toLocaleString('id-ID')+'</b>' : ''}</td>
+  data.slice(0,300).forEach(log=>{
+    const badgeClass = (log.aksi||"").toUpperCase().replace(/ /g,"_");
+    html += `<tr>
+      <td>${parseWaktu(log)}<div class="small">${log.key.slice(-6)}</div></td>
+      <td><span class="badge ${badgeClass}">${log.aksi}</span></td>
+      <td>${log.username || log.userId || log.oleh || '-'}</td>
+      <td>${log.detail || log.nama || log.oleh || '-'}</td>
+      <td><small>${log.sumber}</small></td>
       <td>${log.role || '-'}</td>
-    </tr>
-    `;
+    </tr>`;
   });
   document.getElementById('isiTabel').innerHTML = html;
 }
 
-/* HAPUS LOG > 30 HARI */
 window.hapusLogLama = async function(){
-  if(!confirm("Yakin hapus log lebih dari 30 hari?")) return;
-  
-  const batasWaktu = Date.now() - (30 * 24 * 60 * 60 * 1000);
-  let ygDihapus = 0;
-  
+  if(!confirm("Yakin hapus semua log >30 hari di semua sumber?")) return;
+  const batasWaktu = Date.now() - (30*24*60*60*1000);
+  let hapus=0;
   for(const log of semuaLog){
-    if((log.waktu||0) < batasWaktu){
-      try{
-        await remove(ref(db, "/log_aktivitas/" + log.key));
-        ygDihapus++;
-      }catch(e){ console.log(e); }
+    if((log.ts||0) < batasWaktu){
+      try{ await remove(ref(db, `/${log.sumber}/${log.key}`)); hapus++; }catch(e){}
     }
   }
-  alert(`${ygDihapus} log berhasil dihapus`);
-  loadLog();
+  alert(`${hapus} log dihapus`); loadLog();
+}
+
+window.exportCSV = function(){
+  let csv = "Waktu,Aksi,User,Detail,Sumber,Role\n";
+  semuaLog.forEach(l=>{
+    csv += `"${parseWaktu(l)}","${l.aksi}","${l.username||''}","${(l.detail||'').replace(/"/g,'""')}","${l.sumber}","${l.role||''}"\n`;
+  });
+  const blob = new Blob([csv],{type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=`log_arfa_${new Date().toISOString().slice(0,10)}.csv`; a.click();
 }
 
 document.getElementById('search').addEventListener('input', renderTabel);
 document.getElementById('filterAksi').addEventListener('change', renderTabel);
+document.getElementById('filterTgl').addEventListener('change', renderTabel);
 
 loadLog();
 </script>
