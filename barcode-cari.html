@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barcode Cari Anggota - ARFA</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:#f1f5f9;padding:12px;max-width:600px;margin:auto;padding-bottom:90px}
+.head{background:linear-gradient(135deg,#0f3057,#1e90ff);color:#fff;padding:16px;border-radius:20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);margin-bottom:12px;border:1px solid #eef2f7}
+.search{position:sticky;top:10px;z-index:10;display:flex;gap:8px;margin-bottom:12px;background:#f1f5f9;padding:4px 0}
+.search input{flex:1;padding:13px 14px;border-radius:14px;border:1px solid #e2e8f0;outline:none;font-size:14px}
+.btn{padding:12px 16px;border-radius:12px;border:none;background:#0f2a4a;color:#fff;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center}
+.btn-primary{background:#1e90ff}
+.badge{background:#e0f2fe;color:#0284c7;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#dbeafe,#1e90ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;flex-shrink:0}
+.link-box{background:#f8fafc;border:1px dashed #cbd5e1;padding:8px;border-radius:10px;font-size:10px;word-break:break-all;color:#475569;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="head">
+  <div>
+    <div style="font-weight:800;font-size:16px">🔍 Barcode Cari</div>
+    <small id="scanInfo" style="opacity:.9">Ketik ID / Scan QR</small>
+  </div>
+  <a href="scan.html" style="color:#fff;background:rgba(255,255,255,.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center"><span class="material-icons">qr_code_scanner</span></a>
+</div>
+
+<div class="search">
+  <input id="inputCari" placeholder="Cari ID AG001 / Nama / HP..." autofocus>
+  <button class="btn btn-primary" onclick="cariAnggota(document.getElementById('inputCari').value)"><span class="material-icons" style="font-size:18px">search</span> Cari</button>
+</div>
+
+<div id="hasil"><div class='card' style='text-align:center;color:#94a3b8;padding:30px'><span class="material-icons" style="font-size:40px">people</span><br>Scan QR atau ketik ID anggota</div></div>
+
+<script>
+// ===== PENTING: PAKSA HTTPS BIAR WA GAK file:// =====
+const BASE_URL = "https://arfa-c7dee.web.app/barcode-cari.html";
+
+// Firebase kamu
+const firebaseConfig={databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com"};
+if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+
+let semuaAnggota={};
+let dataSiap=false;
+
+function getHP(v){ return v.telepon || v.hp || v.noHp || ""; }
+
+db.ref("anggota").once("value").then(snap=>{ // pakai once biar gak dobel
+  semuaAnggota = snap.val() || {};
+  dataSiap = true;
+  document.getElementById("scanInfo").innerText = Object.keys(semuaAnggota).length + " anggota dimuat";
+  
+  const p = new URLSearchParams(location.search);
+  const kode = p.get("scan") || p.get("cari") || p.get("id");
+  if(kode){
+    document.getElementById("inputCari").value = kode;
+    cariAnggota(kode);
+  }
+}).catch(e=>{
+  document.getElementById("hasil").innerHTML=`<div class='card' style='color:red'>❌ Firebase tidak kebaca karena buka pakai file:///<br><small>${e.message}</small><br><br>Buka pakai https://arfa-c7dee.web.app/barcode-cari.html</div>`;
+});
+
+// LISTEN REALTIME SETELAH ITU
+db.ref("anggota").on("child_added", ()=>{ if(dataSiap) { /* auto refresh */ } });
+
+function cariAnggota(q){
+  const hasilDiv=document.getElementById("hasil");
+  if(!dataSiap){
+    hasilDiv.innerHTML="<div class='card' style='text-align:center'>⏳ Memuat data Firebase dulu...</div>";
+    setTimeout(()=>cariAnggota(q),500);
+    return;
+  }
+  if(!q || !q.trim()){
+    hasilDiv.innerHTML="<div class='card' style='text-align:center;color:#94a3b8'>Ketik ID AG001 / Nama / HP</div>";
+    return;
+  }
+  const qUp=q.trim().toUpperCase();
+  const list = Object.entries(semuaAnggota).filter(([key,v])=>{
+    return `${v.id||''} ${v.nama||''} ${getHP(v)} ${v.alamat||''}`.toUpperCase().includes(qUp);
+  });
+
+  if(list.length==0){
+    hasilDiv.innerHTML=`<div class='card' style='text-align:center'><b>❌ ${qUp} tidak ditemukan</b></div>`;
+    return;
+  }
+  // render
+  let html="";
+  list.forEach(([key,v])=>{
+    const id=v.id||v.barcode||key;
+    const nama=v.nama||"-";
+    const hp=getHP(v);
+    const urlShare = BASE_URL + "?scan=" + encodeURIComponent(id);
+    html+=`
+    <div class="card" data-key="${key}" data-id="${id}" data-nama="${nama}">
+      <div style="display:flex;gap:12px">
+        <div class="avatar">${nama.charAt(0).toUpperCase()}</div>
+        <div style="flex:1"><b>${nama}</b><br><small>${hp} • ${v.alamat||""}</small><br><span class="badge">${id}</span></div>
+      </div>
+      <div style="margin-top:10px;text-align:center;background:#f8fafc;padding:10px;border-radius:12px">
+        <div id="qr-${key}" style="display:flex;justify-content:center"></div>
+        <svg id="bc-${key}"></svg>
+        <div class="link-box">${urlShare}</div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="btn btn-primary btn-wa" style="flex:1"><span class="material-icons" style="font-size:18px">share</span> WA</button>
+          <button class="btn btn-copy" style="flex:1;background:#fff;border:1px solid #e2e8f0;color:#334155"><span class="material-icons" style="font-size:18px">content_copy</span> Copy</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  hasilDiv.innerHTML=html;
+
+  // generate QR + bind tombol tanpa error petik
+  list.forEach(([key,v])=>{
+    const id=v.id||v.barcode||key;
+    const nama=v.nama||"-";
+    const urlShare = BASE_URL + "?scan=" + encodeURIComponent(id);
+    try{
+      new QRCode(document.getElementById(`qr-${key}`), {text:urlShare,width:110,height:110});
+      JsBarcode(`#bc-${key}`, id, {format:"CODE128",width:1.8,height:40,displayValue:true});
+    }catch(e){}
+    const card = document.querySelector(`[data-key="${key}"]`);
+    card.querySelector(".btn-wa").onclick=()=>shareWA(id,nama);
+    card.querySelector(".btn-copy").onclick=()=>copyLink(id);
+  });
+}
+
+function shareWA(id,nama){
+  const url = BASE_URL + "?scan=" + encodeURIComponent(id);
+  window.open(`https://wa.me/?text=${encodeURIComponent("Kartu Anggota "+nama+" ("+id+") : "+url)}`);
+}
+function copyLink(id){
+  const url = BASE_URL + "?scan=" + encodeURIComponent(id);
+  navigator.clipboard.writeText(url).then(()=>alert("✅ Disalin:\n"+url));
+}
+
+// FIX KETIK MANUAL
+document.getElementById("inputCari").addEventListener("input", e=>cariAnggota(e.target.value));
+document.getElementById("inputCari").addEventListener("keydown", e=>{ if(e.key==="Enter") cariAnggota(e.target.value); });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,2905 @@
+<!DOCTYPE html><html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Data Anggota - Koperasi ARFA</title><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.3.20/dist/JsBarcode.all.min.js"></script><style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  background:#f1f5f9;
+  color:#1f2937;
+  padding-bottom:80px;
+}
+
+/* ================= HEADER ================= */
+
+header{
+  background:linear-gradient(135deg,#1e90ff,#0f3057);
+  color:#fff;
+  padding:12px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:998;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:700;
+}
+
+.brand img{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:#fff;
+  padding:2px;
+  object-fit:cover;
+}
+
+.header-icons{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.header-icons span{
+  cursor:pointer;
+}
+
+/* ================= CONTAINER ================= */
+
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:10px;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
+  margin-bottom:12px;
+  border:1px solid #e2e8f0;
+}
+
+/* ================= SEARCH ================= */
+
+.top-action{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  width:100%;
+}
+
+.search-box{
+  flex:1;
+  background:#fff;
+  border-radius:14px;
+  padding:8px 10px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  border:1px solid #e2e8f0;
+  min-width:0;
+}
+
+.search-box .material-icons{
+  color:#64748b;
+  font-size:21px;
+}
+
+.search-box input{
+  border:none;
+  outline:none;
+  flex:1;
+  min-width:0;
+  font-size:12px;
+  background:transparent;
+  color:#1f2937;
+}
+
+.btn-icon{
+  width:48px;
+  height:48px;
+  flex-shrink:0;
+  border-radius:14px;
+  border:none;
+  background:#0f2a4a;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.btn-tambah{
+  height:48px;
+  flex-shrink:0;
+  padding:0 16px;
+  border-radius:14px;
+  border:none;
+  background:#1e90ff;
+  color:#fff;
+  font-weight:700;
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  gap:4px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.btn-tambah span{
+  font-size:18px;
+  line-height:0;
+}
+
+/* ================= BUTTON ================= */
+
+.btn{
+  padding:10px 16px;
+  border:none;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+  font-size:12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+
+.btn-primary{
+  background:#1e90ff;
+  color:#fff;
+}
+
+.btn-dark{
+  background:#0f3057;
+  color:#fff;
+}
+
+.btn-danger{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+.btn-success{
+  background:#dcfce7;
+  color:#16a34a;
+}
+
+/* ================= BADGE ================= */
+
+.badge{
+  padding:3px 8px;
+  border-radius:20px;
+  font-size:9px;
+  font-weight:800;
+  display:inline-block;
+}
+
+.aktif{
+  background:#dcfce7;
+  color:#16a34a;
+}
+
+.keluar{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+/* ================= TABLE ================= */
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+  min-width:820px;
+}
+
+th{
+  padding:10px;
+  background:#f8fafc;
+  color:#64748b;
+  font-size:10px;
+  text-transform:uppercase;
+  text-align:left;
+  white-space:nowrap;
+}
+
+td{
+  padding:10px;
+  border-bottom:1px solid #f1f5f9;
+  vertical-align:middle;
+}
+
+tbody tr{
+  cursor:pointer;
+  transition:.15s;
+}
+
+tbody tr:hover{
+  background:#f8fafc;
+}
+
+.code-id{
+  font-weight:800;
+  color:#0f3057;
+}
+
+.code-barcode{
+  background:#eff6ff;
+  padding:3px 7px;
+  border-radius:6px;
+  font-weight:700;
+  color:#1e90ff;
+  white-space:nowrap;
+}
+
+/* ================= MOBILE LIST ================= */
+
+.mobile-list{
+  display:none;
+}
+
+.m-card{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  padding:12px;
+  margin-bottom:10px;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  box-shadow:0 2px 8px rgba(0,0,0,.03);
+}
+
+.m-id{
+  font-weight:800;
+  font-size:13px;
+  color:#0f3057;
+}
+
+.m-barcode{
+  color:#1e90ff;
+  font-size:10px;
+  font-weight:700;
+}
+
+.m-name{
+  font-weight:600;
+  margin-top:3px;
+}
+
+.m-info{
+  font-size:11px;
+  color:#64748b;
+  margin-top:3px;
+}
+
+/* ================= DETAIL ================= */
+
+#detailCard{
+  display:none;
+}
+
+.detail-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.detail-title{
+  font-size:15px;
+  font-weight:800;
+  color:#0f3057;
+}
+
+.detail-close{
+  width:32px;
+  height:32px;
+  border:none;
+  border-radius:10px;
+  background:#f1f5f9;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+}
+
+.member-card{
+  border:2px solid #0f3057;
+  border-radius:14px;
+  padding:14px;
+}
+
+.member-id{
+  font-weight:800;
+  color:#0f3057;
+  font-size:14px;
+}
+
+.member-barcode-text{
+  font-weight:800;
+  color:#1e90ff;
+  font-size:12px;
+  margin-top:3px;
+}
+
+.member-name{
+  font-weight:800;
+  font-size:16px;
+  margin-top:10px;
+}
+
+.member-info{
+  font-size:12px;
+  margin-top:5px;
+}
+
+.member-address{
+  font-size:11px;
+  color:#64748b;
+  margin-top:4px;
+}
+
+.qr-box{
+  background:#f8fafc;
+  border:1px dashed #cbd5e1;
+  border-radius:14px;
+  padding:10px;
+  text-align:center;
+  min-width:165px;
+}
+
+#qrcodeAnggota{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:6px 0;
+}
+
+.qr-small-text{
+  font-size:9px;
+  color:#64748b;
+  word-break:break-all;
+}
+
+.barcode-detail{
+  margin-top:12px;
+  text-align:center;
+}
+
+.detail-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  z-index:10000;
+  padding:0;
+  align-items:flex-end;
+}
+
+.modal.active{
+  display:flex;
+}
+
+.modal-box{
+  background:#fff;
+  width:100%;
+  max-width:480px;
+  border-radius:20px 20px 0 0;
+  padding:16px;
+  max-height:94vh;
+  overflow-y:auto;
+  margin:0 auto;
+}
+
+.modal-title-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:5px;
+}
+
+.modal-title-row h3{
+  font-size:17px;
+  color:#0f3057;
+}
+
+.close-modal{
+  font-size:22px;
+  cursor:pointer;
+  width:34px;
+  height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  background:#f1f5f9;
+}
+
+.modal-box label{
+  font-size:11px;
+  font-weight:700;
+  margin:10px 0 4px;
+  display:block;
+}
+
+.modal-box input,
+.modal-box textarea,
+.modal-box select{
+  width:100%;
+  padding:12px;
+  border:1px solid #e2e8f0;
+  border-radius:12px;
+  font-size:13px;
+  background:#f8fafc;
+  outline:none;
+}
+
+.modal-box input:focus,
+.modal-box textarea:focus,
+.modal-box select:focus{
+  border-color:#1e90ff;
+  background:#fff;
+}
+
+.input-row{
+  display:flex;
+  gap:7px;
+}
+
+.input-row input{
+  flex:1;
+}
+
+.barcode-preview{
+  text-align:center;
+  border:1px dashed #94a3b8;
+  border-radius:12px;
+  padding:8px;
+  margin-top:8px;
+  background:#f8fafc;
+}
+
+#previewBarcode{
+  max-width:100%;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-270px;
+  width:270px;
+  height:100%;
+  background:#0f3057;
+  padding:16px;
+  transition:.3s;
+  z-index:9999;
+}
+
+.sidebar.open{
+  left:0;
+}
+
+.sidebar-title{
+  color:#fff;
+  margin-bottom:16px;
+  font-size:17px;
+}
+
+.sidebar a{
+  display:flex;
+  gap:10px;
+  color:#fff;
+  text-decoration:none;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:4px;
+  font-size:13px;
+}
+
+.sidebar a:hover,
+.sidebar a.active{
+  background:rgba(255,255,255,.12);
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  display:none;
+  z-index:999;
+}
+
+.overlay.active{
+  display:block;
+}
+
+/* ================= EMPTY ================= */
+
+.empty{
+  padding:30px 15px;
+  text-align:center;
+  color:#64748b;
+  font-size:12px;
+}
+
+.empty .material-icons{
+  font-size:40px;
+  margin-bottom:5px;
+  color:#94a3b8;
+}
+
+/* ================= TOAST ================= */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translateX(-50%) translateY(100px);
+  background:#0f3057;
+  color:#fff;
+  padding:11px 16px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:600;
+  z-index:20000;
+  opacity:0;
+  transition:.3s;
+  pointer-events:none;
+  max-width:90%;
+  text-align:center;
+}
+
+.toast.show{
+  transform:translateX(-50%) translateY(0);
+  opacity:1;
+}
+
+/* ================= PRINT ================= */
+
+@media print{
+
+  body{
+    background:#fff;
+    padding:0;
+  }
+
+  header,
+  .sidebar,
+  .overlay,
+  .container > .card:not(#detailCard),
+  .detail-actions,
+  .detail-header .detail-close{
+    display:none !important;
+  }
+
+  #detailCard{
+    display:block !important;
+    box-shadow:none;
+    border:none;
+    margin:0;
+  }
+
+  .member-card{
+    border:2px solid #000;
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+
+  .table-wrap{
+    display:none;
+  }
+
+  .mobile-list{
+    display:block;
+  }
+
+  .detail-grid{
+    grid-template-columns:1fr;
+  }
+
+  .qr-box{
+    width:100%;
+  }
+
+  .top-action{
+    gap:6px;
+  }
+
+  .btn-tambah{
+    padding:0 12px;
+  }
+
+  .btn-tambah .material-icons{
+    font-size:18px;
+  }
+
+  .detail-actions .btn{
+    flex:1;
+    padding:10px 6px;
+    font-size:10px;
+  }
+}
+
+@media(max-width:430px){
+
+  .brand{
+    font-size:13px;
+  }
+
+  .brand img{
+    width:32px;
+    height:32px;
+  }
+
+  .top-action{
+    flex-wrap:nowrap;
+  }
+
+  .search-box{
+    min-width:0;
+  }
+
+  .search-box input{
+    font-size:11px;
+  }
+
+  .btn-icon{
+    width:44px;
+    height:44px;
+  }
+
+  .btn-tambah{
+    height:44px;
+    padding:0 10px;
+    font-size:10px;
+  }
+
+  .btn-tambah span{
+    display:none;
+  }
+}
+</style></head><body><!-- ================= SIDEBAR ================= --><div id="sidebar" class="sidebar">  <div class="sidebar-title">
+    <b>Koperasi ARFA</b>
+  </div>  <a href="dashboard.html">
+    🏠 Beranda
+  </a>  <a href="anggota.html" class="active">
+    👤 Anggota
+  </a>  <a href="scan.html">
+    📷 Scan
+  </a>  <a href="#" id="btnLogout">
+    🚪 Logout
+  </a></div><div id="overlay" class="overlay"></div><!-- ================= HEADER ================= --><header>  <div class="brand">
+    <img src="img/icon-192.png" onerror="this.style.display='none'">
+    <span>Data Anggota</span>
+  </div>  <div class="header-icons"><span
+  class="material-icons"
+  title="Scan"
+  onclick="location.href='scan.html'">
+  qr_code_scanner
+</span>
+
+<span
+  class="material-icons"
+  title="Menu"
+  onclick="toggleSidebar()">
+  menu
+</span>
+
+  </div></header><!-- ================= CONTENT ================= --><div class="container">  <!-- SEARCH -->  <div class="card"><div class="top-action">
+
+  <div class="search-box">
+
+    <span class="material-icons">
+      search
+    </span>
+
+    <input
+      type="text"
+      id="searchAnggota"
+      placeholder="Cari ID, barcode, nama, HP..."
+      autocomplete="off">
+
+  </div>
+
+  <button
+    class="btn-icon"
+    title="Scan Barcode / QR"
+    onclick="location.href='scan.html'">
+
+    <span class="material-icons">
+      qr_code_scanner
+    </span>
+
+  </button>
+
+  <button
+    class="btn-tambah"
+    onclick="openModal()">
+
+    <span class="material-icons">
+      person_add
+    </span>
+
+    + Tambah
+
+  </button>
+
+</div>
+
+<div
+  style="font-size:10px;color:#64748b;margin-top:8px">
+
+  Total:
+  <b id="totalAnggota">0</b>
+  anggota
+
+  <span style="margin-left:5px">
+    • ID tetap • Barcode bisa berbeda
+  </span>
+
+</div>
+
+  </div>  <!-- DESKTOP TABLE -->  <div class="table-wrap card"><table>
+
+  <thead>
+
+    <tr>
+
+      <th>ID Anggota</th>
+      <th>Barcode</th>
+      <th>Nama</th>
+      <th>HP</th>
+      <th>Status</th>
+      <th style="text-align:center">
+        Barcode
+      </th>
+      <th>Aksi</th>
+
+    </tr>
+
+  </thead>
+
+  <tbody id="tbodyAnggota"></tbody>
+
+</table>
+
+  </div>  <!-- MOBILE -->  <div
+    class="mobile-list"
+    id="mobileList">
+  </div>  <!-- DETAIL -->  <div
+    class="card"
+    id="detailCard"><div class="detail-header">
+
+  <div class="detail-title">
+    Detail Anggota
+  </div>
+
+  <button
+    class="detail-close"
+    onclick="tutupDetail()">
+
+    <span class="material-icons">
+      close
+    </span>
+
+  </button>
+
+</div>
+
+<div id="printArea">
+
+  <div class="detail-grid">
+
+    <div class="member-card">
+
+      <div
+        id="dId"
+        class="member-id">
+      </div>
+
+      <div
+        id="dBarcodeText"
+        class="member-barcode-text">
+      </div>
+
+      <div
+        id="dNama"
+        class="member-name">
+      </div>
+
+      <div
+        id="dHp"
+        class="member-info">
+      </div>
+
+      <div
+        id="dAlamat"
+        class="member-address">
+      </div>
+
+      <div
+        id="dStatus"
+        style="margin-top:8px">
+      </div>
+
+      <div class="barcode-detail">
+
+        <svg id="barcodeAnggota"></svg>
+
+      </div>
+
+    </div>
+
+    <div class="qr-box">
+
+      <div
+        style="font-weight:700;font-size:11px">
+        QR ANGGOTA
+      </div>
+
+      <div id="qrcodeAnggota"></div>
+
+      <div
+        id="qrText"
+        class="qr-small-text">
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="detail-actions">
+
+  <button
+    class="btn btn-primary"
+    onclick="window.print()">
+
+    🖨️ Cetak
+
+  </button>
+
+  <button
+    class="btn btn-dark"
+    onclick="editFromDetail()">
+
+    ✏️ Edit
+
+  </button>
+
+  <button
+    class="btn btn-danger"
+    onclick="hapusFromDetail()">
+
+    🗑️ Hapus
+
+  </button>
+
+</div>
+
+  </div></div><!-- ================= MODAL ================= --><div
+  id="modalAnggota"
+  class="modal">  <div class="modal-box"><div class="modal-title-row">
+
+  <h3 id="modalTitle">
+    Tambah Anggota
+  </h3>
+
+  <div
+    class="close-modal"
+    onclick="closeModal()">
+
+    ✕
+
+  </div>
+
+</div>
+
+<label>
+  ID Anggota *
+</label>
+
+<input
+  type="text"
+  id="inputIdAnggota"
+  placeholder="AG001"
+  autocomplete="off">
+
+<div
+  style="font-size:9px;color:#64748b;margin-top:3px">
+
+  Contoh: AG001, AG002, AG003
+
+</div>
+
+<label>
+  ID Barcode *
+</label>
+
+<div class="input-row">
+
+  <input
+    type="text"
+    id="inputBarcode"
+    placeholder="AG001"
+    autocomplete="off">
+
+  <button
+    type="button"
+    class="btn btn-dark"
+    onclick="buatPreview()">
+
+    OK
+
+  </button>
+
+</div>
+
+<div class="barcode-preview">
+
+  <svg id="previewBarcode"></svg>
+
+  <div
+    id="previewText"
+    style="font-size:10px;color:#64748b">
+  </div>
+
+</div>
+
+<label>
+  Nama *
+</label>
+
+<input
+  type="text"
+  id="inputNama"
+  placeholder="Nama anggota">
+
+<label>
+  HP / Telepon
+</label>
+
+<input
+  type="text"
+  id="inputHp"
+  placeholder="08xxxxxxxxxx">
+
+<label>
+  Alamat
+</label>
+
+<textarea
+  id="inputAlamat"
+  rows="2"
+  placeholder="Alamat anggota"></textarea>
+
+<label>
+  Status
+</label>
+
+<select id="inputStatus">
+
+  <option value="aktif">
+    aktif
+  </option>
+
+  <option value="keluar">
+    keluar
+  </option>
+
+</select>
+
+<div
+  style="display:flex;gap:8px;margin-top:16px">
+
+  <button
+    class="btn btn-primary"
+    style="flex:1"
+    onclick="simpanAnggota()"
+    id="btnSimpan">
+
+    💾 SIMPAN
+
+  </button>
+
+  <button
+    class="btn btn-dark"
+    style="flex:1"
+    onclick="closeModal()">
+
+    Batal
+
+  </button>
+
+</div>
+
+<div
+  id="statusSimpan"
+  style="text-align:center;font-size:11px;margin-top:10px;color:#16a34a">
+</div>
+
+  </div></div><!-- TOAST --><div
+  id="toast"
+  class="toast">
+</div><!-- ================= FIREBASE ================= --><script type="module">
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  get,
+  set,
+  push,
+  update,
+  remove
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+
+  authDomain:
+    "arfa-c7dee.firebaseapp.com",
+
+  databaseURL:
+    "https://arfa-c7dee-default-rtdb.firebaseio.com",
+
+  projectId:
+    "arfa-c7dee"
+
+};
+
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getDatabase(app);
+
+
+/* =========================================================
+   VARIABLE
+========================================================= */
+
+let dataAnggota = {};
+let editKey = null;
+let currentDetail = null;
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+window.toggleSidebar = function(){
+
+  document
+    .getElementById("sidebar")
+    .classList.toggle("open");
+
+  document
+    .getElementById("overlay")
+    .classList.toggle("active");
+
+};
+
+document
+  .getElementById("overlay")
+  .addEventListener(
+    "click",
+    toggleSidebar
+  );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document
+  .getElementById("btnLogout")
+  .addEventListener("click",function(e){
+
+    e.preventDefault();
+
+    if(confirm("Yakin ingin logout?")){
+
+      localStorage.clear();
+
+      location.href =
+        "index.html";
+
+    }
+
+  });
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.innerText =
+    message;
+
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+
+    toast.classList.remove("show");
+
+  },2500);
+
+}
+
+
+/* =========================================================
+   NORMALISASI ID
+========================================================= */
+
+function normalizeId(value){
+
+  return String(value || "")
+    .trim()
+    .toUpperCase();
+
+}
+
+
+/* =========================================================
+   NORMALISASI DATA ANGGOTA
+========================================================= */
+
+function getMemberId(a){
+
+  return normalizeId(
+    a.id ||
+    a.idAnggota ||
+    a.anggotaId ||
+    a.memberId ||
+    ""
+  );
+
+}
+
+function getBarcode(a){
+
+  return String(
+    a.barcode ||
+    getMemberId(a)
+  ).trim();
+
+}
+
+function getNama(a){
+
+  return String(
+    a.nama ||
+    a.name ||
+    ""
+  ).trim();
+
+}
+
+function getHp(a){
+
+  return String(
+    a.telepon ||
+    a.hp ||
+    a.noHp ||
+    ""
+  ).trim();
+
+}
+
+
+/* =========================================================
+   CARI NOMOR ID TERBESAR
+========================================================= */
+
+function getNextId(){
+
+  let maxNumber = 0;
+
+  Object.values(dataAnggota)
+    .forEach(a=>{
+
+      const id =
+        getMemberId(a);
+
+      const match =
+        id.match(/^AG(\d+)$/i);
+
+      if(match){
+
+        const number =
+          parseInt(match[1],10);
+
+        if(number > maxNumber){
+
+          maxNumber =
+            number;
+
+        }
+
+      }
+
+    });
+
+  return "AG" +
+    String(maxNumber + 1)
+      .padStart(3,"0");
+
+}
+
+
+/* =========================================================
+   CEK DUPLIKAT ID
+========================================================= */
+
+function idSudahDipakai(id,excludeKey=null){
+
+  id =
+    normalizeId(id);
+
+  return Object.entries(dataAnggota)
+    .some(([key,a])=>{
+
+      if(
+        excludeKey &&
+        key === excludeKey
+      ){
+        return false;
+      }
+
+      return getMemberId(a) === id;
+
+    });
+
+}
+
+
+/* =========================================================
+   CEK DUPLIKAT BARCODE
+========================================================= */
+
+function barcodeSudahDipakai(
+  barcode,
+  excludeKey=null
+){
+
+  barcode =
+    String(barcode || "")
+      .trim()
+      .toLowerCase();
+
+  return Object.entries(dataAnggota)
+    .some(([key,a])=>{
+
+      if(
+        excludeKey &&
+        key === excludeKey
+      ){
+        return false;
+      }
+
+      return getBarcode(a)
+        .toLowerCase() === barcode;
+
+    });
+
+}
+
+
+/* =========================================================
+   OPEN MODAL
+========================================================= */
+
+window.openModal =
+function(key=null){
+
+  editKey = key;
+
+  document
+    .getElementById("modalAnggota")
+    .classList.add("active");
+
+  document
+    .getElementById("statusSimpan")
+    .innerText = "";
+
+  if(key && dataAnggota[key]){
+
+    const a =
+      dataAnggota[key];
+
+    document
+      .getElementById("modalTitle")
+      .innerText =
+      "Edit Anggota";
+
+    document
+      .getElementById("inputIdAnggota")
+      .value =
+      getMemberId(a);
+
+    document
+      .getElementById("inputBarcode")
+      .value =
+      getBarcode(a);
+
+    document
+      .getElementById("inputNama")
+      .value =
+      getNama(a);
+
+    document
+      .getElementById("inputHp")
+      .value =
+      getHp(a);
+
+    document
+      .getElementById("inputAlamat")
+      .value =
+      a.alamat || "";
+
+    document
+      .getElementById("inputStatus")
+      .value =
+      a.status || "aktif";
+
+  }else{
+
+    document
+      .getElementById("modalTitle")
+      .innerText =
+      "Tambah Anggota";
+
+    const nextId =
+      getNextId();
+
+    document
+      .getElementById("inputIdAnggota")
+      .value =
+      nextId;
+
+    document
+      .getElementById("inputBarcode")
+      .value =
+      nextId;
+
+    document
+      .getElementById("inputNama")
+      .value = "";
+
+    document
+      .getElementById("inputHp")
+      .value = "";
+
+    document
+      .getElementById("inputAlamat")
+      .value = "";
+
+    document
+      .getElementById("inputStatus")
+      .value =
+      "aktif";
+
+  }
+
+  buatPreview();
+
+};
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+window.closeModal =
+function(){
+
+  document
+    .getElementById("modalAnggota")
+    .classList.remove("active");
+
+  editKey = null;
+
+};
+
+
+/* =========================================================
+   BARCODE PREVIEW
+========================================================= */
+
+window.buatPreview =
+function(){
+
+  let barcode =
+    document
+      .getElementById("inputBarcode")
+      .value
+      .trim();
+
+  if(!barcode){
+
+    barcode =
+      document
+        .getElementById("inputIdAnggota")
+        .value
+        .trim();
+
+  }
+
+  if(!barcode){
+
+    barcode =
+      "AG001";
+
+  }
+
+  const svg =
+    document
+      .getElementById("previewBarcode");
+
+  svg.innerHTML = "";
+
+  try{
+
+    JsBarcode(
+      svg,
+      barcode,
+      {
+        format:"CODE128",
+        width:1.4,
+        height:45,
+        displayValue:true,
+        fontSize:10,
+        margin:5
+      }
+    );
+
+    document
+      .getElementById("previewText")
+      .innerText =
+      barcode;
+
+  }catch(error){
+
+    document
+      .getElementById("previewText")
+      .innerText =
+      "Barcode tidak valid";
+
+  }
+
+};
+
+
+/* =========================================================
+   INPUT BARCODE
+========================================================= */
+
+document
+  .getElementById("inputBarcode")
+  .addEventListener(
+    "input",
+    buatPreview
+  );
+
+
+/* =========================================================
+   INPUT ID
+========================================================= */
+
+document
+  .getElementById("inputIdAnggota")
+  .addEventListener(
+    "input",
+    function(){
+
+      const barcode =
+        document
+          .getElementById("inputBarcode");
+
+      if(!barcode.value.trim()){
+
+        barcode.value =
+          this.value
+            .toUpperCase();
+
+      }
+
+      buatPreview();
+
+    }
+  );
+
+
+/* =========================================================
+   SIMPAN ANGGOTA
+========================================================= */
+
+window.simpanAnggota =
+async function(){
+
+  const btn =
+    document
+      .getElementById("btnSimpan");
+
+  const originalText =
+    "💾 SIMPAN";
+
+  try{
+
+    btn.disabled = true;
+
+    btn.innerText =
+      "Menyimpan...";
+
+
+    /* DATA FORM */
+
+    let id =
+      normalizeId(
+        document
+          .getElementById("inputIdAnggota")
+          .value
+      );
+
+    let barcode =
+      document
+        .getElementById("inputBarcode")
+        .value
+        .trim();
+
+    const nama =
+      document
+        .getElementById("inputNama")
+        .value
+        .trim();
+
+    const telepon =
+      document
+        .getElementById("inputHp")
+        .value
+        .trim();
+
+    const alamat =
+      document
+        .getElementById("inputAlamat")
+        .value
+        .trim();
+
+    const status =
+      document
+        .getElementById("inputStatus")
+        .value;
+
+
+    /* VALIDASI */
+
+    if(!id){
+
+      alert(
+        "ID anggota wajib diisi."
+      );
+
+      return;
+
+    }
+
+    if(!nama){
+
+      alert(
+        "Nama anggota wajib diisi."
+      );
+
+      return;
+
+    }
+
+    if(!barcode){
+
+      barcode = id;
+
+    }
+
+
+    /* VALIDASI ID */
+
+    if(
+      idSudahDipakai(
+        id,
+        editKey
+      )
+    ){
+
+      alert(
+        "ID anggota " +
+        id +
+        " sudah digunakan."
+      );
+
+      return;
+
+    }
+
+
+    /* VALIDASI BARCODE */
+
+    if(
+      barcodeSudahDipakai(
+        barcode,
+        editKey
+      )
+    ){
+
+      alert(
+        "Barcode " +
+        barcode +
+        " sudah digunakan."
+      );
+
+      return;
+
+    }
+
+
+    /* DATA YANG DISIMPAN */
+
+    const data = {
+
+      id:id,
+
+      idAnggota:id,
+
+      barcode:barcode,
+
+      nama:nama,
+
+      telepon:telepon,
+
+      hp:telepon,
+
+      alamat:alamat,
+
+      status:status
+
+    };
+
+
+    /* EDIT */
+
+    if(editKey){
+
+      data.tanggalUpdate =
+        Date.now();
+
+      await update(
+        ref(
+          db,
+          "anggota/" +
+          editKey
+        ),
+        data
+      );
+
+      showToast(
+        "Data anggota berhasil diperbarui."
+      );
+
+    }
+
+    /* TAMBAH */
+
+    else{
+
+      const newRef =
+        push(
+          ref(db,"anggota")
+        );
+
+      data.rekening = "";
+
+      data.tanggalMasuk =
+        Date.now();
+
+      await set(
+        newRef,
+        data
+      );
+
+      showToast(
+        "Anggota berhasil ditambahkan."
+      );
+
+    }
+
+
+    document
+      .getElementById("statusSimpan")
+      .innerText =
+      "✅ Data berhasil disimpan";
+
+    setTimeout(async()=>{
+
+      closeModal();
+
+      await loadAnggota();
+
+    },500);
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Gagal menyimpan data:\n" +
+      error.message
+    );
+
+  }finally{
+
+    btn.disabled = false;
+
+    btn.innerText =
+      originalText;
+
+  }
+
+};
+
+
+/* =========================================================
+   LOAD ANGGOTA
+========================================================= */
+
+async function loadAnggota(){
+
+  try{
+
+    const snap =
+      await get(
+        ref(db,"anggota")
+      );
+
+    const tbody =
+      document
+        .getElementById("tbodyAnggota");
+
+    const mobile =
+      document
+        .getElementById("mobileList");
+
+    tbody.innerHTML = "";
+
+    mobile.innerHTML = "";
+
+    if(!snap.exists()){
+
+      dataAnggota = {};
+
+      document
+        .getElementById("totalAnggota")
+        .innerText = "0";
+
+      renderEmpty();
+
+      return;
+
+    }
+
+    dataAnggota =
+      snap.val() || {};
+
+
+    const list =
+      Object.entries(
+        dataAnggota
+      )
+      .map(([key,value])=>({
+
+        key:key,
+
+        ...value
+
+      }))
+      .sort((a,b)=>{
+
+        return getMemberId(a)
+          .localeCompare(
+            getMemberId(b),
+            undefined,
+            {
+              numeric:true
+            }
+          );
+
+      });
+
+
+    document
+      .getElementById("totalAnggota")
+      .innerText =
+      list.length;
+
+
+    renderTable(list);
+
+    renderMobile(list);
+
+
+    /* CEK SCAN URL */
+
+    checkScanParameter();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Gagal mengambil data anggota:\n" +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+function renderEmpty(){
+
+  document
+    .getElementById("tbodyAnggota")
+    .innerHTML = `
+
+      <tr>
+        <td colspan="7">
+          <div class="empty">
+            <span class="material-icons">
+              group_off
+            </span>
+            <br>
+            Belum ada data anggota.
+          </div>
+        </td>
+      </tr>
+
+  `;
+
+  document
+    .getElementById("mobileList")
+    .innerHTML = `
+
+      <div class="card empty">
+
+        <span class="material-icons">
+          group_off
+        </span>
+
+        <br>
+
+        Belum ada data anggota.
+
+      </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   RENDER TABLE
+========================================================= */
+
+function renderTable(list){
+
+  const tbody =
+    document
+      .getElementById("tbodyAnggota");
+
+  tbody.innerHTML = "";
+
+
+  if(!list.length){
+
+    tbody.innerHTML = `
+
+      <tr>
+        <td colspan="7">
+
+          <div class="empty">
+
+            <span class="material-icons">
+              search_off
+            </span>
+
+            <br>
+
+            Data anggota tidak ditemukan.
+
+          </div>
+
+        </td>
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+
+  list.forEach(a=>{
+
+    const id =
+      getMemberId(a);
+
+    const barcode =
+      getBarcode(a);
+
+    const nama =
+      getNama(a);
+
+    const hp =
+      getHp(a);
+
+    const status =
+      a.status || "aktif";
+
+
+    const barcodeId =
+      "bc_" +
+      Math.random()
+        .toString(36)
+        .substring(2,9);
+
+
+    const tr =
+      document
+        .createElement("tr");
+
+
+    tr.innerHTML = `
+
+      <td>
+        <span class="code-id">
+          ${escapeHtml(id)}
+        </span>
+      </td>
+
+      <td>
+        <span class="code-barcode">
+          ${escapeHtml(barcode)}
+        </span>
+      </td>
+
+      <td>
+        <b>
+          ${escapeHtml(nama || "-")}
+        </b>
+      </td>
+
+      <td>
+        ${escapeHtml(hp || "-")}
+      </td>
+
+      <td>
+
+        <span class="badge ${
+          status === "keluar"
+          ? "keluar"
+          : "aktif"
+        }">
+
+          ${escapeHtml(status)}
+
+        </span>
+
+      </td>
+
+      <td style="text-align:center">
+
+        <svg
+          id="${barcodeId}"
+          style="
+            width:110px;
+            height:28px;
+            max-width:110px;
+          ">
+        </svg>
+
+      </td>
+
+      <td>
+
+        <button
+          class="btn btn-dark"
+          style="
+            padding:6px 9px;
+            font-size:9px
+          "
+          data-edit="${a.key}">
+
+          ✏️ Edit
+
+        </button>
+
+      </td>
+
+    `;
+
+
+    tr.addEventListener(
+      "click",
+      function(){
+
+        tampilkanDetail(a);
+
+      }
+    );
+
+
+    const editBtn =
+      tr.querySelector(
+        "[data-edit]"
+      );
+
+
+    editBtn.addEventListener(
+      "click",
+      function(e){
+
+        e.stopPropagation();
+
+        openModal(a.key);
+
+      }
+    );
+
+
+    tbody.appendChild(tr);
+
+
+    setTimeout(()=>{
+
+      try{
+
+        JsBarcode(
+          "#" + barcodeId,
+          barcode,
+          {
+            format:"CODE128",
+            width:1.1,
+            height:26,
+            displayValue:false,
+            margin:0
+          }
+        );
+
+      }catch(e){
+
+        console.warn(
+          "Barcode error:",
+          e
+        );
+
+      }
+
+    },10);
+
+  });
+
+}
+
+
+/* =========================================================
+   RENDER MOBILE
+========================================================= */
+
+function renderMobile(list){
+
+  const mobile =
+    document
+      .getElementById("mobileList");
+
+  mobile.innerHTML = "";
+
+
+  if(!list.length){
+
+    mobile.innerHTML = `
+
+      <div class="card empty">
+
+        <span class="material-icons">
+          search_off
+        </span>
+
+        <br>
+
+        Data anggota tidak ditemukan.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  list.forEach(a=>{
+
+    const id =
+      getMemberId(a);
+
+    const barcode =
+      getBarcode(a);
+
+    const nama =
+      getNama(a);
+
+    const hp =
+      getHp(a);
+
+    const status =
+      a.status || "aktif";
+
+
+    const barcodeId =
+      "mbc_" +
+      Math.random()
+        .toString(36)
+        .substring(2,9);
+
+
+    const div =
+      document
+        .createElement("div");
+
+    div.className =
+      "m-card";
+
+
+    div.innerHTML = `
+
+      <div style="flex:1;min-width:0">
+
+        <div class="m-id">
+
+          ${escapeHtml(id)}
+
+          <span class="m-barcode">
+            (${escapeHtml(barcode)})
+          </span>
+
+          <span class="badge ${
+            status === "keluar"
+            ? "keluar"
+            : "aktif"
+          }">
+
+            ${escapeHtml(status)}
+
+          </span>
+
+        </div>
+
+        <div class="m-name">
+
+          ${escapeHtml(nama || "-")}
+
+        </div>
+
+        <div class="m-info">
+
+          📞 ${escapeHtml(hp || "-")}
+
+        </div>
+
+        <div
+          style="
+            margin-top:7px;
+            overflow:hidden;
+          ">
+
+          <svg
+            id="${barcodeId}"
+            style="
+              width:130px;
+              height:32px;
+            ">
+          </svg>
+
+        </div>
+
+      </div>
+
+      <div>
+
+        <button
+          class="btn btn-dark"
+          style="
+            padding:7px 9px;
+          "
+          data-edit-mobile="${a.key}">
+
+          ✏️
+
+        </button>
+
+      </div>
+
+    `;
+
+
+    div.addEventListener(
+      "click",
+      function(){
+
+        tampilkanDetail(a);
+
+      }
+    );
+
+
+    const editBtn =
+      div.querySelector(
+        "[data-edit-mobile]"
+      );
+
+
+    editBtn.addEventListener(
+      "click",
+      function(e){
+
+        e.stopPropagation();
+
+        openModal(a.key);
+
+      }
+    );
+
+
+    mobile.appendChild(div);
+
+
+    setTimeout(()=>{
+
+      try{
+
+        JsBarcode(
+          "#" + barcodeId,
+          barcode,
+          {
+            format:"CODE128",
+            width:1.2,
+            height:30,
+            displayValue:false,
+            margin:0
+          }
+        );
+
+      }catch(e){}
+
+    },10);
+
+  });
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+window.filterAnggota =
+function(query){
+
+  const q =
+    String(
+      query ||
+      document
+        .getElementById("searchAnggota")
+        .value ||
+      ""
+    )
+    .trim()
+    .toLowerCase();
+
+
+  const list =
+    Object.entries(
+      dataAnggota
+    )
+    .map(([key,value])=>({
+
+      key:key,
+
+      ...value
+
+    }))
+    .filter(a=>{
+
+      const id =
+        getMemberId(a)
+          .toLowerCase();
+
+      const barcode =
+        getBarcode(a)
+          .toLowerCase();
+
+      const nama =
+        getNama(a)
+          .toLowerCase();
+
+      const hp =
+        getHp(a)
+          .toLowerCase();
+
+      return (
+
+        id.includes(q) ||
+
+        barcode.includes(q) ||
+
+        nama.includes(q) ||
+
+        hp.includes(q)
+
+      );
+
+    });
+
+
+  renderTable(list);
+
+  renderMobile(list);
+
+};
+
+
+document
+  .getElementById("searchAnggota")
+  .addEventListener(
+    "input",
+    function(e){
+
+      filterAnggota(
+        e.target.value
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   DETAIL ANGGOTA
+========================================================= */
+
+window.tampilkanDetail =
+function(a){
+
+  currentDetail = a;
+
+
+  const id =
+    getMemberId(a);
+
+  const barcode =
+    getBarcode(a);
+
+  const nama =
+    getNama(a);
+
+  const hp =
+    getHp(a);
+
+  const alamat =
+    a.alamat || "-";
+
+  const status =
+    a.status || "aktif";
+
+
+  document
+    .getElementById("detailCard")
+    .style.display =
+    "block";
+
+
+  document
+    .getElementById("dId")
+    .innerText =
+    "ID Anggota: " + id;
+
+
+  document
+    .getElementById("dBarcodeText")
+    .innerText =
+    "Barcode: " + barcode;
+
+
+  document
+    .getElementById("dNama")
+    .innerText =
+    nama || "-";
+
+
+  document
+    .getElementById("dHp")
+    .innerText =
+    "📞 " + (hp || "-");
+
+
+  document
+    .getElementById("dAlamat")
+    .innerText =
+    "📍 " + alamat;
+
+
+  document
+    .getElementById("dStatus")
+    .innerHTML = `
+
+      <span class="badge ${
+        status === "keluar"
+        ? "keluar"
+        : "aktif"
+      }">
+
+        ${escapeHtml(status)}
+
+      </span>
+
+    `;
+
+
+  /* ================= QR ================= */
+
+  const qrContainer =
+    document
+      .getElementById(
+        "qrcodeAnggota"
+      );
+
+  qrContainer.innerHTML = "";
+
+
+  /*
+    QR berisi URL halaman anggota.
+    Saat QR dibuka:
+    anggota.html?scan=AG001
+  */
+
+  const urlQR = "https://arfa-c7dee.web.app/barcode-cari.html?scan=" + encodeURIComponent(barcode);
+
+
+  try{
+
+    new QRCode(
+      qrContainer,
+      {
+        text:urlQR,
+        width:140,
+        height:140,
+        correctLevel:
+          QRCode.CorrectLevel.H
+      }
+    );
+
+  }catch(error){
+
+    console.error(
+      "QR error:",
+      error
+    );
+
+  }
+
+
+  document
+    .getElementById("qrText")
+    .innerText =
+    urlQR;
+
+
+  /* ================= BARCODE ================= */
+
+  const barcodeSvg =
+    document
+      .getElementById(
+        "barcodeAnggota"
+      );
+
+  barcodeSvg.innerHTML = "";
+
+
+  try{
+
+    JsBarcode(
+      barcodeSvg,
+      barcode,
+      {
+        format:"CODE128",
+        width:1.3,
+        height:45,
+        displayValue:true,
+        fontSize:10,
+        margin:5
+      }
+    );
+
+  }catch(error){
+
+    console.error(
+      "Barcode detail error:",
+      error
+    );
+
+  }
+
+
+  document
+    .getElementById("detailCard")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+};
+
+
+/* =========================================================
+   TUTUP DETAIL
+========================================================= */
+
+window.tutupDetail =
+function(){
+
+  document
+    .getElementById("detailCard")
+    .style.display =
+    "none";
+
+  currentDetail = null;
+
+};
+
+
+/* =========================================================
+   EDIT DARI DETAIL
+========================================================= */
+
+window.editFromDetail =
+function(){
+
+  if(!currentDetail){
+
+    return;
+
+  }
+
+  openModal(
+    currentDetail.key
+  );
+
+};
+
+
+/* =========================================================
+   HAPUS DARI DETAIL
+========================================================= */
+
+window.hapusFromDetail =
+async function(){
+
+  if(!currentDetail){
+
+    return;
+
+  }
+
+
+  const nama =
+    getNama(currentDetail);
+
+  const id =
+    getMemberId(currentDetail);
+
+
+  if(
+    !confirm(
+      "Hapus anggota " +
+      id +
+      " - " +
+      nama +
+      "?\n\n" +
+      "Data anggota akan dihapus dari database."
+    )
+  ){
+
+    return;
+
+  }
+
+
+  try{
+
+    await remove(
+      ref(
+        db,
+        "anggota/" +
+        currentDetail.key
+      )
+    );
+
+
+    showToast(
+      "Anggota berhasil dihapus."
+    );
+
+
+    document
+      .getElementById("detailCard")
+      .style.display =
+      "none";
+
+
+    currentDetail = null;
+
+    await loadAnggota();
+
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Gagal menghapus anggota:\n" +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================================================
+   QR SCAN PARAMETER
+========================================================= */
+
+function checkScanParameter(){
+
+  const params =
+    new URLSearchParams(
+      location.search
+    );
+
+  const scan =
+    params.get("scan");
+
+
+  if(!scan){
+
+    return;
+
+  }
+
+
+  const scanValue =
+    decodeURIComponent(
+      scan
+    )
+    .trim()
+    .toLowerCase();
+
+
+  const found =
+    Object.entries(
+      dataAnggota
+    )
+    .map(([key,value])=>({
+
+      key:key,
+
+      ...value
+
+    }))
+    .find(a=>{
+
+      const id =
+        getMemberId(a)
+          .toLowerCase();
+
+      const barcode =
+        getBarcode(a)
+          .toLowerCase();
+
+      return (
+
+        id === scanValue ||
+
+        barcode === scanValue
+
+      );
+
+    });
+
+
+  if(found){
+
+    setTimeout(()=>{
+
+      tampilkanDetail(
+        found
+      );
+
+      showToast(
+        "Anggota ditemukan: " +
+        getNama(found)
+      );
+
+    },300);
+
+  }else{
+
+    setTimeout(()=>{
+
+      showToast(
+        "Anggota dengan ID/barcode " +
+        scan +
+        " tidak ditemukan."
+      );
+
+    },300);
+
+  }
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* =========================================================
+   MODAL CLICK OUTSIDE
+========================================================= */
+
+document
+  .getElementById("modalAnggota")
+  .addEventListener(
+    "click",
+    function(e){
+
+      if(
+        e.target === this
+      ){
+
+        closeModal();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   ESC CLOSE
+========================================================= */
+
+document
+  .addEventListener(
+    "keydown",
+    function(e){
+
+      if(
+        e.key === "Escape"
+      ){
+
+        closeModal();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   LOAD PERTAMA
+========================================================= */
+
+loadAnggota();
+
+</script></body>
+</html>
