@@ -2,190 +2,1619 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scan Barcode - Koperasi ARFA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Scan Anggota - Koperasi ARFA</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#006ee6">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<link rel="apple-touch-icon" href="img/icon-192.png">
+
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-body{background:#f1f5f9;padding-bottom:80px}
-body {font-family: 'Poppins', sans-serif;background: #f1f5f9;color: #1f2937;font-size: 13px;margin:0;}
-header {background: linear-gradient(to right, #1e90ff, #0f3057);color: white;padding: 12px 16px;display: flex;justify-content: space-between;align-items: center;position: sticky;top: 0;}
-.brand {display: flex;align-items: center;gap: 10px;font-weight:700;}
-.brand img {width: 36px;height: 36px;border-radius: 50%;background: #fff;padding: 2px;}
-.menu-btn {cursor: pointer;font-size: 22px;}
-.overlay {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0,0,0,.4);display: none;z-index: 999;}
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-  .header{background:linear-gradient(135deg,#0091ff 0%,#0057a8 100%);color:white;padding:16px;text-align:center;position:sticky;top:0;z-index:99}
-.header h1{font-size:16px;font-weight:700}
-#reader{width:100%;max-width:500px;margin:20px auto;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.1)}
-.card{background:#fff;margin:12px;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-#hasil{font-size:14px;font-weight:600;color:#16a34a;word-break:break-all}
-.btn{width:100%;padding:12px;border:none;border-radius:12px;background:#0091ff;color:white;font-weight:600;font-size:14px;cursor:pointer;margin-top:10px}
-.btn:active{transform:scale(.98)}
-.btn-danger{background:#dc2626}
-.status{text-align:center;font-size:12px;color:#64748b;margin-top:10px}
-/* ===== SIDEBAR ===== */
-.sidebar{
-  position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;
-  padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;
-  box-shadow:2px 0 10px rgba(0,0,0,0.2);
-}
-.sidebar.open{left:0;}
-
-.sidebar-logo{
-  display:flex;align-items:center;gap:12px;
-  padding-bottom:16px;margin-bottom:16px;
-  border-bottom:1px solid rgba(255,255,255,0.2);
-}
-.sidebar-logo img{
-  width:40px;height:40px;border-radius:50%;object-fit:cover;
-  background:#fff;padding:2px;
-}
-.sidebar-logo h3{
-  color:#fff;margin:0;font-size:15px;font-weight:600;
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
-.sidebar-section{
-  color:rgba(255,255,255,0.6);
-  font-size:10px;font-weight:600;text-transform:uppercase;
-  letter-spacing:1px;margin:16px 0 8px 12px;
+:root{
+  --blue:#087df5;
+  --blue2:#0059c9;
+  --dark:#071b35;
+  --green:#11b86a;
+  --white:#fff;
 }
 
-.sidebar a{
-  display:flex;align-items:center;gap:10px;
-  color:#fff;text-decoration:none;padding:10px 10px;
-  border-radius:10px;margin-bottom:2px;font-size:10px;
-  font-weight:500;transition:0.2s;
-}
-.sidebar a:hover{
-  background:rgba(255,255,255,0.15);transform:translateX(4px);
-}
-.sidebar a.active{background:rgba(255,255,255,0.2);}
-
-.overlay{
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  background:rgba(0,0,0,.4);display:none;z-index:999;
-}
-.overlay.active{display:block;}
-
-  </style>
-</head>
-<body>
-<div id="sidebar" class="sidebar">
-  <div class="sidebar-logo">
-    <img src="img/icon-192.png" alt="Logo">
-    <h3>Menu Koperasi</h3>
-  </div>
-  
-<a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
-
-  <div class="sidebar-section">Data Master</div>
-  <a href="anggota.html">👤 Data Anggota</a>
- <a href="kas.html">💵 Kas</a>
- <a href="angsuran.html">📄 Angsuran</a>
-  <a href="simpanan.html">📊 Simpanan</a>
-  
-  <div class="sidebar-section">Keuangan</div>
-     <a href="pinjaman.html">💰 Pinjaman</a>
-     <a href="cair.html">💸 Pencairan Simpanan</a>
-    <a href="neraca.html">📖 Neraca</a>
-<a href="labarugi.html">📊 Laba Rugi</a>
-
-  
-  <div class="sidebar-section">Laporan</div>
-   <a href="laporan-kas-pwa.html">💰 Laporan Kas</a>
-  <a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a>
-  <a href="nota-tagihan.html">🧾 Nota Tagihan</a>
-    <a href="transaksi.html">📊 Lap transaksi</a>
-
-  <div class="sidebar-section">Pengaturan</div>
-     <a href="backup.html">💾 Backup Data</a>
-  <a href="user1.html">⚙️ Kelola User</a>
-  <a href="#" id="btnLogout">🚪 Logout</a>
-</div>
-<div id="overlay" class="overlay"></div>
-
-<header>
-  <div class="brand">
-    <img src="img/icon-192.png">
-    <div> 📷 Scan Anggota / Pinjaman</div>
-  </div>
-  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-</header>
-  
-
-<div id="reader"></div>
-<div class="status" id="status">Arahkan kamera ke barcode / QR Code</div>
-
-<div class="card" id="hasilCard" style="display:none">
-  <div style="font-size:12px;color:#64748b">Hasil Scan:</div>
-  <div id="hasil">-</div>
-  <button class="btn" id="btnCari">Cari Data</button>
-  <button class="btn btn-danger" onclick="startScan()">Scan Ulang</button>
-</div>
-
-<script>
-let html5QrCode;
-let lastResult = "";
-
-function onScanSuccess(decodedText, decodedResult) {
-  if(decodedText === lastResult) return; // biar ga dobel
-  lastResult = decodedText;
-  
-  html5QrCode.stop(); // stop kamera
-  document.getElementById("hasil").innerText = decodedText;
-  document.getElementById("hasilCard").style.display = "block";
-  document.getElementById("status").innerText = "Scan berhasil!";
-  
-  // Getar HP kalau support
-  if(navigator.vibrate) navigator.vibrate(200);
+body{
+  font-family:'Poppins',sans-serif;
+  background:#06182f;
+  color:#fff;
+  min-height:100vh;
+  overflow-x:hidden;
 }
 
-function onScanError(errorMessage) {
-  // abaikan error kecil
+/* ================= HEADER ================= */
+
+.header{
+  height:88px;
+  padding:0 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:linear-gradient(135deg,#087df5,#073c80);
+  position:relative;
+  z-index:10;
+  box-shadow:0 5px 20px rgba(0,0,0,.25);
 }
 
-function startScan(){
-  document.getElementById("hasilCard").style.display = "none";
-  document.getElementById("status").innerText = "Arahkan kamera ke barcode / QR Code";
-  lastResult = "";
-  
-  html5QrCode.start(
-    { facingMode: "environment" }, // kamera belakang
-    { fps: 10, qrbox: { width: 250, height: 250 } },
-    onScanSuccess,
-    onScanError
-  );
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
 }
 
-// TOMBOL CARI DATA
-document.getElementById("btnCari").onclick = function(){
-  const kode = document.getElementById("hasil").innerText;
-  // Contoh: lempar ke halaman anggota dengan parameter
-  window.location.href = `anggota.html?search=${kode}`;
-  // atau kalau mau ke pinjaman: `pinjaman.html?id=${kode}`
+.logo{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#fff;
+  padding:3px;
 }
 
-window.onload = function(){
-  html5QrCode = new Html5Qrcode("reader");
-  startScan();
+.header-title{
+  line-height:1.15;
 }
-  /* ===== SIDEBAR ===== */
-window.toggleSidebar = function(){
-  document.getElementById("sidebar").classList.toggle("open");
-  document.getElementById("overlay").classList.toggle("active");
-};
-document.getElementById("overlay").addEventListener("click", toggleSidebar);
-document.getElementById("btnLogout").addEventListener("click", (e)=>{
-  e.preventDefault();
-  if(confirm("Yakin mau logout?")){
-    localStorage.clear();
-    location.href = "index.html";
+
+.header-title h1{
+  font-size:25px;
+  font-weight:800;
+}
+
+.header-title span{
+  font-size:16px;
+  font-weight:500;
+  opacity:.95;
+}
+
+.header-btn{
+  border:0;
+  background:transparent;
+  color:#fff;
+  width:45px;
+  height:45px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+
+.header-btn .material-icons{
+  font-size:34px;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+  width:100%;
+  max-width:760px;
+  margin:auto;
+  padding:28px 18px 45px;
+}
+
+/* CAMERA STATUS */
+
+.camera-status{
+  width:max-content;
+  max-width:100%;
+  margin:0 auto 18px;
+  padding:10px 20px;
+  border:1px solid rgba(80,170,255,.45);
+  border-radius:30px;
+  background:rgba(4,22,45,.85);
+  box-shadow:0 8px 25px rgba(0,0,0,.25);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:16px;
+  font-weight:600;
+}
+
+.status-dot{
+  width:15px;
+  height:15px;
+  background:#15d77d;
+  border-radius:50%;
+  box-shadow:0 0 12px #15d77d;
+  animation:statusPulse 1.5s infinite;
+}
+
+@keyframes statusPulse{
+  0%,100%{
+    transform:scale(1);
+    opacity:1;
   }
+  50%{
+    transform:scale(.7);
+    opacity:.55;
+  }
+}
+
+/* ================= SCANNER ================= */
+
+.scanner-wrapper{
+  position:relative;
+  width:100%;
+  max-width:560px;
+  margin:0 auto;
+  aspect-ratio:1/1;
+  border-radius:28px;
+  overflow:hidden;
+  background:#020b18;
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.45),
+    0 0 0 1px rgba(80,160,255,.25);
+}
+
+/* Camera asli */
+
+#reader{
+  width:100%;
+  height:100%;
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+#reader video{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+}
+
+#reader img{
+  display:none !important;
+}
+
+/* Hilangkan UI bawaan html5-qrcode */
+
+#reader__dashboard{
+  display:none !important;
+}
+
+#reader__scan_region{
+  width:100% !important;
+  height:100% !important;
+  border:0 !important;
+}
+
+#reader__scan_region img{
+  display:none !important;
+}
+
+/* Overlay gelap */
+
+.scanner-overlay{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      rgba(0,0,0,.10),
+      rgba(0,0,0,.10)
+    );
+  pointer-events:none;
+  z-index:2;
+}
+
+/* Kotak scan */
+
+.scan-frame{
+  position:absolute;
+  width:76%;
+  aspect-ratio:1/1;
+  left:12%;
+  top:12%;
+  border-radius:28px;
+  z-index:4;
+  pointer-events:none;
+}
+
+/* Sudut */
+
+.corner{
+  position:absolute;
+  width:55px;
+  height:55px;
+  border-color:#63b4ff;
+  border-style:solid;
+  filter:
+    drop-shadow(0 0 6px #168cff)
+    drop-shadow(0 0 15px rgba(0,130,255,.8));
+}
+
+.corner.tl{
+  top:0;
+  left:0;
+  border-width:6px 0 0 6px;
+  border-radius:25px 0 0 0;
+}
+
+.corner.tr{
+  top:0;
+  right:0;
+  border-width:6px 6px 0 0;
+  border-radius:0 25px 0 0;
+}
+
+.corner.bl{
+  bottom:0;
+  left:0;
+  border-width:0 0 6px 6px;
+  border-radius:0 0 0 25px;
+}
+
+.corner.br{
+  bottom:0;
+  right:0;
+  border-width:0 6px 6px 0;
+  border-radius:0 0 25px 0;
+}
+
+/* Animasi sudut */
+
+.scan-frame{
+  animation:frameGlow 2s ease-in-out infinite;
+}
+
+@keyframes frameGlow{
+  0%,100%{
+    filter:drop-shadow(0 0 2px rgba(30,145,255,.2));
+  }
+  50%{
+    filter:drop-shadow(0 0 10px rgba(30,145,255,.45));
+  }
+}
+
+/* ================= GARIS ANIMASI ================= */
+
+.scan-line{
+  position:absolute;
+  left:4%;
+  width:92%;
+  height:4px;
+  top:8%;
+  border-radius:20px;
+  background:linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(75,170,255,.15) 10%,
+    #5ab7ff 35%,
+    #ffffff 50%,
+    #5ab7ff 65%,
+    rgba(75,170,255,.15) 90%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 5px #168cff,
+    0 0 15px #168cff,
+    0 0 30px rgba(0,125,255,.9);
+  animation:scanMove 2.3s linear infinite;
+}
+
+@keyframes scanMove{
+  0%{
+    top:8%;
+    opacity:.7;
+  }
+  50%{
+    opacity:1;
+  }
+  100%{
+    top:92%;
+    opacity:.7;
+  }
+}
+
+/* Cahaya di bawah garis */
+
+.scan-line::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:3px;
+  height:80px;
+  background:linear-gradient(
+    to bottom,
+    rgba(30,145,255,.22),
+    rgba(30,145,255,.08),
+    transparent
+  );
+  filter:blur(3px);
+}
+
+/* ================= PETUNJUK ================= */
+
+.guide{
+  width:max-content;
+  max-width:90%;
+  margin:22px auto 0;
+  padding:12px 22px;
+  border-radius:35px;
+  background:rgba(5,26,52,.9);
+  border:1px solid rgba(100,180,255,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  font-size:15px;
+  font-weight:500;
+  box-shadow:0 8px 25px rgba(0,0,0,.25);
+}
+
+.guide .material-icons{
+  font-size:28px;
+}
+
+/* ================= HASIL ================= */
+
+.result-card{
+  margin-top:25px;
+  padding:26px;
+  background:#fff;
+  color:#0b2d55;
+  border-radius:25px;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  display:none;
+}
+
+.result-card.show{
+  display:block;
+  animation:resultIn .35s ease;
+}
+
+@keyframes resultIn{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.detected-label{
+  width:max-content;
+  padding:8px 18px;
+  border-radius:25px;
+  background:linear-gradient(135deg,#087df5,#1594ff);
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.detected-label .material-icons{
+  font-size:21px;
+}
+
+.result-id{
+  font-size:46px;
+  font-weight:800;
+  margin:12px 0 4px;
+  letter-spacing:1px;
+}
+
+.result-name{
+  font-size:18px;
+  font-weight:600;
+  color:#375a82;
+  margin-bottom:10px;
+}
+
+.success{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#0bb66a;
+  font-size:17px;
+  font-weight:700;
+  margin:8px 0 5px;
+}
+
+.success .material-icons{
+  font-size:28px;
+}
+
+.result-info{
+  color:#56708e;
+  font-size:14px;
+  margin-left:38px;
+}
+
+/* ================= BUTTON ================= */
+
+.action-btn{
+  width:100%;
+  height:60px;
+  margin-top:20px;
+  border:0;
+  border-radius:17px;
+  font-family:inherit;
+  font-size:17px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  transition:.2s;
+}
+
+.action-btn:active{
+  transform:scale(.98);
+}
+
+.btn-open{
+  color:#fff;
+  background:linear-gradient(135deg,#087df5,#0872e0);
+  box-shadow:0 10px 25px rgba(0,115,240,.25);
+}
+
+.btn-scan{
+  color:#fff;
+  background:#102942;
+}
+
+.action-btn .material-icons{
+  font-size:27px;
+}
+
+/* ================= AUTO OPEN ================= */
+
+.auto-open{
+  margin-top:20px;
+  padding:14px 16px;
+  border:1px solid #d9e3ee;
+  border-radius:17px;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  cursor:pointer;
+  color:#31577e;
+  background:#f8fbff;
+  font-size:15px;
+  font-weight:600;
+}
+
+.auto-open input{
+  width:22px;
+  height:22px;
+  accent-color:#087df5;
+}
+
+/* ================= BOTTOM INFO ================= */
+
+.bottom-info{
+  margin-top:35px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  color:#9fc5f2;
+  text-align:center;
+  font-size:14px;
+}
+
+.camera-icon{
+  width:58px;
+  height:58px;
+  border-radius:18px;
+  background:#0b315e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+
+.camera-icon .material-icons{
+  font-size:30px;
+}
+
+/* ================= TOAST ================= */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translate(-50%,120px);
+  width:calc(100% - 35px);
+  max-width:500px;
+  padding:15px 20px;
+  border-radius:15px;
+  background:#102b49;
+  color:#fff;
+  box-shadow:0 15px 40px rgba(0,0,0,.35);
+  z-index:100;
+  text-align:center;
+  font-size:14px;
+  font-weight:600;
+  transition:.35s;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+}
+
+.toast.success-toast{
+  background:#0ba866;
+}
+
+.toast.error-toast{
+  background:#d93434;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+  display:none;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-top:20px;
+  color:#a9d3ff;
+  font-size:14px;
+}
+
+.loading.show{
+  display:flex;
+}
+
+.spinner{
+  width:20px;
+  height:20px;
+  border:3px solid rgba(255,255,255,.25);
+  border-top-color:#49a8ff;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:600px){
+
+  .header{
+    height:76px;
+    padding:0 14px;
+  }
+
+  .logo{
+    width:47px;
+    height:47px;
+  }
+
+  .header-title h1{
+    font-size:19px;
+  }
+
+  .header-title span{
+    font-size:13px;
+  }
+
+  .header-btn{
+    width:40px;
+  }
+
+  .header-btn .material-icons{
+    font-size:30px;
+  }
+
+  .main{
+    padding:20px 12px 35px;
+  }
+
+  .camera-status{
+    font-size:14px;
+    padding:9px 17px;
+  }
+
+  .scanner-wrapper{
+    border-radius:22px;
+  }
+
+  .scan-frame{
+    width:78%;
+    left:11%;
+    top:11%;
+  }
+
+  .corner{
+    width:43px;
+    height:43px;
+    border-width:5px;
+  }
+
+  .corner.tl{
+    border-width:5px 0 0 5px;
+  }
+
+  .corner.tr{
+    border-width:5px 5px 0 0;
+  }
+
+  .corner.bl{
+    border-width:0 0 5px 5px;
+  }
+
+  .corner.br{
+    border-width:0 5px 5px 0;
+  }
+
+  .guide{
+    font-size:13px;
+    padding:10px 15px;
+  }
+
+  .result-card{
+    padding:20px;
+    border-radius:20px;
+  }
+
+  .result-id{
+    font-size:38px;
+  }
+
+  .result-name{
+    font-size:16px;
+  }
+
+  .action-btn{
+    height:56px;
+    font-size:16px;
+  }
+
+  .bottom-info{
+    font-size:12px;
+    gap:12px;
+  }
+
+  .camera-icon{
+    width:48px;
+    height:48px;
+    border-radius:15px;
+  }
+
+  .camera-icon .material-icons{
+    font-size:25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="header">
+
+  <div class="header-left">
+
+    <button class="header-btn" onclick="kembali()" aria-label="Menu">
+      <span class="material-icons">menu</span>
+    </button>
+
+    <img
+      src="img/icon-192.png"
+      class="logo"
+      onerror="this.style.display='none'"
+      alt="Koperasi ARFA">
+
+    <div class="header-title">
+      <h1>Koperasi ARFA</h1>
+      <span>Scan Anggota</span>
+    </div>
+
+  </div>
+
+  <button class="header-btn" onclick="logout()" aria-label="Keluar">
+    <span class="material-icons">logout</span>
+  </button>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+  <!-- STATUS -->
+
+  <div class="camera-status">
+    <span class="status-dot"></span>
+    <span id="cameraStatus">Kamera siap</span>
+  </div>
+
+
+  <!-- CAMERA -->
+
+  <div class="scanner-wrapper">
+
+    <div id="reader"></div>
+
+    <div class="scanner-overlay"></div>
+
+    <!-- Frame scanner -->
+
+    <div class="scan-frame">
+
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <!-- GARIS ANIMASI -->
+
+      <div class="scan-line"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- PETUNJUK -->
+
+  <div class="guide">
+    <span class="material-icons">center_focus_strong</span>
+    <span>Arahkan QR / Barcode ke dalam kotak</span>
+  </div>
+
+
+  <!-- LOADING -->
+
+  <div class="loading" id="loading">
+    <span class="spinner"></span>
+    <span>Mencari data anggota...</span>
+  </div>
+
+
+  <!-- ================= HASIL SCAN ================= -->
+
+  <section class="result-card" id="resultCard">
+
+    <div class="detected-label">
+      <span class="material-icons">qr_code_2</span>
+      TERDETEKSI
+    </div>
+
+    <div class="result-id" id="resultId">AG001</div>
+
+    <div class="result-name" id="resultName">
+      -
+    </div>
+
+    <div class="success">
+      <span class="material-icons">check_circle</span>
+      <span>Scan berhasil!</span>
+    </div>
+
+    <div class="result-info" id="resultInfo">
+      Membuka data anggota...
+    </div>
+
+
+    <!-- BUKA -->
+
+    <button
+      class="action-btn btn-open"
+      onclick="bukaAnggota()">
+
+      <span class="material-icons">login</span>
+      <span>Buka Sekarang</span>
+
+    </button>
+
+
+    <!-- SCAN ULANG -->
+
+    <button
+      class="action-btn btn-scan"
+      onclick="scanUlang()">
+
+      <span class="material-icons">refresh</span>
+      <span>Scan Ulang</span>
+
+    </button>
+
+
+    <!-- AUTO OPEN -->
+
+    <label class="auto-open">
+
+      <input
+        type="checkbox"
+        id="autoOpen"
+        checked>
+
+      <span>Auto-buka setelah scan berhasil</span>
+
+    </label>
+
+  </section>
+
+
+  <!-- INFO -->
+
+  <div class="bottom-info">
+
+    <div class="camera-icon">
+      <span class="material-icons">photo_camera</span>
+    </div>
+
+    <span>
+      Pastikan pencahayaan cukup dan<br>
+      kode tidak buram
+    </span>
+
+  </div>
+
+</main>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast"></div>
+
+
+<script type="module">
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getDatabase,
+  ref,
+  get
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+const firebaseConfig = {
+  apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain:"arfa-c7dee.firebaseapp.com",
+  databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId:"arfa-c7dee"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+
+/* =====================================================
+   VARIABEL
+===================================================== */
+
+let html5QrCode = null;
+let scannerRunning = false;
+
+let anggotaTerpilih = null;
+let kodeTerakhir = "";
+
+
+/* =====================================================
+   NORMALISASI
+===================================================== */
+
+function normalizeId(value){
+
+  return String(value || "")
+    .trim()
+    .toUpperCase();
+
+}
+
+
+function getMemberId(a){
+
+  return normalizeId(
+    a.id ||
+    a.idAnggota ||
+    a.anggotaId ||
+    a.memberId ||
+    a.idMember ||
+    ""
+  );
+
+}
+
+
+function getBarcode(a){
+
+  return String(
+    a.barcode ||
+    getMemberId(a)
+  ).trim();
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message,type=""){
+
+  const toast = document.getElementById("toast");
+
+  toast.textContent = message;
+
+  toast.className = "toast show";
+
+  if(type){
+    toast.classList.add(type + "-toast");
+  }
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer = setTimeout(()=>{
+    toast.className = "toast";
+  },3000);
+
+}
+
+
+/* =====================================================
+   PARSE QR
+===================================================== */
+
+function extractKode(decodedText){
+
+  let kode = String(decodedText || "").trim();
+
+  if(!kode) return "";
+
+  /*
+    Jika QR berisi URL:
+    https://domain.com/anggota.html?scan=AG001
+  */
+
+  try{
+
+    if(
+      kode.startsWith("http://") ||
+      kode.startsWith("https://")
+    ){
+
+      const url = new URL(kode);
+
+      const scan = url.searchParams.get("scan");
+
+      if(scan){
+        return decodeURIComponent(scan).trim();
+      }
+
+    }
+
+  }catch(error){}
+
+
+  /*
+    Jika bentuk:
+    scan=AG001
+  */
+
+  if(kode.includes("scan=")){
+
+    try{
+
+      const query =
+        kode.includes("?")
+        ? kode.split("?")[1]
+        : kode;
+
+      const params = new URLSearchParams(query);
+
+      const scan = params.get("scan");
+
+      if(scan){
+        return decodeURIComponent(scan).trim();
+      }
+
+    }catch(error){}
+
+  }
+
+
+  /*
+    Jika QR berisi URL biasa
+  */
+
+  if(
+    kode.startsWith("http://") ||
+    kode.startsWith("https://")
+  ){
+
+    const parts = kode.split("/");
+
+    kode = parts[parts.length - 1];
+
+  }
+
+
+  return kode.trim();
+
+}
+
+
+/* =====================================================
+   CARI ANGGOTA FIREBASE
+===================================================== */
+
+async function cariAnggota(kode){
+
+  const target = normalizeId(kode);
+
+  if(!target) return null;
+
+  try{
+
+    const snap = await get(
+      ref(db,"anggota")
+    );
+
+    if(!snap.exists()){
+      return null;
+    }
+
+    const data = snap.val() || {};
+
+    for(
+      const [key,a]
+      of Object.entries(data)
+    ){
+
+      const id = getMemberId(a);
+
+      const barcode =
+        normalizeId(getBarcode(a));
+
+      if(
+        id === target ||
+        barcode === target
+      ){
+
+        return {
+          key:key,
+          ...a
+        };
+
+      }
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      "Gagal mengambil data Firebase",
+      "error"
+    );
+
+  }
+
+  return null;
+
+}
+
+
+/* =====================================================
+   TAMPILKAN HASIL
+===================================================== */
+
+function tampilkanHasil(anggota){
+
+  anggotaTerpilih = anggota;
+
+  const id =
+    getMemberId(anggota) ||
+    getBarcode(anggota);
+
+  const nama =
+    anggota.nama ||
+    "Nama tidak tersedia";
+
+  document.getElementById("resultId")
+    .textContent = id;
+
+  document.getElementById("resultName")
+    .textContent = nama;
+
+  document.getElementById("resultInfo")
+    .textContent =
+      "ID " + id +
+      " ditemukan. Data anggota siap dibuka.";
+
+  document.getElementById("resultCard")
+    .classList.add("show");
+
+}
+
+
+/* =====================================================
+   SCAN BERHASIL
+===================================================== */
+
+async function onScanSuccess(decodedText){
+
+  if(kodeTerakhir) return;
+
+  kodeTerakhir = decodedText;
+
+  const kode =
+    extractKode(decodedText);
+
+  console.log("Kode hasil scan:",kode);
+
+  if(!kode){
+
+    kodeTerakhir = "";
+
+    showToast(
+      "Kode tidak dapat dibaca",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  document.getElementById("cameraStatus")
+    .textContent = "Kode terdeteksi";
+
+  document.getElementById("loading")
+    .classList.add("show");
+
+
+  await stopScanner();
+
+
+  const anggota =
+    await cariAnggota(kode);
+
+
+  document.getElementById("loading")
+    .classList.remove("show");
+
+
+  if(!anggota){
+
+    kodeTerakhir = "";
+
+    document.getElementById("cameraStatus")
+      .textContent = "Anggota tidak ditemukan";
+
+    showToast(
+      "Data anggota " + kode + " tidak ditemukan",
+      "error"
+    );
+
+    setTimeout(()=>{
+      startScanner();
+    },1000);
+
+    return;
+
+  }
+
+
+  tampilkanHasil(anggota);
+
+
+  showToast(
+    "Scan berhasil: " +
+    getMemberId(anggota),
+    "success"
+  );
+
+
+  /*
+    AUTO BUKA
+  */
+
+  if(
+    document.getElementById("autoOpen").checked
+  ){
+
+    setTimeout(()=>{
+      bukaAnggota();
+    },1200);
+
+  }
+
+}
+
+
+/* =====================================================
+   START SCANNER
+===================================================== */
+
+async function startScanner(){
+
+  try{
+
+    if(scannerRunning){
+      return;
+    }
+
+    document.getElementById("cameraStatus")
+      .textContent = "Mengaktifkan kamera...";
+
+
+    if(!html5QrCode){
+
+      html5QrCode =
+        new Html5Qrcode("reader");
+
+    }
+
+
+    const config = {
+
+      fps:10,
+
+      qrbox:function(
+        viewfinderWidth,
+        viewfinderHeight
+      ){
+
+        const size =
+          Math.floor(
+            Math.min(
+              viewfinderWidth,
+              viewfinderHeight
+            ) * .70
+          );
+
+        return {
+          width:size,
+          height:size
+        };
+
+      },
+
+      aspectRatio:1.0
+
+    };
+
+
+    await html5QrCode.start(
+
+      {
+        facingMode:"environment"
+      },
+
+      config,
+
+      onScanSuccess,
+
+      function(errorMessage){
+        // error scan diabaikan
+      }
+
+    );
+
+
+    scannerRunning = true;
+
+    document.getElementById("cameraStatus")
+      .textContent = "Kamera aktif";
+
+
+  }catch(error){
+
+    console.error(
+      "Gagal membuka kamera:",
+      error
+    );
+
+    scannerRunning = false;
+
+    document.getElementById("cameraStatus")
+      .textContent = "Kamera gagal dibuka";
+
+    showToast(
+      "Kamera tidak dapat dibuka. Pastikan izin kamera diberikan.",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   STOP SCANNER
+===================================================== */
+
+async function stopScanner(){
+
+  try{
+
+    if(
+      html5QrCode &&
+      scannerRunning
+    ){
+
+      await html5QrCode.stop();
+
+      scannerRunning = false;
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Stop scanner:",
+      error
+    );
+
+    scannerRunning = false;
+
+  }
+
+}
+
+
+/* =====================================================
+   SCAN ULANG
+===================================================== */
+
+window.scanUlang = async function(){
+
+  anggotaTerpilih = null;
+  kodeTerakhir = "";
+
+  document.getElementById("resultCard")
+    .classList.remove("show");
+
+  document.getElementById("loading")
+    .classList.remove("show");
+
+  document.getElementById("cameraStatus")
+    .textContent = "Memulai kamera...";
+
+  await startScanner();
+
+};
+
+
+/* =====================================================
+   BUKA ANGGOTA
+===================================================== */
+
+window.bukaAnggota = function(){
+
+  if(!anggotaTerpilih){
+
+    showToast(
+      "Belum ada data anggota",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  const id =
+    getMemberId(anggotaTerpilih);
+
+
+  if(!id){
+
+    showToast(
+      "ID anggota tidak ditemukan",
+      "error"
+    );
+
+    return;
+
+  }
+
+
+  /*
+    ID dikirim melalui parameter scan.
+    Contoh:
+    anggota.html?scan=AG001
+  */
+
+  window.location.href =
+    "anggota.html?scan=" +
+    encodeURIComponent(id);
+
+};
+
+
+/* =====================================================
+   CEK URL SCAN
+===================================================== */
+
+async function checkUrlScan(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const scan =
+    params.get("scan");
+
+  if(!scan){
+
+    return false;
+
+  }
+
+
+  /*
+    Jika halaman dibuka:
+    scan.html?scan=AG001
+  */
+
+  const kode =
+    decodeURIComponent(scan).trim();
+
+
+  document.getElementById("cameraStatus")
+    .textContent = "Mencari anggota...";
+
+  document.getElementById("loading")
+    .classList.add("show");
+
+
+  const anggota =
+    await cariAnggota(kode);
+
+
+  document.getElementById("loading")
+    .classList.remove("show");
+
+
+  if(!anggota){
+
+    document.getElementById("cameraStatus")
+      .textContent = "Anggota tidak ditemukan";
+
+    showToast(
+      "Anggota " + kode + " tidak ditemukan",
+      "error"
+    );
+
+    return true;
+
+  }
+
+
+  tampilkanHasil(anggota);
+
+  document.getElementById("cameraStatus")
+    .textContent = "Anggota ditemukan";
+
+
+  return true;
+
+}
+
+
+/* =====================================================
+   MENU / KEMBALI
+===================================================== */
+
+window.kembali = function(){
+
+  if(
+    document.referrer &&
+    document.referrer.includes(location.hostname)
+  ){
+
+    history.back();
+
+  }else{
+
+    window.location.href =
+      "index.html";
+
+  }
+
+};
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+window.logout = function(){
+
+  if(
+    confirm("Apakah Anda yakin ingin keluar?")
+  ){
+
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
+    localStorage.removeItem("login");
+
+    window.location.href =
+      "login.html";
+
+  }
+
+};
+
+
+/* =====================================================
+   START
+===================================================== */
+
+window.addEventListener("load",async()=>{
+
+  /*
+    Jika ada ?scan=AG001,
+    tampilkan hasil tanpa menyalakan kamera.
+  */
+
+  const sudahScan =
+    await checkUrlScan();
+
+
+  /*
+    Kalau tidak ada parameter scan,
+    baru buka kamera.
+  */
+
+  if(!sudahScan){
+
+    setTimeout(()=>{
+      startScanner();
+    },300);
+
+  }
+
 });
+
+
+/* =====================================================
+   STOP CAMERA SAAT KELUAR HALAMAN
+===================================================== */
+
+window.addEventListener(
+  "beforeunload",
+  ()=>{
+    stopScanner();
+  }
+);
+
 </script>
 
 </body>
