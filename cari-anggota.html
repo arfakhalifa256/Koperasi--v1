@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cari Anggota</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--primary:#3b82f6;--primary-dark:#2563eb;--primary-soft:#eff6ff;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--success:#10b981;--danger:#dc2626;--warning:#f59e0b;}
+html{scroll-behavior:smooth;}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:12px;padding-bottom:25px;min-height:100vh;}
+header{background:linear-gradient(135deg,#1e90ff 0%,#0f3057 100%);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+header .material-icons{font-size:12px;}
+.container{width:100%;max-width:800px;margin:0 auto;padding:14px;}
+.card{background:var(--card);padding:16px;border-radius:16px;margin-bottom:12px;border:1px solid var(--border);box-shadow:0 4px 20px rgba(15,23,42,.07);}
+.search-box{width:100%;display:flex;align-items:center;gap:8px;}
+.search-box input{flex:1;width:100%;min-width:0;height:44px;padding:10px 13px;border:1.5px solid var(--border);border-radius:11px;background:#fff;color:var(--text);font-family:'Poppins',sans-serif;font-size:12px;outline:none;transition:.2s ease;}
+.search-box input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.10);}
+.search-box button{flex:0 0 44px;width:44px;height:44px;padding:0;border:none;border-radius:11px;background:var(--primary);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s ease;box-shadow:0 3px 8px rgba(59,130,246,.25);}
+.profile-header{display:flex;align-items:center;gap:13px;margin-bottom:15px;padding-bottom:13px;border-bottom:1px solid var(--border);}
+.profile-header img{width:60px;height:60px;min-width:60px;border-radius:50%;object-fit:cover;background:#e5e7eb;border:2px solid var(--primary);box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.summary-item{background:var(--bg);padding:12px 8px;border-radius:11px;text-align:center;border:1px solid var(--border);min-width:0;}
+.summary-item b{display:block;font-size:10px;color:var(--muted);margin-bottom:5px;font-weight:600;line-height:1.3;}
+.summary-item span{display:block;font-size:12px;font-weight:700;line-height:1.3;word-break:break-word;}
+.riwayat-title{font-size:12px;font-weight:700;margin:16px 0 9px;color:var(--primary-dark);display:flex;align-items:center;gap:6px;}
+.riwayat-title::before{content:"";width:4px;height:16px;background:var(--primary);border-radius:5px;}
+.riwayat-item{padding:10px 11px;border:1px solid var(--border);border-radius:10px;margin-bottom:7px;font-size:11px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;transition:.2s ease;}
+.riwayat-item:hover{border-color:#bfdbfe;background:#f8fbff;}
+.badge{display:inline-block;padding:3px 7px;border-radius:20px;font-size:9px;font-weight:600;margin-right:4px;white-space:nowrap;vertical-align:middle;}
+.badge.masuk{background:#dcfce7;color:#166534;}
+.badge.keluar{background:#fee2e2;color:#991b1b;}
+.badge.pinjam{background:#dbeafe;color:#1e40af;}
+@media(max-width:600px){.container{padding:10px;}.card{padding:13px;border-radius:14px;margin-bottom:10px;}.summary-grid{grid-template-columns:1fr 1fr;gap:8px;}.summary-item{padding:10px 6px;}.summary-item b{font-size:9px;}.summary-item span{font-size:12px;}.riwayat-item{padding:9px;gap:7px;font-size:10px;}}
+</style>
+</head>
+<body>
+
+<header><span class="material-icons">search</span> CARI DATA ANGGOTA</header>
+
+<div class="container">
+  <div class="card">
+    <h3 style="margin-bottom:10px;font-size:14px">Cari Berdasarkan Nama / No Anggota</h3>
+    <div class="search-box">
+      <input type="text" id="keyword" placeholder="Ketik nama atau no anggota..." onkeypress="if(event.key==='Enter') cariAnggota()">
+      <button onclick="cariAnggota()"><span class="material-icons" style="font-size:18px">search</span></button>
+    </div>
+  </div>
+  <div id="hasilCari"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const role = localStorage.getItem("role") || "user";
+const username = localStorage.getItem("username") || "Unknown";
+
+const anggotaRef = ref(db, "anggota");
+const simpananRef = ref(db, "simpanan");
+const pinjamanRef = ref(db, "pinjaman");
+const angsuranRef = ref(db, "angsuran");
+
+let dataAnggota = {};
+let dataSimpanan = {};
+let dataPinjaman = {};
+let dataAngsuran = {};
+
+const format = x => new Intl.NumberFormat("id-ID").format(x || 0);
+
+/* ========== LOG TERPUSAT - BARU ========== */
+function simpanLog(aksi, data){
+  try{
+    const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
+    push(ref(db, "/log_aktivitas"), {
+      waktu: Date.now(),
+      waktu_baca: waktu,
+      aksi: aksi,
+      oleh: username,
+      role: role,
+      username: data.nama || username,
+      ...data
+    }).catch(e=> console.log("Log gagal:", e.message));
+  }catch(e){ console.log(e); }
+}
+
+onValue(anggotaRef, snap => dataAnggota = snap.val() || {});
+onValue(simpananRef, snap => dataSimpanan = snap.val() || {});
+onValue(pinjamanRef, snap => {
+  dataPinjaman = {};
+  snap.forEach(d => { let p = d.val(); p.id = d.key; dataPinjaman[d.key] = p; });
+});
+onValue(angsuranRef, snap => {
+  dataAngsuran = {};
+  snap.forEach(d => { let a = d.val(); a.id = d.key; dataAngsuran[d.key] = a; });
+});
+
+window.cariAnggota = function(){
+  const keyword = document.getElementById("keyword").value.toLowerCase().trim();
+  const hasilDiv = document.getElementById("hasilCari");
+  if(!keyword) return hasilDiv.innerHTML = `<div class="card" style="text-align:center;color:var(--muted)">Masukkan kata kunci</div>`;
+
+  const ketemu = Object.entries(dataAnggota).find(([id,a]) => 
+    a.nama.toLowerCase().includes(keyword) || (a.idAnggota || "").toLowerCase().includes(keyword)
+  );
+
+  if(!ketemu){
+    // LOG PENCARIAN GAGAL
+    simpanLog("CARI_ANGGOTA", {
+      idAnggota: "-",
+      userId: "-",
+      nama: `Pencarian gagal: ${keyword}`,
+      keyword: keyword,
+      hasil: "TIDAK_DITEMUKAN"
+    });
+    return hasilDiv.innerHTML = `<div class="card" style="text-align:center;color:var(--danger)">Data tidak ditemukan</div>`;
+  }
+  
+  const [idAnggota, a] = ketemu;
+
+  // LOG PENCARIAN BERHASIL
+  simpanLog("CARI_ANGGOTA", {
+    idAnggota: a.idAnggota || idAnggota,
+    userId: a.idAnggota || idAnggota,
+    nama: a.nama,
+    keyword: keyword,
+    hasil: "DITEMUKAN"
+  });
+
+  // 1. HITUNG SALDO SIMPANAN - SUPPORT FORMAT BARU & LAMA
+  const totalMasuk = Object.values(dataSimpanan).filter(s => {
+    const matchId = s.anggotaId === idAnggota || s.idAnggota === idAnggota || s.anggotaId === a.idAnggota;
+    return matchId && (s.tipe === "masuk" || !s.tipe && s.jumlah > 0);
+  }).reduce((acc,b)=> acc + Number(b.jumlah), 0);
+  
+  // Untuk format baru simpanan cuma masuk, keluar di pencairan
+  const totalKeluar = Object.values(dataSimpanan).filter(s => (s.anggotaId === idAnggota || s.idAnggota === idAnggota) && s.tipe === "keluar").reduce((acc,b)=> acc + Number(b.jumlah), 0);
+  const saldoSimpanan = totalMasuk - totalKeluar;
+
+  // 2. HITUNG SISA PINJAMAN
+  let totalPinjam = 0; let totalBayar = 0;
+  Object.values(dataPinjaman).filter(p => p.idAnggota === idAnggota || p.anggotaId === idAnggota).forEach(p=>{
+    let jasa = Number(p.jasa ?? Math.round(Number(p.jumlah) * 0.2));
+    totalPinjam += Number(p.jumlah) + jasa;
+    Object.values(dataAngsuran).filter(an => an.pinjamanId === p.id).forEach(an=>{
+      totalBayar += Number(an.pokok || 0) + Number(an.jasa || 0);
+    });
+  });
+  const sisaPinjaman = totalPinjam - totalBayar;
+
+  // 3. GABUNGKAN SEMUA RIWAYAT
+  let riwayat = [];
+  Object.values(dataSimpanan).filter(s=> s.anggotaId===idAnggota || s.idAnggota===idAnggota).forEach(s=>riwayat.push({
+    tanggal: s.tanggal, jenis: s.tipe==="keluar"? "Simpanan Keluar" : "Simpanan Masuk", ket: s.keterangan || s.jenis || "Setoran", jumlah: s.jumlah, tipeBadge: s.tipe==="keluar"? "keluar" : "masuk"
+  }));
+  Object.values(dataPinjaman).filter(p=>p.idAnggota===idAnggota || p.anggotaId===idAnggota).forEach(p=>{
+    let jasa = Number(p.jasa ?? Math.round(Number(p.jumlah) * 0.2));
+    riwayat.push({ tanggal: p.tanggal, jenis: "Pinjaman Baru", ket: p.nomor, jumlah: Number(p.jumlah) + jasa, tipeBadge: "pinjam" });
+  });
+  Object.values(dataAngsuran).filter(an=>{
+    const p = dataPinjaman[an.pinjamanId];
+    return p && (p.idAnggota === idAnggota || p.anggotaId === idAnggota);
+  }).forEach(an=>{
+    riwayat.push({ tanggal: an.tanggal, jenis: "Bayar Angsuran", ket: "No: " + (dataPinjaman[an.pinjamanId]?.nomor || '-'), jumlah: Number(an.pokok || 0) + Number(an.jasa || 0), tipeBadge: "masuk" });
+  });
+
+  riwayat.sort((a,b)=> b.tanggal - a.tanggal).splice(10);
+
+  hasilDiv.innerHTML = `
+    <div class="card">
+      <div class="profile-header">
+        <img src="img/icon-192.png">
+        <div>
+          <div style="font-size:16px;font-weight:700">${a.nama}</div>
+          <div style="font-size:11px;color:var(--muted)">No: ${a.idAnggota || '-'} | HP: ${a.telepon || a.noHp || '-'}</div>
+          <div style="font-size:11px;color:var(--muted)">Alamat: ${a.alamat || '-'}</div>
+        </div>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-item"><b>Saldo Simpanan</b><span style="color:var(--success)">Rp ${format(saldoSimpanan)}</span></div>
+        <div class="summary-item"><b>Total Pinjaman</b><span style="color:var(--primary)">Rp ${format(totalPinjam)}</span></div>
+        <div class="summary-item"><b>Sisa Pinjaman</b><span style="color:${sisaPinjaman>0? 'var(--danger)':'var(--success)'}">Rp ${format(sisaPinjaman)}</span></div>
+      </div>
+      <div class="riwayat-title">10 Riwayat Terakhir</div>
+      ${riwayat.length===0? '<div style="text-align:center;color:var(--muted);font-size:11px">Belum ada transaksi</div>' : 
+        riwayat.map(r=>{
+          const tgl = new Date(Number(r.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"2-digit"});
+          return `<div class="riwayat-item"><div><span class="badge ${r.tipeBadge}">${r.jenis}</span> ${r.ket}</div><div style="text-align:right"><b style="color:${r.tipeBadge==='keluar'?'var(--danger)':'var(--text)'}">Rp ${format(r.jumlah)}</b><br><span style="font-size:10px;color:var(--muted)">${tgl}</span></div></div>`;
+        }).join('')
+      }
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
