@@ -2,99 +2,2628 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barcode Cari - ARFA</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
+
+<title>Kartu Anggota - Koperasi ARFA</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-body{background:#f1f5f9;padding:12px;max-width:600px;margin:auto;padding-bottom:90px}
-.head{background:linear-gradient(135deg,#0f3057,#1e90ff);color:#fff;padding:16px;border-radius:20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);margin-bottom:12px;border:1px solid #eef2f7}
-.search{position:sticky;top:10px;z-index:10;display:flex;gap:8px;margin-bottom:12px;background:#f1f5f9;padding:4px 0}
-.search input{flex:1;padding:13px 14px;border-radius:14px;border:1px solid #e2e8f0;outline:none;font-size:14px}
-.btn{padding:12px 16px;border-radius:12px;border:none;background:#0f2a4a;color:#fff;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center}
-.btn-primary{background:#1e90ff}
-.badge{background:#e0f2fe;color:#0284c7;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#dbeafe,#1e90ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;flex-shrink:0}
-.link-box{background:#f8fafc;border:1px dashed #cbd5e1;padding:8px;border-radius:10px;font-size:10px;word-break:break-all;color:#475569;margin-top:8px}
-.valid{margin-top:10px;background:#dcfce7;color:#166534;padding:8px;border-radius:10px;font-size:11px;font-weight:700;text-align:center}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  background:#f1f5f9;
+  color:#1f2937;
+  padding:12px;
+  max-width:650px;
+  margin:auto;
+  padding-bottom:90px;
+}
+
+/* ================= HEADER ================= */
+
+.head{
+  background:linear-gradient(135deg,#0f3057,#1e90ff);
+  color:#fff;
+  padding:16px;
+  border-radius:20px;
+  margin-bottom:12px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  box-shadow:0 6px 20px rgba(15,48,87,.18);
+}
+
+.head-title{
+  font-weight:800;
+  font-size:16px;
+}
+
+.head small{
+  font-size:10px;
+  opacity:.9;
+}
+
+.scan-button{
+  color:#fff;
+  background:rgba(255,255,255,.18);
+
+  width:42px;
+  height:42px;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  text-decoration:none;
+}
+
+/* ================= CARD ================= */
+
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:14px;
+
+  box-shadow:0 6px 20px rgba(0,0,0,.06);
+
+  margin-bottom:12px;
+
+  border:1px solid #eef2f7;
+}
+
+/* ================= SEARCH ================= */
+
+.search{
+  position:sticky;
+  top:10px;
+  z-index:10;
+
+  display:flex;
+  gap:8px;
+
+  margin-bottom:12px;
+
+  background:#f1f5f9;
+
+  padding:4px 0;
+}
+
+.search input{
+  flex:1;
+
+  padding:13px 14px;
+
+  border-radius:14px;
+
+  border:1px solid #e2e8f0;
+
+  outline:none;
+
+  font-size:13px;
+
+  min-width:0;
+}
+
+.btn{
+  padding:11px 15px;
+
+  border-radius:12px;
+
+  border:none;
+
+  background:#0f2a4a;
+
+  color:#fff;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:6px;
+
+  justify-content:center;
+
+  font-size:11px;
+}
+
+.btn-primary{
+  background:#1e90ff;
+}
+
+.btn-success{
+  background:#16a34a;
+}
+
+.btn-light{
+  background:#fff;
+  color:#334155;
+  border:1px solid #e2e8f0;
+}
+
+/* ================= PROFILE ================= */
+
+.profile{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.avatar{
+  width:58px;
+  height:58px;
+
+  border-radius:50%;
+
+  background:linear-gradient(135deg,#dbeafe,#1e90ff);
+
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:800;
+  font-size:22px;
+
+  flex-shrink:0;
+}
+
+.profile-name{
+  font-size:16px;
+  font-weight:800;
+}
+
+.profile-info{
+  font-size:11px;
+  color:#64748b;
+  margin-top:2px;
+}
+
+.badge{
+  display:inline-block;
+
+  background:#e0f2fe;
+  color:#0284c7;
+
+  padding:4px 10px;
+
+  border-radius:20px;
+
+  font-size:10px;
+
+  font-weight:700;
+
+  margin-top:5px;
+}
+
+.badge-aktif{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.badge-keluar{
+  background:#fee2e2;
+  color:#dc2626;
+}
+
+/* ================= QR ================= */
+
+.qr-section{
+  margin-top:14px;
+
+  background:#f8fafc;
+
+  border:1px dashed #cbd5e1;
+
+  border-radius:15px;
+
+  padding:12px;
+
+  text-align:center;
+}
+
+.qr-title{
+  font-size:11px;
+  font-weight:800;
+  color:#0f3057;
+  margin-bottom:8px;
+}
+
+.qr{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.qr-link{
+  margin-top:8px;
+
+  font-size:9px;
+
+  color:#64748b;
+
+  word-break:break-all;
+}
+
+.barcode{
+  margin-top:10px;
+}
+
+/* ================= VALID ================= */
+
+.valid{
+  margin-top:10px;
+
+  background:#dcfce7;
+  color:#166534;
+
+  padding:8px;
+
+  border-radius:10px;
+
+  font-size:10px;
+
+  font-weight:700;
+
+  text-align:center;
+}
+
+/* ================= ACTION ================= */
+
+.action-row{
+  display:flex;
+  gap:7px;
+
+  margin-top:10px;
+}
+
+.action-row .btn{
+  flex:1;
+}
+
+/* ================= SUMMARY ================= */
+
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  color:#0f3057;
+
+  font-size:14px;
+
+  font-weight:800;
+
+  margin-bottom:10px;
+}
+
+.summary-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,1fr);
+
+  gap:8px;
+}
+
+.summary-box{
+  background:#f8fafc;
+
+  border:1px solid #e2e8f0;
+
+  border-radius:14px;
+
+  padding:11px;
+}
+
+.summary-label{
+  font-size:9px;
+  color:#64748b;
+}
+
+.summary-value{
+  margin-top:3px;
+
+  font-size:14px;
+
+  font-weight:800;
+
+  color:#0f3057;
+}
+
+/* ================= TABLE ================= */
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+
+  border-collapse:collapse;
+
+  font-size:10px;
+
+  min-width:520px;
+}
+
+th{
+  background:#f8fafc;
+
+  color:#64748b;
+
+  padding:9px;
+
+  text-align:left;
+
+  font-size:9px;
+
+  white-space:nowrap;
+}
+
+td{
+  padding:9px;
+
+  border-bottom:1px solid #f1f5f9;
+
+  vertical-align:top;
+}
+
+.money{
+  text-align:right;
+
+  font-weight:700;
+
+  white-space:nowrap;
+}
+
+/* ================= LOAN ================= */
+
+.loan-card{
+  border:1px solid #e2e8f0;
+
+  border-radius:14px;
+
+  padding:11px;
+
+  margin-bottom:8px;
+
+  background:#fff;
+}
+
+.loan-header{
+  display:flex;
+
+  justify-content:space-between;
+
+  gap:8px;
+}
+
+.loan-number{
+  font-weight:800;
+
+  color:#0f3057;
+
+  font-size:12px;
+}
+
+.loan-date{
+  font-size:9px;
+
+  color:#64748b;
+}
+
+.loan-grid{
+  display:grid;
+
+  grid-template-columns:
+    repeat(2,1fr);
+
+  gap:7px;
+
+  margin-top:9px;
+}
+
+.loan-item{
+  background:#f8fafc;
+
+  border-radius:10px;
+
+  padding:8px;
+}
+
+.loan-item small{
+  display:block;
+
+  font-size:8px;
+
+  color:#64748b;
+}
+
+.loan-item b{
+  display:block;
+
+  margin-top:2px;
+
+  font-size:10px;
+
+  color:#0f3057;
+}
+
+/* ================= STATUS ================= */
+
+.loading{
+  text-align:center;
+
+  padding:30px;
+
+  color:#64748b;
+
+  font-size:12px;
+}
+
+.empty{
+  text-align:center;
+
+  padding:20px;
+
+  color:#94a3b8;
+
+  font-size:11px;
+}
+
+/* ================= LINK ================= */
+
+.link-box{
+  background:#f8fafc;
+
+  border:1px dashed #cbd5e1;
+
+  padding:8px;
+
+  border-radius:10px;
+
+  font-size:9px;
+
+  word-break:break-all;
+
+  color:#475569;
+
+  margin-top:8px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:430px){
+
+  body{
+    padding:8px;
+  }
+
+  .summary-grid{
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+
+  .action-row .btn{
+    font-size:9px;
+    padding:10px 5px;
+  }
+
+  .profile-name{
+    font-size:14px;
+  }
+
+}
+
 </style>
 </head>
+
 <body>
+
+<!-- ================= HEADER ================= -->
+
 <div class="head">
-  <div><div style="font-weight:800;font-size:16px">🔍 Barcode Cari</div><small id="scanInfo">Memuat data...</small></div>
-  <a href="scan.html" style="color:#fff;background:rgba(255,255,255,.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center"><span class="material-icons">qr_code_scanner</span></a>
+
+  <div>
+
+    <div class="head-title">
+      👤 Kartu Anggota
+    </div>
+
+    <small id="scanInfo">
+      Memuat data...
+    </small>
+
+  </div>
+
+  <a
+    href="scan.html"
+    class="scan-button">
+
+    <span class="material-icons">
+      qr_code_scanner
+    </span>
+
+  </a>
+
 </div>
-<div class="search" id="searchBar">
-  <input id="inputCari" placeholder="Cari ID AG001 / Nama / HP..." autofocus>
-  <button class="btn btn-primary" onclick="cariAnggota(document.getElementById('inputCari').value)"><span class="material-icons" style="font-size:18px">search</span> Cari</button>
+
+
+<!-- ================= SEARCH ================= -->
+
+<div
+  class="search"
+  id="searchBar">
+
+  <input
+    id="inputCari"
+    placeholder="Cari ID / Nama / HP..."
+    autocomplete="off">
+
+  <button
+    class="btn btn-primary"
+    onclick="cariAnggota(document.getElementById('inputCari').value)">
+
+    <span
+      class="material-icons"
+      style="font-size:18px">
+
+      search
+
+    </span>
+
+    Cari
+
+  </button>
+
 </div>
-<div id="hasil"><div class='card' style='text-align:center;color:#94a3b8;padding:30px'>Scan QR atau ketik ID</div></div>
+
+
+<!-- ================= HASIL ================= -->
+
+<div id="hasil">
+
+  <div class="card loading">
+
+    ⏳ Memuat data anggota...
+
+  </div>
+
+</div>
+
+
 <script>
-// CUMA 1 KALI - FINAL DOMAIN BARU
-const BASE_URL = "https://koperasiarfa.my.id/barcode-cari.html";
-const urlParams = new URLSearchParams(location.search);
-const IS_FROM_WA = urlParams.has("scan");
 
-const firebaseConfig={databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com"};
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
-let semuaAnggota={}; let dataSiap=false;
-function getHP(v){ return v.telepon || v.hp || v.noHp || ""; }
+/* =========================================================
+   KONFIGURASI
+========================================================= */
 
-db.ref("anggota").once("value").then(snap=>{
-  semuaAnggota = snap.val() || {};
-  dataSiap = true;
-  document.getElementById("scanInfo").innerText = Object.keys(semuaAnggota).length + " anggota";
-  const kode = urlParams.get("scan") || urlParams.get("cari");
-  if(kode){
-    document.getElementById("inputCari").value = kode;
-    if(IS_FROM_WA){
-      document.getElementById("searchBar").style.display="none";
-      document.getElementById("scanInfo").innerText="Kartu Anggota Digital - Koperasi ARFA";
-    }
-    cariAnggota(kode);
+const BASE_URL =
+  "https://koperasiarfa.my.id/barcode-cari.html";
+
+
+const urlParams =
+  new URLSearchParams(
+    location.search
+  );
+
+
+const IS_FROM_WA =
+  urlParams.has("scan");
+
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+  databaseURL:
+    "https://arfa-c7dee-default-rtdb.firebaseio.com"
+
+};
+
+
+if(!firebase.apps.length){
+
+  firebase.initializeApp(
+    firebaseConfig
+  );
+
+}
+
+
+const db =
+  firebase.database();
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+let semuaAnggota = {};
+
+let semuaSimpanan = {};
+
+let semuaPinjaman = {};
+
+let semuaAngsuran = {};
+
+let dataSiap = false;
+
+
+/* =========================================================
+   HELPER ID
+========================================================= */
+
+function normalizeId(value){
+
+  return String(
+    value || ""
+  )
+  .trim()
+  .toUpperCase();
+
+}
+
+
+function getMemberId(v){
+
+  return normalizeId(
+
+    v.idAnggota ||
+
+    v.anggotaId ||
+
+    v.memberId ||
+
+    v.idMember ||
+
+    v.id ||
+
+    ""
+
+  );
+
+}
+
+
+function getBarcode(v){
+
+  return String(
+
+    v.barcode ||
+
+    getMemberId(v) ||
+
+    ""
+
+  )
+  .trim();
+
+}
+
+
+function getNama(v){
+
+  return String(
+
+    v.nama ||
+
+    v.name ||
+
+    ""
+
+  )
+  .trim();
+
+}
+
+
+function getHP(v){
+
+  return String(
+
+    v.telepon ||
+
+    v.hp ||
+
+    v.noHp ||
+
+    ""
+
+  )
+  .trim();
+
+}
+
+
+/* =========================================================
+   FORMAT RUPIAH
+========================================================= */
+
+function rupiah(value){
+
+  const n =
+    Number(value) || 0;
+
+  return "Rp " +
+    n.toLocaleString(
+      "id-ID"
+    );
+
+}
+
+
+/* =========================================================
+   FORMAT TANGGAL
+========================================================= */
+
+function tanggal(value){
+
+  if(!value){
+
+    return "-";
+
   }
+
+  let d;
+
+  if(
+    typeof value === "number" ||
+    /^\d+$/.test(String(value))
+  ){
+
+    d =
+      new Date(
+        Number(value)
+      );
+
+  }else{
+
+    d =
+      new Date(value);
+
+  }
+
+  if(
+    isNaN(
+      d.getTime()
+    )
+  ){
+
+    return String(value);
+
+  }
+
+  return d.toLocaleDateString(
+    "id-ID",
+    {
+      day:"2-digit",
+      month:"2-digit",
+      year:"numeric"
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+function esc(value){
+
+  return String(
+    value ?? ""
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   AMBIL DATA FIREBASE
+========================================================= */
+
+Promise.all([
+
+  db.ref("anggota").once("value"),
+
+  db.ref("simpanan").once("value"),
+
+  db.ref("pinjaman").once("value"),
+
+  db.ref("angsuran").once("value")
+
+])
+.then(results=>{
+
+  semuaAnggota =
+    results[0].val() || {};
+
+  semuaSimpanan =
+    results[1].val() || {};
+
+  semuaPinjaman =
+    results[2].val() || {};
+
+  semuaAngsuran =
+    results[3].val() || {};
+
+  dataSiap = true;
+
+
+  document
+    .getElementById("scanInfo")
+    .innerText =
+    Object.keys(
+      semuaAnggota
+    ).length +
+    " anggota";
+
+
+  const kode =
+    urlParams.get("scan") ||
+    urlParams.get("cari");
+
+
+  if(kode){
+
+    document
+      .getElementById("inputCari")
+      .value =
+      kode;
+
+
+    if(IS_FROM_WA){
+
+      document
+        .getElementById("searchBar")
+        .style.display =
+        "none";
+
+
+      document
+        .getElementById("scanInfo")
+        .innerText =
+        "Kartu & Riwayat Anggota - Koperasi ARFA";
+
+    }
+
+
+    cariAnggota(kode);
+
+  }else{
+
+    document
+      .getElementById("hasil")
+      .innerHTML = `
+
+        <div class="card empty">
+
+          <span
+            class="material-icons"
+            style="font-size:40px">
+
+            qr_code_2
+
+          </span>
+
+          <br>
+
+          Scan QR atau ketik ID anggota
+
+        </div>
+
+      `;
+
+  }
+
+})
+.catch(error=>{
+
+  console.error(error);
+
+  document
+    .getElementById("hasil")
+    .innerHTML = `
+
+      <div class="card empty">
+
+        ❌ Gagal memuat data.
+
+        <br><br>
+
+        ${esc(error.message)}
+
+      </div>
+
+    `;
+
 });
 
+
+/* =========================================================
+   CARI ANGGOTA
+========================================================= */
+
 function cariAnggota(q){
-  const hasilDiv=document.getElementById("hasil");
-  if(!dataSiap){ hasilDiv.innerHTML="<div class='card' style='text-align:center'>⏳ Memuat...</div>"; setTimeout(()=>cariAnggota(q),500); return; }
-  if(!q || !q.trim()){ hasilDiv.innerHTML="<div class='card' style='text-align:center'>Ketik ID</div>"; return; }
-  const qUp=q.trim().toUpperCase();
-  const list = Object.entries(semuaAnggota).filter(([key,v])=> `${v.id||''} ${v.barcode||''} ${v.nama||''} ${getHP(v)}`.toUpperCase().includes(qUp));
-  if(list.length==0){ hasilDiv.innerHTML=`<div class='card' style='text-align:center'>❌ ${qUp} tidak ditemukan</div>`; return; }
-  let html="";
-  list.forEach(([key,v])=>{
-    const id=v.id||v.barcode||key; const nama=v.nama||"-"; const hp=getHP(v); const status=v.status||"aktif";
-    const urlShare = BASE_URL + "?scan=" + encodeURIComponent(id);
-    html+=`
-    <div class="card" data-key="${key}">
-      <div style="display:flex;gap:12px"><div class="avatar">${nama.charAt(0).toUpperCase()}</div><div style="flex:1"><b>${nama}</b><br><small>${hp} • ${v.alamat||""}</small><br><span class="badge">${id}</span></div></div>
-      <div style="margin-top:10px;text-align:center;background:#f8fafc;padding:10px;border-radius:12px">
-        <div id="qr-${key}" style="display:flex;justify-content:center"></div>
-        <svg id="bc-${key}"></svg>
-        ${!IS_FROM_WA ? `<div class="link-box">${urlShare}</div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-primary btn-wa" style="flex:1">WA</button><button class="btn btn-copy" style="flex:1;background:#fff;border:1px solid #e2e8f0;color:#334155">Copy</button></div>` : `<div class="valid">✅ Kartu Valid - Koperasi ARFA</div>`}
+
+  const hasilDiv =
+    document
+      .getElementById("hasil");
+
+
+  if(!dataSiap){
+
+    hasilDiv.innerHTML = `
+
+      <div class="card loading">
+
+        ⏳ Memuat data...
+
       </div>
-    </div>`;
-  });
-  hasilDiv.innerHTML=html;
-  list.forEach(([key,v])=>{
-    const id=v.id||v.barcode||key; const nama=v.nama||"-"; const urlShare = BASE_URL + "?scan=" + encodeURIComponent(id);
-    try{ document.getElementById(`qr-${key}`).innerHTML=""; new QRCode(document.getElementById(`qr-${key}`), {text:urlShare,width:120,height:120}); JsBarcode(`#bc-${key}`, id, {format:"CODE128",width:1.8,height:40,displayValue:true}); }catch(e){}
-    const card = document.querySelector(`[data-key="${key}"]`);
-    if(card && !IS_FROM_WA){
-      const btnWa = card.querySelector(".btn-wa"); if(btnWa) btnWa.onclick=()=>{ window.open(`https://wa.me/?text=${encodeURIComponent(`Kartu Anggota ${nama} (${id}) : ${urlShare}`)}`,'_blank'); };
-      const btnCopy = card.querySelector(".btn-copy"); if(btnCopy) btnCopy.onclick=()=>{ navigator.clipboard.writeText(urlShare).then(()=>alert("✅ Disalin:\n"+urlShare)); };
+
+    `;
+
+    setTimeout(
+      ()=>cariAnggota(q),
+      500
+    );
+
+    return;
+
+  }
+
+
+  if(
+    !q ||
+    !q.trim()
+  ){
+
+    hasilDiv.innerHTML = `
+
+      <div class="card empty">
+
+        Ketik ID anggota.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  const qUp =
+    q.trim().toUpperCase();
+
+
+  const list =
+    Object.entries(
+      semuaAnggota
+    )
+    .filter(([key,v])=>{
+
+      const id =
+        getMemberId(v);
+
+      const barcode =
+        getBarcode(v);
+
+      const nama =
+        getNama(v);
+
+      const hp =
+        getHP(v);
+
+
+      return (
+
+        id.includes(qUp) ||
+
+        barcode
+          .toUpperCase()
+          .includes(qUp) ||
+
+        nama
+          .toUpperCase()
+          .includes(qUp) ||
+
+        hp
+          .toUpperCase()
+          .includes(qUp)
+
+      );
+
+    });
+
+
+  if(!list.length){
+
+    hasilDiv.innerHTML = `
+
+      <div class="card empty">
+
+        ❌
+
+        <br><br>
+
+        ${esc(qUp)}
+        tidak ditemukan.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  let html = "";
+
+
+  list.forEach(
+    ([key,v])=>{
+
+      html +=
+        renderAnggota(
+          key,
+          v
+        );
+
     }
-  });
+  );
+
+
+  hasilDiv.innerHTML =
+    html;
+
+
+  /* GENERATE QR/BARCODE */
+
+  list.forEach(
+    ([key,v])=>{
+
+      const id =
+        getMemberId(v);
+
+      const barcode =
+        getBarcode(v);
+
+      const nama =
+        getNama(v);
+
+
+      const urlShare =
+        BASE_URL +
+        "?scan=" +
+        encodeURIComponent(
+          barcode || id
+        );
+
+
+      try{
+
+        const qr =
+          document
+            .getElementById(
+              `qr-${key}`
+            );
+
+
+        if(qr){
+
+          new QRCode(
+            qr,
+            {
+              text:urlShare,
+              width:140,
+              height:140,
+              correctLevel:
+                QRCode.CorrectLevel.H
+            }
+          );
+
+        }
+
+
+        const bc =
+          document
+            .getElementById(
+              `bc-${key}`
+            );
+
+
+        if(bc){
+
+          JsBarcode(
+            bc,
+            barcode || id,
+            {
+              format:"CODE128",
+              width:1.6,
+              height:42,
+              displayValue:true,
+              fontSize:10,
+              margin:5
+            }
+          );
+
+        }
+
+      }catch(error){
+
+        console.warn(
+          error
+        );
+
+      }
+
+
+      if(!IS_FROM_WA){
+
+        const card =
+          document.querySelector(
+            `[data-key="${key}"]`
+          );
+
+
+        if(card){
+
+          const wa =
+            card.querySelector(
+              ".btn-wa"
+            );
+
+
+          if(wa){
+
+            wa.onclick =
+              ()=>{
+
+                const pesan =
+
+                  "Kartu Anggota Koperasi ARFA\n\n" +
+
+                  "ID Anggota: " +
+                  id +
+                  "\n" +
+
+                  "Nama: " +
+                  nama +
+                  "\n" +
+
+                  "Barcode: " +
+                  barcode +
+                  "\n\n" +
+
+                  "Lihat Kartu & Riwayat Anggota:\n" +
+
+                  urlShare;
+
+
+                window.open(
+
+                  "https://wa.me/?text=" +
+
+                  encodeURIComponent(
+                    pesan
+                  ),
+
+                  "_blank"
+
+                );
+
+              };
+
+          }
+
+
+          const copy =
+            card.querySelector(
+              ".btn-copy"
+            );
+
+
+          if(copy){
+
+            copy.onclick =
+              ()=>{
+
+                navigator
+                  .clipboard
+                  .writeText(
+                    urlShare
+                  )
+                  .then(()=>{
+
+                    alert(
+                      "✅ Link disalin:\n\n" +
+                      urlShare
+                    );
+
+                  });
+
+              };
+
+          }
+
+        }
+
+      }
+
+    }
+  );
+
 }
-document.getElementById("inputCari").addEventListener("input", e=>cariAnggota(e.target.value));
+
+
+/* =========================================================
+   RENDER ANGGOTA
+========================================================= */
+
+function renderAnggota(
+  key,
+  v
+){
+
+  const id =
+    getMemberId(v);
+
+  const barcode =
+    getBarcode(v);
+
+  const nama =
+    getNama(v) || "-";
+
+  const hp =
+    getHP(v) || "-";
+
+  const alamat =
+    v.alamat || "-";
+
+  const status =
+    String(
+      v.status || "aktif"
+    ).toLowerCase();
+
+
+  const urlShare =
+    BASE_URL +
+    "?scan=" +
+    encodeURIComponent(
+      barcode || id
+    );
+
+
+  return `
+
+    <!-- ================= PROFIL ================= -->
+
+    <div
+      class="card"
+      data-key="${esc(key)}">
+
+      <div class="profile">
+
+        <div class="avatar">
+
+          ${esc(
+            nama
+              .charAt(0)
+              .toUpperCase()
+          )}
+
+        </div>
+
+        <div
+          style="flex:1">
+
+          <div class="profile-name">
+
+            ${esc(nama)}
+
+          </div>
+
+          <div class="profile-info">
+
+            📞 ${esc(hp)}
+
+          </div>
+
+          <div class="profile-info">
+
+            📍 ${esc(alamat)}
+
+          </div>
+
+          <span class="badge">
+
+            ${esc(id)}
+
+          </span>
+
+          <span class="badge ${
+            status === "keluar"
+            ? "badge-keluar"
+            : "badge-aktif"
+          }">
+
+            ${esc(status)}
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================= QR ================= -->
+
+      <div class="qr-section">
+
+        <div class="qr-title">
+
+          QR KARTU ANGGOTA
+
+        </div>
+
+        <div
+          id="qr-${esc(key)}"
+          class="qr">
+        </div>
+
+        <div
+          id="bc-${esc(key)}"
+          class="barcode">
+        </div>
+
+        ${
+          !IS_FROM_WA
+
+          ?
+
+          `
+
+          <div class="link-box">
+
+            ${esc(urlShare)}
+
+          </div>
+
+          <div class="action-row">
+
+            <button
+              class="btn btn-success btn-wa">
+
+              <span
+                class="material-icons"
+                style="font-size:16px">
+
+                whatsapp
+
+              </span>
+
+              WhatsApp
+
+            </button>
+
+            <button
+              class="btn btn-light btn-copy">
+
+              📋 Copy
+
+            </button>
+
+          </div>
+
+          `
+
+          :
+
+          `
+
+          <div class="valid">
+
+            ✅ Kartu Valid - Koperasi ARFA
+
+          </div>
+
+          `
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- ================= RINGKASAN ================= -->
+
+    ${renderRingkasan(v)}
+
+
+    <!-- ================= SIMPANAN ================= -->
+
+    ${renderSimpanan(v)}
+
+
+    <!-- ================= PINJAMAN ================= -->
+
+    ${renderPinjaman(v)}
+
+
+    <!-- ================= ANGSURAN ================= -->
+
+    ${renderAngsuran(v)}
+
+  `;
+
+}
+
+
+/* =========================================================
+   CARI TRANSAKSI BERDASARKAN ID
+========================================================= */
+
+function cocokAnggota(
+  data,
+  targetId
+){
+
+  const idTarget =
+    normalizeId(
+      targetId
+    );
+
+
+  const idData =
+    normalizeId(
+
+      data.idAnggota ||
+
+      data.anggotaId ||
+
+      data.memberId ||
+
+      data.idMember ||
+
+      data.id ||
+
+      ""
+
+    );
+
+
+  return idData === idTarget;
+
+}
+
+
+/* =========================================================
+   DATA SIMPANAN ANGGOTA
+========================================================= */
+
+function getSimpananAnggota(
+  targetId
+){
+
+  return Object.entries(
+    semuaSimpanan
+  )
+  .filter(
+    ([key,v])=>
+      cocokAnggota(
+        v,
+        targetId
+      )
+  )
+  .map(
+    ([key,v])=>({
+
+      key:key,
+
+      ...v
+
+    })
+  );
+
+}
+
+
+/* =========================================================
+   DATA PINJAMAN ANGGOTA
+========================================================= */
+
+function getPinjamanAnggota(
+  targetId
+){
+
+  return Object.entries(
+    semuaPinjaman
+  )
+  .filter(
+    ([key,v])=>
+      cocokAnggota(
+        v,
+        targetId
+      )
+  )
+  .map(
+    ([key,v])=>({
+
+      key:key,
+
+      ...v
+
+    })
+  );
+
+}
+
+
+/* =========================================================
+   DATA ANGSURAN ANGGOTA
+========================================================= */
+
+function getAngsuranAnggota(
+  targetId
+){
+
+  return Object.entries(
+    semuaAngsuran
+  )
+  .filter(
+    ([key,v])=>
+      cocokAnggota(
+        v,
+        targetId
+      )
+  )
+  .map(
+    ([key,v])=>({
+
+      key:key,
+
+      ...v
+
+    })
+  );
+
+}
+
+
+/* =========================================================
+   RINGKASAN
+========================================================= */
+
+function renderRingkasan(
+  anggota
+){
+
+  const id =
+    getMemberId(
+      anggota
+    );
+
+
+  const simpanan =
+    getSimpananAnggota(
+      id
+    );
+
+
+  const pinjaman =
+    getPinjamanAnggota(
+      id
+    );
+
+
+  const angsuran =
+    getAngsuranAnggota(
+      id
+    );
+
+
+  let totalSimpanan = 0;
+
+  let totalSukarela = 0;
+
+  let totalWajib = 0;
+
+  let totalPokok = 0;
+
+  let totalPinjaman = 0;
+
+  let totalAngsuran = 0;
+
+
+  simpanan.forEach(
+    s=>{
+
+      const jumlah =
+        Number(
+          s.jumlah ||
+          s.nominal ||
+          s.nilai ||
+          0
+        );
+
+
+      const jenis =
+        String(
+          s.jenis || ""
+        ).toLowerCase();
+
+
+      const tipe =
+        String(
+          s.tipe || ""
+        ).toLowerCase();
+
+
+      const keluar =
+        jenis === "tarik" ||
+        jenis === "pencair" ||
+        tipe === "keluar";
+
+
+      if(keluar){
+
+        totalSimpanan -=
+          jumlah;
+
+      }else{
+
+        totalSimpanan +=
+          jumlah;
+
+      }
+
+
+      if(jenis === "sukarela"){
+
+        if(keluar){
+
+          totalSukarela -=
+            jumlah;
+
+        }else{
+
+          totalSukarela +=
+            jumlah;
+
+        }
+
+      }
+
+
+      if(jenis === "wajib"){
+
+        if(keluar){
+
+          totalWajib -=
+            jumlah;
+
+        }else{
+
+          totalWajib +=
+            jumlah;
+
+        }
+
+      }
+
+
+      if(jenis === "pokok"){
+
+        if(keluar){
+
+          totalPokok -=
+            jumlah;
+
+        }else{
+
+          totalPokok +=
+            jumlah;
+
+        }
+
+      }
+
+    }
+  );
+
+
+  pinjaman.forEach(
+    p=>{
+
+      totalPinjaman +=
+        Number(
+          p.jumlah ||
+          p.nominal ||
+          0
+        );
+
+    }
+  );
+
+
+  angsuran.forEach(
+    a=>{
+
+      totalAngsuran +=
+
+        Number(
+          a.pokok ||
+          0
+        ) +
+
+        Number(
+          a.jasa ||
+          0
+        );
+
+    }
+  );
+
+
+  const sisaPinjaman =
+    Math.max(
+      0,
+      totalPinjaman -
+      angsuran.reduce(
+        (sum,a)=>
+          sum +
+          Number(
+            a.pokok ||
+            0
+          ),
+        0
+      )
+    );
+
+
+  return `
+
+    <div class="card">
+
+      <div class="section-title">
+
+        <span
+          class="material-icons"
+          style="font-size:18px">
+
+          dashboard
+
+        </span>
+
+        Ringkasan Anggota
+
+      </div>
+
+
+      <div class="summary-grid">
+
+        <div class="summary-box">
+
+          <div class="summary-label">
+
+            Total Simpanan
+
+          </div>
+
+          <div class="summary-value">
+
+            ${rupiah(
+              totalSimpanan
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+          <div class="summary-label">
+
+            Simpanan Sukarela
+
+          </div>
+
+          <div class="summary-value">
+
+            ${rupiah(
+              totalSukarela
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+          <div class="summary-label">
+
+            Simpanan Wajib
+
+          </div>
+
+          <div class="summary-value">
+
+            ${rupiah(
+              totalWajib
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+          <div class="summary-label">
+
+            Simpanan Pokok
+
+          </div>
+
+          <div class="summary-value">
+
+            ${rupiah(
+              totalPokok
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+          <div class="summary-label">
+
+            Total Pinjaman
+
+          </div>
+
+          <div class="summary-value">
+
+            ${rupiah(
+              totalPinjaman
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+          <div class="summary-label">
+
+            Sisa Pinjaman
+
+          </div>
+
+          <div class="summary-value">
+
+            ${rupiah(
+              sisaPinjaman
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+          <div class="summary-label">
+
+            Total Angsuran
+
+          </div>
+
+          <div class="summary-value">
+
+            ${rupiah(
+              totalAngsuran
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div class="summary-box">
+
+          <div class="summary-label">
+
+            Jumlah Transaksi
+
+          </div>
+
+          <div class="summary-value">
+
+            ${
+              simpanan.length +
+              pinjaman.length +
+              angsuran.length
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   RIWAYAT SIMPANAN
+========================================================= */
+
+function renderSimpanan(
+  anggota
+){
+
+  const id =
+    getMemberId(
+      anggota
+    );
+
+
+  const list =
+    getSimpananAnggota(
+      id
+    );
+
+
+  if(!list.length){
+
+    return `
+
+      <div class="card">
+
+        <div class="section-title">
+
+          💰 Riwayat Simpanan
+
+        </div>
+
+        <div class="empty">
+
+          Belum ada riwayat simpanan.
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  list.sort(
+    (a,b)=>
+      Number(
+        b.tanggal ||
+        b.timestamp ||
+        b.waktu ||
+        0
+      ) -
+      Number(
+        a.tanggal ||
+        a.timestamp ||
+        a.waktu ||
+        0
+      )
+  );
+
+
+  let rows = "";
+
+
+  list.forEach(
+    s=>{
+
+      const jenis =
+        s.jenis ||
+        s.tipe ||
+        "-";
+
+
+      const jumlah =
+        Number(
+          s.jumlah ||
+          s.nominal ||
+          s.nilai ||
+          0
+        );
+
+
+      const keluar =
+        ["tarik","pencair","keluar"]
+          .includes(
+            String(
+              jenis
+            ).toLowerCase()
+          );
+
+
+      rows += `
+
+        <tr>
+
+          <td>
+
+            ${esc(
+              tanggal(
+                s.tanggal ||
+                s.timestamp ||
+                s.waktu
+              )
+            )}
+
+          </td>
+
+          <td>
+
+            ${esc(jenis)}
+
+          </td>
+
+          <td
+            class="money"
+            style="
+              color:${
+                keluar
+                ? "#dc2626"
+                : "#16a34a"
+              }
+            ">
+
+            ${
+              keluar
+              ? "- "
+              : "+ "
+            }
+
+            ${rupiah(
+              jumlah
+            )}
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+  );
+
+
+  return `
+
+    <div class="card">
+
+      <div class="section-title">
+
+        💰 Riwayat Simpanan
+
+      </div>
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Tanggal</th>
+
+              <th>Jenis</th>
+
+              <th>Jumlah</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${rows}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   RIWAYAT PINJAMAN
+========================================================= */
+
+function renderPinjaman(
+  anggota
+){
+
+  const id =
+    getMemberId(
+      anggota
+    );
+
+
+  const list =
+    getPinjamanAnggota(
+      id
+    );
+
+
+  if(!list.length){
+
+    return `
+
+      <div class="card">
+
+        <div class="section-title">
+
+          💳 Riwayat Pinjaman
+
+        </div>
+
+        <div class="empty">
+
+          Belum ada pinjaman.
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  list.sort(
+    (a,b)=>
+      Number(
+        b.tanggal ||
+        b.timestamp ||
+        0
+      ) -
+      Number(
+        a.tanggal ||
+        a.timestamp ||
+        0
+      )
+  );
+
+
+  let html = "";
+
+
+  list.forEach(
+    p=>{
+
+      const nomor =
+        p.noPinjaman ||
+        p.nomor ||
+        p.idPinjaman ||
+        p.id ||
+        p.key ||
+        "-";
+
+
+      const jumlah =
+        Number(
+          p.jumlah ||
+          p.nominal ||
+          0
+        );
+
+
+      const jasa =
+        Number(
+          p.jasa ||
+          0
+        );
+
+
+      html += `
+
+        <div class="loan-card">
+
+          <div class="loan-header">
+
+            <div>
+
+              <div class="loan-number">
+
+                ${esc(
+                  nomor
+                )}
+
+              </div>
+
+              <div class="loan-date">
+
+                ${tanggal(
+                  p.tanggal ||
+                  p.timestamp
+                )}
+
+              </div>
+
+            </div>
+
+            <span class="badge">
+
+              Pinjaman
+
+            </span>
+
+          </div>
+
+
+          <div class="loan-grid">
+
+            <div class="loan-item">
+
+              <small>
+                Jumlah Pinjaman
+              </small>
+
+              <b>
+                ${rupiah(
+                  jumlah
+                )}
+              </b>
+
+            </div>
+
+
+            <div class="loan-item">
+
+              <small>
+                Jasa
+              </small>
+
+              <b>
+                ${rupiah(
+                  jasa
+                )}
+              </b>
+
+            </div>
+
+
+            <div class="loan-item">
+
+              <small>
+                Metode
+              </small>
+
+              <b>
+                ${esc(
+                  p.metode ||
+                  "-"
+                )}
+              </b>
+
+            </div>
+
+
+            <div class="loan-item">
+
+              <small>
+                Keterangan
+              </small>
+
+              <b>
+                ${esc(
+                  p.ket ||
+                  p.keterangan ||
+                  "-"
+                )}
+              </b>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+  );
+
+
+  return `
+
+    <div class="card">
+
+      <div class="section-title">
+
+        💳 Riwayat Pinjaman
+
+      </div>
+
+      ${html}
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   RIWAYAT ANGSURAN
+========================================================= */
+
+function renderAngsuran(
+  anggota
+){
+
+  const id =
+    getMemberId(
+      anggota
+    );
+
+
+  const list =
+    getAngsuranAnggota(
+      id
+    );
+
+
+  if(!list.length){
+
+    return `
+
+      <div class="card">
+
+        <div class="section-title">
+
+          💵 Riwayat Angsuran
+
+        </div>
+
+        <div class="empty">
+
+          Belum ada riwayat angsuran.
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+
+  list.sort(
+    (a,b)=>
+      Number(
+        b.tanggal ||
+        b.timestamp ||
+        b.waktu ||
+        0
+      ) -
+      Number(
+        a.tanggal ||
+        a.timestamp ||
+        a.waktu ||
+        0
+      )
+  );
+
+
+  let rows = "";
+
+
+  list.forEach(
+    a=>{
+
+      const pokok =
+        Number(
+          a.pokok ||
+          0
+        );
+
+
+      const jasa =
+        Number(
+          a.jasa ||
+          0
+        );
+
+
+      const total =
+        pokok +
+        jasa;
+
+
+      rows += `
+
+        <tr>
+
+          <td>
+
+            ${tanggal(
+              a.tanggal ||
+              a.timestamp ||
+              a.waktu
+            )}
+
+          </td>
+
+          <td>
+
+            ${esc(
+              a.noPinjaman ||
+              a.pinjamanId ||
+              a.angsuranId ||
+              "-"
+            )}
+
+          </td>
+
+          <td
+            class="money">
+
+            ${rupiah(
+              pokok
+            )}
+
+          </td>
+
+          <td
+            class="money">
+
+            ${rupiah(
+              jasa
+            )}
+
+          </td>
+
+          <td
+            class="money">
+
+            ${rupiah(
+              total
+            )}
+
+          </td>
+
+        </tr>
+
+      `;
+
+    }
+  );
+
+
+  return `
+
+    <div class="card">
+
+      <div class="section-title">
+
+        💵 Riwayat Angsuran
+
+      </div>
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Tanggal</th>
+
+              <th>Pinjaman</th>
+
+              <th>Pokok</th>
+
+              <th>Jasa</th>
+
+              <th>Total</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            ${rows}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   INPUT SEARCH
+========================================================= */
+
+document
+  .getElementById("inputCari")
+  .addEventListener(
+    "input",
+    e=>{
+
+      cariAnggota(
+        e.target.value
+      );
+
+    }
+  );
+
 </script>
+
 </body>
 </html>
