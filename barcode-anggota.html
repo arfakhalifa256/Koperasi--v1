@@ -2526,14 +2526,18 @@ function(a){
   qrContainer.innerHTML = "";
 
 
-  /*
-    QR berisi URL halaman anggota.
-    Saat QR dibuka:
-    anggota.html?scan=AG001
-  */
+ /*
+  QR berisi URL halaman pencarian anggota.
+  QR bisa langsung discan menggunakan kamera bawaan HP.
 
-  const urlQR = "https://arfa-c7dee.web.app/barcode-cari.html?scan=" + encodeURIComponent(barcode);
+  Contoh:
+  AG001 →
+  https://koperasiarfa.my.id/barcode-cari.html?scan=AG001
+*/
 
+const urlQR =
+  "https://koperasiarfa.my.id/barcode-cari.html?scan=" +
+  encodeURIComponent(barcode);
   try{
 
     new QRCode(
