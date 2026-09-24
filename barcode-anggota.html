@@ -892,7 +892,17 @@ tbody tr:hover{
 </div>
 
 <div class="detail-actions">
+<button
+  class="btn btn-success"
+  onclick="shareWA()">
 
+  <span class="material-icons" style="font-size:16px">
+    whatsapp
+  </span>
+
+  WhatsApp
+
+</button>
   <button
     class="btn btn-primary"
     onclick="window.print()">
@@ -1106,7 +1116,28 @@ const app =
 const db =
   getDatabase(app);
 
+/* =========================================================
+   DOMAIN UTAMA KOPERASI ARFA
+========================================================= */
 
+const BASE_URL = "https://koperasiarfa.my.id";
+
+const SCAN_PAGE =
+  BASE_URL + "/barcode-cari.html";
+
+function getScanUrl(barcode){
+
+  const value =
+    String(barcode || "")
+      .trim();
+
+  return (
+    SCAN_PAGE +
+    "?scan=" +
+    encodeURIComponent(value)
+  );
+
+}
 /* =========================================================
    VARIABLE
 ========================================================= */
@@ -2535,9 +2566,7 @@ function(a){
   https://koperasiarfa.my.id/barcode-cari.html?scan=AG001
 */
 
-const urlQR =
-  "https://koperasiarfa.my.id/barcode-cari.html?scan=" +
-  encodeURIComponent(barcode);
+const urlQR = getScanUrl(barcode);
   try{
 
     new QRCode(
@@ -2611,7 +2640,38 @@ const urlQR =
     });
 
 };
+/* =========================================================
+   SHARE WHATSAPP
+========================================================= */
 
+window.shareWA = function(){
+
+  if(!currentDetail){
+    showToast("Pilih anggota terlebih dahulu.");
+    return;
+  }
+
+  const id = getMemberId(currentDetail);
+  const nama = getNama(currentDetail);
+  const barcode = getBarcode(currentDetail);
+
+  const url = getScanUrl(barcode);
+
+  const pesan =
+    "Kartu Anggota Koperasi ARFA\n\n" +
+    "ID Anggota: " + id + "\n" +
+    "Nama: " + nama + "\n" +
+    "Barcode: " + barcode + "\n\n" +
+    "Lihat / Scan Kartu Anggota:\n" +
+    url;
+
+  window.open(
+    "https://wa.me/?text=" +
+    encodeURIComponent(pesan),
+    "_blank"
+  );
+
+};
 
 /* =========================================================
    TUTUP DETAIL
