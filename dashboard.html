@@ -274,7 +274,19 @@ body{background:#f1f5f9;padding-bottom:80px;}
   </button>
 </div>
     
-
+<div class="card" id="cardOpnameTerakhir" style="background:linear-gradient(135deg,#0f3057,#1e90ff);color:#fff;border:none">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div style="font-size:10px;opacity:.8">OPNAME TERAKHIR</div>
+      <div id="opnameTgl" style="font-weight:700;font-size:13px">Memuat...</div>
+      <div id="opnameOleh" style="font-size:10px;opacity:.9;margin-top:2px"></div>
+    </div>
+    <div style="text-align:right">
+      <div id="opnameTotal" style="font-weight:800;font-size:16px">Rp 0</div>
+      <div style="font-size:9px;opacity:.8" id="opnameRinci"></div>
+    </div>
+  </div>
+</div>
   </div>
 
   <div id="hasilCariDashboard"></div>
@@ -539,6 +551,19 @@ if(!roleLogin || !username){
 }
 
 
+onValue(ref(db, "audit/opname_terakhir"), snap=>{
+  if(!snap.exists()){
+    document.getElementById("opnameTgl").innerText = "Belum ada opname";
+    return;
+  }
+  const d = snap.val();
+  const formatRp = n => Number(n||0).toLocaleString("id-ID");
+  
+  document.getElementById("opnameTgl").innerText = d.tanggal + " • " + new Date(d.waktu).toLocaleTimeString("id-ID");
+  document.getElementById("opnameOleh").innerText = "Oleh: " + d.oleh + " | " + (d.catatan || "-");
+  document.getElementById("opnameTotal").innerText = "Rp " + formatRp((d.kasFisik||0) + (d.bankFisik||0));
+  document.getElementById("opnameRinci").innerText = `Kas ${formatRp(d.kasFisik)} + Bank ${formatRp(d.bankFisik)}`;
+});
 /* =====================================================
    DATA
 ===================================================== */
