@@ -89,10 +89,11 @@ const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDom
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const username = localStorage.getItem("username") || "Bendahara";
-const role = localStorage.getItem("role") || "user";
-document.getElementById("namaOpname").value = username;
-document.getElementById("tglOpname").value = new Date().toISOString().slice(0,10);
+const username = localStorage.getItem("username");
+let role = localStorage.getItem("role");
+if(role) role = role.toLowerCase().trim();
+if(!username){ alert("Session habis, silakan login ulang!"); window.location.href = "index.html"; }
+if(role!== "admin"){ alert("Akses ditolak! Hanya admin"); window.location.href = "dashboard.html"; }
 
 let dataLog = [];
 const formatRp = n => Number(n||0).toLocaleString("id-ID");

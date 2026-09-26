@@ -159,11 +159,11 @@ import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/10.12.
 const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
-const username = localStorage.getItem("username") || "";
-const role = localStorage.getItem("role") || "";
-const userInfo = document.getElementById("userInfo");
-if(username && role){const jam = new Date().getHours();let salam = jam < 11? "Pagi" : jam < 15? "Siang" : jam < 18? "Sore" : "Malam";userInfo.innerHTML = `${salam}, <b>${username}</b>`;}
+const username = localStorage.getItem("username");
+let role = localStorage.getItem("role");
+if(role) role = role.toLowerCase().trim();
+if(!username){ alert("Session habis, silakan login ulang!"); window.location.href = "index.html"; }
+if(role!== "admin"){ alert("Akses ditolak! Hanya admin"); window.location.href = "dashboard.html"; }
 
 window.toggleSidebar = function(){const sidebar = document.getElementById("sidebar");const overlay = document.getElementById("overlay");sidebar.classList.toggle("open");overlay.style.display = sidebar.classList.contains("open")? "block" : "none";};
 document.getElementById("overlay").addEventListener("click",toggleSidebar);
