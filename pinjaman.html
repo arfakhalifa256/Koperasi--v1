@@ -62,7 +62,8 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:.2s;}
 .sidebar a:hover{background:rgba(255,255,255,.15);transform:translateX(4px);}
 .sidebar a.active{background:rgba(255,255,255,.2);}
-</style>
+.btn-wa{background:#25D366;color:white}
+  </style>
 </head>
 <body>
 
@@ -225,15 +226,15 @@ function renderPinjaman(){
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Sisa</span><span style="color:${lunas? '#10b981' : '#ef4444'};font-weight:700">Rp ${format(Math.max(total - totalAngsuran,0))}</span></div>
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Tanggal</span><span>${formatTanggal(p.tanggal)}</span></div>
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Pokok</span><span>Rp ${format(p.jumlah)}</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Jasa (20%)</span><span>Rp ${format(jasaOtomatis)}</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Total</span><span style="color:var(--primary);font-weight:700">Rp ${format(total)}</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:10px"><span>Ket</span><span>${p.ket || "-"}</span></div>
-      <div class="pinjaman-actions"><button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>${role==="admin"? `<button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button><button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>` : ''}</div>
+      <div class="pinjaman-actions">
+        <button class="btn-wa" onclick="kirimWA('${p.id}')">💬 WA</button>
+        <button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>
+        ${role==="admin"? `<button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button><button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>` : ''}
+      </div>
     `;
     tabelPinjaman.appendChild(card);
   });
 }
-
 async function previewNoPinjaman(){ const snap = await get(ref(db, "counter/pinjaman")); let no = (snap.val() || 0) + 1; return "PJ" + String(no).padStart(3,"0"); }
 async function generateNoPinjaman(){ const counterRef = ref(db, "counter/pinjaman"); const result = await runTransaction(counterRef, (current)=> (current || 0) + 1); let no = result.snapshot.val(); return "PJ" + String(no).padStart(3,"0"); }
 
@@ -290,7 +291,47 @@ window.hapusPinjaman = async id => {
 
 window.tutupPopup = () => { document.getElementById("popupEdit").style.display = "none"; editId = null; }
 window.cetakNota = id => { const p = dataPinjaman[id]; if(!p) return; const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" }); const tgl = new Date(Number(p.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}); const total = Number(p.jumlah) + Number(p.jasa || 0); doc.setFontSize(14); doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"}); doc.setFontSize(10); doc.text(`No: ${p.nomor}`, 15, 35); doc.text(`Nama: ${p.nama}`, 15, 42); doc.text(`Tanggal: ${tgl}`, 15, 49); doc.text(`Jumlah: Rp ${format(p.jumlah)}`, 15, 56); doc.text(`Jasa: Rp ${format(p.jasa || 0)}`, 15, 63); doc.text(`Total: Rp ${format(total)}`, 15, 70); doc.save(`Nota_${p.nomor}.pdf`); }
-</script>
+window.kirimWA = id => {
+  const p = dataPinjaman[id];
+  if(!p) return;
+  
+  // ambil no hp dari data anggota
+  const ag = dataAnggota[p.idAnggota];
+  let noHp = ag?.telepon || ag?.noHp || ag?.hp || ag?.wa || "";
+  
+  if(!noHp || noHp === "-"){
+    return showAlert("No WA anggota tidak ada di data master", "warning");
+  }
+
+  // bersihkan nomor: 08xx -> 628xx
+  noHp = noHp.replace(/[^0-9]/g, "");
+  if(noHp.startsWith("0")) noHp = "62" + noHp.substring(1);
+  if(noHp.startsWith("+62")) noHp = noHp.substring(1);
+  
+  let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
+  let total = Number(p.jumlah || 0) + jasaOtomatis;
+  let totalAngsuran = 0;
+  Object.values(dataAngsuran).forEach(a => { 
+    if(a.pinjamanId!== p.id) return; 
+    totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0); 
+  });
+  let sisa = Math.max(total - totalAngsuran, 0);
+
+  const pesan = `Halo *${p.nama}* 👋\n\n` +
+                `Koperasi ARFA  pinjaman Anda:\n` +
+                `No: *${p.nomor}*\n` +
+                `Pokok: Rp ${format(p.jumlah)}\n` +
+                `Jasa: Rp ${format(jasaOtomatis)}\n` +
+                `Total: Rp ${format(total)}\n` +
+                `Sudah bayar: Rp ${format(totalAngsuran)}\n` +
+                `*Sisa: Rp ${format(sisa)}*\n\n` +
+                `Terima kasih 🙏`;
+
+  const url = `https://wa.me/${noHp}?text=${encodeURIComponent(pesan)}`;
+  window.open(url, "_blank");
+}
+  </script>
 <div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div class="alert-icon" id="alertIcon">✓</div><div class="alert-text" id="alertText">Pesan alert</div><button onclick="tutupAlert()" id="alertBtn" style="background:var(--primary);border:none;padding:10px 18px;border-radius:10px;color:white;font-weight:700;cursor:pointer;width:100%">OK</button></div></div>
 </body>
 </html>
+  
