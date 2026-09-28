@@ -85,24 +85,15 @@ tr:hover{background:#f8fafc}
   <span class="menu-btn" onclick="toggleSidebar()">☰</span>
 </header>
 
-<div class="container">
-  <h3 class="page-title">KAS</h3>
-  <div class="card">
-    <div class="summary-grid total"><div class="summary-item total"><div class="label">Total Saldo</div><div class="value">Rp <span id="saldoTotal">0</span></div></div></div>
-    <div class="summary-grid">
-      <div class="summary-item"><div class="label">Cash</div><div class="value">Rp <span id="saldoCash">0</span></div></div>
-      <div class="summary-item"><div class="label">Bank</div><div class="value">Rp <span id="saldoBank">0</span></div></div>
-      <div class="summary-item"><div class="label">Kas Masuk</div><div class="value masuk">Rp <span id="totalMasuk">0</span></div></div>
-      <div class="summary-item"><div class="label">Kas Keluar</div><div class="value keluar">Rp <span id="totalKeluar">0</span></div></div>
-    </div>
-  </div>
-  
+
   <div class="card" id="cardSaldoAwal">
     <h3>⚙️ Pengaturan Saldo Awal</h3>
     <p style="font-size:11px;color:#6b7280;margin-bottom:10px">Atur saldo awal koperasi. Hanya bisa diakses Admin.</p>
     <button class="btn-primary" onclick="location.href='set-saldo.html'">Buka Halaman Set Saldo Awal</button>
   </div>
-
+<div style="background:#dbeafe;padding:8px 12px;border-radius:8px;margin-bottom:10px;font-size:11px;border:1px solid #93c5fd">
+  👤 Input sebagai: <b id="petugasDisplay">-</b>
+</div>
   <div class="card" id="cardInputKas">
     <h3>💵 Input Transaksi Kas</h3>
     <div class="form-grid">
@@ -121,7 +112,7 @@ tr:hover{background:#f8fafc}
     <h3>📒 Riwayat Transaksi</h3>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Tipe</th><th class="text-right">Jumlah</th><th>Sumber</th><th>Kategori</th><th>Anggota</th></tr></thead>
+        <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Tipe</th><th class="text-right">Jumlah</th><th>Sumber</th><th>Kategori</th><th>Admin</th></tr></thead>
         <tbody id="riwayat"></tbody>
       </table>
     </div>
@@ -218,6 +209,9 @@ document.getElementById("overlay").addEventListener("click", toggleSidebar);
 document.getElementById("btnLogout").addEventListener("click", ()=>{ localStorage.clear(); location.href="index.html"; });
 
 document.addEventListener("DOMContentLoaded", () => {
+  const LD = getLoginDetail();
+const elPetugas = document.getElementById("petugasDisplay");
+if(elPetugas) elPetugas.innerText = LD.petugasDisplay;
   const el = document.getElementById("userInfo");
   const jam = new Date().getHours();
   let salam = jam < 11? "Pagi" : jam < 15? "Siang" : jam < 18? "Sore" : "Malam";
@@ -253,8 +247,30 @@ window.toggleEditKategori = function(){
   isiOpsiKategori(document.getElementById("editKasKategori"), tipe === "biaya"? "keluar" : tipe);
 }
 
+function getLoginDetail(){
+  let role = localStorage.getItem("role") || "ADMIN";
+  let username = localStorage.getItem("username") || localStorage.getItem("user") || "Unknown";
+  let nama = localStorage.getItem("nama") || username;
+  try{
+    const raw = localStorage.getItem('user') || localStorage.getItem('currentUser');
+    if(raw){
+      const obj = JSON.parse(raw);
+      role = obj.role || obj.jabatan || role;
+      username = obj.username || obj.user || username;
+      nama = obj.nama || obj.name || nama;
+    }
+  }catch{}
+  return {
+    role: String(role).toUpperCase(),
+    username: String(username),
+    nama: String(nama),
+    petugasDisplay: `${username} (${String(role).toUpperCase()})` // FORMAT 1 YANG KAMU MAU
+  };
+}
+
 document.getElementById("btnSimpan").onclick = async()=>{
-  if(role !== "admin"){ alert("Hanya admin yang bisa input kas!"); return; }
+  if(role!== "admin"){ alert("Hanya admin yang bisa input kas!"); return; }
+  const LOGIN_DETAIL = getLoginDetail();
   const sumberKas = document.getElementById("sumberKas").value;
   let tipe = document.getElementById("tipe").value;
   const jumlah = Number(document.getElementById("jumlah").value);
@@ -279,12 +295,52 @@ document.getElementById("btnSimpan").onclick = async()=>{
   }
   if(tipe === "biaya") tipe = "keluar";
   const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now());
-  const dataTransaksiBaru = { sumberKas, tipe, jumlah, kategori, keterangan: keteranganFinal, anggotaId: anggotaId || null, namaAnggota: namaAnggota || null, tanggal }
+
+  // INI YANG BARU - SIMPAN SIAPA PETUGAS SAAT INPUT
+  const dataTransaksiBaru = {
+    sumberKas,
+    tipe,
+    jumlah,
+    kategori,
+    keterangan: keteranganFinal,
+    anggotaId: anggotaId || null,
+    namaAnggota: namaAnggota || null,
+    tanggal,
+    petugas: LOGIN_DETAIL.petugasDisplay, // contoh: budi01 (ADMIN)
+    petugas_username: LOGIN_DETAIL.username,
+    petugas_role: LOGIN_DETAIL.role,
+    petugas_nama: LOGIN_DETAIL.nama,
+    created_by: LOGIN_DETAIL.username,
+    created_at: Date.now()
+  }
+
   const snapKas = await push(kasTransaksiRef, dataTransaksiBaru);
-  await push(ref(db,"audit/log"),{ tanggal: toWIB(Date.now()), aksi: tipe === "masuk"? "KAS MASUK" : "KAS KELUAR", user: username, role: role, keterangan: keteranganFinal, jumlah: jumlah, sumberKas: sumberKas, kategori: kategori, anggotaId: anggotaId || null, refKas: snapKas.key });
-  simpanLog(tipe === "masuk"? "KAS_MASUK" : "KAS_KELUAR", { idAnggota: anggotaId || "-", nama: namaAnggota || "-", namaAnggota: namaAnggota || keteranganFinal, jumlah: jumlah, kategori: kategori, sumberKas: sumberKas, keterangan: keteranganFinal });
-  alert("Data berhasil disimpan");
-  document.getElementById("jumlah").value=""; document.getElementById("keterangan").value=""; document.getElementById("anggotaSelect").value=""
+  await push(ref(db,"audit/log"),{
+    tanggal: toWIB(Date.now()),
+    aksi: tipe === "masuk"? "KAS MASUK" : "KAS KELUAR",
+    user: LOGIN_DETAIL.username,
+    role: LOGIN_DETAIL.role,
+    keterangan: keteranganFinal,
+    jumlah: jumlah,
+    sumberKas: sumberKas,
+    kategori: kategori,
+    anggotaId: anggotaId || null,
+    refKas: snapKas.key
+  });
+  simpanLog(tipe === "masuk"? "KAS_MASUK" : "KAS_KELUAR", {
+    idAnggota: anggotaId || "-",
+    nama: namaAnggota || "-",
+    namaAnggota: namaAnggota || keteranganFinal,
+    jumlah: jumlah,
+    kategori: kategori,
+    sumberKas: sumberKas,
+    keterangan: keteranganFinal,
+    petugas: LOGIN_DETAIL.petugasDisplay
+  });
+  alert(`Data berhasil disimpan oleh ${LOGIN_DETAIL.petugasDisplay}`);
+  document.getElementById("jumlah").value="";
+  document.getElementById("keterangan").value="";
+  document.getElementById("anggotaSelect").value=""
 }
 
 onValue(saldoAwalRef, snap => { dataSaldoAwal = snap.val() || {}; hitungDanRender(); });
