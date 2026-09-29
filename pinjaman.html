@@ -20,13 +20,8 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .role-badge{background:rgba(255,255,255,.18);padding:5px 10px;border-radius:20px;font-size:10px;font-weight:600;}
 .menu-btn{cursor:pointer;font-size:22px;}
 .container{padding:14px;max-width:1200px;margin:0 auto}
-.page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark);letter-spacing:.5px}
 .card{background:var(--card);padding:16px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid var(--border)}
 .card h3{margin:0 0 12px 0;font-size:14px;font-weight:700;color:var(--text)}
-.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.summary-item{background:var(--blue-50);padding:12px;border-radius:10px;border:1px solid var(--border);text-align:center}
-.summary-item b{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:500}
-.summary-item span{font-size:10px;font-weight:700;color:var(--text)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form-group{display:flex;flex-direction:column;gap:4px}
 .form-group.full{grid-column:1/-1}
@@ -39,6 +34,7 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .btn-edit{background:var(--warning);color:white}
 .btn-delete{background:var(--danger);color:white}
 .btn-nota{background:var(--success);color:white}
+.btn-wa{background:#25D366;color:white}
 .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:999;padding:10px}
 .popup-box{background:white;padding:20px;border-radius:16px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .popup-btns{display:flex;gap:8px;margin-top:16px}
@@ -48,7 +44,6 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .alert{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;margin-top:10px}
 .alert.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
-.overlay.active{display:block;}
 .custom-alert{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px}
 .custom-alert-box{width:100%;max-width:320px;background:#fff;border-radius:18px;padding:24px 20px;text-align:center;box-shadow:0 10px 35px rgba(0,0,0,.25)}
 .alert-icon{width:70px;height:70px;border-radius:50%;margin:auto;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:14px;color:white;font-weight:bold;}
@@ -62,8 +57,7 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:.2s;}
 .sidebar a:hover{background:rgba(255,255,255,.15);transform:translateX(4px);}
 .sidebar a.active{background:rgba(255,255,255,.2);}
-.btn-wa{background:#25D366;color:white}
-  </style>
+</style>
 </head>
 <body>
 
@@ -113,8 +107,6 @@ document.getElementById("roleBadge").innerText = role.toUpperCase();
 async function catatanAudit(aksi, keterangan, jumlah, dataTambahan={}){
   await push(ref(db,"audit/log"),{ tanggal: Date.now(), aksi, user: username, role, keterangan, jumlah,...dataTambahan });
 }
-
-/* ========== LOG TERPUSAT - BARU ========== */
 function simpanLog(aksi, data){
   try{
     const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
@@ -125,8 +117,8 @@ function simpanLog(aksi, data){
       oleh: username,
       role: role,
       username: data.nama || username,
-     ...data
-    }).catch(e=> console.log("Log gagal:", e.message));
+    ...data
+    });
   }catch(e){ console.log(e); }
 }
 
@@ -138,15 +130,12 @@ const anggotaRef = ref(db, "anggota");
 const pinjamanRef = ref(db, "pinjaman");
 const angsuranRef = ref(db, "angsuran");
 const kasTransaksiRef = ref(db, "kas/transaksi");
-const saldoAwalRef = ref(db, "kas/saldoAwal");
 
 const anggotaSelect = document.getElementById("anggota");
 const tabelPinjaman = document.getElementById("tabelPinjaman");
 let dataPinjaman = {};
 let dataAnggota = {};
 let dataAngsuran = {};
-let dataSaldoAwal = {};
-let dataTransaksi = {};
 let editId = null;
 
 const format = x => new Intl.NumberFormat("id-ID").format(x || 0);
@@ -159,39 +148,30 @@ window.tutupAlert = () => document.getElementById("customAlert").style.display =
 window.hitungJasa = () => { const jumlah = Number(document.getElementById("jumlah").value) || 0; document.getElementById("jasa").value = Math.round(jumlah * 0.2); }
 window.hitungJasaEdit = () => { const jumlah = Number(document.getElementById("editJumlah").value) || 0; document.getElementById("editJasa").value = Math.round(jumlah * 0.2); }
 
-function cekSisaPinjaman(idAnggota){
-  let totalSisa = 0;
-  Object.values(dataPinjaman).forEach(p => {
-    if(p.idAnggota!== idAnggota) return;
-    let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
-    let total = Number(p.jumlah || 0) + jasaOtomatis;
-    let totalAngsuran = 0;
-    Object.values(dataAngsuran).forEach(a => {
-      if(a.pinjamanId!== p.id) return;
-      totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0);
-    });
-    let sisa = total - totalAngsuran;
-    if(sisa > 0) totalSisa += sisa;
-  });
-  return totalSisa;
-}
-
 window.isiTelepon = function(){
   const idAnggota = anggotaSelect.value;
   if(!idAnggota) { document.getElementById("telepon").value = ""; return; }
   const data = dataAnggota[idAnggota];
-  document.getElementById("telepon").value = data.telepon || data.noHp || "-";
+  document.getElementById("telepon").value = data?.telepon || data?.noHp || "-";
 }
 
 onValue(anggotaRef, snap => {
   dataAnggota = snap.val() || {};
   anggotaSelect.innerHTML = "<option value=''>Pilih anggota</option>";
   if(Object.keys(dataAnggota).length === 0){ anggotaSelect.innerHTML = "<option value=''>Data anggota kosong</option>"; return; }
-  Object.entries(dataAnggota).sort((a,b)=> a[1].nama.localeCompare(b[1].nama)).forEach(([id,a])=>{
-      anggotaSelect.innerHTML += `<option value="${id}">${a.nama} - ${a.idAnggota || ''}</option>`;
+  const seen = new Set();
+  Object.entries(dataAnggota).sort((a,b)=> (a[1].nama||"").localeCompare(b[1].nama||"")).forEach(([id,a])=>{
+      let nama = (a.nama||"").trim();
+      if(!nama) return;
+      if(nama.endsWith("-")) return; // FIX: skip Hendra -
+      if(nama.toLowerCase().endsWith(" -")) return;
+      let key = nama.toLowerCase();
+      if(seen.has(key)) return; // cegah double nama sama
+      seen.add(key);
+      anggotaSelect.innerHTML += `<option value="${id}">${a.nama} - ${a.idAnggota || a.id || ''}</option>`;
     });
   loadDropdownEdit();
-}, err => { console.error("Error load anggota:", err); showAlert("Gagal load data anggota", "danger"); });
+});
 
 onValue(pinjamanRef, snap => {
   dataPinjaman = {};
@@ -219,13 +199,12 @@ function renderPinjaman(){
     card.className = "pinjaman-card";
     card.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
-        <div><div style="font-weight:700;font-size:13px">${p.nomor || "-"}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${p.nama || "-"}</div></div>
+        <div><div style="font-weight:700;font-size:13px">${p.nomor || "-"}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${(dataAnggota[p.idAnggota]?.nama || p.nama || "-")}</div></div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:end"><div style="background:#e0e7ff;color:#3730a3;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600">${metode.toUpperCase()}</div><div style="background:${warnaStatus};color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700">${status}</div></div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Sudah Bayar</span><span><b>Rp ${format(totalAngsuran)}</b></span></div>
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Sisa</span><span style="color:${lunas? '#10b981' : '#ef4444'};font-weight:700">Rp ${format(Math.max(total - totalAngsuran,0))}</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Tanggal</span><span>${formatTanggal(p.tanggal)}</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Pokok</span><span>Rp ${format(p.jumlah)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:10px"><span>Tanggal</span><span>${formatTanggal(p.tanggal)}</span></div>
       <div class="pinjaman-actions">
         <button class="btn-wa" onclick="kirimWA('${p.id}')">💬 WA</button>
         <button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>
@@ -235,6 +214,7 @@ function renderPinjaman(){
     tabelPinjaman.appendChild(card);
   });
 }
+
 async function previewNoPinjaman(){ const snap = await get(ref(db, "counter/pinjaman")); let no = (snap.val() || 0) + 1; return "PJ" + String(no).padStart(3,"0"); }
 async function generateNoPinjaman(){ const counterRef = ref(db, "counter/pinjaman"); const result = await runTransaction(counterRef, (current)=> (current || 0) + 1); let no = result.snapshot.val(); return "PJ" + String(no).padStart(3,"0"); }
 
@@ -242,15 +222,21 @@ window.onload = async () => { document.getElementById("tanggal").value = new Dat
 
 window.simpanPinjaman = async () => {
   if(role!== "admin") return showAlert("Hanya admin!", "danger");
-  let idAnggota = anggota.value; let nama = anggota.options[anggota.selectedIndex]?.text.split(" - ")[0] || "";
-  const sisaLama = cekSisaPinjaman(idAnggota);
-  if(sisaLama > 0){ return showAlert(`Gagal! ${nama} masih punya sisa pinjaman Rp ${format(sisaLama)}. Lunasi dulu.`, "danger"); }
-  let tanggalInput = document.getElementById("tanggal").value; let jumlah = Number(document.getElementById("jumlah").value);
-  let jasa = Number(document.getElementById("jasa").value) || 0; let metode = document.getElementById("metode").value; let ket = document.getElementById("ket").value;
-  if(!idAnggota) return showAlert("Pilih anggota!", "warning"); if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
-  if(!metode) return showAlert("Pilih metode!", "warning"); if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
+  let idAnggota = anggota.value;
+  if(!idAnggota) return showAlert("Pilih anggota!", "warning");
+  const agMaster = dataAnggota[idAnggota];
+  if(!agMaster) return showAlert("Data anggota tidak ditemukan!", "danger");
+  let nama = (agMaster.nama||"").trim(); // FINAL FIX: ambil dari master, bukan dari text dropdown
+  let tanggalInput = document.getElementById("tanggal").value;
+  let jumlah = Number(document.getElementById("jumlah").value);
+  let jasa = Number(document.getElementById("jasa").value) || 0;
+  let metode = document.getElementById("metode").value;
+  let ket = document.getElementById("ket").value;
+  if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
+  if(!metode) return showAlert("Pilih metode!", "warning");
+  if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
   let nomor = await generateNoPinjaman(); document.getElementById("noPinjaman").value = nomor; let tanggal = new Date(tanggalInput).getTime();
-  let kas = await push(kasTransaksiRef,{ tanggal, keterangan:`Pinjaman ${nama} (${nomor})`, tipe:"keluar", kategori:"pinjaman", sumberKas:metode, jumlah: jumlah });
+  let kas = await push(kasTransaksiRef,{ tanggal, keterangan:`Pinjaman ${nama} (${nomor})`, tipe:"keluar", kategori:"pinjaman", sumberKas:metode, jumlah: jumlah, idAnggota: idAnggota, namaAnggota: nama });
   const snapPinjaman = await push(pinjamanRef,{ nomor, idAnggota, nama, tanggal, jumlah, jasa, sumberKas:metode, ket, kasId: kas.key, status:"belum" });
   await catatanAudit("PENGAJUAN PINJAMAN", `${nama} - No: ${nomor} - Rp ${format(jumlah)}`, jumlah, {anggotaId: idAnggota, refPinjaman: snapPinjaman.key});
   simpanLog("PENGAJUAN_PINJAMAN", { idAnggota: idAnggota, userId: idAnggota, nama: nama, nomor: nomor, jumlah: jumlah, jasa: jasa, metode: metode });
@@ -260,19 +246,52 @@ window.simpanPinjaman = async () => {
   document.getElementById("noPinjaman").value = await previewNoPinjaman(); showAlert("Data pinjaman berhasil disimpan", "success");
 }
 
-function loadDropdownEdit(){ const editAnggota = document.getElementById("editAnggota"); editAnggota.innerHTML = "<option value=''>Pilih anggota</option>"; Object.entries(dataAnggota).sort((a,b) => a[1].nama.localeCompare(b[1].nama)).forEach(([id,a])=>{ editAnggota.innerHTML+=`<option value="${id}">${a.nama}</option>`; }); }
+function loadDropdownEdit(){
+  const editAnggota = document.getElementById("editAnggota");
+  editAnggota.innerHTML = "<option value=''>Pilih anggota</option>";
+  const seen = new Set();
+  Object.entries(dataAnggota).sort((a,b) => (a[1].nama||"").localeCompare(b[1].nama||"")).forEach(([id,a])=>{
+    let nama = (a.nama||"").trim();
+    if(!nama || nama.endsWith("-")) return;
+    let key = nama.toLowerCase();
+    if(seen.has(key)) return;
+    seen.add(key);
+    editAnggota.innerHTML+=`<option value="${id}">${a.nama}</option>`;
+  });
+}
 
-window.editPinjaman = id => { if(role!=="admin") return; let p = dataPinjaman[id]; editId = id; document.getElementById("editNoPinjaman").value = p.nomor; document.getElementById("editAnggota").value = p.idAnggota; document.getElementById("editTanggal").value = inputDate(p.tanggal); document.getElementById("editMetode").value = p.sumberKas; document.getElementById("editJumlah").value = p.jumlah; document.getElementById("editJasa").value = p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2); document.getElementById("editKet").value = p.ket || ""; document.getElementById("popupEdit").style.display = "flex"; }
+window.editPinjaman = id => {
+  if(role!=="admin") return;
+  let p = dataPinjaman[id];
+  editId = id;
+  document.getElementById("editNoPinjaman").value = p.nomor;
+  document.getElementById("editAnggota").value = p.idAnggota;
+  document.getElementById("editTanggal").value = inputDate(p.tanggal);
+  document.getElementById("editMetode").value = p.sumberKas;
+  document.getElementById("editJumlah").value = p.jumlah;
+  document.getElementById("editJasa").value = p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2);
+  document.getElementById("editKet").value = p.ket || "";
+  document.getElementById("popupEdit").style.display = "flex";
+}
 
 window.updatePinjaman = async () => {
-  if(!editId) return; let pLama = dataPinjaman[editId];
-  let nama = document.getElementById("editAnggota").options[document.getElementById("editAnggota").selectedIndex]?.text || "";
-  let tanggalInput = document.getElementById("editTanggal").value; let jumlah = Number(document.getElementById("editJumlah").value);
-  let jasa = Number(document.getElementById("editJasa").value) || 0; let metode = document.getElementById("editMetode").value; let ket = document.getElementById("editKet").value;
-  if(!tanggalInput) return showAlert("Isi tanggal!", "warning"); if(!metode) return showAlert("Pilih metode!", "warning"); if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
+  if(!editId) return;
+  let pLama = dataPinjaman[editId];
+  let idAnggotaBaru = document.getElementById("editAnggota").value;
+  const agBaru = dataAnggota[idAnggotaBaru];
+  let nama = agBaru? agBaru.nama.trim() : "";
+  let tanggalInput = document.getElementById("editTanggal").value;
+  let jumlah = Number(document.getElementById("editJumlah").value);
+  let jasa = Number(document.getElementById("editJasa").value) || 0;
+  let metode = document.getElementById("editMetode").value;
+  let ket = document.getElementById("editKet").value;
+  if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
+  if(!metode) return showAlert("Pilih metode!", "warning");
+  if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
   let tanggal = new Date(tanggalInput).getTime();
-  const updates = {}; updates[`/pinjaman/${editId}`] = {...pLama, nama, idAnggota: document.getElementById("editAnggota").value, tanggal, jumlah, jasa, sumberKas: metode, ket};
-  if(pLama.kasId){ updates[`/kas/transaksi/${pLama.kasId}`] = { tanggal, jumlah, sumberKas: metode, keterangan: `Pinjaman ${nama} (${pLama.nomor})`, tipe:"keluar", kategori:"pinjaman" }; }
+  const updates = {};
+  updates[`/pinjaman/${editId}`] = {...pLama, nama, idAnggota: idAnggotaBaru, tanggal, jumlah, jasa, sumberKas: metode, ket};
+  if(pLama.kasId){ updates[`/kas/transaksi/${pLama.kasId}`] = { tanggal, jumlah, sumberKas: metode, keterangan: `Pinjaman ${nama} (${pLama.nomor})`, tipe:"keluar", kategori:"pinjaman", idAnggota: idAnggotaBaru, namaAnggota: nama }; }
   await update(ref(db), updates);
   await catatanAudit("EDIT PINJAMAN", `${nama} - No: ${pLama.nomor} - Dari: Rp ${format(pLama.jumlah)} -> Rp ${format(jumlah)}`, jumlah, {anggotaId: pLama.idAnggota, refPinjaman: editId});
   simpanLog("EDIT_PINJAMAN", { idAnggota: pLama.idAnggota, userId: pLama.idAnggota, nama: nama, nomor: pLama.nomor, jumlah: jumlah, jumlahLama: pLama.jumlah });
@@ -280,7 +299,7 @@ window.updatePinjaman = async () => {
 }
 
 window.hapusPinjaman = async id => {
-  if(role!== "admin") return; let p = dataPinjaman[id]; if(!confirm(`Hapus pinjaman ${p.nomor} atas nama ${p.nama}?`)) return;
+  if(role!== "admin") return; let p = dataPinjaman[id]; if(!confirm(`Hapus pinjaman ${p.nomor} atas nama ${dataAnggota[p.idAnggota]?.nama || p.nama}?`)) return;
   try{
     await remove(ref(db, `pinjaman/${id}`)); if(p.kasId){ await remove(ref(db, `kas/transaksi/${p.kasId}`)); }
     await catatanAudit("HAPUS PINJAMAN", `${p.nama} - No: ${p.nomor} - Rp ${format(p.jumlah)}`, p.jumlah, {anggotaId: p.idAnggota, refPinjaman: id});
@@ -290,48 +309,27 @@ window.hapusPinjaman = async id => {
 }
 
 window.tutupPopup = () => { document.getElementById("popupEdit").style.display = "none"; editId = null; }
-window.cetakNota = id => { const p = dataPinjaman[id]; if(!p) return; const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" }); const tgl = new Date(Number(p.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}); const total = Number(p.jumlah) + Number(p.jasa || 0); doc.setFontSize(14); doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"}); doc.setFontSize(10); doc.text(`No: ${p.nomor}`, 15, 35); doc.text(`Nama: ${p.nama}`, 15, 42); doc.text(`Tanggal: ${tgl}`, 15, 49); doc.text(`Jumlah: Rp ${format(p.jumlah)}`, 15, 56); doc.text(`Jasa: Rp ${format(p.jasa || 0)}`, 15, 63); doc.text(`Total: Rp ${format(total)}`, 15, 70); doc.save(`Nota_${p.nomor}.pdf`); }
+window.cetakNota = id => { const p = dataPinjaman[id]; if(!p) return; const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" }); const tgl = new Date(Number(p.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}); const total = Number(p.jumlah) + Number(p.jasa || 0); const namaCetak = dataAnggota[p.idAnggota]?.nama || p.nama; doc.setFontSize(14); doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"}); doc.setFontSize(10); doc.text(`No: ${p.nomor}`, 15, 35); doc.text(`Nama: ${namaCetak}`, 15, 42); doc.text(`Tanggal: ${tgl}`, 15, 49); doc.text(`Jumlah: Rp ${format(p.jumlah)}`, 15, 56); doc.text(`Jasa: Rp ${format(p.jasa || 0)}`, 15, 63); doc.text(`Total: Rp ${format(total)}`, 15, 70); doc.save(`Nota_${p.nomor}.pdf`); }
+
 window.kirimWA = id => {
   const p = dataPinjaman[id];
   if(!p) return;
-  
-  // ambil no hp dari data anggota
   const ag = dataAnggota[p.idAnggota];
   let noHp = ag?.telepon || ag?.noHp || ag?.hp || ag?.wa || "";
-  
-  if(!noHp || noHp === "-"){
-    return showAlert("No WA anggota tidak ada di data master", "warning");
-  }
-
-  // bersihkan nomor: 08xx -> 628xx
+  if(!noHp || noHp === "-"){ return showAlert("No WA anggota tidak ada di data master", "warning"); }
   noHp = noHp.replace(/[^0-9]/g, "");
   if(noHp.startsWith("0")) noHp = "62" + noHp.substring(1);
-  if(noHp.startsWith("+62")) noHp = noHp.substring(1);
-  
   let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
   let total = Number(p.jumlah || 0) + jasaOtomatis;
   let totalAngsuran = 0;
-  Object.values(dataAngsuran).forEach(a => { 
-    if(a.pinjamanId!== p.id) return; 
-    totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0); 
-  });
+  Object.values(dataAngsuran).forEach(a => { if(a.pinjamanId!== p.id) return; totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0); });
   let sisa = Math.max(total - totalAngsuran, 0);
-
-  const pesan = `Halo *${p.nama}* 👋\n\n` +
-                `Koperasi ARFA  pinjaman Anda:\n` +
-                `No: *${p.nomor}*\n` +
-                `Pokok: Rp ${format(p.jumlah)}\n` +
-                `Jasa: Rp ${format(jasaOtomatis)}\n` +
-                `Total: Rp ${format(total)}\n` +
-                `Sudah bayar: Rp ${format(totalAngsuran)}\n` +
-                `*Sisa: Rp ${format(sisa)}*\n\n` +
-                `Terima kasih 🙏`;
-
+  const namaWa = ag?.nama || p.nama;
+  const pesan = `Halo *${namaWa}* 👋\n\nKoperasi ARFA DRIVER mengingatkan pinjaman Anda:\nNo: *${p.nomor}*\nPokok: Rp ${format(p.jumlah)}\nJasa: Rp ${format(jasaOtomatis)}\nTotal: Rp ${format(total)}\nSudah bayar: Rp ${format(totalAngsuran)}\n*Sisa: Rp ${format(sisa)}*\n\nMohon segera dibayarkan. Terima kasih 🙏`;
   const url = `https://wa.me/${noHp}?text=${encodeURIComponent(pesan)}`;
   window.open(url, "_blank");
 }
-  </script>
+</script>
 <div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div class="alert-icon" id="alertIcon">✓</div><div class="alert-text" id="alertText">Pesan alert</div><button onclick="tutupAlert()" id="alertBtn" style="background:var(--primary);border:none;padding:10px 18px;border-radius:10px;color:white;font-weight:700;cursor:pointer;width:100%">OK</button></div></div>
 </body>
 </html>
-  
