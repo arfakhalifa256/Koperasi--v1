@@ -325,7 +325,7 @@ window.kirimWA = id => {
   Object.values(dataAngsuran).forEach(a => { if(a.pinjamanId!== p.id) return; totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0); });
   let sisa = Math.max(total - totalAngsuran, 0);
   const namaWa = ag?.nama || p.nama;
-  const pesan = `Halo *${namaWa}* 👋\n\nKoperasi ARFA DRIVER mengingatkan pinjaman Anda:\nNo: *${p.nomor}*\nPokok: Rp ${format(p.jumlah)}\nJasa: Rp ${format(jasaOtomatis)}\nTotal: Rp ${format(total)}\nSudah bayar: Rp ${format(totalAngsuran)}\n*Sisa: Rp ${format(sisa)}*\n\nMohon segera dibayarkan. Terima kasih 🙏`;
+  const pesan = `Halo *${namaWa}* 👋\n\nKoperasi ARFA DRIVER  pinjaman Anda:\nNo: *${p.nomor}*\nPokok: Rp ${format(p.jumlah)}\nJasa: Rp ${format(jasaOtomatis)}\nTotal: Rp ${format(total)}\nSudah bayar: Rp ${format(totalAngsuran)}\n*Sisa: Rp ${format(sisa)}*\n\n Terima kasih 🙏`;
   const url = `https://wa.me/${noHp}?text=${encodeURIComponent(pesan)}`;
   window.open(url, "_blank");
 }
