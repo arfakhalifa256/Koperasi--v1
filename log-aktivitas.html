@@ -208,12 +208,10 @@ td:nth-child(6){
   white-space:nowrap;
 }
 
-/* LOGIN */
 .badge-login{
   background:#16a34a;
 }
 
-/* ANGGOTA */
 .badge-tambah-anggota,
 .badge-edit-anggota{
   background:#2563eb;
@@ -223,12 +221,10 @@ td:nth-child(6){
   background:#dc2626;
 }
 
-/* ANGSURAN */
 .badge-bayar-angsuran{
   background:#10b981;
 }
 
-/* KAS */
 .badge-kas-masuk{
   background:#16a34a;
 }
@@ -237,28 +233,23 @@ td:nth-child(6){
   background:#dc2626;
 }
 
-/* PINJAMAN */
 .badge-pinjaman,
 .badge-cair-pinjaman{
   background:#7c3aed;
 }
 
-/* SHU */
 .badge-shu{
   background:#9333ea;
 }
 
-/* PROFIL */
 .badge-edit-profil{
   background:#0891b2;
 }
 
-/* BACKUP */
 .badge-backup{
   background:#64748b;
 }
 
-/* DEFAULT */
 .badge-default{
   background:#6b7280;
 }
@@ -452,15 +443,10 @@ td:nth-child(6){
         <tr>
 
           <th>Waktu</th>
-
           <th>Aksi</th>
-
           <th>User</th>
-
           <th>Detail</th>
-
           <th>Sumber</th>
-
           <th>Role</th>
 
         </tr>
@@ -598,30 +584,20 @@ function escapeHTML(value){
 
 
 /* =========================================================
-   CEK LOG ARISAN
-   ========================================================
+   CEK LOG YANG DIPISAHKAN
+=========================================================
 
-   Karena repo Arisan sudah dipisah,
-   semua log yang berkaitan dengan Arisan
-   akan DIABAIKAN oleh halaman ini.
+   Yang tidak ditampilkan di halaman ini:
 
-   Pemeriksaan dilakukan pada:
-   - aksi
-   - action
-   - detail
-   - keterangan
-   - sumber
-   - kategori
-   - nama
-   - jenis
-   - modul
-   - halaman
-   - path
-   - fitur
+   1. ARISAN
+   2. KWITANSI
+
+   Pemeriksaan dilakukan pada seluruh field
+   yang umum digunakan oleh sistem log.
 
 ========================================================= */
 
-function isArisanLog(data){
+function isLogYangDipisahkan(data){
 
   if(!data){
 
@@ -630,33 +606,80 @@ function isArisanLog(data){
   }
 
 
+  let sumberData = data;
+
+
+  /*
+    Jika data asli Firebase disimpan
+    dalam properti raw, ikut periksa.
+  */
+
+  if(data.raw){
+
+    try{
+
+      sumberData = {
+
+        ...data,
+
+        ...data.raw
+
+      };
+
+    }catch(error){
+
+      console.warn(
+        "Gagal membaca raw log:",
+        error
+      );
+
+    }
+
+  }
+
+
   const nilai = [
 
-    data.aksi,
-    data.action,
-    data.detail,
-    data.keterangan,
-    data.sumber,
-    data.kategori,
-    data.nama,
-    data.jenis,
-    data.modul,
-    data.halaman,
-    data.path,
-    data.fitur
+    sumberData.aksi,
+    sumberData.action,
+    sumberData.detail,
+    sumberData.keterangan,
+    sumberData.sumber,
+    sumberData.kategori,
+    sumberData.nama,
+    sumberData.jenis,
+    sumberData.modul,
+    sumberData.halaman,
+    sumberData.path,
+    sumberData.fitur,
+    sumberData.tipe,
+    sumberData.page,
+    sumberData.url,
+    sumberData.file,
+    sumberData.namaFile,
+    sumberData.judul,
+    sumberData.deskripsi
 
   ]
   .filter(v =>
+
     v !== undefined &&
     v !== null
+
   )
   .map(v =>
+
     String(v)
       .trim()
       .toLowerCase()
+
   )
   .join(" ");
 
+
+  /* =====================================================
+     ARISAN
+  ===================================================== */
 
   const kataArisan = [
 
@@ -673,9 +696,40 @@ function isArisanLog(data){
   ];
 
 
-  return kataArisan.some(kata =>
-    nilai.includes(kata)
-  );
+  /* =====================================================
+     KWITANSI
+  ===================================================== */
+
+  const kataKwitansi = [
+
+    "kwitansi",
+    "kwitansi_pdf",
+    "cetak_kwitansi",
+    "print_kwitansi",
+    "buat_kwitansi",
+    "download_kwitansi",
+    "unduh_kwitansi",
+    "generate_kwitansi",
+    "simpan_kwitansi",
+    "pdf_kwitansi",
+    "kwitansi_pdf"
+
+  ];
+
+
+  const arisan =
+    kataArisan.some(kata =>
+      nilai.includes(kata)
+    );
+
+
+  const kwitansi =
+    kataKwitansi.some(kata =>
+      nilai.includes(kata)
+    );
+
+
+  return arisan || kwitansi;
 
 }
 
@@ -816,17 +870,11 @@ function formatWaktu(
     "id-ID",
     {
       timeZone:"Asia/Jakarta",
-
       day:"2-digit",
-
       month:"2-digit",
-
       year:"numeric",
-
       hour:"2-digit",
-
       minute:"2-digit",
-
       second:"2-digit"
     }
   );
@@ -860,11 +908,8 @@ function tanggalIndonesia(ts){
       "en-CA",
       {
         timeZone:"Asia/Jakarta",
-
         year:"numeric",
-
         month:"2-digit",
-
         day:"2-digit"
       }
     ).formatToParts(d);
@@ -928,27 +973,16 @@ function badgeClass(aksi){
   const allowed = [
 
     "LOGIN",
-
     "TAMBAH_ANGGOTA",
-
     "EDIT_ANGGOTA",
-
     "HAPUS_ANGGOTA",
-
     "BAYAR_ANGSURAN",
-
     "KAS_MASUK",
-
     "KAS_KELUAR",
-
     "PINJAMAN",
-
     "CAIR_PINJAMAN",
-
     "SHU",
-
     "EDIT_PROFIL",
-
     "BACKUP"
 
   ];
@@ -978,11 +1012,12 @@ function badgeClass(aksi){
 function tambahLog(data){
 
   /*
-    JANGAN MASUKKAN LOG ARISAN
+    LOG ARISAN DAN KWITANSI
+    TIDAK BOLEH MASUK.
   */
 
   if(
-    isArisanLog(data)
+    isLogYangDipisahkan(data)
   ){
 
     return false;
@@ -1072,13 +1107,9 @@ async function(){
     const [
 
       snapAktivitas,
-
       snapLog,
-
       snapProfil,
-
       snapShu,
-
       snapKas
 
     ] = await Promise.all([
@@ -1191,7 +1222,14 @@ async function(){
               v.timestamp ??
               v.ts ??
               v.tanggal ??
-              0
+              0,
+
+            /*
+              SIMPAN DATA ASLI
+              UNTUK PEMERIKSAAN ARISAN/KWITANSI
+            */
+            raw:
+              v
 
           });
 
@@ -1249,7 +1287,10 @@ async function(){
               v.timestamp ??
               v.ts ??
               v.tanggal ??
-              0
+              0,
+
+            raw:
+              v
 
           });
 
@@ -1306,7 +1347,10 @@ async function(){
               v.timestamp ??
               v.ts ??
               v.tanggal ??
-              0
+              0,
+
+            raw:
+              v
 
           });
 
@@ -1319,7 +1363,7 @@ async function(){
     /* =====================================================
        4. RIWAYAT SHU
        TIDAK DIHAPUS
-===================================================== */
+    ===================================================== */
 
     if(
       snapShu.exists()
@@ -1359,7 +1403,10 @@ async function(){
               v.tanggalBagi ??
               v.tanggal ??
               v.waktu ??
-              0
+              0,
+
+            raw:
+              v
 
           });
 
@@ -1372,7 +1419,7 @@ async function(){
     /* =====================================================
        5. TRANSAKSI KAS
        TIDAK DIHAPUS OLEH LOG >30 HARI
-===================================================== */
+    ===================================================== */
 
     if(
       snapKas.exists()
@@ -1467,6 +1514,14 @@ async function(){
           }
 
 
+          /*
+            TRANSAKSI KAS TETAP DITAMPILKAN.
+
+            Jadi apabila ada kata "kwitansi"
+            di keterangan transaksi kas,
+            transaksi kas TIDAK otomatis hilang.
+          */
+
           tambahLog({
 
             key:
@@ -1505,7 +1560,7 @@ async function(){
 
     /* =====================================================
        URUTKAN TERBARU
-========================================================= */
+    ===================================================== */
 
     semuaLog.sort(
       (a,b) =>
@@ -1602,13 +1657,9 @@ function renderTabel(){
         const gabungan = [
 
           log.username,
-
           log.aksi,
-
           log.detail,
-
           log.sumber,
-
           log.role
 
         ]
@@ -1644,9 +1695,7 @@ function renderTabel(){
         return (
 
           cocokSearch &&
-
           cocokAksi &&
-
           cocokTanggal
 
         );
@@ -1856,21 +1905,18 @@ function renderTabel(){
    HAPUS LOG LAMA
 =========================================================
 
-   PENTING:
+   YANG DIHAPUS:
 
-   Yang boleh dihapus:
    /log_aktivitas
    /log
    /log_profil
 
-   Yang TIDAK dihapus:
+   YANG TIDAK DIHAPUS:
+
    /kas/transaksi
    /shu_riwayat
-
-   LOG ARISAN YANG SUDAH DIFILTER
-   TIDAK AKAN MASUK KE semuaLog,
-   sehingga tidak akan disentuh oleh
-   fungsi ini.
+   Data Arisan
+   Data Kwitansi
 
 ========================================================= */
 
@@ -1892,7 +1938,8 @@ async function(){
 
       "• /kas/transaksi\n" +
       "• /shu_riwayat\n" +
-      "• Data Arisan\n\n" +
+      "• Data Arisan\n" +
+      "• Data Kwitansi\n\n" +
 
       "Lanjutkan?"
 
@@ -1920,9 +1967,7 @@ async function(){
   const sumberYangBolehDihapus = [
 
     "log_aktivitas",
-
     "log",
-
     "log_profil"
 
   ];
@@ -2050,13 +2095,9 @@ function(){
         const gabungan = [
 
           log.username,
-
           log.aksi,
-
           log.detail,
-
           log.sumber,
-
           log.role
 
         ]
@@ -2092,9 +2133,7 @@ function(){
         return (
 
           cocokSearch &&
-
           cocokAksi &&
-
           cocokTanggal
 
         );
