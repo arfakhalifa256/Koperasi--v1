@@ -1,208 +1,2269 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Log Aktivitas - Koperasi Arfa Sejahtera</title>
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Log Aktivitas - Koperasi ARFA</title>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+>
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-*{box-sizing:border-box;}
-body{font-family:'Poppins',sans-serif;background:#f0f6ff;margin:0;padding:15px;color:#333;}
-.container{max-width:1200px;margin:0 auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.08);}
-h2{text-align:center;color:#0f3057;margin-bottom:15px;font-size:16px}
-.header{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap;align-items:center;}
-.header input,.header select{padding:10px;border:1px solid #ccc;border-radius:8px;font-family:'Poppins';font-size:12px}
-.header input{flex:1;min-width:160px}
-.header select{min-width:140px}
-.btn{padding:10px 14px;border:none;border-radius:8px;background:#0f3057;color:#fff;font-weight:600;cursor:pointer;font-size:11px}
-.btn:hover{background:#1e90ff;}
-.btn-danger{background:#dc3545;}.btn-success{background:#16a34a;}.btn-warning{background:#f59e0b;color:#111}
-.table-wrap{overflow-x:auto;max-height:70vh;border:1px solid #eee;border-radius:10px}
-table{width:100%;border-collapse:collapse;font-size:11px;}
-th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;white-space:nowrap;}
-th{background:#0f3057;color:#fff;position:sticky;top:0;z-index:2}
-tr:hover{background:#f8f9fa;}
-.badge{padding:4px 8px;border-radius:6px;font-size:9px;font-weight:700;color:#fff;display:inline-block;}
-.badge.LOGIN{background:#28a745;}.badge.DAFTAR{background:#17a2b8;}.badge.EDIT_PROFIL{background:#1A4D8F;}.badge.UPDATE_PROFIL{background:#1A4D8F;}
-.badge.TAMBAH_ANGGOTA{background:#0d6efd;}.badge.EDIT_ANGGOTA{background:#6f42c1;}.badge.PROSES_KELUAR{background:#fd7e14;}
-.badge.PENGAJUAN_PINJAMAN{background:#0d6efd;}.badge.BAYAR_ANGSURAN{background:#10b981;}.badge.KAS_MASUK{background:#16a34a;}.badge.KAS_KELUAR{background:#dc2626;}
-.badge.SHU{background:#7c3aed;}.badge.Backup{background:#0f3057;}.badge.Restore{background:#d97706;}.badge.Reset{background:#7f1d1d;}
-.loading{text-align:center;padding:20px;color:#777;}
-.small{font-size:9px;color:#888;}
-.info-bar{background:#eff6ff;border:1px solid #bfdbfe;padding:8px 12px;border-radius:8px;font-size:11px;margin-bottom:12px;display:flex;justify-content:space-between;flex-wrap:wrap}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  padding:15px;
+  font-family:'Poppins',sans-serif;
+  background:#f0f6ff;
+  color:#333;
+}
+
+.container{
+  max-width:1250px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 4px 18px rgba(0,0,0,.08);
+}
+
+h2{
+  text-align:center;
+  color:#0f3057;
+  margin:0 0 15px;
+  font-size:17px;
+  font-weight:700;
+}
+
+.info-bar{
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+  padding:10px 12px;
+  border-radius:9px;
+  font-size:11px;
+  margin-bottom:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.info-bar b{
+  color:#0f3057;
+}
+
+.header{
+  display:flex;
+  gap:8px;
+  margin-bottom:15px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+
+.header input,
+.header select{
+  padding:10px 11px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  font-family:'Poppins',sans-serif;
+  font-size:11px;
+  background:#fff;
+  outline:none;
+}
+
+.header input:focus,
+.header select:focus{
+  border-color:#1e90ff;
+  box-shadow:0 0 0 2px rgba(30,144,255,.1);
+}
+
+.header input[type="text"]{
+  flex:1;
+  min-width:200px;
+}
+
+.header input[type="date"]{
+  min-width:145px;
+}
+
+.header select{
+  min-width:155px;
+}
+
+.btn{
+  border:none;
+  padding:10px 13px;
+  border-radius:8px;
+  background:#0f3057;
+  color:#fff;
+  font-family:'Poppins',sans-serif;
+  font-size:11px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn:hover{
+  background:#1e90ff;
+}
+
+.btn-success{
+  background:#16a34a;
+}
+
+.btn-success:hover{
+  background:#15803d;
+}
+
+.btn-danger{
+  background:#dc2626;
+}
+
+.btn-danger:hover{
+  background:#b91c1c;
+}
+
+.table-wrap{
+  width:100%;
+  overflow:auto;
+  max-height:70vh;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:11px;
+  min-width:900px;
+}
+
+th,
+td{
+  padding:10px;
+  border-bottom:1px solid #edf0f3;
+  text-align:left;
+  vertical-align:top;
+}
+
+th{
+  background:#0f3057;
+  color:#fff;
+  position:sticky;
+  top:0;
+  z-index:5;
+  font-weight:600;
+}
+
+tbody tr:hover{
+  background:#f8fbff;
+}
+
+td:nth-child(1){
+  min-width:155px;
+}
+
+td:nth-child(2){
+  min-width:130px;
+}
+
+td:nth-child(3){
+  min-width:120px;
+}
+
+td:nth-child(4){
+  min-width:300px;
+  white-space:normal;
+}
+
+td:nth-child(5){
+  min-width:125px;
+}
+
+td:nth-child(6){
+  min-width:80px;
+}
+
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:6px;
+  color:#fff;
+  font-size:9px;
+  font-weight:700;
+  line-height:1.2;
+  white-space:nowrap;
+}
+
+/* LOGIN */
+.badge-login{
+  background:#16a34a;
+}
+
+/* ANGGOTA */
+.badge-tambah-anggota,
+.badge-edit-anggota{
+  background:#2563eb;
+}
+
+.badge-hapus-anggota{
+  background:#dc2626;
+}
+
+/* ANGSURAN */
+.badge-bayar-angsuran{
+  background:#10b981;
+}
+
+/* KAS */
+.badge-kas-masuk{
+  background:#16a34a;
+}
+
+.badge-kas-keluar{
+  background:#dc2626;
+}
+
+/* PINJAMAN */
+.badge-pinjaman,
+.badge-cair-pinjaman{
+  background:#7c3aed;
+}
+
+/* SHU */
+.badge-shu{
+  background:#9333ea;
+}
+
+/* PROFIL */
+.badge-edit-profil{
+  background:#0891b2;
+}
+
+/* BACKUP */
+.badge-backup{
+  background:#64748b;
+}
+
+/* DEFAULT */
+.badge-default{
+  background:#6b7280;
+}
+
+.small{
+  display:block;
+  margin-top:3px;
+  color:#9ca3af;
+  font-size:8px;
+}
+
+.loading{
+  text-align:center;
+  padding:30px 15px;
+  color:#777;
+}
+
+.empty{
+  text-align:center;
+  padding:30px 15px;
+  color:#888;
+}
+
+.footer-info{
+  margin-top:10px;
+  font-size:9px;
+  color:#888;
+  text-align:right;
+}
+
+@media(max-width:700px){
+
+  body{
+    padding:8px;
+  }
+
+  .container{
+    padding:12px;
+    border-radius:10px;
+  }
+
+  h2{
+    font-size:15px;
+  }
+
+  .header{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .header input,
+  .header select,
+  .header button{
+    width:100%;
+  }
+
+  .info-bar{
+    font-size:10px;
+  }
+
+}
+
 </style>
+
 </head>
+
 <body>
 
 <div class="container">
+
   <h2>📋 Pusat Log Aktivitas Koperasi ARFA</h2>
 
   <div class="info-bar">
-    <span>Gabungan dari: <b>log_aktivitas + log + log_profil + shu_riwayat</b></span>
-    <span id="totalLog">0 log</span>
+
+    <span>
+      Gabungan:
+      <b>Aktivitas + Profil + SHU + Transaksi Kas</b>
+    </span>
+
+    <span id="totalLog">
+      0 log
+    </span>
+
   </div>
 
   <div class="header">
-    <input type="text" id="search" placeholder="Cari Username / Nama / Detail...">
-    <input type="date" id="filterTgl">
+
+    <input
+      type="text"
+      id="search"
+      placeholder="🔎 Cari user, nama, ID, keterangan..."
+    >
+
+    <input
+      type="date"
+      id="filterTgl"
+    >
+
     <select id="filterAksi">
-      <option value="">Semua Aksi</option>
-      <option value="LOGIN">LOGIN</option>
-      <option value="EDIT_PROFIL">EDIT_PROFIL</option>
-      <option value="Backup">Backup Data</option>
-      <option value="Restore">Restore Data</option>
-      <option value="SHU">Bagi SHU</option>
-      <option value="TAMBAH_ANGGOTA">TAMBAH_ANGGOTA</option>
-      <option value="BAYAR_ANGSURAN">BAYAR_ANGSURAN</option>
-      <option value="KAS_MASUK">KAS_MASUK</option>
-      <option value="KAS_KELUAR">KAS_KELUAR</option>
+
+      <option value="">
+        Semua Aksi
+      </option>
+
+      <option value="LOGIN">
+        LOGIN
+      </option>
+
+      <option value="BAYAR_ANGSURAN">
+        BAYAR ANGSURAN
+      </option>
+
+      <option value="KAS_MASUK">
+        KAS MASUK
+      </option>
+
+      <option value="KAS_KELUAR">
+        KAS KELUAR
+      </option>
+
+      <option value="TAMBAH_ANGGOTA">
+        TAMBAH ANGGOTA
+      </option>
+
+      <option value="EDIT_ANGGOTA">
+        EDIT ANGGOTA
+      </option>
+
+      <option value="HAPUS_ANGGOTA">
+        HAPUS ANGGOTA
+      </option>
+
+      <option value="PINJAMAN">
+        PINJAMAN
+      </option>
+
+      <option value="CAIR_PINJAMAN">
+        CAIR PINJAMAN
+      </option>
+
+      <option value="SHU">
+        SHU
+      </option>
+
+      <option value="EDIT_PROFIL">
+        EDIT PROFIL
+      </option>
+
+      <option value="BACKUP">
+        BACKUP
+      </option>
+
     </select>
-    <button class="btn" onclick="loadLog()">🔄 Refresh</button>
-    <button class="btn btn-success" onclick="exportCSV()">📥 CSV</button>
-    <button class="btn btn-danger" onclick="hapusLogLama()">🗑️ >30 Hari</button>
-    <button class="btn" onclick="location.href='dashboard.html'">Kembali</button>
+
+    <button
+      class="btn"
+      onclick="loadLog()"
+    >
+      🔄 Refresh
+    </button>
+
+    <button
+      class="btn btn-success"
+      onclick="exportCSV()"
+    >
+      📥 CSV
+    </button>
+
+    <button
+      class="btn btn-danger"
+      onclick="hapusLogLama()"
+    >
+      🗑️ Log &gt;30 Hari
+    </button>
+
+    <button
+      class="btn"
+      onclick="location.href='dashboard.html'"
+    >
+      Kembali
+    </button>
+
   </div>
 
   <div class="table-wrap">
-    <table id="tabelLog">
+
+    <table>
+
       <thead>
+
         <tr>
+
           <th>Waktu</th>
+
           <th>Aksi</th>
+
           <th>User</th>
+
           <th>Detail</th>
+
           <th>Sumber</th>
+
           <th>Role</th>
+
         </tr>
+
       </thead>
+
       <tbody id="isiTabel">
-        <tr><td colspan="6" class="loading">Loading...</td></tr>
+
+        <tr>
+
+          <td
+            colspan="6"
+            class="loading"
+          >
+            Memuat log...
+          </td>
+
+        </tr>
+
       </tbody>
+
     </table>
+
   </div>
+
+  <div class="footer-info">
+
+    Data keuangan seperti transaksi kas dan riwayat SHU
+    tidak dihapus oleh tombol "Log &gt;30 Hari".
+
+  </div>
+
 </div>
 
+
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-let semuaLog = [];
-const role = localStorage.getItem('role');
-if(role!== 'admin'){ alert("Akses ditolak. Halaman khusus admin"); location.href='index.html'; }
+import {
+  getDatabase,
+  ref,
+  get,
+  remove
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-function parseWaktu(log){
-  if(log.waktu_baca) return log.waktu_baca;
-  if(log.waktu){
-    try{
-      const d = new Date(isNaN(log.waktu)? log.waktu : Number(log.waktu));
-      if(!isNaN(d)) return d.toLocaleString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
-    }catch(e){}
-    return log.waktu;
-  }
-  return "-";
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+
+  authDomain:
+    "arfa-c7dee.firebaseapp.com",
+
+  databaseURL:
+    "https://arfa-c7dee-default-rtdb.firebaseio.com",
+
+  projectId:
+    "arfa-c7dee"
+
+};
+
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getDatabase(app);
+
+
+/* =========================================================
+   CEK ADMIN
+========================================================= */
+
+const role =
+  (localStorage.getItem("role") || "")
+    .toLowerCase()
+    .trim();
+
+if(role !== "admin"){
+
+  alert(
+    "Halaman ini khusus untuk admin."
+  );
+
+  location.href =
+    "index.html";
+
 }
 
-window.loadLog = async function(){
-  document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Loading 4 sumber log...</td></tr>`;
+
+/* =========================================================
+   DATA
+========================================================= */
+
+let semuaLog = [];
+
+
+/* =========================================================
+   HELPER RUPIAH
+========================================================= */
+
+function rupiah(value){
+
+  const n =
+    Number(value || 0);
+
+  return n.toLocaleString(
+    "id-ID"
+  );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(value){
+
+  return String(value ?? "-")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   CEK LOG ARISAN
+   ========================================================
+
+   Karena repo Arisan sudah dipisah,
+   semua log yang berkaitan dengan Arisan
+   akan DIABAIKAN oleh halaman ini.
+
+   Pemeriksaan dilakukan pada:
+   - aksi
+   - action
+   - detail
+   - keterangan
+   - sumber
+   - kategori
+   - nama
+   - jenis
+   - modul
+   - halaman
+   - path
+   - fitur
+
+========================================================= */
+
+function isArisanLog(data){
+
+  if(!data){
+
+    return false;
+
+  }
+
+
+  const nilai = [
+
+    data.aksi,
+    data.action,
+    data.detail,
+    data.keterangan,
+    data.sumber,
+    data.kategori,
+    data.nama,
+    data.jenis,
+    data.modul,
+    data.halaman,
+    data.path,
+    data.fitur
+
+  ]
+  .filter(v =>
+    v !== undefined &&
+    v !== null
+  )
+  .map(v =>
+    String(v)
+      .trim()
+      .toLowerCase()
+  )
+  .join(" ");
+
+
+  const kataArisan = [
+
+    "arisan",
+    "setor_arisan",
+    "setoran_arisan",
+    "arisan_setoran",
+    "kocok_arisan",
+    "pemenang_arisan",
+    "rolet_arisan",
+    "putaran_arisan",
+    "arisan_kunci"
+
+  ];
+
+
+  return kataArisan.some(kata =>
+    nilai.includes(kata)
+  );
+
+}
+
+
+/* =========================================================
+   PARSE WAKTU
+========================================================= */
+
+function parseTimestamp(value){
+
+  if(
+    value === null ||
+    value === undefined ||
+    value === ""
+  ){
+
+    return 0;
+
+  }
+
+
+  if(
+    typeof value === "number" &&
+    !isNaN(value)
+  ){
+
+    if(value < 10000000000){
+
+      return value * 1000;
+
+    }
+
+    return value;
+
+  }
+
+
+  const str =
+    String(value).trim();
+
+
+  if(/^\d+$/.test(str)){
+
+    let n =
+      Number(str);
+
+    if(n < 10000000000){
+
+      n *= 1000;
+
+    }
+
+    return n;
+
+  }
+
+
+  const d =
+    new Date(str);
+
+
+  if(!isNaN(d.getTime())){
+
+    return d.getTime();
+
+  }
+
+
+  const match =
+    str.match(
+      /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/
+    );
+
+
+  if(match){
+
+    const day =
+      Number(match[1]);
+
+    const month =
+      Number(match[2]) - 1;
+
+    const year =
+      Number(match[3]);
+
+    const hour =
+      Number(match[4] || 0);
+
+    const min =
+      Number(match[5] || 0);
+
+    const sec =
+      Number(match[6] || 0);
+
+
+    return new Date(
+      year,
+      month,
+      day,
+      hour,
+      min,
+      sec
+    ).getTime();
+
+  }
+
+
+  return 0;
+
+}
+
+
+/* =========================================================
+   FORMAT WAKTU INDONESIA
+========================================================= */
+
+function formatWaktu(
+  ts,
+  fallback
+){
+
+  const time =
+    parseTimestamp(ts);
+
+
+  if(!time){
+
+    return fallback || "-";
+
+  }
+
+
+  const d =
+    new Date(time);
+
+
+  return d.toLocaleString(
+    "id-ID",
+    {
+      timeZone:"Asia/Jakarta",
+
+      day:"2-digit",
+
+      month:"2-digit",
+
+      year:"numeric",
+
+      hour:"2-digit",
+
+      minute:"2-digit",
+
+      second:"2-digit"
+    }
+  );
+
+}
+
+
+/* =========================================================
+   TANGGAL INDONESIA
+========================================================= */
+
+function tanggalIndonesia(ts){
+
+  const time =
+    parseTimestamp(ts);
+
+
+  if(!time){
+
+    return "";
+
+  }
+
+
+  const d =
+    new Date(time);
+
+
+  const parts =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone:"Asia/Jakarta",
+
+        year:"numeric",
+
+        month:"2-digit",
+
+        day:"2-digit"
+      }
+    ).formatToParts(d);
+
+
+  let year = "";
+  let month = "";
+  let day = "";
+
+
+  parts.forEach(p => {
+
+    if(p.type === "year"){
+      year = p.value;
+    }
+
+    if(p.type === "month"){
+      month = p.value;
+    }
+
+    if(p.type === "day"){
+      day = p.value;
+    }
+
+  });
+
+
+  return `${year}-${month}-${day}`;
+
+}
+
+
+/* =========================================================
+   NORMALISASI AKSI
+========================================================= */
+
+function normalisasiAksi(value){
+
+  let aksi =
+    String(value || "LOG")
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g,"_");
+
+
+  return aksi || "LOG";
+
+}
+
+
+/* =========================================================
+   CLASS BADGE
+========================================================= */
+
+function badgeClass(aksi){
+
+  const a =
+    normalisasiAksi(aksi);
+
+
+  const allowed = [
+
+    "LOGIN",
+
+    "TAMBAH_ANGGOTA",
+
+    "EDIT_ANGGOTA",
+
+    "HAPUS_ANGGOTA",
+
+    "BAYAR_ANGSURAN",
+
+    "KAS_MASUK",
+
+    "KAS_KELUAR",
+
+    "PINJAMAN",
+
+    "CAIR_PINJAMAN",
+
+    "SHU",
+
+    "EDIT_PROFIL",
+
+    "BACKUP"
+
+  ];
+
+
+  if(
+    allowed.includes(a)
+  ){
+
+    return "badge-" +
+      a
+        .toLowerCase()
+        .replace(/_/g,"-");
+
+  }
+
+
+  return "badge-default";
+
+}
+
+
+/* =========================================================
+   TAMBAH LOG
+========================================================= */
+
+function tambahLog(data){
+
+  /*
+    JANGAN MASUKKAN LOG ARISAN
+  */
+
+  if(
+    isArisanLog(data)
+  ){
+
+    return false;
+
+  }
+
+
+  semuaLog.push({
+
+    key:
+      data.key || "-",
+
+    sumber:
+      data.sumber || "-",
+
+    aksi:
+      normalisasiAksi(
+        data.aksi
+      ),
+
+    username:
+      data.username ||
+      data.user ||
+      data.oleh ||
+      "-",
+
+    detail:
+      data.detail ||
+      data.keterangan ||
+      "-",
+
+    role:
+      data.role ||
+      "-",
+
+    ts:
+      parseTimestamp(
+        data.ts ??
+        data.waktu ??
+        data.tanggal
+      ),
+
+    waktuOriginal:
+      data.waktu ??
+      data.tanggal ??
+      ""
+
+  });
+
+
+  return true;
+
+}
+
+
+/* =========================================================
+   LOAD LOG
+========================================================= */
+
+window.loadLog =
+async function(){
+
+  const tbody =
+    document.getElementById(
+      "isiTabel"
+    );
+
+
+  tbody.innerHTML = `
+
+    <tr>
+
+      <td
+        colspan="6"
+        class="loading"
+      >
+        ⏳ Memuat data log...
+      </td>
+
+    </tr>
+
+  `;
+
+
   try{
-    const [snapAktivitas, snapLog, snapProfil, snapShu] = await Promise.all([
-      get(ref(db,"/log_aktivitas")),
-      get(ref(db,"/log")),
-      get(ref(db,"/log_profil")),
-      get(ref(db,"/shu_riwayat"))
+
+    const [
+
+      snapAktivitas,
+
+      snapLog,
+
+      snapProfil,
+
+      snapShu,
+
+      snapKas
+
+    ] = await Promise.all([
+
+      get(
+        ref(
+          db,
+          "/log_aktivitas"
+        )
+      ),
+
+      get(
+        ref(
+          db,
+          "/log"
+        )
+      ),
+
+      get(
+        ref(
+          db,
+          "/log_profil"
+        )
+      ),
+
+      get(
+        ref(
+          db,
+          "/shu_riwayat"
+        )
+      ),
+
+      get(
+        ref(
+          db,
+          "/kas/transaksi"
+        )
+      )
+
     ]);
+
 
     semuaLog = [];
 
-    if(snapAktivitas.exists()){ snapAktivitas.forEach(c=> semuaLog.push({key:c.key, sumber:"log_aktivitas", ts: c.val().waktu || 0,...c.val()})); }
-    if(snapLog.exists()){ snapLog.forEach(c=>{
-      const v=c.val();
-      semuaLog.push({key:c.key, sumber:"log", aksi: v.aksi||"LOG", username:v.user, waktu:v.waktu, ts: new Date(v.waktu).getTime()||0, detail:v.aksi, role:"-" });
-    });}
-    if(snapProfil.exists()){ snapProfil.forEach(c=>{
-      const v=c.val();
-      semuaLog.push({key:c.key, sumber:"log_profil", aksi:"EDIT_PROFIL", username:v.user, waktu:v.waktu, ts: new Date(v.waktu).getTime()||0, detail:v.detail||v.aksi, role:v.role });
-    });}
-    if(snapShu.exists()){ snapShu.forEach(c=>{
-      const v=c.val();
-      semuaLog.push({key:c.key, sumber:"shu_riwayat", aksi:"SHU", username:v.oleh, waktu:v.tanggalBagi, ts: v.tanggalBagi||0, detail:`Bagi SHU ${v.periodeAwal} s/d ${v.periodeAkhir} Rp ${Number(v.shuDibagikan||0).toLocaleString()}`, role:"admin" });
-    });}
 
-    semuaLog.sort((a,b)=> (b.ts||0) - (a.ts||0));
-    document.getElementById("totalLog").innerText = `${semuaLog.length} log`;
+    /* =====================================================
+       1. LOG AKTIVITAS
+    ===================================================== */
+
+    if(
+      snapAktivitas.exists()
+    ){
+
+      snapAktivitas.forEach(
+        child => {
+
+          const v =
+            child.val() || {};
+
+
+          let detail =
+            v.detail ??
+            v.keterangan ??
+            v.nama ??
+            "";
+
+
+          if(
+            !detail &&
+            (
+              v.nomor ||
+              v.jumlah
+            )
+          ){
+
+            detail =
+              `${v.nomor || ""} Rp ${rupiah(v.jumlah || 0)}`;
+
+          }
+
+
+          tambahLog({
+
+            key:
+              child.key,
+
+            sumber:
+              "log_aktivitas",
+
+            aksi:
+              v.aksi ||
+              v.action ||
+              "LOG",
+
+            username:
+              v.username ||
+              v.user ||
+              v.oleh ||
+              v.namaUser ||
+              "-",
+
+            detail:
+              detail || "-",
+
+            role:
+              v.role || "-",
+
+            ts:
+              v.waktu ??
+              v.timestamp ??
+              v.ts ??
+              v.tanggal ??
+              0
+
+          });
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       2. LOG LAMA
+    ===================================================== */
+
+    if(
+      snapLog.exists()
+    ){
+
+      snapLog.forEach(
+        child => {
+
+          const v =
+            child.val() || {};
+
+
+          tambahLog({
+
+            key:
+              child.key,
+
+            sumber:
+              "log",
+
+            aksi:
+              v.aksi ||
+              v.action ||
+              "LOG",
+
+            username:
+              v.user ||
+              v.username ||
+              v.oleh ||
+              "-",
+
+            detail:
+              v.keterangan ||
+              v.detail ||
+              v.aksi ||
+              "-",
+
+            role:
+              v.role || "-",
+
+            ts:
+              v.waktu ??
+              v.timestamp ??
+              v.ts ??
+              v.tanggal ??
+              0
+
+          });
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       3. LOG PROFIL
+    ===================================================== */
+
+    if(
+      snapProfil.exists()
+    ){
+
+      snapProfil.forEach(
+        child => {
+
+          const v =
+            child.val() || {};
+
+
+          tambahLog({
+
+            key:
+              child.key,
+
+            sumber:
+              "log_profil",
+
+            aksi:
+              v.aksi ||
+              "EDIT_PROFIL",
+
+            username:
+              v.user ||
+              v.username ||
+              v.oleh ||
+              "-",
+
+            detail:
+              v.detail ||
+              v.keterangan ||
+              v.aksi ||
+              "Perubahan profil",
+
+            role:
+              v.role || "-",
+
+            ts:
+              v.waktu ??
+              v.timestamp ??
+              v.ts ??
+              v.tanggal ??
+              0
+
+          });
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       4. RIWAYAT SHU
+       TIDAK DIHAPUS
+===================================================== */
+
+    if(
+      snapShu.exists()
+    ){
+
+      snapShu.forEach(
+        child => {
+
+          const v =
+            child.val() || {};
+
+
+          tambahLog({
+
+            key:
+              child.key,
+
+            sumber:
+              "shu_riwayat",
+
+            aksi:
+              "SHU",
+
+            username:
+              v.oleh ||
+              v.username ||
+              "admin",
+
+            detail:
+              `Bagi SHU ${v.periodeAwal || "-"} s/d ${v.periodeAkhir || "-"} | Rp ${rupiah(v.shuDibagikan || 0)}`,
+
+            role:
+              v.role ||
+              "admin",
+
+            ts:
+              v.tanggalBagi ??
+              v.tanggal ??
+              v.waktu ??
+              0
+
+          });
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       5. TRANSAKSI KAS
+       TIDAK DIHAPUS OLEH LOG >30 HARI
+===================================================== */
+
+    if(
+      snapKas.exists()
+    ){
+
+      snapKas.forEach(
+        child => {
+
+          const v =
+            child.val() || {};
+
+
+          let tipe =
+            String(
+              v.tipe || ""
+            ).toLowerCase();
+
+
+          let kategori =
+            String(
+              v.kategori || ""
+            ).toLowerCase();
+
+
+          let aksi =
+            "KAS_MASUK";
+
+
+          if(
+
+            tipe === "keluar" ||
+
+            tipe === "biaya" ||
+
+            kategori.includes("keluar") ||
+
+            kategori.includes("biaya")
+
+          ){
+
+            aksi =
+              "KAS_KELUAR";
+
+          }
+
+
+          const identitas =
+            v.anggotaId ||
+            v.idAnggota ||
+            v.memberId ||
+            v.sumberKas ||
+            "KAS";
+
+
+          let detailParts = [];
+
+
+          if(v.keterangan){
+
+            detailParts.push(
+              v.keterangan
+            );
+
+          }
+
+
+          if(v.kategori){
+
+            detailParts.push(
+              v.kategori
+            );
+
+          }
+
+
+          detailParts.push(
+            "Rp " +
+            rupiah(
+              v.jumlah || 0
+            )
+          );
+
+
+          if(v.sumberKas){
+
+            detailParts.push(
+              "(" +
+              v.sumberKas +
+              ")"
+            );
+
+          }
+
+
+          tambahLog({
+
+            key:
+              child.key,
+
+            sumber:
+              "kas/transaksi",
+
+            aksi:
+              aksi,
+
+            username:
+              identitas,
+
+            detail:
+              detailParts.join(
+                " - "
+              ),
+
+            role:
+              v.tipe || "-",
+
+            ts:
+              v.tanggal ??
+              v.waktu ??
+              v.timestamp ??
+              0
+
+          });
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       URUTKAN TERBARU
+========================================================= */
+
+    semuaLog.sort(
+      (a,b) =>
+        (b.ts || 0) -
+        (a.ts || 0)
+    );
+
+
+    document.getElementById(
+      "totalLog"
+    ).innerText =
+      semuaLog.length +
+      " log";
+
+
     renderTabel();
-  }catch(err){
-    document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Gagal: ${err.message}</td></tr>`;
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    tbody.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="6"
+          class="loading"
+        >
+
+          ❌ Gagal memuat log
+
+          <br>
+
+          <small>
+            ${escapeHTML(
+              error.message
+            )}
+          </small>
+
+        </td>
+
+      </tr>
+
+    `;
+
   }
-}
+
+};
+
+
+/* =========================================================
+   RENDER TABEL
+========================================================= */
 
 function renderTabel(){
-  const search = document.getElementById('search').value.toLowerCase();
-  const filter = document.getElementById('filterAksi').value.toLowerCase();
-  const filterTgl = document.getElementById('filterTgl').value;
 
-  let data = semuaLog.filter(log => {
-    const gabung = `${log.username||''} ${log.userId||''} ${log.aksi||''} ${log.detail||''} ${log.oleh||''} ${log.nama||''}`.toLowerCase();
-    const cocokSearch = gabung.includes(search);
-    const cocokFilter = filter === '' || (log.aksi||'').toLowerCase().includes(filter) || (log.detail||'').toLowerCase().includes(filter);
-    let cocokTgl = true;
-    if(filterTgl){
-      const tglLog = new Date(log.ts||log.waktu).toISOString().slice(0,10);
-      cocokTgl = tglLog === filterTgl;
-    }
-    return cocokSearch && cocokFilter && cocokTgl;
-  });
+  const search =
+    document
+      .getElementById(
+        "search"
+      )
+      .value
+      .trim()
+      .toLowerCase();
 
-  if(data.length === 0){
-    document.getElementById('isiTabel').innerHTML = `<tr><td colspan="6" class="loading">Tidak ditemukan</td></tr>`; return;
+
+  const filterAksi =
+    document
+      .getElementById(
+        "filterAksi"
+      )
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const filterTgl =
+    document
+      .getElementById(
+        "filterTgl"
+      )
+      .value;
+
+
+  const data =
+    semuaLog.filter(
+      log => {
+
+        const gabungan = [
+
+          log.username,
+
+          log.aksi,
+
+          log.detail,
+
+          log.sumber,
+
+          log.role
+
+        ]
+        .join(" ")
+        .toLowerCase();
+
+
+        const cocokSearch =
+          !search ||
+          gabungan.includes(
+            search
+          );
+
+
+        const cocokAksi =
+          !filterAksi ||
+          normalisasiAksi(
+            log.aksi
+          )
+          .toLowerCase()
+          .includes(
+            filterAksi
+          );
+
+
+        const cocokTanggal =
+          !filterTgl ||
+          tanggalIndonesia(
+            log.ts
+          ) === filterTgl;
+
+
+        return (
+
+          cocokSearch &&
+
+          cocokAksi &&
+
+          cocokTanggal
+
+        );
+
+      }
+    );
+
+
+  const tbody =
+    document.getElementById(
+      "isiTabel"
+    );
+
+
+  if(
+    data.length === 0
+  ){
+
+    tbody.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="6"
+          class="empty"
+        >
+
+          🔍 Tidak ada log
+          yang sesuai.
+
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
   }
 
-  let html = '';
-  data.slice(0,300).forEach(log=>{
-    const badgeClass = (log.aksi||"").toUpperCase().replace(/ /g,"_");
-    html += `<tr>
-      <td>${parseWaktu(log)}<div class="small">${log.key.slice(-6)}</div></td>
-      <td><span class="badge ${badgeClass}">${log.aksi}</span></td>
-      <td>${log.username || log.userId || log.oleh || '-'}</td>
-      <td>${log.detail || log.nama || log.oleh || '-'}</td>
-      <td><small>${log.sumber}</small></td>
-      <td>${log.role || '-'}</td>
-    </tr>`;
-  });
-  document.getElementById('isiTabel').innerHTML = html;
-}
 
-window.hapusLogLama = async function(){
-  if(!confirm("Yakin hapus semua log >30 hari di semua sumber?")) return;
-  const batasWaktu = Date.now() - (30*24*60*60*1000);
-  let hapus=0;
-  for(const log of semuaLog){
-    if((log.ts||0) < batasWaktu){
-      try{ await remove(ref(db, `/${log.sumber}/${log.key}`)); hapus++; }catch(e){}
+  const tampil =
+    data.slice(
+      0,
+      500
+    );
+
+
+  let html = "";
+
+
+  tampil.forEach(
+    log => {
+
+      const aksi =
+        normalisasiAksi(
+          log.aksi
+        );
+
+
+      const badge =
+        badgeClass(
+          aksi
+        );
+
+
+      const key =
+        String(
+          log.key || ""
+        );
+
+
+      const keyPendek =
+        key.length > 8
+          ? key.slice(-8)
+          : key;
+
+
+      html += `
+
+        <tr>
+
+          <td>
+
+            ${escapeHTML(
+              formatWaktu(
+                log.ts,
+                log.waktuOriginal
+              )
+            )}
+
+            <span class="small">
+
+              ${escapeHTML(
+                keyPendek
+              )}
+
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <span
+              class="badge ${badge}"
+            >
+
+              ${escapeHTML(
+                aksi.replace(
+                  /_/g,
+                  " "
+                )
+              )}
+
+            </span>
+
+          </td>
+
+
+          <td>
+
+            ${escapeHTML(
+              log.username || "-"
+            )}
+
+          </td>
+
+
+          <td>
+
+            ${escapeHTML(
+              log.detail || "-"
+            )}
+
+          </td>
+
+
+          <td>
+
+            <small>
+
+              ${escapeHTML(
+                log.sumber || "-"
+              )}
+
+            </small>
+
+          </td>
+
+
+          <td>
+
+            ${escapeHTML(
+              log.role || "-"
+            )}
+
+          </td>
+
+        </tr>
+
+      `;
+
     }
+  );
+
+
+  tbody.innerHTML =
+    html;
+
+
+  if(
+    data.length > 500
+  ){
+
+    tbody.innerHTML += `
+
+      <tr>
+
+        <td
+          colspan="6"
+          style="
+            text-align:center;
+            color:#777;
+            background:#f8fafc;
+          "
+        >
+
+          Menampilkan 500 dari
+          ${data.length} log.
+
+          Gunakan filter untuk
+          mempersempit hasil.
+
+        </td>
+
+      </tr>
+
+    `;
+
   }
-  alert(`${hapus} log dihapus`); loadLog();
+
 }
 
-window.exportCSV = function(){
-  let csv = "Waktu,Aksi,User,Detail,Sumber,Role\n";
-  semuaLog.forEach(l=>{
-    csv += `"${parseWaktu(l)}","${l.aksi}","${l.username||''}","${(l.detail||'').replace(/"/g,'""')}","${l.sumber}","${l.role||''}"\n`;
-  });
-  const blob = new Blob([csv],{type:"text/csv"});
-  const url = URL.createObjectURL(blob);
-  const a=document.createElement("a"); a.href=url; a.download=`log_arfa_${new Date().toISOString().slice(0,10)}.csv`; a.click();
-}
 
-document.getElementById('search').addEventListener('input', renderTabel);
-document.getElementById('filterAksi').addEventListener('change', renderTabel);
-document.getElementById('filterTgl').addEventListener('change', renderTabel);
+/* =========================================================
+   HAPUS LOG LAMA
+=========================================================
+
+   PENTING:
+
+   Yang boleh dihapus:
+   /log_aktivitas
+   /log
+   /log_profil
+
+   Yang TIDAK dihapus:
+   /kas/transaksi
+   /shu_riwayat
+
+   LOG ARISAN YANG SUDAH DIFILTER
+   TIDAK AKAN MASUK KE semuaLog,
+   sehingga tidak akan disentuh oleh
+   fungsi ini.
+
+========================================================= */
+
+window.hapusLogLama =
+async function(){
+
+  const yakin =
+    confirm(
+
+      "Hapus LOG aktivitas yang lebih dari 30 hari?\n\n" +
+
+      "Yang dihapus:\n" +
+
+      "• /log_aktivitas\n" +
+      "• /log\n" +
+      "• /log_profil\n\n" +
+
+      "Yang TIDAK dihapus:\n" +
+
+      "• /kas/transaksi\n" +
+      "• /shu_riwayat\n" +
+      "• Data Arisan\n\n" +
+
+      "Lanjutkan?"
+
+    );
+
+
+  if(!yakin){
+
+    return;
+
+  }
+
+
+  const batas =
+    Date.now() -
+    (
+      30 *
+      24 *
+      60 *
+      60 *
+      1000
+    );
+
+
+  const sumberYangBolehDihapus = [
+
+    "log_aktivitas",
+
+    "log",
+
+    "log_profil"
+
+  ];
+
+
+  let jumlahHapus = 0;
+
+
+  for(
+    const log
+    of semuaLog
+  ){
+
+    if(
+      !sumberYangBolehDihapus
+        .includes(
+          log.sumber
+        )
+    ){
+
+      continue;
+
+    }
+
+
+    if(
+      !log.ts ||
+      log.ts >= batas
+    ){
+
+      continue;
+
+    }
+
+
+    if(
+      !log.key ||
+      log.key === "-"
+    ){
+
+      continue;
+
+    }
+
+
+    try{
+
+      await remove(
+
+        ref(
+          db,
+          `/${log.sumber}/${log.key}`
+        )
+
+      );
+
+
+      jumlahHapus++;
+
+
+    }catch(error){
+
+      console.error(
+        "Gagal hapus:",
+        log,
+        error
+      );
+
+    }
+
+  }
+
+
+  alert(
+
+    `${jumlahHapus} log lama berhasil dihapus.`
+
+  );
+
+
+  await loadLog();
+
+};
+
+
+/* =========================================================
+   EXPORT CSV
+========================================================= */
+
+window.exportCSV =
+function(){
+
+  const search =
+    document
+      .getElementById(
+        "search"
+      )
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const filterAksi =
+    document
+      .getElementById(
+        "filterAksi"
+      )
+      .value
+      .trim()
+      .toLowerCase();
+
+
+  const filterTgl =
+    document
+      .getElementById(
+        "filterTgl"
+      )
+      .value;
+
+
+  const data =
+    semuaLog.filter(
+      log => {
+
+        const gabungan = [
+
+          log.username,
+
+          log.aksi,
+
+          log.detail,
+
+          log.sumber,
+
+          log.role
+
+        ]
+        .join(" ")
+        .toLowerCase();
+
+
+        const cocokSearch =
+          !search ||
+          gabungan.includes(
+            search
+          );
+
+
+        const cocokAksi =
+          !filterAksi ||
+          normalisasiAksi(
+            log.aksi
+          )
+          .toLowerCase()
+          .includes(
+            filterAksi
+          );
+
+
+        const cocokTanggal =
+          !filterTgl ||
+          tanggalIndonesia(
+            log.ts
+          ) === filterTgl;
+
+
+        return (
+
+          cocokSearch &&
+
+          cocokAksi &&
+
+          cocokTanggal
+
+        );
+
+      }
+    );
+
+
+  if(
+    data.length === 0
+  ){
+
+    alert(
+      "Tidak ada data untuk diekspor."
+    );
+
+    return;
+
+  }
+
+
+  let csv =
+    "Waktu,Aksi,User,Detail,Sumber,Role\n";
+
+
+  data.forEach(
+    log => {
+
+      const row = [
+
+        formatWaktu(
+          log.ts,
+          log.waktuOriginal
+        ),
+
+        log.aksi || "",
+
+        log.username || "",
+
+        log.detail || "",
+
+        log.sumber || "",
+
+        log.role || ""
+
+      ];
+
+
+      csv += row
+
+        .map(
+          value => {
+
+            return `"${String(value)
+              .replace(
+                /"/g,
+                '""'
+              )}"`;
+
+          }
+        )
+
+        .join(",")
+
+        + "\n";
+
+    }
+  );
+
+
+  const blob =
+    new Blob(
+
+      [
+        "\uFEFF" +
+        csv
+      ],
+
+      {
+        type:
+          "text/csv;charset=utf-8;"
+      }
+
+    );
+
+
+  const url =
+    URL.createObjectURL(
+      blob
+    );
+
+
+  const a =
+    document.createElement(
+      "a"
+    );
+
+
+  a.href =
+    url;
+
+
+  a.download =
+    `log_arfa_${
+      tanggalIndonesia(
+        Date.now()
+      )
+    }.csv`;
+
+
+  document.body.appendChild(
+    a
+  );
+
+
+  a.click();
+
+
+  a.remove();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+
+};
+
+
+/* =========================================================
+   FILTER SEARCH
+========================================================= */
+
+document
+  .getElementById(
+    "search"
+  )
+  .addEventListener(
+    "input",
+    renderTabel
+  );
+
+
+document
+  .getElementById(
+    "filterAksi"
+  )
+  .addEventListener(
+    "change",
+    renderTabel
+  );
+
+
+document
+  .getElementById(
+    "filterTgl"
+  )
+  .addEventListener(
+    "change",
+    renderTabel
+  );
+
+
+/* =========================================================
+   LOAD PERTAMA
+========================================================= */
 
 loadLog();
+
 </script>
+
 </body>
 </html>
