@@ -115,6 +115,7 @@ header{
 /* ================= CONTAINER ================= */
 
 .container{
+  background:#ffedd5;
   padding:14px;
   max-width:1200px;
   margin:0 auto;
@@ -1176,6 +1177,12 @@ function angsuranMilikPinjaman(
    TANGGAL
 ===================================================== */
 
+/* =====================================================
+   TANGGAL WIB
+   Firebase menyimpan timestamp asli.
+   Tidak ada penambahan +7 jam.
+===================================================== */
+
 function tanggalIndonesia(value){
 
   if(
@@ -1209,11 +1216,17 @@ function tanggalIndonesia(value){
 
   }
 
-  return d.toLocaleDateString("id-ID");
+  return d.toLocaleDateString(
+    "id-ID",
+    {
+      day:"2-digit",
+      month:"2-digit",
+      year:"numeric",
+      timeZone:"Asia/Jakarta"
+    }
+  );
 
 }
-
-
 /* =====================================================
    TIMESTAMP
 ===================================================== */
@@ -1818,7 +1831,7 @@ window.render = function(){
 
                   <div style="
                     font-weight:700;
-                    color:#dc2626;
+                    color:#dc2626f;
                   ">
                     Rp ${formatRp(h.totalTagihan)}
                   </div>
@@ -1827,7 +1840,7 @@ window.render = function(){
                     font-size:10px;
                     color:#16a34a;
                   ">
-                    Sudah:
+                    Sudah bayar:
                     Rp ${formatRp(h.angs)}
                   </div>
 
@@ -1957,7 +1970,7 @@ window.render = function(){
               <div>
 
                 <span>
-                  Total Angsuran
+                  Total Angsuran + jasa
                 </span>
 
                 Rp ${formatRp(ta)}
@@ -1968,7 +1981,7 @@ window.render = function(){
               <div>
 
                 <span>
-                  Total Sisa
+                  Total Sisa + jasa
                 </span>
 
                 Rp ${formatRp(ts)}
@@ -2138,11 +2151,16 @@ window.exportPDF = function(){
 
 
   const date =
-    new Date()
-      .toLocaleDateString(
-        "id-ID"
-      );
-
+  new Date()
+    .toLocaleDateString(
+      "id-ID",
+      {
+        day:"2-digit",
+        month:"2-digit",
+        year:"numeric",
+        timeZone:"Asia/Jakarta"
+      }
+    );
 
   /*
     GROUP
@@ -2469,14 +2487,19 @@ window.exportPDF = function(){
 
 
   const fileName =
-    "Laporan_Angsuran_" +
-    new Date()
-      .toLocaleDateString(
-        "id-ID"
-      )
-      .replace(/\//g,"-") +
-    ".pdf";
-
+  "Laporan_Angsuran_" +
+  new Date()
+    .toLocaleDateString(
+      "id-ID",
+      {
+        day:"2-digit",
+        month:"2-digit",
+        year:"numeric",
+        timeZone:"Asia/Jakarta"
+      }
+    )
+    .replace(/\//g,"-") +
+  ".pdf";
 
   document.getElementById(
     "toastPDF"
