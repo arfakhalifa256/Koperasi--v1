@@ -1,335 +1,227 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Data Pinjaman</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--primary:#3b82f6;--primary-dark:#2563eb;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);--radius:12px;--success:#10b981;--danger:#dc2626;--warning:#f59e0b;--gray-50:#f8fafc;--gray-200:#e5e7eb}
-html,body{margin:0;padding:0;overflow-x:hidden}
+:root{--primary:#3b82f6;--primary-dark:#2563eb;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--radius:12px;--success:#10b981;--danger:#dc2626;--warning:#f59e0b;--gray-50:#f8fafc;--gray-200:#e5e7eb}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;padding-bottom:20px}
-header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15);}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;}
-.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;}
-.header-right{display:flex;align-items:center;gap:10px;}
-.role-badge{background:rgba(255,255,255,.18);padding:5px 10px;border-radius:20px;font-size:10px;font-weight:600;}
+header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;}.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;}
 .menu-btn{cursor:pointer;font-size:22px;}
 .container{padding:14px;max-width:1200px;margin:0 auto}
 .card{background:var(--card);padding:16px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid var(--border)}
-.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700;color:var(--text)}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-group{display:flex;flex-direction:column;gap:4px}
-.form-group.full{grid-column:1/-1}
+.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700}
+.form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}.form-group.full{grid-column:1/-1}
 .form-group label{font-size:11px;font-weight:600;color:var(--muted)}
-.form-group input,.form-group select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:'Poppins',sans-serif}
-.btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;transition:.2s;margin-top:4px}
-.pinjaman-card{background:var(--gray-50);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;transition:.2s}
-.pinjaman-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
-.pinjaman-actions button{flex:1;padding:7px 12px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:.2s}
-.btn-edit{background:var(--warning);color:white}
-.btn-delete{background:var(--danger);color:white}
-.btn-nota{background:var(--success);color:white}
-.btn-wa{background:#25D366;color:white}
+.form-group input,.form-group select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px}
+.btn-primary{width:100%;padding:10px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;margin-top:4px}
+.btn-secondary{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);cursor:pointer;font-size:13px;font-weight:600;margin-top:8px}
+.pinjaman-card{background:var(--gray-50);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.pinjaman-actions{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}.pinjaman-actions button{flex:1;padding:7px 12px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
+.btn-edit{background:var(--warning);color:white}.btn-delete{background:var(--danger);color:white}.btn-nota{background:var(--success);color:white}.btn-wa{background:#25D366;color:white}
 .popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:999;padding:10px}
-.popup-box{background:white;padding:20px;border-radius:16px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.popup-btns{display:flex;gap:8px;margin-top:16px}
-.popup-btns button{flex:1;padding:9px 12px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif}
-.btn-update{background:var(--primary);color:white}
-.btn-cancel{background:var(--gray-200);color:var(--text)}
-.alert{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;margin-top:10px}
-.alert.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
-.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
+.popup-box{background:white;padding:20px;border-radius:16px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto}
+.popup-box.large{max-width:600px;}
+.popup-btns{display:flex;gap:8px;margin-top:16px}.popup-btns button{flex:1;padding:9px 12px;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+.btn-update{background:var(--primary);color:white}.btn-cancel{background:var(--gray-200)}
+.alert.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0;padding:10px 14px;border-radius:8px;font-size:12px;margin-top:10px}
+.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:.3s;z-index:9999;overflow-y:auto}.sidebar.open{left:0;}
+.sidebar a{color:#fff;text-decoration:none;display:flex;gap:10px;padding:10px;border-radius:10px;font-size:10px}.sidebar a.active{background:rgba(255,255,255,.2);}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:998;}.overlay.active{display:block;}
 .custom-alert{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px}
-.custom-alert-box{width:100%;max-width:320px;background:#fff;border-radius:18px;padding:24px 20px;text-align:center;box-shadow:0 10px 35px rgba(0,0,0,.25)}
-.alert-icon{width:70px;height:70px;border-radius:50%;margin:auto;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:14px;color:white;font-weight:bold;}
-.alert-text{font-size:14px;font-weight:600;color:#1f2937;line-height:1.5;margin-bottom:18px;}
-.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:.3s;z-index:9999;overflow-y:auto;box-shadow:2px 0 10px rgba(0,0,0,.2);}
-.sidebar.open{left:0;}
-.sidebar-logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,.2);}
-.sidebar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
-.sidebar-logo h3{color:#fff;margin:0;font-size:15px;font-weight:600;}
-.sidebar-section{color:rgba(255,255,255,.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px;}
-.sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:.2s;}
-.sidebar a:hover{background:rgba(255,255,255,.15);transform:translateX(4px);}
-.sidebar a.active{background:rgba(255,255,255,.2);}
+.custom-alert-box{width:100%;max-width:320px;background:#fff;border-radius:18px;padding:24px 20px;text-align:center}
 </style>
 </head>
 <body>
-
-<div id="sidebar" class="sidebar"> <div class="sidebar-logo"><img src="img/icon-192.png" alt="Logo"><h3>Menu Koperasi</h3></div>
-<a href="dashboard.html"><span class="material-icons">home</span>Beranda</a>
-<div class="sidebar-section">Data Master</div><a href="anggota.html">👤 Data Anggota</a><a href="kas.html">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
-<div class="sidebar-section">Keuangan</div><a href="pinjaman.html" class="active">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
-<div class="sidebar-section">Laporan</div><a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a><a href="log-aktivitas.html">📋 Log Aktivitas</a>
-<div class="sidebar-section">Pengaturan</div><a href="backup.html">💾 Backup Data</a><a href="user.html">⚙️ Kelola User</a><a href="#" id="btnLogout">🚪 Logout</a></div>
+<div id="sidebar" class="sidebar"><a href="dashboard.html">🏠 Beranda</a><a href="pinjaman.html" class="active">💰 Pinjaman</a><a href="angsuran.html">📄 Angsuran</a><a href="log-aktivitas.html">📋 Log Aktivitas</a><a href="#" id="btnLogout">🚪 Logout</a></div>
 <div id="overlay" class="overlay"></div>
-
-<header><div class="brand"><img src="img/icon-192.png" alt="Koperasi ARFA"><div>DATA PINJAMAN <br>ANGGOTA</div></div><div class="header-right"><span id="roleBadge" class="role-badge">USER</span><span class="menu-btn" onclick="toggleSidebar()">☰</span></div></header>
+<header><div class="brand"><img src="img/icon-192.png"><div>DATA PINJAMAN</div></div><span class="menu-btn" onclick="toggleSidebar()">☰</span></header>
 
 <div class="container">
     <div class="card" id="formPinjaman">
       <h3>Tambah Pinjaman</h3>
-      <div class="form">
-        <div class="form-group"><label>Anggota</label><select id="anggota" onchange="isiTelepon()"></select></div>
-        <div class="form-group"><label>No Telepon</label><input type="text" id="telepon" readonly></div>
-        <div class="form-group"><label>No Pinjaman</label><input type="text" id="noPinjaman" value="Loading..." disabled></div>
-        <div class="form-group"><label>Tanggal</label><input type="date" id="tanggal"></div>
-        <div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih metode</option><option value="cash">Cash</option><option value="bank">Bank</option><option value="e-wallet">E-Wallet</option><option value="lainnya">Lainnya</option></select></div>
-        <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()"></div>
-        <div class="form-group"><label>Jasa (20% otomatis)</label><input type="number" id="jasa" min="0" value="0" readonly></div>
-        <div class="form-group full"><label>Keterangan</label><input type="text" id="ket" placeholder="Keterangan opsional"></div>
-        <div class="form-group full"><button class="btn-primary" onclick="simpanPinjaman()">Simpan Pinjaman</button><div id="notif"></div></div>
-      </div>
+      <div class="form-group"><label>Anggota</label><select id="anggota" onchange="isiTelepon()"></select></div>
+      <div class="form-group"><label>No Telepon</label><input type="text" id="telepon" readonly></div>
+      <div class="form-group"><label>No Pinjaman</label><input type="text" id="noPinjaman" value="Loading..." disabled></div>
+      <div class="form-group"><label>Tanggal</label><input type="date" id="tanggal"></div>
+      <div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih metode</option><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
+      <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()"></div>
+      <div class="form-group"><label>Jasa (20% otomatis)</label><input type="number" id="jasa" readonly></div>
+      <div class="form-group full"><label>Keterangan</label><input type="text" id="ket" placeholder="Keterangan opsional"></div>
+      <button class="btn-primary" onclick="simpanPinjaman()">Simpan Pinjaman</button>
+      <button class="btn-secondary" id="btnLihatPinjaman" onclick="bukaRiwayat()">📋 Lihat Pinjaman (<span id="jmlPinjaman">0</span>)</button>
+      <div id="notif"></div>
     </div>
-  <div class="card"><h3>Daftar Pinjaman</h3><div id="tabelPinjaman"><div class="loading">Loading data...</div></div></div>
 </div>
 
-<div id="popupEdit" class="popup"><div class="popup-box"><h3>Edit Pinjaman</h3><div class="form-grid"><div class="form-group"><label>No Pinjaman</label><input type="text" id="editNoPinjaman" disabled></div><div class="form-group"><label>Anggota</label><select id="editAnggota"></select></div><div class="form-group"><label>Tanggal</label><input type="date" id="editTanggal"></div><div class="form-group"><label>Metode</label><select id="editMetode"><option value="cash">Cash</option><option value="bank">Bank</option><option value="e-wallet">E-Wallet</option><option value="lainnya">Lainnya</option></select></div><div class="form-group"><label>Jumlah</label><input type="number" id="editJumlah" oninput="hitungJasaEdit()"></div><div class="form-group"><label>Jasa (20% otomatis)</label><input type="number" id="editJasa" readonly></div><div class="form-group full"><label>Keterangan</label><input type="text" id="editKet"></div></div><div class="popup-btns"><button class="btn-update" onclick="updatePinjaman()">Update</button><button class="btn-cancel" onclick="tutupPopup()">Batal</button></div></div></div>
+<!-- POPUP RIWAYAT PINJAMAN -->
+<div id="popupRiwayat" class="popup">
+  <div class="popup-box large">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3 style="margin:0">Daftar Pinjaman</h3>
+      <button onclick="tutupRiwayat()" style="background:#dc2626;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-weight:700">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:12px">
+      <input type="text" id="searchPinjaman" placeholder="Cari nama / no pinjaman..." style="flex:1;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px" oninput="renderPinjaman()">
+      <select id="filterStatus" style="padding:9px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:11px" onchange="renderPinjaman()"><option value="">Semua</option><option value="lunas">LUNAS</option><option value="belum">BELUM LUNAS</option></select>
+    </div>
+    <div id="tabelPinjaman" style="max-height:60vh;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- POPUP EDIT -->
+<div id="popupEdit" class="popup"><div class="popup-box"><h3>Edit Pinjaman</h3><div class="form-group"><label>No Pinjaman</label><input type="text" id="editNoPinjaman" disabled></div><div class="form-group"><label>Anggota</label><select id="editAnggota"></select></div><div class="form-group"><label>Tanggal</label><input type="date" id="editTanggal"></div><div class="form-group"><label>Metode</label><select id="editMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div><div class="form-group"><label>Jumlah</label><input type="number" id="editJumlah" oninput="hitungJasaEdit()"></div><div class="form-group"><label>Jasa</label><input type="number" id="editJasa" readonly></div><div class="form-group full"><label>Keterangan</label><input type="text" id="editKet"></div><div class="popup-btns"><button class="btn-update" onclick="updatePinjaman()">Update</button><button class="btn-cancel" onclick="tutupPopup()">Batal</button></div></div></div>
+
+<div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div id="alertText" style="font-weight:600;margin-bottom:12px">Alert</div><button onclick="tutupAlert()" style="background:var(--primary);border:none;padding:10px 18px;border-radius:10px;color:white;font-weight:700;width:100%">OK</button></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, onValue, update, remove, get, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
+const app=initializeApp(firebaseConfig); const db=getDatabase(app);
+const role=localStorage.getItem("role")||"user"; const username=localStorage.getItem("username")||"Unknown";
+if(role!=="admin"){document.getElementById("formPinjaman").style.display="none";}
+window.toggleSidebar=()=>{document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active");};
+document.getElementById("overlay").onclick=window.toggleSidebar;
+document.getElementById("btnLogout").onclick=(e)=>{e.preventDefault(); if(confirm("Logout?")){localStorage.clear(); location.href="index.html";}};
 
-const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const anggotaRef=ref(db,"anggota"), pinjamanRef=ref(db,"pinjaman"), angsuranRef=ref(db,"angsuran"), kasTransaksiRef=ref(db,"kas/transaksi");
+const anggotaSelect=document.getElementById("anggota"), tabelPinjaman=document.getElementById("tabelPinjaman");
+let dataPinjaman={}, dataAnggota={}, dataAngsuran={}, editId=null;
+const format=x=>new Intl.NumberFormat("id-ID").format(x||0);
+const inputDate=t=>{if(!t) return ""; return new Date(Number(t)).toISOString().split("T")[0]}
+const formatTanggal=t=>{if(!t) return "-"; const d=new Date(Number(t)); if(isNaN(d)) return t; return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});}
 
-const role = localStorage.getItem("role") || "user";
-const username = localStorage.getItem("username") || "Unknown";
-if(role!== "admin"){ document.getElementById("formPinjaman").style.display = "none"; }
-document.getElementById("roleBadge").innerText = role.toUpperCase();
+function showAlert(msg){const b=document.getElementById("customAlert"); document.getElementById("alertText").innerText=msg; b.style.display="flex";}
+window.tutupAlert=()=>document.getElementById("customAlert").style.display="none";
+window.hitungJasa=()=>{document.getElementById("jasa").value=Math.round(Number(document.getElementById("jumlah").value||0)*0.2);}
+window.hitungJasaEdit=()=>{document.getElementById("editJasa").value=Math.round(Number(document.getElementById("editJumlah").value||0)*0.2);}
+window.isiTelepon=()=>{const id=anggotaSelect.value; const d=dataAnggota[id]; document.getElementById("telepon").value=d?.telepon||d?.noHp||"-";}
 
-async function catatanAudit(aksi, keterangan, jumlah, dataTambahan={}){
-  await push(ref(db,"audit/log"),{ tanggal: Date.now(), aksi, user: username, role, keterangan, jumlah,...dataTambahan });
-}
-function simpanLog(aksi, data){
-  try{
-    const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
-    push(ref(db, "/log_aktivitas"), {
-      waktu: Date.now(),
-      waktu_baca: waktu,
-      aksi: aksi,
-      oleh: username,
-      role: role,
-      username: data.nama || username,
-    ...data
-    });
-  }catch(e){ console.log(e); }
-}
+// POPUP RIWAYAT
+window.bukaRiwayat=()=>{document.getElementById("popupRiwayat").style.display="flex"; renderPinjaman();}
+window.tutupRiwayat=()=>{document.getElementById("popupRiwayat").style.display="none";}
+window.onclick=(e)=>{if(e.target.id==="popupRiwayat") tutupRiwayat(); if(e.target.id==="popupEdit") tutupPopup();}
 
-window.toggleSidebar = function(){ const sidebar = document.getElementById("sidebar"); const overlay = document.getElementById("overlay"); sidebar.classList.toggle("open"); overlay.style.display = sidebar.classList.contains("open")? "block" : "none"; }
-document.getElementById("overlay").addEventListener("click", toggleSidebar);
-document.getElementById("btnLogout").addEventListener("click", (e)=>{ e.preventDefault(); if(confirm("Yakin logout?")){ localStorage.clear(); window.location.href = "index.html"; } });
-
-const anggotaRef = ref(db, "anggota");
-const pinjamanRef = ref(db, "pinjaman");
-const angsuranRef = ref(db, "angsuran");
-const kasTransaksiRef = ref(db, "kas/transaksi");
-
-const anggotaSelect = document.getElementById("anggota");
-const tabelPinjaman = document.getElementById("tabelPinjaman");
-let dataPinjaman = {};
-let dataAnggota = {};
-let dataAngsuran = {};
-let editId = null;
-
-const format = x => new Intl.NumberFormat("id-ID").format(x || 0);
-const inputDate = t => { if(!t) return ""; return new Date(Number(t)).toISOString().split("T")[0] }
-const formatTanggal = t => { if(!t) return "-"; const d = new Date(Number(t)); if(isNaN(d)) return t; return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"}); }
-
-function showAlert(msg, type = "info") { const alertBox = document.getElementById("customAlert"); if(!alertBox) return alert(msg); const icon = document.getElementById("alertIcon"); const text = document.getElementById("alertText"); text.innerText = msg; icon.style.background = type === "danger"? "var(--danger)" : type === "success"? "var(--success)" : type === "warning"? "var(--warning)" : "var(--primary)"; icon.innerHTML = type === "danger"? "✕" : type === "success"? "✓" : type === "warning"? "!" : "i"; alertBox.style.display = "flex"; }
-window.tutupAlert = () => document.getElementById("customAlert").style.display = "none";
-
-window.hitungJasa = () => { const jumlah = Number(document.getElementById("jumlah").value) || 0; document.getElementById("jasa").value = Math.round(jumlah * 0.2); }
-window.hitungJasaEdit = () => { const jumlah = Number(document.getElementById("editJumlah").value) || 0; document.getElementById("editJasa").value = Math.round(jumlah * 0.2); }
-
-window.isiTelepon = function(){
-  const idAnggota = anggotaSelect.value;
-  if(!idAnggota) { document.getElementById("telepon").value = ""; return; }
-  const data = dataAnggota[idAnggota];
-  document.getElementById("telepon").value = data?.telepon || data?.noHp || "-";
-}
-
-onValue(anggotaRef, snap => {
-  dataAnggota = snap.val() || {};
-  anggotaSelect.innerHTML = "<option value=''>Pilih anggota</option>";
-  if(Object.keys(dataAnggota).length === 0){ anggotaSelect.innerHTML = "<option value=''>Data anggota kosong</option>"; return; }
-  const seen = new Set();
-  Object.entries(dataAnggota).sort((a,b)=> (a[1].nama||"").localeCompare(b[1].nama||"")).forEach(([id,a])=>{
-      let nama = (a.nama||"").trim();
-      if(!nama) return;
-      if(nama.endsWith("-")) return; // FIX: skip Hendra -
-      if(nama.toLowerCase().endsWith(" -")) return;
-      let key = nama.toLowerCase();
-      if(seen.has(key)) return; // cegah double nama sama
-      seen.add(key);
-      anggotaSelect.innerHTML += `<option value="${id}">${a.nama} - ${a.idAnggota || a.id || ''}</option>`;
-    });
+onValue(anggotaRef, snap=>{
+  dataAnggota=snap.val()||{};
+  anggotaSelect.innerHTML="<option value=''>Pilih anggota</option>";
+  const seen=new Set();
+  Object.entries(dataAnggota).sort((a,b)=>(a[1].nama||"").localeCompare(b[1].nama||"")).forEach(([id,a])=>{
+    let nama=(a.nama||"").trim(); if(!nama) return; if(nama.endsWith("-")) return; let key=nama.toLowerCase(); if(seen.has(key)) return; seen.add(key);
+    anggotaSelect.innerHTML+=`<option value="${id}">${a.nama} - ${a.idAnggota||''}</option>`;
+  });
   loadDropdownEdit();
 });
-
-onValue(pinjamanRef, snap => {
-  dataPinjaman = {};
-  if(!snap.exists()){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Belum ada data pinjaman</div>`; return; }
-  snap.forEach(d => { let p = d.val(); p.id = d.key; dataPinjaman[d.key] = p; });
+onValue(pinjamanRef, snap=>{
+  dataPinjaman={}; if(!snap.exists()){ tabelPinjaman.innerHTML=`<div style="text-align:center;padding:20px;color:#6b7280">Belum ada data</div>`; return;}
+  snap.forEach(d=>{let p=d.val(); p.id=d.key; dataPinjaman[d.key]=p;});
+  document.getElementById("jmlPinjaman").innerText=Object.keys(dataPinjaman).length;
   renderPinjaman();
 });
-onValue(angsuranRef, snap => { dataAngsuran = snap.val() || {}; renderPinjaman(); });
+onValue(angsuranRef, snap=>{dataAngsuran=snap.val()||{}; renderPinjaman();});
 
+  document.getElementById("searchPinjaman").addEventListener("input", renderPinjaman);
+document.getElementById("filterStatus").addEventListener("change", renderPinjaman);
 function renderPinjaman(){
+  const search = (document.getElementById("searchPinjaman")?.value || "").toLowerCase().trim();
+  const filterStatus = document.getElementById("filterStatus")?.value || "";
+  let list = Object.values(dataPinjaman).sort((a,b)=> Number(b.tanggal||0) - Number(a.tanggal||0));
+
+  // 1. Filter cari nama / no
+  if(search){
+    list = list.filter(p => {
+      const nama = (p.nama||"").toLowerCase();
+      const nomor = (p.nomor||"").toLowerCase();
+      return nama.includes(search) || nomor.includes(search);
+    });
+  }
+
+  // 2. Filter LUNAS / BELUM
+  if(filterStatus){
+    list = list.filter(p => {
+      let jasaOtomatis = Number(p.jasa ?? Math.round(Number(p.jumlah||0)*0.2));
+      let total = Number(p.jumlah||0) + jasaOtomatis;
+      let totalAngsuran = 0;
+      Object.values(dataAngsuran).forEach(a=>{
+        if(a.pinjamanId === p.id) totalAngsuran += Number(a.pokok||0) + Number(a.jasa||0);
+      });
+      let lunas = totalAngsuran >= total && total > 0;
+      if(filterStatus === "lunas") return lunas;
+      if(filterStatus === "belum") return !lunas;
+      return true;
+    });
+  }
+
   tabelPinjaman.innerHTML = "";
-  let listPinjaman = Object.values(dataPinjaman);
-  listPinjaman.sort((a,b)=> Number(b.tanggal || 0) - Number(a.tanggal || 0));
-  if(listPinjaman.length === 0){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Tidak ada data</div>`; return; }
-  listPinjaman.forEach(p=>{
-    let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
-    let total = Number(p.jumlah || 0) + jasaOtomatis;
+  document.getElementById("jmlPinjaman").innerText = Object.keys(dataPinjaman).length + ` (tampil ${list.length})`;
+
+  if(list.length === 0){
+    tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Tidak ada data sesuai filter</div>`;
+    return;
+  }
+
+  list.forEach(p=>{
+    let jasaOtomatis = Number(p.jasa ?? Math.round(Number(p.jumlah||0)*0.2));
+    let total = Number(p.jumlah||0) + jasaOtomatis;
     let totalAngsuran = 0;
-    Object.values(dataAngsuran).forEach(a => { if(a.pinjamanId!== p.id) return; totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0); });
-    let lunas = totalAngsuran >= total;
-    let status = lunas? "LUNAS" : "BELUM LUNAS";
-    let warnaStatus = lunas? "#10b981" : "#ef4444";
-    let metode = p.sumberKas || "-";
+    Object.values(dataAngsuran).forEach(a=>{
+      if(a.pinjamanId !== p.id) return;
+      totalAngsuran += Number(a.pokok||0) + Number(a.jasa||0);
+    });
+    let lunas = totalAngsuran >= total && total > 0;
+    let warna = lunas ? "#10b981" : "#ef4444";
+    let status = lunas ? "LUNAS" : "BELUM LUNAS";
+
     let card = document.createElement("div");
     card.className = "pinjaman-card";
     card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
-        <div><div style="font-weight:700;font-size:13px">${p.nomor || "-"}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${(dataAnggota[p.idAnggota]?.nama || p.nama || "-")}</div></div>
-        <div style="display:flex;flex-direction:column;gap:6px;align-items:end"><div style="background:#e0e7ff;color:#3730a3;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600">${metode.toUpperCase()}</div><div style="background:${warnaStatus};color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700">${status}</div></div>
+      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
+        <div><div style="font-weight:700;font-size:13px">${p.nomor||"-"}</div><div style="font-size:11px;color:#6b7280">${p.nama||"-"} • ${formatTanggal(p.tanggal)}</div></div>
+        <div style="background:${warna};color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700">${status}</div>
       </div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Sudah Bayar</span><span><b>Rp ${format(totalAngsuran)}</b></span></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Sisa</span><span style="color:${lunas? '#10b981' : '#ef4444'};font-weight:700">Rp ${format(Math.max(total - totalAngsuran,0))}</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:10px"><span>Tanggal</span><span>${formatTanggal(p.tanggal)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px"><span>Sudah Bayar</span><span><b>Rp ${format(totalAngsuran)}</b></span></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px"><span>Sisa</span><span style="color:${warna};font-weight:700">Rp ${format(Math.max(total-totalAngsuran,0))}</span></div>
       <div class="pinjaman-actions">
         <button class="btn-wa" onclick="kirimWA('${p.id}')">💬 WA</button>
         <button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>
-        ${role==="admin"? `<button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button><button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>` : ''}
-      </div>
-    `;
+        ${role==="admin"?`<button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button><button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>`:''}
+      </div>`;
     tabelPinjaman.appendChild(card);
   });
 }
+async function previewNoPinjaman(){const snap=await get(ref(db,"counter/pinjaman")); let no=(snap.val()||0)+1; return "PJ"+String(no).padStart(3,"0");}
+async function generateNoPinjaman(){const counterRef=ref(db,"counter/pinjaman"); const result=await runTransaction(counterRef,(c)=>(c||0)+1); return "PJ"+String(result.snapshot.val()).padStart(3,"0");}
+window.onload=async()=>{document.getElementById("tanggal").value=new Date().toISOString().split("T")[0]; document.getElementById("noPinjaman").value=await previewNoPinjaman();}
 
-async function previewNoPinjaman(){ const snap = await get(ref(db, "counter/pinjaman")); let no = (snap.val() || 0) + 1; return "PJ" + String(no).padStart(3,"0"); }
-async function generateNoPinjaman(){ const counterRef = ref(db, "counter/pinjaman"); const result = await runTransaction(counterRef, (current)=> (current || 0) + 1); let no = result.snapshot.val(); return "PJ" + String(no).padStart(3,"0"); }
-
-window.onload = async () => { document.getElementById("tanggal").value = new Date().toISOString().split("T")[0]; document.getElementById("noPinjaman").value = await previewNoPinjaman(); }
-
-window.simpanPinjaman = async () => {
-  if(role!== "admin") return showAlert("Hanya admin!", "danger");
-  let idAnggota = anggota.value;
-  if(!idAnggota) return showAlert("Pilih anggota!", "warning");
-  const agMaster = dataAnggota[idAnggota];
-  if(!agMaster) return showAlert("Data anggota tidak ditemukan!", "danger");
-  let nama = (agMaster.nama||"").trim(); // FINAL FIX: ambil dari master, bukan dari text dropdown
-  let tanggalInput = document.getElementById("tanggal").value;
-  let jumlah = Number(document.getElementById("jumlah").value);
-  let jasa = Number(document.getElementById("jasa").value) || 0;
-  let metode = document.getElementById("metode").value;
-  let ket = document.getElementById("ket").value;
-  if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
-  if(!metode) return showAlert("Pilih metode!", "warning");
-  if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
-  let nomor = await generateNoPinjaman(); document.getElementById("noPinjaman").value = nomor; let tanggal = new Date(tanggalInput).getTime();
-  let kas = await push(kasTransaksiRef,{ tanggal, keterangan:`Pinjaman ${nama} (${nomor})`, tipe:"keluar", kategori:"pinjaman", sumberKas:metode, jumlah: jumlah, idAnggota: idAnggota, namaAnggota: nama });
-  const snapPinjaman = await push(pinjamanRef,{ nomor, idAnggota, nama, tanggal, jumlah, jasa, sumberKas:metode, ket, kasId: kas.key, status:"belum" });
-  await catatanAudit("PENGAJUAN PINJAMAN", `${nama} - No: ${nomor} - Rp ${format(jumlah)}`, jumlah, {anggotaId: idAnggota, refPinjaman: snapPinjaman.key});
-  simpanLog("PENGAJUAN_PINJAMAN", { idAnggota: idAnggota, userId: idAnggota, nama: nama, nomor: nomor, jumlah: jumlah, jasa: jasa, metode: metode });
-  document.getElementById("notif").innerHTML = `<div class="alert success">Berhasil disimpan ✅</div>`;
-  setTimeout(()=> document.getElementById("notif").innerHTML = "",3000);
-  document.getElementById("jumlah").value = ""; document.getElementById("jasa").value = "0"; document.getElementById("ket").value = ""; document.getElementById("metode").value = "";
-  document.getElementById("noPinjaman").value = await previewNoPinjaman(); showAlert("Data pinjaman berhasil disimpan", "success");
+window.simpanPinjaman=async()=>{
+  let idAnggota=anggota.value; if(!idAnggota) return showAlert("Pilih anggota!");
+  const ag=dataAnggota[idAnggota]; let nama=ag.nama.trim();
+  let tanggalInput=document.getElementById("tanggal").value; let jumlah=Number(document.getElementById("jumlah").value); let jasa=Math.round(jumlah*0.2); let metode=document.getElementById("metode").value;
+  if(!tanggalInput||!metode||!jumlah) return showAlert("Lengkapi form!");
+  let nomor=await generateNoPinjaman(); let tanggal=new Date(tanggalInput).getTime();
+  let kas=await push(kasTransaksiRef,{tanggal,keterangan:`Pinjaman ${nama} (${nomor})`,tipe:"keluar",kategori:"pinjaman",sumberKas:metode,jumlah,idAnggota,namaAnggota:nama});
+  await push(pinjamanRef,{nomor,idAnggota,nama,tanggal,jumlah,jasa,sumberKas:metode,ket:document.getElementById("ket").value,kasId:kas.key,status:"belum"});
+  document.getElementById("notif").innerHTML=`<div class="alert success">Berhasil ✅</div>`;
+  setTimeout(()=>document.getElementById("notif").innerHTML="",2000);
+  document.getElementById("jumlah").value=""; document.getElementById("jasa").value="0"; document.getElementById("noPinjaman").value=await previewNoPinjaman();
+  bukaRiwayat();
 }
-
 function loadDropdownEdit(){
-  const editAnggota = document.getElementById("editAnggota");
-  editAnggota.innerHTML = "<option value=''>Pilih anggota</option>";
-  const seen = new Set();
-  Object.entries(dataAnggota).sort((a,b) => (a[1].nama||"").localeCompare(b[1].nama||"")).forEach(([id,a])=>{
-    let nama = (a.nama||"").trim();
-    if(!nama || nama.endsWith("-")) return;
-    let key = nama.toLowerCase();
-    if(seen.has(key)) return;
-    seen.add(key);
-    editAnggota.innerHTML+=`<option value="${id}">${a.nama}</option>`;
-  });
+  const editAnggota=document.getElementById("editAnggota"); editAnggota.innerHTML="<option value=''>Pilih anggota</option>";
+  const seen=new Set(); Object.entries(dataAnggota).sort((a,b)=>(a[1].nama||"").localeCompare(b[1].nama||"")).forEach(([id,a])=>{let nama=(a.nama||"").trim(); if(!nama||nama.endsWith("-")) return; let key=nama.toLowerCase(); if(seen.has(key)) return; seen.add(key); editAnggota.innerHTML+=`<option value="${id}">${a.nama}</option>`;});
 }
-
-window.editPinjaman = id => {
-  if(role!=="admin") return;
-  let p = dataPinjaman[id];
-  editId = id;
-  document.getElementById("editNoPinjaman").value = p.nomor;
-  document.getElementById("editAnggota").value = p.idAnggota;
-  document.getElementById("editTanggal").value = inputDate(p.tanggal);
-  document.getElementById("editMetode").value = p.sumberKas;
-  document.getElementById("editJumlah").value = p.jumlah;
-  document.getElementById("editJasa").value = p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2);
-  document.getElementById("editKet").value = p.ket || "";
-  document.getElementById("popupEdit").style.display = "flex";
-}
-
-window.updatePinjaman = async () => {
-  if(!editId) return;
-  let pLama = dataPinjaman[editId];
-  let idAnggotaBaru = document.getElementById("editAnggota").value;
-  const agBaru = dataAnggota[idAnggotaBaru];
-  let nama = agBaru? agBaru.nama.trim() : "";
-  let tanggalInput = document.getElementById("editTanggal").value;
-  let jumlah = Number(document.getElementById("editJumlah").value);
-  let jasa = Number(document.getElementById("editJasa").value) || 0;
-  let metode = document.getElementById("editMetode").value;
-  let ket = document.getElementById("editKet").value;
-  if(!tanggalInput) return showAlert("Isi tanggal!", "warning");
-  if(!metode) return showAlert("Pilih metode!", "warning");
-  if(!jumlah || jumlah <= 0) return showAlert("Jumlah harus > 0!", "warning");
-  let tanggal = new Date(tanggalInput).getTime();
-  const updates = {};
-  updates[`/pinjaman/${editId}`] = {...pLama, nama, idAnggota: idAnggotaBaru, tanggal, jumlah, jasa, sumberKas: metode, ket};
-  if(pLama.kasId){ updates[`/kas/transaksi/${pLama.kasId}`] = { tanggal, jumlah, sumberKas: metode, keterangan: `Pinjaman ${nama} (${pLama.nomor})`, tipe:"keluar", kategori:"pinjaman", idAnggota: idAnggotaBaru, namaAnggota: nama }; }
-  await update(ref(db), updates);
-  await catatanAudit("EDIT PINJAMAN", `${nama} - No: ${pLama.nomor} - Dari: Rp ${format(pLama.jumlah)} -> Rp ${format(jumlah)}`, jumlah, {anggotaId: pLama.idAnggota, refPinjaman: editId});
-  simpanLog("EDIT_PINJAMAN", { idAnggota: pLama.idAnggota, userId: pLama.idAnggota, nama: nama, nomor: pLama.nomor, jumlah: jumlah, jumlahLama: pLama.jumlah });
-  tutupPopup(); showAlert("Update berhasil ✅", "success");
-}
-
-window.hapusPinjaman = async id => {
-  if(role!== "admin") return; let p = dataPinjaman[id]; if(!confirm(`Hapus pinjaman ${p.nomor} atas nama ${dataAnggota[p.idAnggota]?.nama || p.nama}?`)) return;
-  try{
-    await remove(ref(db, `pinjaman/${id}`)); if(p.kasId){ await remove(ref(db, `kas/transaksi/${p.kasId}`)); }
-    await catatanAudit("HAPUS PINJAMAN", `${p.nama} - No: ${p.nomor} - Rp ${format(p.jumlah)}`, p.jumlah, {anggotaId: p.idAnggota, refPinjaman: id});
-    simpanLog("HAPUS_PINJAMAN", { idAnggota: p.idAnggota, userId: p.idAnggota, nama: p.nama, nomor: p.nomor, jumlah: p.jumlah });
-    delete dataPinjaman[id]; renderPinjaman(); showAlert("Pinjaman berhasil dihapus ✅", "success");
-  }catch(err){ console.error(err); showAlert("Gagal menghapus data", "danger"); }
-}
-
-window.tutupPopup = () => { document.getElementById("popupEdit").style.display = "none"; editId = null; }
-window.cetakNota = id => { const p = dataPinjaman[id]; if(!p) return; const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a5" }); const tgl = new Date(Number(p.tanggal)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"}); const total = Number(p.jumlah) + Number(p.jasa || 0); const namaCetak = dataAnggota[p.idAnggota]?.nama || p.nama; doc.setFontSize(14); doc.text("KOPERASI ARFA DRIVER", 74, 15, {align:"center"}); doc.setFontSize(10); doc.text(`No: ${p.nomor}`, 15, 35); doc.text(`Nama: ${namaCetak}`, 15, 42); doc.text(`Tanggal: ${tgl}`, 15, 49); doc.text(`Jumlah: Rp ${format(p.jumlah)}`, 15, 56); doc.text(`Jasa: Rp ${format(p.jasa || 0)}`, 15, 63); doc.text(`Total: Rp ${format(total)}`, 15, 70); doc.save(`Nota_${p.nomor}.pdf`); }
-
-window.kirimWA = id => {
-  const p = dataPinjaman[id];
-  if(!p) return;
-  const ag = dataAnggota[p.idAnggota];
-  let noHp = ag?.telepon || ag?.noHp || ag?.hp || ag?.wa || "";
-  if(!noHp || noHp === "-"){ return showAlert("No WA anggota tidak ada di data master", "warning"); }
-  noHp = noHp.replace(/[^0-9]/g, "");
-  if(noHp.startsWith("0")) noHp = "62" + noHp.substring(1);
-  let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah || 0) * 0.2));
-  let total = Number(p.jumlah || 0) + jasaOtomatis;
-  let totalAngsuran = 0;
-  Object.values(dataAngsuran).forEach(a => { if(a.pinjamanId!== p.id) return; totalAngsuran += Number(a.pokok || 0) + Number(a.jasa || 0); });
-  let sisa = Math.max(total - totalAngsuran, 0);
-  const namaWa = ag?.nama || p.nama;
-  const pesan = `Halo *${namaWa}* 👋\n\nKoperasi ARFA DRIVER  pinjaman Anda:\nNo: *${p.nomor}*\nPokok: Rp ${format(p.jumlah)}\nJasa: Rp ${format(jasaOtomatis)}\nTotal: Rp ${format(total)}\nSudah bayar: Rp ${format(totalAngsuran)}\n*Sisa: Rp ${format(sisa)}*\n\n Terima kasih 🙏`;
-  const url = `https://wa.me/${noHp}?text=${encodeURIComponent(pesan)}`;
-  window.open(url, "_blank");
-}
+window.editPinjaman=id=>{let p=dataPinjaman[id]; editId=id; document.getElementById("editNoPinjaman").value=p.nomor; document.getElementById("editAnggota").value=p.idAnggota; document.getElementById("editTanggal").value=inputDate(p.tanggal); document.getElementById("editMetode").value=p.sumberKas; document.getElementById("editJumlah").value=p.jumlah; document.getElementById("editJasa").value=p.jasa??Math.round(Number(p.jumlah||0)*0.2); document.getElementById("editKet").value=p.ket||""; document.getElementById("popupEdit").style.display="flex"; tutupRiwayat();}
+window.tutupPopup=()=>{document.getElementById("popupEdit").style.display="none"; editId=null; bukaRiwayat();}
+window.updatePinjaman=async()=>{if(!editId) return; let pLama=dataPinjaman[editId]; let idBaru=document.getElementById("editAnggota").value; let agBaru=dataAnggota[idBaru]; let nama=agBaru.nama.trim(); let tanggal=new Date(document.getElementById("editTanggal").value).getTime(); let jumlah=Number(document.getElementById("editJumlah").value); let jasa=Number(document.getElementById("editJasa").value); let metode=document.getElementById("editMetode").value; const updates={}; updates[`/pinjaman/${editId}`]={...pLama,nama,idAnggota:idBaru,tanggal,jumlah,jasa,sumberKas:metode,ket:document.getElementById("editKet").value}; if(pLama.kasId){updates[`/kas/transaksi/${pLama.kasId}`]={tanggal,jumlah,sumberKas:metode,keterangan:`Pinjaman ${nama} (${pLama.nomor})`,tipe:"keluar",kategori:"pinjaman",idAnggota:idBaru,namaAnggota:nama};} await update(ref(db),updates); tutupPopup();}
+window.hapusPinjaman=async id=>{let p=dataPinjaman[id]; if(!confirm(`Hapus ${p.nomor}?`)) return; await remove(ref(db,`pinjaman/${id}`)); if(p.kasId) await remove(ref(db,`kas/transaksi/${p.kasId}`)); delete dataPinjaman[id]; renderPinjaman();}
+window.cetakNota=id=>{const p=dataPinjaman[id]; if(!p) return; const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a5"}); const tgl=new Date(Number(p.tanggal)).toLocaleDateString("id-ID"); doc.text("KOPERASI ARFA",74,15,{align:"center"}); doc.text(`No: ${p.nomor}`,15,35); doc.text(`Nama: ${p.nama}`,15,42); doc.text(`Tanggal: ${tgl}`,15,49); doc.text(`Jumlah: Rp ${format(p.jumlah)}`,15,56); doc.save(`Nota_${p.nomor}.pdf`);}
+window.kirimWA=id=>{const p=dataPinjaman[id]; const ag=dataAnggota[p.idAnggota]; let noHp=(ag?.telepon||"").replace(/[^0-9]/g,""); if(noHp.startsWith("0")) noHp="62"+noHp.substring(1); if(!noHp) return showAlert("No WA kosong"); let total=Number(p.jumlah||0)+Number(p.jasa||0); const pesan=`Halo *${p.nama}*%0ANo: ${p.nomor}%0APinjaman: Rp ${format(p.jumlah)}%0ATotal: Rp ${format(total)}`; window.open(`https://wa.me/${noHp}?text=${pesan}`,'_blank');}
 </script>
-<div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div class="alert-icon" id="alertIcon">✓</div><div class="alert-text" id="alertText">Pesan alert</div><button onclick="tutupAlert()" id="alertBtn" style="background:var(--primary);border:none;padding:10px 18px;border-radius:10px;color:white;font-weight:700;cursor:pointer;width:100%">OK</button></div></div>
 </body>
 </html>
