@@ -186,11 +186,12 @@ button{
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.5);
+  background:rgba(0,0,0,.55);
   display:none;
   justify-content:center;
   align-items:center;
   z-index:999;
+  padding:15px;
 }
 
 .modal.show{
@@ -205,6 +206,56 @@ button{
   padding:20px;
   max-height:90vh;
   overflow:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,.2);
+}
+
+/* MODAL RIWAYAT */
+#modalRiwayat{
+  z-index:1000;
+}
+
+#modalRiwayat .modal-content{
+  max-width:700px;
+  width:100%;
+}
+
+#modalEditAngsuran{
+  z-index:1100;
+}
+
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.modal-header h2{
+  margin:0;
+}
+
+.btn-close{
+  background:var(--danger);
+  color:#fff;
+  width:34px;
+  height:34px;
+  padding:0;
+  border-radius:8px;
+  font-size:16px;
+}
+
+.riwayat-info{
+  background:#eff6ff;
+  color:#0f3057;
+  padding:10px 12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  font-size:12px;
+}
+
+#listTransaksi{
+  margin-top:10px;
 }
 
 .btn-group{
@@ -212,6 +263,15 @@ button{
   gap:10px;
   flex-wrap:wrap;
   margin-top:15px;
+}
+
+.btn-riwayat{
+  width:100%;
+  margin-top:10px;
+  background:#0f3057;
+  color:#fff;
+  font-size:12px;
+  padding:12px;
 }
 
 .info-box{
@@ -265,6 +325,29 @@ button{
 
 .overlay.active{
   display:block;
+}
+
+@media(max-width:600px){
+
+  .info-box{
+    grid-template-columns:1fr;
+  }
+
+  .btn-group button{
+    flex:1;
+    min-width:100px;
+  }
+
+  #modalRiwayat .btn-group{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+  }
+
+  #modalRiwayat .btn-group button{
+    width:100%;
+    min-width:0;
+  }
+
 }
 </style>
 </head>
@@ -357,55 +440,112 @@ button{
       </div>
     </div>
 
+    <!-- SIMPAN DAN CETAK -->
     <div class="btn-group">
-      <button type="button" class="btn-primary" id="btnSimpan">
+
+      <button
+        type="button"
+        class="btn-primary"
+        id="btnSimpan">
         💾 Simpan
       </button>
 
-      <button type="button" class="btn-warning" id="btnNota" disabled>
+      <button
+        type="button"
+        class="btn-warning"
+        id="btnNota"
+        disabled>
         🧾 Cetak Nota
       </button>
+
     </div>
 
-  </div>
-
-  <div class="card">
-
-    <button type="button" class="btn-success" id="btnRiwayat">
+    <!-- TOMBOL RIWAYAT DI BAWAH SIMPAN -->
+    <button
+      type="button"
+      class="btn-riwayat"
+      id="btnRiwayat">
       📋 Lihat Riwayat
     </button>
-
-    <div class="list" id="listTransaksi" style="display:none;"></div>
 
   </div>
 
 </div>
 
-<!-- MODAL EDIT -->
+
+<!-- =====================================================
+     MODAL RIWAYAT
+===================================================== -->
+
+<div id="modalRiwayat" class="modal">
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+
+      <h2>📋 Riwayat Angsuran</h2>
+
+      <button
+        type="button"
+        class="btn-close"
+        onclick="tutupRiwayat()">
+        ✕
+      </button>
+
+    </div>
+
+    <div class="riwayat-info">
+      Seluruh transaksi angsuran tersimpan ditampilkan
+      dari yang terbaru.
+    </div>
+
+    <div
+      class="list"
+      id="listTransaksi">
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     MODAL EDIT
+===================================================== -->
+
 <div id="modalEditAngsuran" class="modal">
 
   <div class="modal-content">
 
     <div style="text-align:right">
+
       <button
         onclick="tutupEditAngsuran()"
         style="background:#dc2626;color:#fff;padding:5px 10px;border-radius:6px;border:none">
         ✕
       </button>
+
     </div>
 
     <h2>Edit Angsuran</h2>
 
-    <input type="hidden" id="editAngsuranId">
+    <input
+      type="hidden"
+      id="editAngsuranId">
 
     <div class="form-group">
       <label>Nama</label>
-      <input type="text" id="editAngsuranNama" disabled>
+      <input
+        type="text"
+        id="editAngsuranNama"
+        disabled>
     </div>
 
     <div class="form-group">
       <label>Tanggal</label>
-      <input type="date" id="editAngsuranTanggal">
+      <input
+        type="date"
+        id="editAngsuranTanggal">
     </div>
 
     <div class="form-group">
@@ -418,24 +558,36 @@ button{
 
     <div class="form-group">
       <label>Jumlah Bayar</label>
-      <input type="text" id="editJumlahBayar">
+      <input
+        type="text"
+        id="editJumlahBayar">
     </div>
 
     <div class="btn-group">
-      <button type="button" class="btn-primary" id="btnUpdateAngsuran">
+
+      <button
+        type="button"
+        class="btn-primary"
+        id="btnUpdateAngsuran">
         Update
       </button>
 
-      <button type="button" class="btn-danger" id="btnHapusAngsuran">
+      <button
+        type="button"
+        class="btn-danger"
+        id="btnHapusAngsuran">
         Hapus
       </button>
+
     </div>
 
   </div>
 
 </div>
 
+
 <div id="toast" class="toast"></div>
+
 
 <script type="module">
 
@@ -460,14 +612,26 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 ========================================================= */
 
 const firebaseConfig = {
-  apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
-  authDomain:"arfa-c7dee.firebaseapp.com",
-  databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",
-  projectId:"arfa-c7dee"
+
+  apiKey:
+    "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+
+  authDomain:
+    "arfa-c7dee.firebaseapp.com",
+
+  databaseURL:
+    "https://arfa-c7dee-default-rtdb.firebaseio.com",
+
+  projectId:
+    "arfa-c7dee"
+
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const app =
+  initializeApp(firebaseConfig);
+
+const db =
+  getDatabase(app);
 
 
 /* =========================================================
@@ -475,14 +639,18 @@ const db = getDatabase(app);
 ========================================================= */
 
 const role =
-  (localStorage.getItem("role") || "user").toLowerCase();
+  (localStorage.getItem("role") || "user")
+    .toLowerCase();
 
 const username =
   localStorage.getItem("username");
 
 if(!username){
+
   alert("Login dulu");
+
   location.href="index.html";
+
 }
 
 
@@ -502,11 +670,13 @@ window.toggleSidebar = () => {
 
 };
 
+
 document.getElementById("overlay").onclick =
   window.toggleSidebar;
 
 
-document.getElementById("btnLogout").onclick = e => {
+document.getElementById("btnLogout").onclick =
+e => {
 
   e.preventDefault();
 
@@ -575,10 +745,13 @@ function showToast(message,error=false){
   t.innerText = message;
 
   t.className =
-    "toast show" + (error ? " error" : "");
+    "toast show" +
+    (error ? " error" : "");
 
   setTimeout(()=>{
+
     t.className="toast";
+
   },3500);
 
 }
@@ -591,7 +764,11 @@ function normalisasiWA(no){
       .replace(/\D/g,"");
 
   if(n.startsWith("0")){
-    n = "62" + n.slice(1);
+
+    n =
+      "62" +
+      n.slice(1);
+
   }
 
   return /^62\d{9,14}$/.test(n)
@@ -617,17 +794,23 @@ function normalisasiNama(s){
 
 function tanggalInputKeTimestamp(value){
 
-  if(!value) return Date.now();
-
-  const parts = value.split("-");
-
-  if(parts.length !== 3){
+  if(!value)
     return Date.now();
-  }
 
-  const tahun = Number(parts[0]);
-  const bulan = Number(parts[1]) - 1;
-  const hari = Number(parts[2]);
+  const parts =
+    value.split("-");
+
+  if(parts.length !== 3)
+    return Date.now();
+
+  const tahun =
+    Number(parts[0]);
+
+  const bulan =
+    Number(parts[1]) - 1;
+
+  const hari =
+    Number(parts[2]);
 
   return new Date(
     tahun,
@@ -644,18 +827,22 @@ function tanggalInputKeTimestamp(value){
 
 function timestampKeTanggalInput(timestamp){
 
-  if(!timestamp) return "";
+  if(!timestamp)
+    return "";
 
-  const d = new Date(Number(timestamp));
+  const d =
+    new Date(Number(timestamp));
 
   const tahun =
     d.getFullYear();
 
   const bulan =
-    String(d.getMonth()+1).padStart(2,"0");
+    String(d.getMonth()+1)
+      .padStart(2,"0");
 
   const hari =
-    String(d.getDate()).padStart(2,"0");
+    String(d.getDate())
+      .padStart(2,"0");
 
   return `${tahun}-${bulan}-${hari}`;
 
@@ -675,8 +862,10 @@ onValue(
     snapshot.forEach(d => {
 
       dataAnggotaCache[d.key] = {
+
         key:d.key,
         ...(d.val() || {})
+
       };
 
     });
@@ -696,8 +885,10 @@ onValue(
     snapshot.forEach(d => {
 
       dataPinjaman[d.key] = {
+
         id:d.key,
         ...(d.val() || {})
+
       };
 
     });
@@ -717,8 +908,10 @@ onValue(
     snapshot.forEach(d => {
 
       dataAngsuran[d.key] = {
+
         id:d.key,
         ...(d.val() || {})
+
       };
 
     });
@@ -736,9 +929,11 @@ onValue(
 
 function getMemberId(ag){
 
-  if(!ag) return "";
+  if(!ag)
+    return "";
 
   return String(
+
     ag.idAnggota ??
     ag.anggotaId ??
     ag.memberId ??
@@ -747,6 +942,7 @@ function getMemberId(ag){
     ag.barcode ??
     ag.key ??
     ""
+
   );
 
 }
@@ -756,32 +952,43 @@ function getMemberId(ag){
    CARI ANGGOTA DARI PINJAMAN
 ========================================================= */
 
-async function getAnggotaByPinjaman(pinjamanId){
+async function getAnggotaByPinjaman(
+  pinjamanId
+){
 
   const p =
     dataPinjaman[pinjamanId];
 
-  if(!p) return null;
+  if(!p)
+    return null;
 
 
   const kandidat = [
+
     p.anggotaId,
     p.idAnggota,
     p.memberId,
     p.idMember,
     p.barcode
+
   ]
   .filter(Boolean)
-  .map(v=>String(v).trim().toUpperCase());
+  .map(v=>
+    String(v)
+      .trim()
+      .toUpperCase()
+  );
 
 
   /* CARI BERDASARKAN KEY */
+
   for(const k in dataAnggotaCache){
 
     const ag =
       dataAnggotaCache[k];
 
     const nilai = [
+
       k,
       ag.id,
       ag.idAnggota,
@@ -789,22 +996,41 @@ async function getAnggotaByPinjaman(pinjamanId){
       ag.memberId,
       ag.idMember,
       ag.barcode
+
     ]
     .filter(Boolean)
-    .map(v=>String(v).trim().toUpperCase());
+    .map(v=>
+      String(v)
+        .trim()
+        .toUpperCase()
+    );
 
-    if(kandidat.some(x=>nilai.includes(x))){
+
+    if(
+      kandidat.some(
+        x=>nilai.includes(x)
+      )
+    ){
 
       return {
+
         key:k,
-        idAnggota:getMemberId(ag),
-        nama:ag.nama || p.nama || "",
+
+        idAnggota:
+          getMemberId(ag),
+
+        nama:
+          ag.nama ||
+          p.nama ||
+          "",
+
         telepon:
           ag.telepon ||
           ag.noHp ||
           ag.hp ||
           ag.phone ||
           ""
+
       };
 
     }
@@ -813,30 +1039,43 @@ async function getAnggotaByPinjaman(pinjamanId){
 
 
   /* CARI NAMA */
+
   const namaP =
     normalisasiNama(p.nama);
 
   if(namaP){
 
-    for(const k in dataAnggotaCache){
+    for(
+      const k in dataAnggotaCache
+    ){
 
       const ag =
         dataAnggotaCache[k];
 
       if(
-        normalisasiNama(ag.nama) === namaP
+        normalisasiNama(ag.nama) ===
+        namaP
       ){
 
         return {
+
           key:k,
-          idAnggota:getMemberId(ag),
-          nama:ag.nama || p.nama || "",
+
+          idAnggota:
+            getMemberId(ag),
+
+          nama:
+            ag.nama ||
+            p.nama ||
+            "",
+
           telepon:
             ag.telepon ||
             ag.noHp ||
             ag.hp ||
             ag.phone ||
             ""
+
         };
 
       }
@@ -847,6 +1086,7 @@ async function getAnggotaByPinjaman(pinjamanId){
 
 
   return {
+
     key:
       p.anggotaId ||
       p.idAnggota ||
@@ -863,6 +1103,7 @@ async function getAnggotaByPinjaman(pinjamanId){
         .trim(),
 
     telepon:""
+
   };
 
 }
@@ -870,7 +1111,6 @@ async function getAnggotaByPinjaman(pinjamanId){
 
 /* =========================================================
    SISA PINJAMAN
-   excludeId dipakai saat EDIT
 ========================================================= */
 
 function getSisaPinjaman(
@@ -884,8 +1124,10 @@ function getSisaPinjaman(
   if(!p){
 
     return {
+
       sisaPokok:0,
       sisaJasa:0
+
     };
 
   }
@@ -918,16 +1160,22 @@ function getSisaPinjaman(
 
     sisaPokok:
       Math.max(
+
         0,
+
         Number(p.jumlah || 0) -
         bayarPokok
+
       ),
 
     sisaJasa:
       Math.max(
+
         0,
+
         Number(p.jasa || 0) -
         bayarJasa
+
       )
 
   };
@@ -950,10 +1198,12 @@ function hitungTagihanBerjalan(
   if(!p){
 
     return {
+
       pokokTagihan:0,
       jasaTagihan:0,
       sisaPokok:0,
       sisaJasa:0
+
     };
 
   }
@@ -971,11 +1221,15 @@ function hitungTagihanBerjalan(
 
   const pokokBulan =
     Number(
+
       p.angsuranPokok ||
       Math.ceil(
+
         Number(p.jumlah || 0) /
         Number(p.tenor || 1)
+
       )
+
     );
 
 
@@ -994,8 +1248,11 @@ function hitungTagihanBerjalan(
       ),
 
     jasaTagihan:
+
       sisaPokok <= 0
+
         ? sisaJasa
+
         : Math.min(
             jasaBulan,
             sisaJasa
@@ -1020,7 +1277,8 @@ function loadPinjaman(){
       "pinjamanSelect"
     );
 
-  if(!sel) return;
+  if(!sel)
+    return;
 
 
   let html =
@@ -1044,7 +1302,9 @@ function loadPinjaman(){
 
       const label =
         lunas
+
           ? "LUNAS"
+
           : `Sisa Pokok ${rupiah(sisaPokok)} | Jasa ${rupiah(sisaJasa)}`;
 
 
@@ -1055,18 +1315,27 @@ function loadPinjaman(){
 
 
       html += `
+
         <option
           value="${id}"
           ${lunas ? "disabled" : ""}
         >
-          ${namaBersih} - ${p.nomor || id} | ${label}
+
+          ${namaBersih}
+          -
+          ${p.nomor || id}
+          |
+          ${label}
+
         </option>
+
       `;
 
     });
 
 
-  sel.innerHTML = html;
+  sel.innerHTML =
+    html;
 
 }
 
@@ -1082,22 +1351,30 @@ function renderRiwayat(){
       "listTransaksi"
     );
 
+  if(!list)
+    return;
+
+
   let html = "";
 
 
   const arr =
     Object.entries(dataAngsuran)
       .sort(
+
         (a,b)=>
           Number(b[1].tanggal || 0) -
           Number(a[1].tanggal || 0)
+
       );
 
 
   if(arr.length === 0){
 
     list.innerHTML =
-      `<div class="item">Belum ada transaksi</div>`;
+      `<div class="item">
+        Belum ada transaksi angsuran
+      </div>`;
 
     return;
 
@@ -1108,9 +1385,13 @@ function renderRiwayat(){
 
     const tgl =
       a.tanggal
+
         ? new Date(
             Number(a.tanggal)
-          ).toLocaleDateString("id-ID")
+          ).toLocaleDateString(
+            "id-ID"
+          )
+
         : "-";
 
 
@@ -1121,56 +1402,92 @@ function renderRiwayat(){
 
 
     html += `
+
       <div class="item">
 
         <div>
-          <b>${namaBersih}</b><br>
+
+          <b>
+            ${namaBersih || "-"}
+          </b>
+
+          <br>
 
           <small>
-            No: ${a.idPinjaman || "-"}
+
+            No:
+            ${a.idPinjaman || "-"}
+
             |
             ${tgl}
+
           </small>
+
         </div>
 
+
         <div style="margin-top:6px">
-          Pokok ${rupiah(a.pokok)}
+
+          Pokok
+          ${rupiah(a.pokok)}
+
           |
-          Jasa ${rupiah(a.jasa)}
+          Jasa
+          ${rupiah(a.jasa)}
+
+          |
+          Sukarela
+          ${rupiah(a.bayarSimpanan)}
+
           |
           Total
-          <b>${rupiah(a.jumlahBayar)}</b>
+
+          <b>
+            ${rupiah(a.jumlahBayar)}
+          </b>
+
         </div>
+
 
         <div class="btn-group">
 
           <button
             class="btn-primary"
             onclick="cetakNotaAngsuran('${id}')">
+
             🧾 Cetak
+
           </button>
+
 
           <button
             class="btn-success"
             onclick="kirimNotaRiwayat('${id}')">
+
             📤 WA
+
           </button>
+
 
           <button
             class="btn-warning"
             onclick="editAngsuran('${id}')">
+
             Edit
+
           </button>
 
         </div>
 
       </div>
+
     `;
 
   });
 
 
-  list.innerHTML = html;
+  list.innerHTML =
+    html;
 
 }
 
@@ -1180,29 +1497,45 @@ function renderRiwayat(){
 ========================================================= */
 
 const jumlahBayarEl =
-  document.getElementById("jumlahBayar");
+  document.getElementById(
+    "jumlahBayar"
+  );
 
 const pokokEl =
-  document.getElementById("pokok");
+  document.getElementById(
+    "pokok"
+  );
 
 const jasaEl =
-  document.getElementById("jasa");
+  document.getElementById(
+    "jasa"
+  );
 
 const simpananEl =
-  document.getElementById("simpanan");
+  document.getElementById(
+    "simpanan"
+  );
 
 const tanggalEl =
-  document.getElementById("tanggal");
+  document.getElementById(
+    "tanggal"
+  );
 
 const metodeEl =
-  document.getElementById("metode");
+  document.getElementById(
+    "metode"
+  );
 
 const btnNota =
-  document.getElementById("btnNota");
+  document.getElementById(
+    "btnNota"
+  );
 
 
 document
-  .getElementById("pinjamanSelect")
+  .getElementById(
+    "pinjamanSelect"
+  )
   .onchange = function(){
 
     pinIdAktif =
@@ -1221,23 +1554,32 @@ function updateInfo(){
 
   if(!pinIdAktif){
 
-    document.getElementById("tagihan").value="";
+    document.getElementById(
+      "tagihan"
+    ).value="";
+
     jumlahBayarEl.value="";
     pokokEl.value="";
     jasaEl.value="";
     simpananEl.value="";
 
+
     document.getElementById(
       "totalBayar"
-    ).innerText=rupiah(0);
+    ).innerText =
+      rupiah(0);
+
 
     document.getElementById(
       "sisaPokok"
-    ).innerText=rupiah(0);
+    ).innerText =
+      rupiah(0);
+
 
     document.getElementById(
       "sisaJasa"
-    ).innerText=rupiah(0);
+    ).innerText =
+      rupiah(0);
 
     return;
 
@@ -1287,7 +1629,8 @@ function updateInfo(){
 
 function hitungAlokasi(){
 
-  if(!pinIdAktif) return;
+  if(!pinIdAktif)
+    return;
 
 
   const bayar =
@@ -1325,7 +1668,7 @@ function hitungAlokasi(){
 
     j =
       Math.min(
-        bayar - p,
+        bayar-p,
         jasaTagihan
       );
 
@@ -1338,7 +1681,7 @@ function hitungAlokasi(){
       jasaTagihan;
 
     s =
-      bayar - wajib;
+      bayar-wajib;
 
   }
 
@@ -1351,6 +1694,7 @@ function hitungAlokasi(){
 
   simpananEl.value =
     rupiah(s);
+
 
   document.getElementById(
     "totalBayar"
@@ -1365,14 +1709,23 @@ jumlahBayarEl.addEventListener(
   function(){
 
     let a =
-      this.value.replace(/\D/g,"");
+      this.value.replace(
+        /\D/g,
+        ""
+      );
+
 
     this.value =
       a
+
         ? "Rp " +
           Number(a)
-            .toLocaleString("id-ID")
+            .toLocaleString(
+              "id-ID"
+            )
+
         : "";
+
 
     hitungAlokasi();
 
@@ -1385,6 +1738,7 @@ jumlahBayarEl.addEventListener(
 ========================================================= */
 
 function buatPayloadKas(
+
   jumlah,
   kategori,
   tanggal,
@@ -1393,13 +1747,15 @@ function buatPayloadKas(
   anggotaId,
   idAnggota,
   nama
+
 ){
 
   return {
 
-    jumlah:Number(jumlah || 0),
+    jumlah:
+      Number(jumlah || 0),
 
-    kategori:kategori,
+    kategori,
 
     tipe:"masuk",
 
@@ -1433,7 +1789,7 @@ function buatPayloadKas(
 
 
 /* =========================================================
-   CARI TRANSAKSI KAS BERDASARKAN ANGSURAN
+   CARI TRANSAKSI KAS
 ========================================================= */
 
 async function cariKasAngsuran(
@@ -1450,22 +1806,33 @@ async function cariKasAngsuran(
       snap.val() || {};
 
 
-    for(const key in data){
+    for(
+      const key in data
+    ){
 
       const x =
         data[key] || {};
 
 
       if(
-        String(x.angsuranId || "") ===
-        String(angsuranId) &&
-        String(x.kategori || "") ===
-        String(kategori)
+
+        String(
+          x.angsuranId || ""
+        ) === String(angsuranId)
+
+        &&
+
+        String(
+          x.kategori || ""
+        ) === String(kategori)
+
       ){
 
         return {
+
           key,
           data:x
+
         };
 
       }
@@ -1487,7 +1854,7 @@ async function cariKasAngsuran(
 
 
 /* =========================================================
-   SINKRON SATU KOMPONEN KAS
+   SINKRON KAS
 ========================================================= */
 
 async function sinkronKasKomponen({
@@ -1512,7 +1879,6 @@ async function sinkronKasKomponen({
     kasIdLama || "";
 
 
-  /* CARI ID LAMA JIKA BELUM TERSIMPAN */
   if(!kasId){
 
     const lama =
@@ -1521,14 +1887,13 @@ async function sinkronKasKomponen({
         kategori
       );
 
-    if(lama){
-      kasId = lama.key;
-    }
+    if(lama)
+      kasId =
+        lama.key;
 
   }
 
 
-  /* NILAI 0 = HAPUS */
   if(nilai <= 0){
 
     if(kasId){
@@ -1548,7 +1913,6 @@ async function sinkronKasKomponen({
   }
 
 
-  /* JIKA BELUM ADA, BUAT BARU */
   if(!kasId){
 
     const baru =
@@ -1561,6 +1925,7 @@ async function sinkronKasKomponen({
 
 
   await set(
+
     ref(
       db,
       "kas/transaksi/" +
@@ -1568,6 +1933,7 @@ async function sinkronKasKomponen({
     ),
 
     buatPayloadKas(
+
       nilai,
       kategori,
       tanggal,
@@ -1576,6 +1942,7 @@ async function sinkronKasKomponen({
       anggotaId,
       idAnggota,
       nama
+
     )
 
   );
@@ -1587,351 +1954,341 @@ async function sinkronKasKomponen({
 
 
 /* =========================================================
-   SIMPAN ANGSURAN + KAS
+   SIMPAN ANGSURAN
 ========================================================= */
 
 document
-  .getElementById("btnSimpan")
-  .onclick = async()=>{
+  .getElementById(
+    "btnSimpan"
+  )
+  .onclick =
+async()=>{
 
-    if(!pinIdAktif){
+  if(!pinIdAktif){
 
-      return showToast(
-        "Pilih peminjam",
-        true
+    return showToast(
+      "Pilih peminjam",
+      true
+    );
+
+  }
+
+
+  const jumlahBayar =
+    getNumber(
+      jumlahBayarEl.value
+    );
+
+
+  const p =
+    dataPinjaman[
+      pinIdAktif
+    ];
+
+
+  if(!p){
+
+    return showToast(
+      "Data pinjaman tidak ditemukan",
+      true
+    );
+
+  }
+
+
+  if(!tanggalEl.value){
+
+    return showToast(
+      "Isi tanggal",
+      true
+    );
+
+  }
+
+
+  if(!metodeEl.value){
+
+    return showToast(
+      "Pilih metode",
+      true
+    );
+
+  }
+
+
+  if(jumlahBayar <= 0){
+
+    return showToast(
+      "Isi jumlah bayar",
+      true
+    );
+
+  }
+
+
+  const tanggal =
+    tanggalInputKeTimestamp(
+      tanggalEl.value
+    );
+
+
+  const metode =
+    metodeEl.value;
+
+
+  const {
+    pokokTagihan,
+    jasaTagihan
+  } =
+    hitungTagihanBerjalan(
+      pinIdAktif
+    );
+
+
+  let alP=0;
+  let alJ=0;
+  let alS=0;
+
+
+  if(
+    jumlahBayar <=
+    pokokTagihan +
+    jasaTagihan
+  ){
+
+    alP =
+      Math.min(
+        jumlahBayar,
+        pokokTagihan
       );
 
-    }
-
-
-    const jumlahBayar =
-      getNumber(
-        jumlahBayarEl.value
+    alJ =
+      Math.min(
+        jumlahBayar-alP,
+        jasaTagihan
       );
 
+  }else{
 
-    const p =
-      dataPinjaman[
+    alP =
+      pokokTagihan;
+
+    alJ =
+      jasaTagihan;
+
+    alS =
+      jumlahBayar -
+      (
+        pokokTagihan +
+        jasaTagihan
+      );
+
+  }
+
+
+  try{
+
+    const anggota =
+      await getAnggotaByPinjaman(
         pinIdAktif
-      ];
+      );
 
 
-    if(!p){
+    if(!anggota){
 
       return showToast(
-        "Data pinjaman tidak ditemukan",
+        "Data anggota tidak ditemukan",
         true
       );
 
     }
 
 
-    if(!tanggalEl.value){
+    const baru =
+      push(angsuranRef);
 
-      return showToast(
-        "Isi tanggal",
-        true
-      );
-
-    }
+    const angsuranId =
+      baru.key;
 
 
-    if(!metodeEl.value){
-
-      return showToast(
-        "Pilih metode",
-        true
-      );
-
-    }
+    let kasPokokId="";
+    let kasJasaId="";
+    let kasSimpananId="";
 
 
-    if(jumlahBayar <= 0){
-
-      return showToast(
-        "Isi jumlah bayar",
-        true
-      );
-
-    }
+    if(alP > 0)
+      kasPokokId =
+        push(kasRef).key;
 
 
-    const tanggal =
-      tanggalInputKeTimestamp(
-        tanggalEl.value
-      );
+    if(alJ > 0)
+      kasJasaId =
+        push(kasRef).key;
 
 
-    const metode =
-      metodeEl.value;
+    if(alS > 0)
+      kasSimpananId =
+        push(kasRef).key;
 
 
-    const {
-      pokokTagihan,
-      jasaTagihan
-    } =
-      hitungTagihanBerjalan(
-        pinIdAktif
-      );
+    const updates = {};
 
 
-    let alP=0;
-    let alJ=0;
-    let alS=0;
+    updates[
+      "angsuran/" +
+      angsuranId
+    ] = {
+
+      pinjamanId:
+        pinIdAktif,
+
+      anggotaId:
+        anggota.key,
+
+      idAnggota:
+        anggota.idAnggota,
+
+      nama:
+        anggota.nama,
+
+      idPinjaman:
+        p.nomor ||
+        pinIdAktif,
+
+      tanggal,
+
+      pokok:
+        alP,
+
+      jasa:
+        alJ,
+
+      bayarSimpanan:
+        alS,
+
+      jumlahBayar,
+
+      metode,
+
+      kasPokokId,
+      kasJasaId,
+      kasSimpananId
+
+    };
 
 
-    if(
-      jumlahBayar <=
-      pokokTagihan +
-      jasaTagihan
-    ){
-
-      alP =
-        Math.min(
-          jumlahBayar,
-          pokokTagihan
-        );
-
-      alJ =
-        Math.min(
-          jumlahBayar - alP,
-          jasaTagihan
-        );
-
-    }else{
-
-      alP =
-        pokokTagihan;
-
-      alJ =
-        jasaTagihan;
-
-      alS =
-        jumlahBayar -
-        (
-          pokokTagihan +
-          jasaTagihan
-        );
-
-    }
-
-
-    try{
-
-      const anggota =
-        await getAnggotaByPinjaman(
-          pinIdAktif
-        );
-
-
-      if(!anggota){
-
-        return showToast(
-          "Data anggota tidak ditemukan",
-          true
-        );
-
-      }
-
-
-      /* ID ANGSURAN */
-      const baru =
-        push(angsuranRef);
-
-      const angsuranId =
-        baru.key;
-
-
-      /* ID KAS */
-      let kasPokokId = "";
-      let kasJasaId = "";
-      let kasSimpananId = "";
-
-
-      if(alP > 0){
-
-        kasPokokId =
-          push(kasRef).key;
-
-      }
-
-
-      if(alJ > 0){
-
-        kasJasaId =
-          push(kasRef).key;
-
-      }
-
-
-      if(alS > 0){
-
-        kasSimpananId =
-          push(kasRef).key;
-
-      }
-
-
-      /*
-       * SATU UPDATE KE FIREBASE
-       * Angsuran + Kas tersimpan bersamaan
-       */
-
-      const updates = {};
-
+    if(kasPokokId){
 
       updates[
-        "angsuran/" +
-        angsuranId
-      ] = {
+        "kas/transaksi/" +
+        kasPokokId
+      ] =
+        buatPayloadKas(
 
-        pinjamanId:
-          pinIdAktif,
-
-        anggotaId:
-          anggota.key,
-
-        idAnggota:
-          anggota.idAnggota,
-
-        nama:
-          anggota.nama,
-
-        idPinjaman:
-          p.nomor ||
-          pinIdAktif,
-
-        tanggal:
-          tanggal,
-
-        pokok:
           alP,
-
-        jasa:
-          alJ,
-
-        bayarSimpanan:
-          alS,
-
-        jumlahBayar:
-          jumlahBayar,
-
-        metode:
+          "angsuran_pokok",
+          tanggal,
           metode,
+          angsuranId,
+          anggota.key,
+          anggota.idAnggota,
+          anggota.nama
 
-        kasPokokId:
-          kasPokokId,
-
-        kasJasaId:
-          kasJasaId,
-
-        kasSimpananId:
-          kasSimpananId
-
-      };
-
-
-      if(kasPokokId){
-
-        updates[
-          "kas/transaksi/" +
-          kasPokokId
-        ] =
-          buatPayloadKas(
-            alP,
-            "angsuran_pokok",
-            tanggal,
-            metode,
-            angsuranId,
-            anggota.key,
-            anggota.idAnggota,
-            anggota.nama
-          );
-
-      }
-
-
-      if(kasJasaId){
-
-        updates[
-          "kas/transaksi/" +
-          kasJasaId
-        ] =
-          buatPayloadKas(
-            alJ,
-            "pendapatan_jasa",
-            tanggal,
-            metode,
-            angsuranId,
-            anggota.key,
-            anggota.idAnggota,
-            anggota.nama
-          );
-
-      }
-
-
-      if(kasSimpananId){
-
-        updates[
-          "kas/transaksi/" +
-          kasSimpananId
-        ] =
-          buatPayloadKas(
-            alS,
-            "simpanan_sukarela",
-            tanggal,
-            metode,
-            angsuranId,
-            anggota.key,
-            anggota.idAnggota,
-            anggota.nama
-          );
-
-      }
-
-
-      await updateData(
-        ref(db),
-        updates
-      );
-
-
-      showToast(
-        `Tersimpan ${anggota.nama} + transaksi kas`
-      );
-
-
-      jumlahBayarEl.value="";
-
-      updateInfo();
-
-      btnNota.disabled=false;
-
-      btnNota.onclick=()=>{
-        cetakNotaAngsuran(
-          angsuranId
         );
-      };
+
+    }
+
+
+    if(kasJasaId){
+
+      updates[
+        "kas/transaksi/" +
+        kasJasaId
+      ] =
+        buatPayloadKas(
+
+          alJ,
+          "pendapatan_jasa",
+          tanggal,
+          metode,
+          angsuranId,
+          anggota.key,
+          anggota.idAnggota,
+          anggota.nama
+
+        );
+
+    }
+
+
+    if(kasSimpananId){
+
+      updates[
+        "kas/transaksi/" +
+        kasSimpananId
+      ] =
+        buatPayloadKas(
+
+          alS,
+          "simpanan_sukarela",
+          tanggal,
+          metode,
+          angsuranId,
+          anggota.key,
+          anggota.idAnggota,
+          anggota.nama
+
+        );
+
+    }
+
+
+    await updateData(
+      ref(db),
+      updates
+    );
+
+
+    showToast(
+      `Tersimpan ${anggota.nama} + transaksi kas`
+    );
+
+
+    jumlahBayarEl.value="";
+
+    updateInfo();
+
+
+    btnNota.disabled=false;
+
+
+    btnNota.onclick=()=>{
 
       cetakNotaAngsuran(
         angsuranId
       );
 
+    };
 
-    }catch(e){
 
-      console.error(e);
+    cetakNotaAngsuran(
+      angsuranId
+    );
 
-      showToast(
-        "Gagal menyimpan: " +
-        e.message,
-        true
-      );
 
-    }
+  }catch(e){
 
-  };
+    console.error(e);
+
+    showToast(
+      "Gagal menyimpan: " +
+      e.message,
+      true
+    );
+
+  }
+
+};
 
 
 /* =========================================================
@@ -1944,7 +2301,8 @@ function(id){
   const a =
     dataAngsuran[id];
 
-  if(!a) return;
+  if(!a)
+    return;
 
 
   const {jsPDF} =
@@ -1996,7 +2354,9 @@ function(id){
     "Tanggal: " +
     new Date(
       Number(a.tanggal)
-    ).toLocaleDateString("id-ID"),
+    ).toLocaleDateString(
+      "id-ID"
+    ),
     15,
     y
   );
@@ -2043,10 +2403,20 @@ function(id){
 
 
   doc.save(
+
     "nota_" +
-    String(a.nama || "angsuran")
-      .replace(/[^\w\- ]/g,"") +
+
+    String(
+      a.nama ||
+      "angsuran"
+    )
+    .replace(
+      /[^\w\- ]/g,
+      ""
+    ) +
+
     ".pdf"
+
   );
 
 };
@@ -2061,6 +2431,7 @@ async function(id){
 
   const a =
     dataAngsuran[id];
+
 
   if(!a){
 
@@ -2165,8 +2536,10 @@ async function(id){
       ){
 
         ag = {
+
           key:k,
           ...all[k]
+
         };
 
         break;
@@ -2238,10 +2611,13 @@ Terima kasih.`;
 
 
   window.open(
+
     `https://wa.me/${noWA}?text=${
       encodeURIComponent(pesan)
     }`,
+
     "_blank"
+
   );
 
 };
@@ -2257,12 +2633,14 @@ function(id){
   const a =
     dataAngsuran[id];
 
-  if(!a) return;
+  if(!a)
+    return;
 
 
   document.getElementById(
     "editAngsuranId"
-  ).value=id;
+  ).value =
+    id;
 
 
   document.getElementById(
@@ -2320,7 +2698,7 @@ function(){
 
 
 /* =========================================================
-   UPDATE ANGSURAN + UPDATE KAS
+   UPDATE ANGSURAN
 ========================================================= */
 
 document
@@ -2436,12 +2814,6 @@ async function(){
     }
 
 
-    /*
-     * PENTING:
-     * Angsuran yang sedang diedit
-     * tidak dihitung sebagai pembayaran lama.
-     */
-
     const {
       pokokTagihan,
       jasaTagihan
@@ -2471,7 +2843,7 @@ async function(){
 
       alJ =
         Math.min(
-          jumlahBayar - alP,
+          jumlahBayar-alP,
           jasaTagihan
         );
 
@@ -2499,10 +2871,6 @@ async function(){
       );
 
 
-    /*
-     * KAS LAMA
-     */
-
     let kasPokokId =
       a.kasPokokId || "";
 
@@ -2513,11 +2881,6 @@ async function(){
       a.kasSimpananId || "";
 
 
-    /*
-     * JIKA DATA LAMA BELUM MENYIMPAN ID KAS,
-     * CARI BERDASARKAN angsuranId.
-     */
-
     if(!kasPokokId){
 
       const x =
@@ -2526,9 +2889,9 @@ async function(){
           "angsuran_pokok"
         );
 
-      if(x){
-        kasPokokId=x.key;
-      }
+      if(x)
+        kasPokokId =
+          x.key;
 
     }
 
@@ -2541,9 +2904,9 @@ async function(){
           "pendapatan_jasa"
         );
 
-      if(x){
-        kasJasaId=x.key;
-      }
+      if(x)
+        kasJasaId =
+          x.key;
 
     }
 
@@ -2556,16 +2919,12 @@ async function(){
           "simpanan_sukarela"
         );
 
-      if(x){
-        kasSimpananId=x.key;
-      }
+      if(x)
+        kasSimpananId =
+          x.key;
 
     }
 
-
-    /*
-     * SINKRON POKOK
-     */
 
     kasPokokId =
       await sinkronKasKomponen({
@@ -2596,10 +2955,6 @@ async function(){
       });
 
 
-    /*
-     * SINKRON JASA
-     */
-
     kasJasaId =
       await sinkronKasKomponen({
 
@@ -2628,10 +2983,6 @@ async function(){
 
       });
 
-
-    /*
-     * SINKRON SUKARELA
-     */
 
     kasSimpananId =
       await sinkronKasKomponen({
@@ -2662,15 +3013,13 @@ async function(){
       });
 
 
-    /*
-     * UPDATE ANGSURAN
-     */
-
     await updateData(
+
       ref(
         db,
         "angsuran/" + id
       ),
+
       {
 
         jumlahBayar,
@@ -2703,12 +3052,11 @@ async function(){
           pinjamanId,
 
         kasPokokId,
-
         kasJasaId,
-
         kasSimpananId
 
       }
+
     );
 
 
@@ -2736,7 +3084,7 @@ async function(){
 
 
 /* =========================================================
-   HAPUS ANGSURAN + HAPUS KAS
+   HAPUS ANGSURAN
 ========================================================= */
 
 document
@@ -2768,8 +3116,10 @@ async function(){
 
   if(
     !confirm(
+
       "Hapus angsuran ini?\n\n" +
       "Transaksi kas terkait juga akan dihapus."
+
     )
   ){
 
@@ -2780,27 +3130,27 @@ async function(){
 
   try{
 
-    /*
-     * CARI ID KAS DARI DATA ANGSURAN
-     */
-
-    const kasIds = new Set();
+    const kasIds =
+      new Set();
 
 
     if(a.kasPokokId)
-      kasIds.add(a.kasPokokId);
+      kasIds.add(
+        a.kasPokokId
+      );
+
 
     if(a.kasJasaId)
-      kasIds.add(a.kasJasaId);
+      kasIds.add(
+        a.kasJasaId
+      );
+
 
     if(a.kasSimpananId)
-      kasIds.add(a.kasSimpananId);
+      kasIds.add(
+        a.kasSimpananId
+      );
 
-
-    /*
-     * CARI JUGA TRANSAKSI KAS LAMA
-     * BERDASARKAN angsuranId
-     */
 
     const snap =
       await get(kasRef);
@@ -2819,7 +3169,9 @@ async function(){
 
 
       if(
-        String(x.angsuranId || "") ===
+        String(
+          x.angsuranId || ""
+        ) ===
         String(id)
       ){
 
@@ -2830,10 +3182,6 @@ async function(){
     }
 
 
-    /*
-     * MULTI LOCATION DELETE
-     */
-
     const updates = {};
 
 
@@ -2842,14 +3190,16 @@ async function(){
     ] = null;
 
 
-    kasIds.forEach(kasId=>{
+    kasIds.forEach(
+      kasId=>{
 
-      updates[
-        "kas/transaksi/" +
-        kasId
-      ] = null;
+        updates[
+          "kas/transaksi/" +
+          kasId
+        ] = null;
 
-    });
+      }
+    );
 
 
     await updateData(
@@ -2882,7 +3232,7 @@ async function(){
 
 
 /* =========================================================
-   RIWAYAT BUTTON
+   BUKA POPUP RIWAYAT
 ========================================================= */
 
 document
@@ -2891,18 +3241,53 @@ document
   )
   .onclick = ()=>{
 
-    const l =
-      document.getElementById(
-        "listTransaksi"
-      );
+    renderRiwayat();
 
-
-    l.style.display =
-      l.style.display === "none"
-        ? "flex"
-        : "none";
+    document
+      .getElementById(
+        "modalRiwayat"
+      )
+      .classList.add("show");
 
   };
+
+
+/* =========================================================
+   TUTUP POPUP RIWAYAT
+========================================================= */
+
+window.tutupRiwayat =
+function(){
+
+  document
+    .getElementById(
+      "modalRiwayat"
+    )
+    .classList.remove("show");
+
+};
+
+
+/* =========================================================
+   KLIK AREA GELAP = TUTUP RIWAYAT
+========================================================= */
+
+document
+  .getElementById(
+    "modalRiwayat"
+  )
+  .addEventListener(
+    "click",
+    function(e){
+
+      if(e.target === this){
+
+        tutupRiwayat();
+
+      }
+
+    }
+  );
 
 
 /* =========================================================
@@ -2915,17 +3300,20 @@ const sekarang =
 
 tanggalEl.value =
   [
+
     sekarang.getFullYear(),
+
     String(
       sekarang.getMonth()+1
     ).padStart(2,"0"),
+
     String(
       sekarang.getDate()
     ).padStart(2,"0")
+
   ].join("-");
 
 </script>
 
 </body>
 </html>
-
