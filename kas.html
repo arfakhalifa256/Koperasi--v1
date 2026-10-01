@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kas Koperasi</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
@@ -10,90 +9,53 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--primary:#1e90ff;--primary-dark:#0f3057;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.05);--radius:12px;--success:#16a34a;--danger:#dc2626}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;padding-bottom:20px}
-header{background:linear-gradient(to right,var(--primary),var(--primary-dark));color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 3px 10px rgba(0,0,0,0.15);position:sticky;top:0;z-index:100}
-.header-left{display:flex;align-items:center;gap:10px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:#fff;padding:2px}
-.brand-text.subtitle{font-size:10px;opacity:0.9;line-height:1}
-.brand-text.title{font-size:12px;font-weight:700;line-height:1.2}
+header{background:linear-gradient(to right,var(--primary),var(--primary-dark));color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px}.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px}
 .container{padding:14px;max-width:1200px;margin:0 auto}
-.page-title{text-align:center;margin:8px 0 16px;font-size:16px;font-weight:700;color:var(--primary-dark)}
 .card{background:var(--card);padding:14px;border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
 .card h3{margin:0 0 12px 0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
-.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
-.summary-grid.total{grid-template-columns:1fr}
-.summary-item{background:#f8fafc;padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center}
-.summary-item.label{font-size:11px;color:var(--muted);margin-bottom:2px}
-.summary-item.value{font-size:15px;font-weight:700;color:var(--text)}
-.summary-item.total.value{font-size:18px;color:var(--primary)}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}.summary-item{background:#f8fafc;padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center}.summary-item.total{grid-column:1/-1}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-group{display:flex;flex-direction:column;gap:4px}
-.form-group.full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px}.form-group.full{grid-column:1/-1}
 .form-group label{font-size:11px;font-weight:600;color:var(--muted)}
-.form-group input,.form-group select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Poppins',sans-serif}
-.btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif}
+.form-group input,.form-group select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px}
+.btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600}
+.btn-secondary{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);cursor:pointer;font-size:12px;font-weight:600;margin-top:8px}
 .btn-danger{background:var(--danger)}
 .table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--border);border-radius:8px}
 table{width:100%;border-collapse:collapse;font-size:11px;min-width:750px}
 th{background:#f8fafc;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border);white-space:nowrap}
 td{padding:7px 8px;border-bottom:1px solid var(--border)}
-tr:hover{background:#f8fafc}
-.text-right{text-align:right}
-.masuk{color:var(--success);font-weight:600}
-.keluar{color:var(--danger);font-weight:600}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:9999}
+.masuk{color:var(--success);font-weight:600}.keluar{color:var(--danger);font-weight:600}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:9999;padding:10px}
 .modal.show{display:flex}
-.modal-content{background:#fff;width:95%;max-width:450px;border-radius:12px;padding:15px}
-.modal-content h3{margin-bottom:12px}
+.modal-content{background:#fff;width:95%;max-width:450px;border-radius:12px;padding:15px;max-height:90vh;overflow-y:auto}
+.modal-content.large{max-width:900px;width:98%}
 .modal-btns{display:flex;gap:8px;margin-top:15px}
 .btn-save{flex:1;padding:10px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:600;cursor:pointer}
 .btn-delete{flex:1;padding:10px;border:none;border-radius:8px;background:var(--danger);color:#fff;font-weight:600;cursor:pointer}
 .btn-cancel{flex:1;padding:10px;border:none;border-radius:8px;background:#6b7280;color:#fff;font-weight:600;cursor:pointer}
-.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:0.3s;z-index:9999;overflow-y:auto;box-shadow:2px 0 10px rgba(0,0,0,0.2);}
-.sidebar.open{left:0;}
-.sidebar-logo{display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.2);}
-.sidebar-logo img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#fff;padding:2px;}
-.sidebar-logo h3{color:#fff;margin:0;font-size:15px;font-weight:600;}
-.sidebar-section{color:rgba(255,255,255,0.6);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px 12px;}
-.sidebar a{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;padding:10px 10px;border-radius:10px;margin-bottom:2px;font-size:10px;font-weight:500;transition:0.2s;}
-.sidebar a:hover{background:rgba(255,255,255,0.15);transform:translateX(4px);}
-.sidebar a.active{background:rgba(255,255,255,0.2);}
-.overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:none;z-index:999;}
-.overlay.active{display:block;}
-.menu-btn{cursor:pointer;font-size:22px;padding:4px 8px;border-radius:6px}
-@media(max-width:768px){body{font-size:12px}.container{padding:10px}.summary-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
+.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:0.3s;z-index:9999;overflow-y:auto}
+.sidebar.open{left:0;}.sidebar a{display:flex;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;font-size:10px}
+.sidebar a.active{background:rgba(255,255,255,.2);}.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:999;}.overlay.active{display:block;}
+.menu-btn{cursor:pointer;font-size:22px}
 </style>
 </head>
 <body>
-
 <div id="sidebar" class="sidebar">
-  <div class="sidebar-logo"><img src="img/icon-192.png" alt="Logo"><h3>Menu Koperasi</h3></div>
-  <a href="dashboard.html"><span class="material-icons">home</span>Beranda</a>
-  <div class="sidebar-section">Data Master</div>
-  <a href="anggota.html">👤 Data Anggota</a><a href="kas.html" class="active">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
-  <div class="sidebar-section">Keuangan</div><a href="pinjaman.html">💰 Pinjaman</a><a href="cair.html">💸 Pencairan Simpanan</a><a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a>
-  <div class="sidebar-section">Laporan</div><a href="laporan-kas-pwa.html">💰 Laporan Kas</a><a href="laporan-anggota.html">📋 Pinjaman & Angsuran</a><a href="nota-tagihan.html">🧾 Nota Tagihan</a><a href="transaksi.html">📊 Lap transaksi</a><a href="log-aktivitas.html">📋 Log Aktivitas</a>
-  <div class="sidebar-section">Pengaturan</div><a href="backup.html">💾 Backup Data</a><a href="user.html">⚙️ Kelola User</a><a href="#" id="btnLogout">🚪 Logout</a>
+  <a href="dashboard.html">🏠 Beranda</a><a href="kas.html" class="active">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="pinjaman.html">💰 Pinjaman</a><a href="log-aktivitas.html">📋 Log Aktivitas</a><a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
+<header><div class="brand"><img src="img/icon-192.png"><div>KAS KOPERASI ARFA</div></div><span class="menu-btn" onclick="toggleSidebar()">☰</span></header>
 
-<header>
-  <div class="header-left">
-    <div class="brand"><img src="img/icon-192.png"><div class="brand-text"><div class="subtitle">Koperasi</div><div class="title">ARFA</div></div></div>
-    <span id="userInfo"></span>
-  </div>
-  <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-</header>
-
-
+<div class="container">
   <div class="card" id="cardSaldoAwal">
     <h3>⚙️ Pengaturan Saldo Awal</h3>
-    <p style="font-size:11px;color:#6b7280;margin-bottom:10px">Atur saldo awal koperasi. Hanya bisa diakses Admin.</p>
     <button class="btn-primary" onclick="location.href='set-saldo.html'">Buka Halaman Set Saldo Awal</button>
   </div>
-<div style="background:#dbeafe;padding:8px 12px;border-radius:8px;margin-bottom:10px;font-size:11px;border:1px solid #93c5fd">
-  👤 Input sebagai: <b id="petugasDisplay">-</b>
-</div>
+
+  <div style="background:#dbeafe;padding:8px 12px;border-radius:8px;margin-bottom:10px;font-size:11px;border:1px solid #93c5fd">👤 Input sebagai: <b id="petugasDisplay">-</b> | Cash: <b id="saldoCash">Rp 0</b> | Bank: <b id="saldoBank">Rp 0</b> | Total: <b id="saldoTotal">Rp 0</b></div>
+
   <div class="card" id="cardInputKas">
     <h3>💵 Input Transaksi Kas</h3>
     <div class="form-grid">
@@ -104,19 +66,33 @@ tr:hover{background:#f8fafc}
       <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="tanggal"></div>
       <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" placeholder="0"></div>
       <div class="form-group full"><label>Keterangan</label><input type="text" id="keterangan" placeholder="Otomatis: Nama Anggota - Kategori"></div>
-      <div class="form-group full"><button class="btn-primary" id="btnSimpan">💾 Simpan Transaksi</button></div>
+      <div class="form-group full">
+        <button class="btn-primary" id="btnSimpan">💾 Simpan Transaksi</button>
+        <button class="btn-secondary" id="btnTampilkanRiwayat" onclick="bukaRiwayatKas()">📋 Tampilkan Riwayat Kas (<span id="jmlKas">0</span>)</button>
+      </div>
     </div>
   </div>
+</div>
 
-  <div class="card">
-    <h3>📒 Riwayat Transaksi</h3>
+<!-- POPUP RIWAYAT KAS -->
+<div class="modal" id="modalRiwayatKas">
+  <div class="modal-content large">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3 style="margin:0">📒 Riwayat Transaksi Kas</h3>
+      <button onclick="tutupRiwayatKas()" style="background:#dc2626;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-weight:700;cursor:pointer">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+      <input type="text" id="searchKas" placeholder="Cari keterangan / anggota..." style="flex:1;min-width:160px;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px" oninput="renderRiwayatFiltered()">
+      <select id="filterTipeKas" style="padding:8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px" onchange="renderRiwayatFiltered()"><option value="">Semua Tipe</option><option value="masuk">MASUK</option><option value="keluar">KELUAR</option></select>
+      <select id="filterSumberKas" style="padding:8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px" onchange="renderRiwayatFiltered()"><option value="">Semua Sumber</option><option value="cash">CASH</option><option value="bank">BANK</option></select>
+    </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Tipe</th><th class="text-right">Jumlah</th><th>Sumber</th><th>Kategori</th><th>Admin</th></tr></thead>
+        <thead><tr><th>Tanggal</th><th>Keterangan</th><th>Tipe</th><th style="text-align:right">Jumlah</th><th>Sumber</th><th>Kategori</th><th>Admin</th></tr></thead>
         <tbody id="riwayat"></tbody>
       </table>
     </div>
-    <p id="infoAkses" style="font-size:10px;color:#6b7280;margin-top:8px;display:none">*Mode User: Hanya lihat, tidak bisa input/edit</p>
+    <div style="margin-top:8px;font-size:10px;color:#6b7280">* Klik baris untuk edit (admin only)</div>
   </div>
 </div>
 
@@ -130,301 +106,130 @@ tr:hover{background:#f8fafc}
     <div class="form-group"><label>Jumlah</label><input type="number" id="editKasJumlah"></div>
     <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="editKasTanggal"></div>
     <div class="form-group"><label>Keterangan</label><input type="text" id="editKasKeterangan"></div>
-    <div class="modal-btns">
-      <button class="btn-save" onclick="updateKas()">Simpan</button>
-      <button class="btn-delete" onclick="hapusKasModal()">Hapus</button>
-      <button class="btn-cancel" onclick="tutupModalKas()">Batal</button>
-    </div>
+    <div class="modal-btns"><button class="btn-save" onclick="updateKas()">Simpan</button><button class="btn-delete" onclick="hapusKasModal()">Hapus</button><button class="btn-cancel" onclick="tutupModalKas()">Batal</button></div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
+const app=initializeApp(firebaseConfig); const db=getDatabase(app);
+const role=localStorage.getItem("role")||"user"; const username=localStorage.getItem("username")||"Unknown";
+if(role!=="admin"){document.getElementById("cardInputKas").style.display="none"; document.getElementById("cardSaldoAwal").style.display="none";}
+const kasTransaksiRef=ref(db,"kas/transaksi"), saldoAwalRef=ref(db,"kas/saldoAwal"), anggotaRef=ref(db,"anggota");
+let saldoCash=0, saldoBank=0, totalMasuk=0, totalKeluar=0, dataSaldoAwal={}, dataTransaksi={}, dataAnggota={};
+function formatRp(n){return Number(n||0).toLocaleString("id-ID");}
+function formatTanggalWIB(ts){if(!ts) return "-"; return new Date(Number(ts)).toLocaleString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Jakarta"});}
+function getTanggalLocalInput(ts=null){const now=ts?new Date(Number(ts)):new Date(); const pad=n=>String(n).padStart(2,"0"); return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;}
+function simpanLog(aksi,data){try{const waktu=new Date().toLocaleString("id-ID",{timeZone:"Asia/Jakarta"}); push(ref(db,"/log_aktivitas"),{waktu:Date.now(),waktu_baca:waktu,aksi,oleh:username,role,username:data.namaAnggota||username,...data});}catch(e){console.log(e);}}
 
-const firebaseConfig = { apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain: "arfa-c7dee.firebaseapp.com", databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com", projectId: "arfa-c7dee" };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// POPUP RIWAYAT
+window.bukaRiwayatKas=()=>{document.getElementById("modalRiwayatKas").classList.add("show"); renderRiwayatFiltered();}
+window.tutupRiwayatKas=()=>{document.getElementById("modalRiwayatKas").classList.remove("show");}
+document.getElementById("modalRiwayatKas").addEventListener("click",e=>{if(e.target.id==="modalRiwayatKas") tutupRiwayatKas();});
 
-const role = localStorage.getItem("role") || "user";
-const username = localStorage.getItem("username") || "Unknown";
+onValue(anggotaRef,snap=>{dataAnggota=snap.val()||{}; const sel=document.getElementById("anggotaSelect"); sel.innerHTML="<option value=''>Pilih Anggota</option>"; Object.entries(dataAnggota).forEach(([k,ag])=>{const idAng=ag.idAnggota||ag.id||k; sel.innerHTML+=`<option value="${k}">${ag.nama||"-"} - ${idAng}</option>`;});});
+window.toggleAnggota=()=>{const kat=document.getElementById("kategori").value; const f=document.getElementById("formAnggota"); if(kat.includes("simpanan")||kat.includes("angsuran")||kat.includes("shu")) f.style.display="flex"; else{ f.style.display="none"; document.getElementById("anggotaSelect").value=""; }};
+window.toggleSidebar=()=>{document.getElementById("sidebar").classList.toggle("open"); document.getElementById("overlay").classList.toggle("active");};
+document.getElementById("overlay").addEventListener("click",toggleSidebar);
+document.getElementById("btnLogout").addEventListener("click",()=>{localStorage.clear(); location.href="index.html";});
+function getLoginDetail(){let roleL=localStorage.getItem("role")||"ADMIN"; let userL=localStorage.getItem("username")||"Unknown"; let namaL=localStorage.getItem("nama")||userL; return{role:String(roleL).toUpperCase(),username:String(userL),nama:String(namaL),petugasDisplay:`${userL} (${String(roleL).toUpperCase()})`};}
 
-// ====== FIX AKSES HANYA ADMIN ======
-if(role !== "admin"){
-  document.getElementById("cardInputKas").style.display = "none";
-  document.getElementById("cardSaldoAwal").style.display = "none";
-  document.getElementById("infoAkses").style.display = "block";
-}
+document.addEventListener("DOMContentLoaded",()=>{const LD=getLoginDetail(); const el=document.getElementById("petugasDisplay"); if(el) el.innerText=LD.petugasDisplay;});
 
-const kasTransaksiRef = ref(db,"kas/transaksi");
-const saldoAwalRef = ref(db, "kas/saldoAwal");
-const anggotaRef = ref(db,"anggota");
+function isiOpsiKategori(el,tipe,selected=""){let html=""; if(tipe==="masuk"){html=`<option value="simpanan_pokok" ${selected==="simpanan_pokok"?"selected":""}>Simpanan Pokok</option><option value="simpanan_wajib" ${selected==="simpanan_wajib"?"selected":""}>Simpanan Wajib</option><option value="simpanan_sukarela" ${selected==="simpanan_sukarela"?"selected":""}>Simpanan Sukarela</option><option value="angsuran_pokok" ${selected==="angsuran_pokok"?"selected":""}>Angsuran Pokok</option><option value="pendapatan_jasa" ${selected==="pendapatan_jasa"?"selected":""}>Pendapatan Jasa</option><option value="pendapatan_lain" ${selected==="pendapatan_lain"?"selected":""}>Pendapatan Lain-lain</option>`;}else{html=`<option value="konsumsi" ${selected==="konsumsi"?"selected":""}>Konsumsi</option><option value="biaya_operasional" ${selected==="biaya_operasional"?"selected":""}>Biaya Operasional</option><option value="pinjaman" ${selected==="pinjaman"?"selected":""}>Pinjaman</option><option value="pengambilan_simpanan" ${selected==="pengambilan_simpanan"?"selected":""}>Pengambilan Simpanan</option><option value="transfer_bank" ${selected==="transfer_bank"?"selected":""}>Transfer Bank</option>`;} el.innerHTML=html;}
+window.toggleKategori=()=>{const tipe=document.getElementById("tipe").value; isiOpsiKategori(document.getElementById("kategori"),tipe==="biaya"?"keluar":tipe); toggleAnggota();};
+window.toggleEditKategori=()=>{const tipe=document.getElementById("editKasTipe").value; isiOpsiKategori(document.getElementById("editKasKategori"),tipe==="biaya"?"keluar":tipe);};
 
-let saldoCash = 0, saldoBank = 0, totalMasuk = 0, totalKeluar = 0;
-let dataSaldoAwal = {};
-let dataTransaksi = {};
-let dataAnggota = {};
-
-function toWIB(ms){ return ms + (7*60*60*1000); }
-
-function simpanLog(aksi, data){
+document.getElementById("btnSimpan").onclick=async()=>{
+  if(role!=="admin"){alert("Hanya admin!"); return;}
+  const LD=getLoginDetail(); const sumberKas=document.getElementById("sumberKas").value; let tipe=document.getElementById("tipe").value; const jumlah=Number(document.getElementById("jumlah").value); const ket=document.getElementById("keterangan").value; const tanggalInput=document.getElementById("tanggal").value; const kategori=document.getElementById("kategori").value||""; const anggotaId=document.getElementById("anggotaSelect").value;
+  if(!jumlah||jumlah<=0){alert("Jumlah wajib diisi"); return;}
+  let namaAnggota="", keteranganFinal=ket||kategori;
+  if(kategori.includes("simpanan")||kategori.includes("angsuran")||kategori.includes("shu")){if(!anggotaId){alert("Pilih anggota dulu"); return;} namaAnggota=dataAnggota[anggotaId]?.nama||"-"; keteranganFinal=`${namaAnggota} - ${ket||kategori}`;}
+  if(tipe==="keluar"||tipe==="biaya"){const saldoSaat=sumberKas==="cash"?saldoCash:saldoBank; if(jumlah>saldoSaat){alert(`Saldo ${sumberKas.toUpperCase()} tidak cukup: Rp ${formatRp(saldoSaat)}`); return;}}
+  if(tipe==="biaya") tipe="keluar";
+  const tanggal=tanggalInput?new Date(tanggalInput).getTime():Date.now();
+  const dataBaru={sumberKas,tipe,jumlah,kategori,keterangan:keteranganFinal,anggotaId:anggotaId||null,namaAnggota:namaAnggota||null,tanggal,petugas:LD.petugasDisplay,petugas_username:LD.username,petugas_role:LD.role,created_by:LD.username,created_at:Date.now()};
   try{
-    const waktu = new Date().toLocaleString('id-ID', {timeZone: 'Asia/Jakarta'});
-    push(ref(db, "/log_aktivitas"), {
-      waktu: Date.now(),
-      waktu_baca: waktu,
-      aksi: aksi,
-      oleh: username,
-      role: role,
-      username: data.namaAnggota || username,
-      ...data
-    });
-  }catch(e){ console.log(e); }
-}
-
-onValue(anggotaRef, snap => {
-  dataAnggota = snap.val() || {};
-  const sel = document.getElementById("anggotaSelect");
-  sel.innerHTML = "<option value=''>Pilih Anggota</option>";
-  Object.entries(dataAnggota).forEach(([key, ag])=>{
-    sel.innerHTML += `<option value="${key}">${ag.nama} - ${ag.id || ag.idAnggota || ''}</option>`;
-  });
-});
-
-window.toggleAnggota = function(){
-  const kat = document.getElementById("kategori").value;
-  const formAnggota = document.getElementById("formAnggota");
-  formAnggota.style.display = (kat.includes("simpanan") || kat.includes("angsuran") || kat.includes("shu")) ? "block" : "none";
-}
-
-function formatRp(n){ return Number(n||0).toLocaleString("id-ID"); }
-
-window.toggleSidebar = function(){
-  const s = document.getElementById("sidebar");
-  const o = document.getElementById("overlay");
-  s.classList.toggle("open");
-  o.style.display = s.classList.contains("open")? "block" : "none";
+    const snapKas=await push(kasTransaksiRef,dataBaru);
+    await push(ref(db,"audit/log"),{tanggal:Date.now(),aksi:tipe==="masuk"?"KAS MASUK":"KAS KELUAR",user:LD.username,role:LD.role,keterangan:keteranganFinal,jumlah,sumberKas,kategori,anggotaId:anggotaId||null,refKas:snapKas.key});
+    simpanLog(tipe==="masuk"?"KAS_MASUK":"KAS_KELUAR",{idAnggota:anggotaId||"-",nama:namaAnggota||"-",namaAnggota:namaAnggota||keteranganFinal,jumlah,kategori,sumberKas,keterangan:keteranganFinal,petugas:LD.petugasDisplay});
+    alert(`Berhasil disimpan oleh ${LD.petugasDisplay}`);
+    document.getElementById("jumlah").value=""; document.getElementById("keterangan").value=""; document.getElementById("anggotaSelect").value=""; document.getElementById("tanggal").value=getTanggalLocalInput();
+    bukaRiwayatKas();
+  }catch(e){alert("Gagal: "+e.message);}
 };
-document.getElementById("overlay").addEventListener("click", toggleSidebar);
-document.getElementById("btnLogout").addEventListener("click", ()=>{ localStorage.clear(); location.href="index.html"; });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const LD = getLoginDetail();
-const elPetugas = document.getElementById("petugasDisplay");
-if(elPetugas) elPetugas.innerText = LD.petugasDisplay;
-  const el = document.getElementById("userInfo");
-  const jam = new Date().getHours();
-  let salam = jam < 11? "Pagi" : jam < 15? "Siang" : jam < 18? "Sore" : "Malam";
-  el.innerHTML = `${salam}, <b>${username}</b> (${role})`;
-});
-
-function isiOpsiKategori(el, tipe, selected=""){
-  let html = "";
-  if(tipe === "masuk"){
-    html = `<option value="simpanan_pokok" ${selected==="simpanan_pokok"?"selected":""}>Simpanan Pokok</option>
-    <option value="simpanan_wajib" ${selected==="simpanan_wajib"?"selected":""}>Simpanan Wajib</option>
-    <option value="simpanan_sukarela" ${selected==="simpanan_sukarela"?"selected":""}>Simpanan Sukarela</option>
-    <option value="angsuran_pokok" ${selected==="angsuran_pokok"?"selected":""}>Angsuran Pokok</option>
-    <option value="pendapatan_jasa" ${selected==="pendapatan_jasa"?"selected":""}>Pendapatan Jasa</option>
-    <option value="pendapatan_lain" ${selected==="pendapatan_lain"?"selected":""}>Pendapatan Lain-lain</option>`;
-  } else {
-    html = `<option value="konsumsi" ${selected==="konsumsi"?"selected":""}>Konsumsi</option>
-    <option value="biaya_operasional" ${selected==="biaya_operasional"?"selected":""}>Biaya Operasional</option>
-    <option value="pinjaman" ${selected==="pinjaman"?"selected":""}>Pinjaman</option>
-    <option value="pengambilan_simpanan" ${selected==="pengambilan_simpanan"?"selected":""}>Pengambilan Simpanan</option>
-    <option value="transfer_bank" ${selected==="transfer_bank"?"selected":""}>Transfer Bank</option>`;
-  }
-  el.innerHTML = html;
-}
-
-window.toggleKategori = function(){
-  const tipe = document.getElementById("tipe").value;
-  isiOpsiKategori(document.getElementById("kategori"), tipe === "biaya"? "keluar" : tipe);
-  toggleAnggota();
-}
-window.toggleEditKategori = function(){
-  const tipe = document.getElementById("editKasTipe").value;
-  isiOpsiKategori(document.getElementById("editKasKategori"), tipe === "biaya"? "keluar" : tipe);
-}
-
-function getLoginDetail(){
-  let role = localStorage.getItem("role") || "ADMIN";
-  let username = localStorage.getItem("username") || localStorage.getItem("user") || "Unknown";
-  let nama = localStorage.getItem("nama") || username;
-  try{
-    const raw = localStorage.getItem('user') || localStorage.getItem('currentUser');
-    if(raw){
-      const obj = JSON.parse(raw);
-      role = obj.role || obj.jabatan || role;
-      username = obj.username || obj.user || username;
-      nama = obj.nama || obj.name || nama;
-    }
-  }catch{}
-  return {
-    role: String(role).toUpperCase(),
-    username: String(username),
-    nama: String(nama),
-    petugasDisplay: `${username} (${String(role).toUpperCase()})` // FORMAT 1 YANG KAMU MAU
-  };
-}
-
-document.getElementById("btnSimpan").onclick = async()=>{
-  if(role!== "admin"){ alert("Hanya admin yang bisa input kas!"); return; }
-  const LOGIN_DETAIL = getLoginDetail();
-  const sumberKas = document.getElementById("sumberKas").value;
-  let tipe = document.getElementById("tipe").value;
-  const jumlah = Number(document.getElementById("jumlah").value);
-  let ket = document.getElementById("keterangan").value;
-  const tanggalInput = document.getElementById("tanggal").value;
-  const kategori = document.getElementById("kategori").value || "";
-  const anggotaId = document.getElementById("anggotaSelect").value;
-  if(!jumlah){ alert("Jumlah wajib diisi"); return; }
-  let namaAnggota = "";
-  let keteranganFinal = ket || kategori;
-  if(kategori.includes("simpanan") || kategori.includes("angsuran") || kategori.includes("shu")){
-    if(!anggotaId){ alert("Pilih anggota dulu"); return; }
-    namaAnggota = dataAnggota[anggotaId]?.nama || "-";
-    keteranganFinal = `${namaAnggota} - ${ket || kategori}`;
-  }
-  if((tipe==="keluar" || tipe==="biaya")){
-    let saldoSaatIni = sumberKas === "cash"? saldoCash : saldoBank;
-    if(jumlah > saldoSaatIni){
-      alert(`Saldo ${sumberKas.toUpperCase()} tidak cukup\nSaldo tersedia: Rp ${formatRp(saldoSaatIni)}`);
-      return;
-    }
-  }
-  if(tipe === "biaya") tipe = "keluar";
-  const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now());
-
-  // INI YANG BARU - SIMPAN SIAPA PETUGAS SAAT INPUT
-  const dataTransaksiBaru = {
-    sumberKas,
-    tipe,
-    jumlah,
-    kategori,
-    keterangan: keteranganFinal,
-    anggotaId: anggotaId || null,
-    namaAnggota: namaAnggota || null,
-    tanggal,
-    petugas: LOGIN_DETAIL.petugasDisplay, // contoh: budi01 (ADMIN)
-    petugas_username: LOGIN_DETAIL.username,
-    petugas_role: LOGIN_DETAIL.role,
-    petugas_nama: LOGIN_DETAIL.nama,
-    created_by: LOGIN_DETAIL.username,
-    created_at: Date.now()
-  }
-
-  const snapKas = await push(kasTransaksiRef, dataTransaksiBaru);
-  await push(ref(db,"audit/log"),{
-    tanggal: toWIB(Date.now()),
-    aksi: tipe === "masuk"? "KAS MASUK" : "KAS KELUAR",
-    user: LOGIN_DETAIL.username,
-    role: LOGIN_DETAIL.role,
-    keterangan: keteranganFinal,
-    jumlah: jumlah,
-    sumberKas: sumberKas,
-    kategori: kategori,
-    anggotaId: anggotaId || null,
-    refKas: snapKas.key
-  });
-  simpanLog(tipe === "masuk"? "KAS_MASUK" : "KAS_KELUAR", {
-    idAnggota: anggotaId || "-",
-    nama: namaAnggota || "-",
-    namaAnggota: namaAnggota || keteranganFinal,
-    jumlah: jumlah,
-    kategori: kategori,
-    sumberKas: sumberKas,
-    keterangan: keteranganFinal,
-    petugas: LOGIN_DETAIL.petugasDisplay
-  });
-  alert(`Data berhasil disimpan oleh ${LOGIN_DETAIL.petugasDisplay}`);
-  document.getElementById("jumlah").value="";
-  document.getElementById("keterangan").value="";
-  document.getElementById("anggotaSelect").value=""
-}
-
-onValue(saldoAwalRef, snap => { dataSaldoAwal = snap.val() || {}; hitungDanRender(); });
-onValue(kasTransaksiRef, snap => { dataTransaksi = snap.val() || {}; hitungDanRender(); });
+onValue(saldoAwalRef,snap=>{dataSaldoAwal=snap.val()||{}; hitungDanRender();});
+onValue(kasTransaksiRef,snap=>{dataTransaksi=snap.val()||{}; hitungDanRender();});
 
 function hitungDanRender(){
-  saldoCash = Number(dataSaldoAwal.cash || 0);
-  saldoBank = Number(dataSaldoAwal.bank || 0);
-  totalMasuk = 0; totalKeluar = 0;
-  const riwayat = document.getElementById("riwayat");
-  riwayat.innerHTML = "";
-  if (!dataTransaksi || Object.keys(dataTransaksi).length === 0) { updateSummary(); return; }
-  const data = Object.entries(dataTransaksi).sort((a,b)=> Number(b[1].tanggal) - Number(a[1].tanggal));
-  data.forEach(([key, i]) => {
-    let jumlah = Number(i.jumlah) || 0;
-    let tipe = String(i.tipe || "").toLowerCase();
-    if(tipe === "biaya") tipe = "keluar";
-    const sumber = String(i.sumberKas || "cash").toLowerCase();
-    const tanggal = i.tanggal? new Date(Number(i.tanggal)).toLocaleString("id-ID",{ day:"2-digit", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit", timeZone: "Asia/Jakarta" }) : "-";
-    if (tipe === "masuk") totalMasuk += jumlah; else totalKeluar += jumlah;
-    if (sumber === "cash") { if (tipe === "masuk") saldoCash += jumlah; else saldoCash -= jumlah; }
-    if (sumber === "bank") { if (tipe === "masuk") saldoBank += jumlah; else saldoBank -= jumlah; }
-    let className = tipe === "masuk"? "masuk" : "keluar";
-    let labelTipe = tipe === "masuk"? "MASUK" : "KELUAR";
-    const namaAnggota = i.namaAnggota || "-";
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${tanggal}</td><td>${i.keterangan || "-"}</td><td class="${className}">${labelTipe}</td><td class="text-right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${i.kategori || '-'}</td><td>${namaAnggota}</td>`;
-    if (role === "admin") { tr.style.cursor = "pointer"; tr.addEventListener("click", () => editKas(key)); }
-    riwayat.appendChild(tr);
+  saldoCash=Number(dataSaldoAwal.cash||0); saldoBank=Number(dataSaldoAwal.bank||0); totalMasuk=0; totalKeluar=0;
+  const count=Object.keys(dataTransaksi||{}).length; document.getElementById("jmlKas").innerText=count;
+  if(!dataTransaksi||Object.keys(dataTransaksi).length===0){updateSummary(); document.getElementById("riwayat").innerHTML=`<tr><td colspan="7" style="text-align:center;padding:20px">Belum ada transaksi</td></tr>`; return;}
+  // hitung saldo dulu
+  Object.values(dataTransaksi).forEach(i=>{
+    const jumlah=Number(i.jumlah)||0; let tipe=String(i.tipe||"").toLowerCase(); if(tipe==="biaya") tipe="keluar"; const sumber=String(i.sumberKas||"cash").toLowerCase();
+    if(tipe==="masuk") totalMasuk+=jumlah; else totalKeluar+=jumlah;
+    if(sumber==="cash"){ if(tipe==="masuk") saldoCash+=jumlah; else saldoCash-=jumlah; }
+    if(sumber==="bank"){ if(tipe==="masuk") saldoBank+=jumlah; else saldoBank-=jumlah; }
   });
   updateSummary();
+  renderRiwayatFiltered();
 }
+
+function renderRiwayatFiltered(){
+  const riwayat=document.getElementById("riwayat");
+  const search=(document.getElementById("searchKas")?.value||"").toLowerCase();
+  const filterTipe=document.getElementById("filterTipeKas")?.value||"";
+  const filterSumber=document.getElementById("filterSumberKas")?.value||"";
+  let data=Object.entries(dataTransaksi).sort((a,b)=>Number(b[1].tanggal||0)-Number(a[1].tanggal||0));
+  if(search){ data=data.filter(([k,i])=> `${i.keterangan||""} ${i.namaAnggota||""} ${i.kategori||""}`.toLowerCase().includes(search)); }
+  if(filterTipe){ data=data.filter(([k,i])=>{let t=String(i.tipe||"").toLowerCase(); if(t==="biaya") t="keluar"; return t===filterTipe;}); }
+  if(filterSumber){ data=data.filter(([k,i])=> String(i.sumberKas||"").toLowerCase()===filterSumber); }
+  riwayat.innerHTML="";
+  if(data.length===0){riwayat.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:20px">Tidak ada data sesuai filter</td></tr>`; return;}
+  data.slice(0,200).forEach(([key,i])=>{
+    const jumlah=Number(i.jumlah)||0; let tipe=String(i.tipe||"").toLowerCase(); if(tipe==="biaya") tipe="keluar"; const sumber=String(i.sumberKas||"cash").toLowerCase(); const tanggal=formatTanggalWIB(i.tanggal); const className=tipe==="masuk"?"masuk":"keluar"; const labelTipe=tipe==="masuk"?"MASUK":"KELUAR"; const petugas=i.petugas||i.petugas_username||i.created_by||"-";
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${tanggal}</td><td>${i.keterangan||"-"}</td><td class="${className}">${labelTipe}</td><td style="text-align:right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${i.kategori||"-"}</td><td>${petugas}</td>`;
+    if(role==="admin"){tr.style.cursor="pointer"; tr.addEventListener("click",()=>{tutupRiwayatKas(); editKas(key);});}
+    riwayat.appendChild(tr);
+  });
+}
+window.renderRiwayatFiltered=renderRiwayatFiltered;
 
 function updateSummary(){
-  document.getElementById("saldoCash").innerText = formatRp(saldoCash);
-  document.getElementById("saldoBank").innerText = formatRp(saldoBank);
-  document.getElementById("totalMasuk").innerText = formatRp(totalMasuk);
-  document.getElementById("totalKeluar").innerText = formatRp(totalKeluar);
-  document.getElementById("saldoTotal").innerText = formatRp(saldoCash + saldoBank);
+  const elCash=document.getElementById("saldoCash"), elBank=document.getElementById("saldoBank"), elTotal=document.getElementById("saldoTotal");
+  if(elCash) elCash.innerText="Rp "+formatRp(saldoCash); if(elBank) elBank.innerText="Rp "+formatRp(saldoBank); if(elTotal) elTotal.innerText="Rp "+formatRp(saldoCash+saldoBank);
 }
-
-window.editKas = async function(key){
-  if(role !== "admin"){ return; }
-  const snap = await get(ref(db, "kas/transaksi/"+key));
-  const d = snap.val(); if(!d) return;
-  document.getElementById("editKasKey").value = key;
-  document.getElementById("editKasSumber").value = d.sumberKas || "cash";
-  document.getElementById("editKasTipe").value = d.tipe === "keluar"? "keluar" : "masuk";
-  toggleEditKategori();
-  document.getElementById("editKasKategori").value = d.kategori || "";
-  document.getElementById("editKasJumlah").value = d.jumlah || 0;
-  document.getElementById("editKasKeterangan").value = d.keterangan || "";
-  if(d.tanggal){ const t = new Date(Number(d.tanggal) - 7*60*60*1000); document.getElementById("editKasTanggal").value = t.toISOString().slice(0,16); }
-  document.getElementById("modalEditKas").classList.add("show");
-}
-window.tutupModalKas = function(){ document.getElementById("modalEditKas").classList.remove("show"); }
-window.updateKas = async function(){
-  if(role !== "admin"){ alert("Hanya admin!"); return; }
-  const key = document.getElementById("editKasKey").value;
-  const snapLama = await get(ref(db,"kas/transaksi/"+key)); const dataLama = snapLama.val();
-  const sumber = document.getElementById("editKasSumber").value;
-  let tipe = document.getElementById("editKasTipe").value;
-  const kategori = document.getElementById("editKasKategori").value || "";
-  const jumlah = Number(document.getElementById("editKasJumlah").value);
-  const keterangan = document.getElementById("editKasKeterangan").value;
-  const tanggalInput = document.getElementById("editKasTanggal").value;
-  const tanggal = tanggalInput? toWIB(new Date(tanggalInput).getTime()) : toWIB(Date.now());
-  if(tipe === "biaya") tipe = "keluar";
-  await update(ref(db,"kas/transaksi/"+key), { sumberKas: sumber, tipe, kategori, jumlah, keterangan: keterangan||"Transaksi Kas", tanggal });
-  simpanLog("EDIT_KAS", { idAnggota: dataLama.anggotaId || "-", nama: dataLama.namaAnggota || "-", namaAnggota: dataLama.namaAnggota || keterangan, jumlah: jumlah, jumlahLama: dataLama.jumlah, kategori: kategori, keterangan: keterangan });
-  alert("Data berhasil diperbarui"); tutupModalKas();
-}
-window.hapusKasModal = async function(){
-  if(role !== "admin"){ alert("Hanya admin!"); return; }
-  const key = document.getElementById("editKasKey").value; if(!key) return;
-  const snapLama = await get(ref(db,"kas/transaksi/"+key)); const dataLama = snapLama.val();
-  if(confirm("Yakin ingin menghapus transaksi ini?")){
-    await remove(ref(db,"kas/transaksi/"+key));
-    simpanLog("HAPUS_KAS", { idAnggota: dataLama.anggotaId || "-", nama: dataLama.namaAnggota || "-", namaAnggota: dataLama.namaAnggota || dataLama.keterangan, jumlah: dataLama.jumlah, kategori: dataLama.kategori, keterangan: dataLama.keterangan });
-    alert("Data berhasil dihapus"); tutupModalKas();
-  }
-}
-const now = new Date(); now.setHours(now.getHours() + 7);
-document.getElementById("tanggal").value = now.toISOString().slice(0,16);
+window.editKas=async function(key){
+  if(role!=="admin") return;
+  const snap=await get(ref(db,"kas/transaksi/"+key)); const d=snap.val(); if(!d) return;
+  document.getElementById("editKasKey").value=key; document.getElementById("editKasSumber").value=d.sumberKas||"cash"; document.getElementById("editKasTipe").value=d.tipe==="keluar"?"keluar":"masuk"; toggleEditKategori(); document.getElementById("editKasKategori").value=d.kategori||""; document.getElementById("editKasJumlah").value=d.jumlah||0; document.getElementById("editKasKeterangan").value=d.keterangan||""; document.getElementById("editKasTanggal").value=d.tanggal?getTanggalLocalInput(d.tanggal):getTanggalLocalInput(); document.getElementById("modalEditKas").classList.add("show");
+};
+window.tutupModalKas=()=>document.getElementById("modalEditKas").classList.remove("show");
+window.updateKas=async function(){
+  const key=document.getElementById("editKasKey").value; if(!key) return;
+  const snapLama=await get(ref(db,"kas/transaksi/"+key)); const dataLama=snapLama.val(); if(!dataLama) return;
+  const sumber=document.getElementById("editKasSumber").value; let tipe=document.getElementById("editKasTipe").value; const kategori=document.getElementById("editKasKategori").value||""; const jumlah=Number(document.getElementById("editKasJumlah").value); const keterangan=document.getElementById("editKasKeterangan").value; const tanggalInput=document.getElementById("editKasTanggal").value;
+  if(!jumlah||jumlah<=0){alert("Jumlah wajib diisi"); return;}
+  const tanggal=tanggalInput?new Date(tanggalInput).getTime():Date.now(); if(tipe==="biaya") tipe="keluar";
+  await update(ref(db,"kas/transaksi/"+key),{sumberKas:sumber,tipe,kategori,jumlah,keterangan:keterangan||"Transaksi Kas",tanggal});
+  const LD=getLoginDetail(); simpanLog("EDIT_KAS",{idAnggota:dataLama.anggotaId||"-",nama:dataLama.namaAnggota||"-",namaAnggota:dataLama.namaAnggota||keterangan,jumlah,jumlahLama:dataLama.jumlah,kategori,keterangan,petugas:LD.petugasDisplay});
+  alert("Data diperbarui"); tutupModalKas(); bukaRiwayatKas();
+};
+window.hapusKasModal=async function(){
+  const key=document.getElementById("editKasKey").value; if(!key) return;
+  const snapLama=await get(ref(db,"kas/transaksi/"+key)); const dataLama=snapLama.val(); if(!dataLama) return;
+  if(!confirm("Yakin hapus transaksi ini?")) return;
+  await remove(ref(db,"kas/transaksi/"+key));
+  const LD=getLoginDetail(); simpanLog("HAPUS_KAS",{idAnggota:dataLama.anggotaId||"-",nama:dataLama.namaAnggota||"-",namaAnggota:dataLama.namaAnggota||dataLama.keterangan,jumlah:dataLama.jumlah,kategori:dataLama.kategori,keterangan:dataLama.keterangan,petugas:LD.petugasDisplay});
+  alert("Data dihapus"); tutupModalKas(); bukaRiwayatKas();
+};
+document.getElementById("tanggal").value=getTanggalLocalInput();
 toggleKategori();
 </script>
 </body>
