@@ -144,7 +144,7 @@ document.getElementById("btnBackup").onclick = async ()=>{
     const data = snap.val();
     const jsonStr = JSON.stringify(data,null,2);
     const today = new Date().toISOString().slice(0,10);
-    const defaultName = `backup_koperasi_${today}.json`;
+    const defaultName = `koperasi_${today}.json`;
 
     // 1. Jika support File System Access (Chrome/Edge PC & Android terbaru)
     if(window.showSaveFilePicker){
