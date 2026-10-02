@@ -5,43 +5,59 @@
 <title>Audit Koperasi ARFA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-*{box-sizing:border-box;font-family:'Poppins',sans-serif}
-body{background:#ffedd5;padding:10px}
-header{background:linear-gradient(90deg,#1e90ff,#0f3057);color:#fff;padding:12px 16px;border-radius:10px;margin-bottom:15px;display:flex;justify-content:space-between;align-items:center}
-.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+*{box-sizing:border-box;font-family:'Poppins',sans-serif;margin:0;padding:0}
+:root{--primary:#1e90ff;--primary-dark:#0f3057;--bg:#ffedd5;--card:#fff;--border:#e2e8f0;--success:#16a34a;--danger:#dc2626}
+body{background:var(--bg);padding-bottom:20px}
+header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:101}
+.card{background:var(--card);padding:15px;border-radius:12px;margin:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 h2{color:#0f3057;font-size:12px;margin-bottom:10px}
-table{width:100%;border-collapse:collapse;font-size:10px}
-th{background:#1e90ff;color:#fff;padding:8px;text-align:left}
-td{padding:7px;border-bottom:1px solid #e2e8f0}
-.btn{padding:9px 12px;border:none;border-radius:8px;background:#1e90ff;color:#fff;font-weight:600;cursor:pointer}
-.btn.red{background:#dc2626}
-input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+table{width:100%;border-collapse:collapse;font-size:10px}th{background:#1e90ff;color:#fff;padding:8px;text-align:left}td{padding:7px;border-bottom:1px solid #e2e8f0}
+.btn{padding:9px 12px;border:none;border-radius:8px;background:#1e90ff;color:#fff;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
+.btn.red{background:#dc2626}.btn:disabled{background:#9ca3af;cursor:not-allowed}
+input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:12px}
 .label{font-size:10px;color:#64748b;margin-bottom:3px}
+.sidebar{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0f3057;padding:16px;transition:.3s;z-index:9999;overflow-y:auto;}
+.sidebar.open{left:0;}.sidebar a{display:flex;gap:10px;color:#fff;text-decoration:none;padding:12px;border-radius:10px;font-size:12px}.sidebar a.active{background:rgba(255,255,255,.2);}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9998;}.overlay.active{display:block;}
+.menu-btn{cursor:pointer;font-size:24px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.2);}
+.toast{position:fixed;bottom:20px;right:20px;background:#16a34a;color:#fff;padding:12px 18px;border-radius:10px;opacity:0;transition:.3s;z-index:99999}.toast.show{opacity:1}.toast.error{background:#dc2626}
 </style>
 </head>
 <body>
-<header><div><span class="material-icons">books</span> AUDIT KAS</div><span onclick="location='dashboard.html'" class="material-icons" style="cursor:pointer">home</span></header>
+<div id="sidebar" class="sidebar">
+  <a href="dashboard.html">🏠 Beranda</a>
+  <a href="kas.html">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
+  <a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a><a href="shu.html">📊 SHU</a>
+  <a href="audit.html" class="active">📚 Audit Kas</a>
+  <a href="#" id="btnLogout">🚪 Logout</a>
+</div>
+<div id="overlay" class="overlay"></div>
+<header><div>📚 AUDIT KAS</div><div style="display:flex;gap:10px;align-items:center"><span id="userInfo" style="font-size:11px"></span><span class="menu-btn" id="btnMenu">☰</span></div></header>
 
 <div class="card" style="background:linear-gradient(135deg,#0f3057,#1e90ff);color:#fff;border:none">
   <h2 style="color:#fff">📌 OPNAME TERAKHIR</h2>
   <div id="boxTerakhir" style="font-size:11px">Memuat...</div>
 </div>
 
-<div class="card">
+<div class="card" id="cardInput">
   <h2>1. Opname Kas Bulanan</h2>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
     <div><div class="label">Tanggal Opname</div><input type="date" id="tglOpname"></div>
     <div><div class="label">Dilakukan Oleh</div><input type="text" id="namaOpname" readonly style="background:#f1f5f9"></div>
     <div><div class="label">Kas Fisik</div><input type="number" id="kasFisik" placeholder="0"></div>
     <div><div class="label">Bank Fisik</div><input type="number" id="bankFisik" placeholder="0"></div>
-    <div style="grid-column:1/-1"><div class="label">Catatan</div><input type="text" id="catatanOpname" placeholder="Contoh: Selisih Nihil"></div>
+    <div style="grid-column:1/-1"><div class="label">Catatan</div><input type="text" id="catatanOpname" placeholder="Selisih Nihil"></div>
   </div>
-  <button class="btn" onclick="simpanOpname()" style="margin-top:10px">💾 Simpan Opname</button>
+  <button class="btn" id="btnSimpan" onclick="simpanOpname()">💾 Simpan Opname</button>
 </div>
 
+<div class="card" id="cardUserOnly" style="display:none;text-align:center">
+  <div style="font-size:48px">🔒</div>
+  <h3 style="background:#fee2e2;color:#dc2626;padding:8px;border-radius:8px;font-size:13px">Akses Terbatas</h3>
+  <p style="font-size:12px;color:#64748b;margin-top:8px;line-height:1.5" id="userInfoText"></p>
+</div>
 
 <div class="card">
   <h2>2. Log Aktivitas Kas</h2>
@@ -49,17 +65,42 @@ input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
   <div style="overflow-x:auto;margin-top:10px"><table><thead><tr><th>Tanggal</th><th>Aksi</th><th>User</th><th>Keterangan</th><th>Jumlah</th></tr></thead><tbody id="logTable"></tbody></table></div>
 </div>
 
+<div class="card"><h2>3. Riwayat Opname (10 terakhir)</h2><div id="riwayatOpname" style="overflow-x:auto">Memuat...</div></div>
+
+<div id="toast" class="toast"></div>
+
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getDatabase,ref,push,onValue,get,set} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import {getDatabase,ref,push,onValue,set} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app=initializeApp(firebaseConfig);const db=getDatabase(app);
-const username=localStorage.getItem("username");let role=localStorage.getItem("role");if(role)role=role.toLowerCase().trim();
-if(!username){alert("Session habis");location.href="index.html";}
-if(role!=="admin"){alert("Hanya admin");location.href="dashboard.html";}
-document.getElementById("namaOpname").value=username;document.getElementById("tglOpname").valueAsDate=new Date();
-let dataLog=[];const formatRp=n=>Number(n||0).toLocaleString("id-ID");
 
+function showToast(m,e=false){const t=document.getElementById("toast");t.innerText=m;t.className="toast show"+(e?" error":"");setTimeout(()=>t.className="toast",3500);}
+function formatRp(n){return Number(n||0).toLocaleString("id-ID");}
+const username=(localStorage.getItem("username")||"").trim();
+let role=(localStorage.getItem("role")||"user").toLowerCase().trim();
+if(!username){showToast("Login dulu",true);setTimeout(()=>location.href="index.html",1000);}
+const isAdmin=role==="admin";
+document.getElementById("userInfo").innerText=username+" ("+role+")";
+document.getElementById("namaOpname").value=username+" ("+role.toUpperCase()+")";
+
+const cardInput=document.getElementById("cardInput");
+const cardUser=document.getElementById("cardUserOnly");
+
+if(!isAdmin){
+  cardInput.style.display="none";
+  cardUser.style.display="block";
+  document.getElementById("userInfoText").innerHTML=`Halo <b>${username}</b> (${role})<br>Kamu <b>TIDAK BISA</b> opname kas.<br>Hanya bisa lihat log audit.<br>Opname hanya untuk Admin.`;
+  showToast("Mode lihat saja - opname hanya admin",true);
+}
+
+window.toggleSidebar=function(){document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active");};
+window.closeSidebar=function(){document.getElementById("sidebar").classList.remove("open");document.getElementById("overlay").classList.remove("active");};
+document.getElementById("btnMenu").addEventListener("click",window.toggleSidebar);
+document.getElementById("overlay").addEventListener("click",window.closeSidebar);
+document.getElementById("btnLogout").addEventListener("click",(e)=>{e.preventDefault();if(confirm("Logout?")){localStorage.clear();location.href="index.html";}});
+
+let dataLog=[];
 onValue(ref(db,"audit/opname_terakhir"),snap=>{
   const box=document.getElementById("boxTerakhir");
   if(!snap.exists()){box.innerHTML="Belum ada opname";return;}
@@ -71,7 +112,7 @@ onValue(ref(db,"audit/log"),snap=>{
   const tbody=document.getElementById("logTable");tbody.innerHTML="";
   if(!snap.exists()){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center">Belum ada aktivitas</td></tr>`;return;}
   const logs=[];snap.forEach(c=>logs.push(c.val()));logs.sort((a,b)=>b.tanggal-a.tanggal);dataLog=logs;
-  logs.forEach(d=>{tbody.innerHTML+=`<tr><td>${new Date(d.tanggal).toLocaleString("id-ID")}</td><td><b>${d.aksi}</b></td><td>${d.user}</td><td>${d.keterangan}</td><td style="text-align:right">Rp ${formatRp(d.jumlah)}</td></tr>`});
+  logs.slice(0,100).forEach(d=>{tbody.innerHTML+=`<tr><td>${new Date(d.tanggal).toLocaleString("id-ID")}</td><td><b>${d.aksi}</b></td><td>${d.user}</td><td>${d.keterangan}</td><td style="text-align:right">Rp ${formatRp(d.jumlah)}</td></tr>`});
 });
 
 onValue(ref(db,"audit/opname"),snap=>{
@@ -84,21 +125,32 @@ onValue(ref(db,"audit/opname"),snap=>{
 });
 
 window.simpanOpname=async()=>{
+  if(!isAdmin){showToast("Hanya admin!",true);return;}
   const kasFisik=Number(document.getElementById("kasFisik").value)||0;
   const bankFisik=Number(document.getElementById("bankFisik").value)||0;
   const tgl=document.getElementById("tglOpname").value;
   const catatan=document.getElementById("catatanOpname").value;
-  if(!tgl){alert("Tanggal wajib diisi");return;}
+  if(!tgl){showToast("Tanggal wajib isi",true);return;}
   const data={tanggal:tgl,kasFisik,bankFisik,catatan,oleh:username,waktu:Date.now()};
   const logData={tanggal:Date.now(),aksi:"OPNAME KAS",user:username,role,keterangan:`Kas: Rp ${formatRp(kasFisik)} | Bank: Rp ${formatRp(bankFisik)} - ${catatan||'Nihil'}`,jumlah:kasFisik+bankFisik};
   await push(ref(db,"audit/opname"),data);
   await set(ref(db,"audit/opname_terakhir"),data);
   await push(ref(db,"audit/log"),logData);
   await set(ref(db,"audit/log_terakhir"),logData);
-  alert("Opname tersimpan ✅");
+  showToast("Opname tersimpan ✅");
   document.getElementById("kasFisik").value="";document.getElementById("bankFisik").value="";document.getElementById("catatanOpname").value="";
 };
-window.exportAuditPDF=async()=>{ /* sama seperti sebelumnya */ };
+
+window.exportAuditPDF=()=>{
+  if(!isAdmin){showToast("Hanya admin bisa export",true);return;}
+  if(!dataLog.length){showToast("Belum ada log",true);return;}
+  const {jsPDF}=window.jspdf;const doc=new jsPDF();
+  doc.text("BERITA ACARA OPNAME KAS - KOPERASI ARFA",14,15);
+  doc.autoTable({startY:20,head:[["Tanggal","Aksi","User","Keterangan","Jumlah"]],body:dataLog.slice(0,50).map(d=>[new Date(d.tanggal).toLocaleString("id-ID"),d.aksi,d.user,d.keterangan,"Rp "+formatRp(d.jumlah)]),styles:{fontSize:8}});
+  doc.save("Audit_Kas_ARFA.pdf");
+};
+
+document.getElementById("tglOpname").value=new Date().toISOString().slice(0,10);
 </script>
 </body>
 </html>
