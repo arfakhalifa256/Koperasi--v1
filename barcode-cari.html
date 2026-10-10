@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 <title>Kartu Anggota - Koperasi ARFA</title>
-<meta property="og:title" content="Kartu Anggota Koperasi ARFA">
-<meta property="og:description" content="Scan kartu anggota resmi">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -14,156 +12,218 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-body{background:#ffedd5;color:#1f2937;padding:12px;max-width:650px;margin:auto}
+body{background:#ffedd5;color:#1f2937;padding:12px;max-width:650px;margin:auto;padding-bottom:90px}
 .head{background:linear-gradient(135deg,#0f3057,#1e90ff);color:#fff;padding:16px;border-radius:20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.head-title{font-weight:800;font-size:16px}.head small{font-size:10px;opacity:.9}
+.scan-button{color:#fff;background:rgba(255,255,255,.18);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none}
 .card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);margin-bottom:12px;border:1px solid #eef2f7}
-.search{position:sticky;top:10px;z-index:10;display:flex;gap:8px;margin-bottom:12px;background:#ffedd5;padding:4px 0}
+.search{position:sticky;top:10px;z-index:10;display:flex;gap:8px;margin-bottom:12px;background:#f1f5f9;padding:4px 0}
 .search input{flex:1;padding:13px 14px;border-radius:14px;border:1px solid #e2e8f0;outline:none;font-size:13px}
-.btn{padding:11px 15px;border-radius:12px;border:none;color:#fff;font-weight:700;cursor:pointer}
-.btn-primary{background:#1e90ff}.btn-wa{background:#25D366}
+.btn{padding:11px 15px;border-radius:12px;border:none;background:#0f2a4a;color:#fff;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center;font-size:11px}
+.btn-primary{background:#1e90ff}.btn-success{background:#16a34a}.btn-light{background:#fff;color:#334155;border:1px solid #e2e8f0}
 .profile{display:flex;gap:12px;align-items:center}
 .avatar{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#dbeafe,#1e90ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex-shrink:0}
-.badge{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:800;margin-top:5px;border:1px solid;display:inline-block}
-.badge-lunas{background:#dcfce7;color:#15803d;border-color:#86efac}.badge-belum{background:#fee2e2;color:#b91c1c;border-color:#fca5a5}.badge-aktif{background:#dbeafe;color:#1d4ed8}
-.qr-section{margin-top:14px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:15px;padding:14px;text-align:center}
-.qr{display:flex;justify-content:center;min-height:140px;align-items:center}.barcode{margin-top:12px;display:flex;justify-content:center;min-height:60px}
-.valid{margin-top:10px;padding:10px;border-radius:10px;font-size:12px;font-weight:800;text-align:center}
-.valid.lunas{background:#dcfce7;color:#166534}.valid.belum{background:#fee2e2;color:#991b1b}
-.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
-.summary-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:10px}.summary-label{font-size:9px;color:#64748b}.summary-value{font-size:13px;font-weight:800;margin-top:2px}
-.loading{text-align:center;padding:40px;color:#64748b}
-.wa-notice{background:#fff3cd;border:1px solid #ffe69c;padding:10px;border-radius:12px;font-size:11px;margin-bottom:12px;display:none}
+.profile-name{font-size:16px;font-weight:800}.profile-info{font-size:11px;color:#64748b;margin-top:2px}
+.badge{display:inline-block;background:#e0f2fe;color:#0284c7;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;margin-top:5px}
+.badge-aktif{background:#dcfce7;color:#15803d}.badge-keluar{background:#fee2e2;color:#dc2626}
+.qr-section{margin-top:14px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:15px;padding:12px;text-align:center}
+.qr-title{font-size:11px;font-weight:800;color:#0f3057;margin-bottom:8px}.qr{display:flex;justify-content:center}.barcode{margin-top:10px;display:flex;justify-content:center;overflow:hidden}
+.valid{margin-top:10px;background:#dcfce7;color:#166534;padding:8px;border-radius:10px;font-size:10px;font-weight:700;text-align:center}
+.action-row{display:flex;gap:7px;margin-top:10px}.action-row .btn{flex:1}
+.section-title{display:flex;align-items:center;gap:6px;color:#0f3057;font-size:14px;font-weight:800;margin-bottom:10px}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.summary-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:11px}.summary-label{font-size:9px;color:#64748b}.summary-value{margin-top:3px;font-size:14px;font-weight:800;color:#0f3057}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:10px;min-width:520px}th{background:#f8fafc;color:#64748b;padding:9px;text-align:left;font-size:9px;white-space:nowrap}td{padding:9px;border-bottom:1px solid #f1f5f9;vertical-align:top}.money{text-align:right;font-weight:700;white-space:nowrap}
+.loan-card{border:1px solid #e2e8f0;border-radius:14px;padding:11px;margin-bottom:8px;background:#fff}.loan-header{display:flex;justify-content:space-between}.loan-number{font-weight:800;color:#0f3057;font-size:13px}.loan-date{font-size:9px;color:#64748b;margin-top:2px}.loan-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:9px}.loan-item{background:#f8fafc;border-radius:10px;padding:8px}.loan-item small{display:block;font-size:8px;color:#64748b}.loan-item b{display:block;margin-top:2px;font-size:10px;color:#0f3057}
+.loading{text-align:center;padding:30px;color:#64748b;font-size:12px}.empty{text-align:center;padding:20px;color:#94a3b8;font-size:11px}
+.link-box{background:#f8fafc;border:1px dashed #cbd5e1;padding:8px;border-radius:10px;font-size:9px;word-break:break-all;color:#475569;margin-top:8px}
 </style>
 </head>
 <body>
-<div class="head"><div><div style="font-weight:800">👤 Kartu Anggota</div><small id="scanInfo">Memuat data...</small></div><a href="dashboard.html" style="color:#fff;background:rgba(255,255,255,.18);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none"><span class="material-icons">home</span></a></div>
-
-<div id="waNotice" class="wa-notice">📱 Dibuka dari WhatsApp - Jika barcode tidak muncul, klik <b>Buka di Chrome</b> di pojok kanan atas WA.</div>
-
-<div class="search" id="searchBar"><input id="inputCari" placeholder="Cari ID / Nama / HP..."><button class="btn btn-primary" onclick="cariAnggota(document.getElementById('inputCari').value)">Cari</button></div>
-
-<div id="hasil"><div class="card loading">⏳ Menghubungkan ke server...</div></div>
-
+<div class="head"><div><div class="head-title">👤 Kartu Anggota</div><small id="scanInfo">Memuat data...</small></div><a href="scan.html" class="scan-button"><span class="material-icons">qr_code_scanner</span></a></div>
+<div class="search" id="searchBar"><input id="inputCari" placeholder="Cari ID / Nama / HP..."><button class="btn btn-primary" onclick="cariAnggota(document.getElementById('inputCari').value)"><span class="material-icons" style="font-size:18px">search</span>Cari</button></div>
+<div id="hasil"><div class="card loading">⏳ Memuat data anggota...</div></div>
 <script>
-const BASE_URL = "https://koperasiarfa.my.id/cari-anggota.html";
-const urlParams = new URLSearchParams(location.search);
-const SCAN_CODE = (urlParams.get("scan") || urlParams.get("cari") || "").trim().toUpperCase();
-const IS_WA = /WhatsApp|FBAN|FBAV/i.test(navigator.userAgent) || urlParams.has("scan");
-
-if(IS_WA) document.getElementById("waNotice").style.display="block";
-if(SCAN_CODE) document.getElementById("searchBar").style.display="none";
-
+const BASE_URL="https://koperasiarfa.my.id/barcode-cari.html";
+const urlParams=new URLSearchParams(location.search);
+const IS_FROM_WA=urlParams.has("scan");
 const firebaseConfig={databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com"};
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+if(!firebase.apps.length){firebase.initializeApp(firebaseConfig);}
 const db=firebase.database();
-let anggota={}, pinjaman={}, angsuran={}, siap=false;
+let semuaAnggota={},semuaSimpanan={},semuaPinjaman={},semuaAngsuran={},dataSiap=false;
 
-function norm(v){return String(v??"").trim().toUpperCase();}
-function safe(v){return String(v==null?"":v).trim();}
-function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function rupiah(n){return "Rp "+(Number(n)||0).toLocaleString("id-ID");}
-function getId(a){return norm(a.idAnggota||a.anggotaId||a.id||"");}
-function getNama(a){return safe(a.nama);}
+function normalizeId(v){return String(v??"").trim().toUpperCase();}
+function esc(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
+function getMemberId(v){if(!v)return"";return normalizeId(v.idAnggota||v.anggotaId||v.memberId||v.idMember||v.id||"");}
+function getNama(v){return String(v?.nama||v?.name||"").trim();}
+function getHP(v){return String(v?.telepon||v?.hp||v?.noHp||"").trim();}
+function getBarcode(v){return String(v?.barcode||getMemberId(v)||"").trim();}
+function rupiah(v){return"Rp "+(Number(v)||0).toLocaleString("id-ID");}
+function tanggal(v){if(v==null||v==="")return"-";let d;if(typeof v==="number"||/^\d+$/.test(String(v))){d=new Date(Number(v));}else{d=new Date(v);}if(isNaN(d.getTime()))return String(v);return d.toLocaleDateString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric"});}
+function extractPJ(text){const m=String(text||"").match(/\(?(PJ\d+)\)?/i);return m?m[1].toUpperCase():"";}
 
-// LOGIKA BENAR - SAMA KAYAK DASHBOARD
-function hitung(idAnggota, key){
-  let totalPokok=0, totalJasa=0, pokokBayar=0, jasaBayar=0;
-  const aliasAnggota = new Set([safe(idAnggota).toLowerCase(), safe(key).toLowerCase()].filter(Boolean));
-  Object.entries(pinjaman).forEach(([pid,p])=>{
-    const kandidat = [p?.idAnggota,p?.anggotaId,p?.memberId,p?.kodeAnggota].map(safe).map(s=>s.toLowerCase());
-    if(!kandidat.some(x=>x && aliasAnggota.has(x))) return;
-    const pokok=Number(p?.jumlah??p?.pokok??0);
-    const jasa=Number(p?.jasa??Math.round(pokok*0.20));
-    const aliasPin = new Set([pid,p?.id,p?.idPinjaman,p?.noPinjaman,p?.nomor].map(safe).map(s=>s.toLowerCase()).filter(Boolean));
-    let bp=0,bj=0;
-    Object.values(angsuran).forEach(a=>{
-      const k2=[a?.pinjamanId,a?.idPinjaman,a?.idLoan,a?.noPinjaman,a?.id].map(safe).map(s=>s.toLowerCase());
-      if(!k2.some(x=>x && aliasPin.has(x))) return;
-      bp+=Number(a?.pokok||0); bj+=Number(a?.jasa||0);
-    });
-    totalPokok+=pokok; totalJasa+=jasa; pokokBayar+=bp; jasaBayar+=bj;
-  });
-  return {totalPokok,totalJasa,total:totalPokok+totalJasa,pokokBayar,jasaBayar,sisa:Math.max(0,(totalPokok+totalJasa)-(pokokBayar+jasaBayar))};
+function getMemberReferences(anggota,anggotaKey){
+  const refs=new Set();
+  if(!anggota)return refs;
+  const memberId=getMemberId(anggota);
+  const barcode=getBarcode(anggota);
+  if(memberId)refs.add(normalizeId(memberId));
+  if(barcode)refs.add(normalizeId(barcode));
+  if(anggotaKey)refs.add(normalizeId(anggotaKey));
+  Object.entries(semuaAnggota).forEach(([k,v])=>{if(getMemberId(v)===memberId){refs.add(normalizeId(k));}});
+  return refs;
 }
 
-// GANTI BAGIAN Promise.all...sampai bawah dengan ini bos
-Promise.all([db.ref("anggota").once("value"),db.ref("pinjaman").once("value"),db.ref("angsuran").once("value")]).then(r=>{
-  anggota=r[0].val()||{}; pinjaman=r[1].val()||{}; angsuran=r[2].val()||{};
-  siap=true;
-  document.getElementById("scanInfo").innerText=Object.keys(anggota).length+" anggota • Link WA aktif";
+function getAngsuranAnggota(anggota,anggotaKey){
+  const refs=getMemberReferences(anggota,anggotaKey);
+  return Object.entries(semuaAngsuran).filter(([k,v])=>{
+    for(let val of Object.values(v)){
+      if(val==null||typeof val==='object')continue;
+      if(refs.has(normalizeId(String(val))))return true;
+    }
+    return false;
+  }).map(([k,v])=>({...v,key:k}));
+}
 
-  if(SCAN_CODE){
-    // langsung cari, gak perlu klik tombol
-    document.getElementById("inputCari").value=SCAN_CODE;
-    // sembunyikan search biar kayak kartu resmi
-    document.getElementById("searchBar").style.display="none";
-    cariAnggota(SCAN_CODE);
-  } else {
-    document.getElementById("hasil").innerHTML=`<div class="card loading">Ketik ID atau scan QR untuk lihat kartu</div>`;
+function getPinjamanAnggota(anggota,anggotaKey){
+  const angs=getAngsuranAnggota(anggota,anggotaKey);
+  const pinjamanIds=[...new Set(angs.map(a=>a.pinjamanId||a.loanId||"").filter(Boolean))];
+  let list=[];
+  pinjamanIds.forEach(pid=>{
+    let pin=semuaPinjaman[pid];
+    if(!pin){
+      const found=Object.entries(semuaPinjaman).find(([k])=>k===pid||k.startsWith(pid)||pid.startsWith(k));
+      if(found) pin=found[1];
+    }
+    if(pin){
+      const pj=extractPJ(pin.nama||pin.keterangan||"")||pin.idPinjaman||pin.nomor||pid;
+      list.push({...pin,key:pid,nomor:pj,jumlah:pin.jumlah||pin.nominal||0});
+    }
+  });
+  // fallback: kalau pinjaman tidak punya angsuran, cari via nama
+  if(list.length===0){
+    const namaAnggota=getNama(anggota).toLowerCase();
+    Object.entries(semuaPinjaman).forEach(([k,v])=>{
+      const namaPin=(v.nama||"").toLowerCase();
+      if(namaPin.includes(namaAnggota)){
+        const pj=extractPJ(v.nama)||v.idPinjaman||k;
+        list.push({...v,key:k,nomor:pj});
+      }
+    });
+  }
+  return list;
+}
+
+function getSimpananAnggota(anggota,anggotaKey){
+  const refs=getMemberReferences(anggota,anggotaKey);
+  return Object.entries(semuaSimpanan).filter(([k,v])=>{
+    for(let val of Object.values(v)){
+      if(val==null||typeof val==='object')continue;
+      if(refs.has(normalizeId(String(val))))return true;
+    }
+    return false;
+  }).map(([k,v])=>({...v,key:k}));
+}
+
+function getNomorPinjaman(data){
+  if(!data)return"-";
+  if(data.idPinjaman) return String(data.idPinjaman);
+  const pid=String(data.pinjamanId||"");
+  if(!pid) return "-";
+  const pin=semuaPinjaman[pid]||Object.entries(semuaPinjaman).find(([k])=>k===pid||k.startsWith(pid)||pid.startsWith(k))?.[1];
+  if(pin){
+    return extractPJ(pin.nama||"")||pin.idPinjaman||pin.nomor||pid;
+  }
+  return extractPJ(data.nama||"")||pid;
+}
+
+Promise.all([db.ref("anggota").once("value"),db.ref("simpanan").once("value"),db.ref("pinjaman").once("value"),db.ref("angsuran").once("value")]).then(results=>{
+  semuaAnggota=results[0].val()||{}; semuaSimpanan=results[1].val()||{}; semuaPinjaman=results[2].val()||{}; semuaAngsuran=results[3].val()||{};
+  dataSiap=true;
+  document.getElementById("scanInfo").innerText=Object.keys(semuaAnggota).length+" anggota";
+  const kode=urlParams.get("scan")||urlParams.get("cari");
+  if(kode){
+    document.getElementById("inputCari").value=kode;
+    if(IS_FROM_WA){document.getElementById("searchBar").style.display="none"; document.getElementById("scanInfo").innerText="Kartu & Riwayat Anggota - Koperasi ARFA";}
+    cariAnggota(kode);
+  }else{
+    document.getElementById("hasil").innerHTML=`<div class="card empty"><span class="material-icons" style="font-size:40px">qr_code_2</span><br><br>Scan QR atau ketik ID anggota</div>`;
   }
 });
 
 function cariAnggota(q){
-  const div=document.getElementById("hasil");
-  if(!siap){
-    div.innerHTML=`<div class="card loading">⏳ Memuat data ${esc(q)}...</div>`;
-    setTimeout(()=>cariAnggota(q),400);
-    return;
-  }
-  const qUp=norm(q);
-  if(!qUp){div.innerHTML=`<div class="card loading">Masukkan ID anggota</div>`;return;}
-
-  // cari persis dulu (AG001), baru includes
-  let exact = Object.entries(anggota).find(([k,v])=> getId(v)===qUp || safe(v.barcode).toUpperCase()===qUp);
-  let list = exact? [exact] : Object.entries(anggota).filter(([k,v])=> getId(v).includes(qUp) || safe(v.barcode).toUpperCase().includes(qUp) || getNama(v).toUpperCase().includes(qUp));
-
-  if(!list.length){div.innerHTML=`<div class="card" style="text-align:center">❌ <b>${esc(qUp)}</b> tidak ditemukan<br><br><button class="btn btn-primary" onclick="document.getElementById('searchBar').style.display='flex'">🔍 Cari lagi</button></div>`;return;}
-
-  // kalau dari WA (?scan=) cuma tampil 1 kartu pertama biar bersih
-  if(SCAN_CODE) list = [list[0]];
-
-  let html="";
-  list.forEach(([k,v])=>{html+=render(k,v);});
-  div.innerHTML=html;
-
-  setTimeout(()=>{
-    list.forEach(([k,v])=>{
-      const barcode=getId(v);
-      const qrEl=document.getElementById(`qr-${k}`);
-      const bcEl=document.getElementById(`bc-${k}`);
-      if(qrEl){qrEl.innerHTML=""; try{new QRCode(qrEl,{text:BASE_URL+"?scan="+encodeURIComponent(barcode),width:150,height:150});}catch{}}
-      if(bcEl){try{JsBarcode(bcEl,barcode,{format:"CODE128",width:2,height:60,displayValue:true,fontSize:14});}catch{}}
-    });
-  },200);
+  const hasilDiv=document.getElementById("hasil");
+  if(!dataSiap){hasilDiv.innerHTML=`<div class="card loading">⏳ Memuat data...</div>`;setTimeout(()=>cariAnggota(q),500);return;}
+  if(!q||!q.trim()){hasilDiv.innerHTML=`<div class="card empty">Ketik ID anggota.</div>`;return;}
+  const qUp=q.trim().toUpperCase();
+  const list=Object.entries(semuaAnggota).filter(([key,v])=>{
+    const id=getMemberId(v);const barcode=getBarcode(v);const nama=getNama(v);const hp=getHP(v);const firebaseKey=normalizeId(key);
+    return(id.includes(qUp)||barcode.toUpperCase().includes(qUp)||nama.toUpperCase().includes(qUp)||hp.toUpperCase().includes(qUp)||firebaseKey.includes(qUp));
+  });
+  if(!list.length){hasilDiv.innerHTML=`<div class="card empty">❌<br><br>${esc(qUp)} tidak ditemukan.</div>`;return;}
+  let html="";list.forEach(([key,v])=>{html+=renderAnggota(key,v);});
+  hasilDiv.innerHTML=html;
+  list.forEach(([key,v])=>{
+    const id=getMemberId(v);const barcode=getBarcode(v);const nama=getNama(v);
+    const urlShare=BASE_URL+"?scan="+encodeURIComponent(barcode||id);
+    try{
+      const qr=document.getElementById(`qr-${key}`);
+      if(qr){new QRCode(qr,{text:urlShare,width:140,height:140,correctLevel:QRCode.CorrectLevel.H});}
+      const bc=document.getElementById(`bc-${key}`);
+      if(bc){JsBarcode(bc,barcode||id,{format:"CODE128",width:1.6,height:42,displayValue:true,fontSize:10,margin:5});}
+    }catch(e){}
+    if(!IS_FROM_WA){
+      const card=document.querySelector(`[data-key="${CSS.escape(key)}"]`);
+      if(card){
+        const wa=card.querySelector(".btn-wa");
+        if(wa){wa.onclick=()=>{const pesan="Kartu Anggota Koperasi ARFA\n\nID Anggota: "+id+"\nNama: "+nama+"\nBarcode: "+barcode+"\n\nLihat Kartu & Riwayat Anggota:\n"+urlShare;window.open("https://wa.me/?text="+encodeURIComponent(pesan),"_blank");};}
+        const copy=card.querySelector(".btn-copy");
+        if(copy){copy.onclick=()=>{navigator.clipboard?navigator.clipboard.writeText(urlShare).then(()=>alert("✅ Link disalin:\n\n"+urlShare)):prompt("Salin link:",urlShare);}}
+      }
+    }
+  });
 }
 
-
-function render(key,v){
-  const id=getId(v); const nama=getNama(v)||"-"; const hp=safe(v.telepon||v.hp||"-"); const alamat=safe(v.alamat||"-");
-  const h=hitung(id,key);
-  const sisa=h.sisa;
-  let badge, validCls, validTxt;
-  if(String(v.status||"").toLowerCase()==="keluar"){
-    badge=`<span class="badge" style="background:#fee2e2;color:#991b1b">KELUAR</span>`; validCls="belum"; validTxt="🚪 KELUAR";
-  }else if(h.total>0 && sisa>0){
-    badge=`<span class="badge badge-belum">BELUM LUNAS - Sisa ${rupiah(sisa)}</span>`; validCls="belum"; validTxt=`❌ BELUM LUNAS - Sisa ${rupiah(sisa)}`;
-  }else if(h.total>0 && sisa===0){
-    badge=`<span class="badge badge-lunas">LUNAS</span>`; validCls="lunas"; validTxt=`✅ LUNAS - ${rupiah(h.total)}`;
-  }else{
-    badge=`<span class="badge badge-aktif">AKTIF</span>`; validCls="lunas"; validTxt="✅ AKTIF - Tidak ada pinjaman";
-  }
-  return `<div class="card"><div class="profile"><div class="avatar">${esc(nama.charAt(0))}</div><div style="flex:1"><div style="font-weight:800">${esc(nama)}</div><div style="font-size:11px;color:#64748b">ID: ${esc(id)} • ${esc(hp)}</div><div style="font-size:10px;color:#64748b">📍 ${esc(alamat)}</div><div style="margin-top:6px">${badge}</div></div></div>
-  <div class="qr-section"><div style="font-size:11px;font-weight:800;color:#0f3057;margin-bottom:8px">KARTU ANGGOTA</div><div id="qr-${key}" class="qr"></div><svg id="bc-${key}" class="barcode"></svg><div class="valid ${validCls}">${validTxt}</div>
-  <div style="margin-top:10px;display:flex;gap:8px"><button class="btn btn-primary" style="flex:1" onclick="window.print()">🖨️ Cetak</button><button class="btn btn-wa" style="flex:1" onclick="shareWA('${esc(id)}')">📤 Share WA</button></div>
-  <div style="margin-top:8px;font-size:9px;word-break:break-all;color:#94a3b8">${BASE_URL}?scan=${esc(id)}</div></div></div>
-  <div class="card"><div style="font-weight:800;font-size:13px;margin-bottom:8px">📊 Ringkasan</div><div class="summary-grid"><div class="summary-box"><div class="summary-label">Total Pinjam</div><div class="summary-value">${rupiah(h.total)}</div></div><div class="summary-box"><div class="summary-label">Sisa</div><div class="summary-value" style="${sisa>0?'color:#dc2626':''}">${rupiah(sisa)}</div></div><div class="summary-box"><div class="summary-label">Pokok Bayar</div><div class="summary-value">${rupiah(h.pokokBayar)}</div></div><div class="summary-box"><div class="summary-label">Jasa Bayar</div><div class="summary-value">${rupiah(h.jasaBayar)}</div></div></div></div>`;
+function renderAnggota(key,v){
+  const id=getMemberId(v);const barcode=getBarcode(v);const nama=getNama(v)||"-";const hp=getHP(v)||"-";const alamat=v.alamat||"-";const status=String(v.status||"aktif").toLowerCase();
+  const urlShare=BASE_URL+"?scan="+encodeURIComponent(barcode||id);
+  return `<div class="card" data-key="${esc(key)}"><div class="profile"><div class="avatar">${esc(nama.charAt(0).toUpperCase())}</div><div style="flex:1"><div class="profile-name">${esc(nama)}</div><div class="profile-info">📞 ${esc(hp)}</div><div class="profile-info">📍 ${esc(alamat)}</div><span class="badge">${esc(id)}</span><span class="badge ${status==="keluar"?"badge-keluar":"badge-aktif"}">${esc(status)}</span></div></div><div class="qr-section"><div class="qr-title">QR KARTU ANGGOTA</div><div id="qr-${esc(key)}" class="qr"></div><svg id="bc-${esc(key)}" class="barcode"></svg>${!IS_FROM_WA?`<div class="link-box">${esc(urlShare)}</div><div class="action-row"><button class="btn btn-success btn-wa">WhatsApp</button><button class="btn btn-light btn-copy">📋 Copy</button></div>`:`<div class="valid">✅ Kartu Valid - Koperasi ARFA</div>`}</div></div>${renderRingkasan(v,key)}${renderSimpanan(v,key)}${renderPinjaman(v,key)}${renderAngsuran(v,key)}`;
 }
-
-function shareWA(id){
-  const text=`Kartu Anggota Koperasi ARFA%0AID: ${id}%0ALihat Kartu: ${BASE_URL}?scan=${id}`;
-  window.open(`https://wa.me/?text=${text}`,"_blank");
+function renderRingkasan(anggota,anggotaKey){
+  const simpanan=getSimpananAnggota(anggota,anggotaKey);const pinjaman=getPinjamanAnggota(anggota,anggotaKey);const angsuran=getAngsuranAnggota(anggota,anggotaKey);
+  let totalSimpanan=0,totalSukarela=0,totalWajib=0,totalPokok=0,totalPinjaman=0,totalAngsuran=0;
+  simpanan.forEach(s=>{const j=Number(s.jumlah||s.nominal||s.nilai||0);const jenis=String(s.jenis||"").toLowerCase();const tipe=String(s.tipe||"").toLowerCase();const keluar=jenis==="tarik"||jenis==="pencair"||tipe==="keluar";if(keluar)totalSimpanan-=j;else totalSimpanan+=j;if(jenis==="sukarela")totalSukarela+=keluar?-j:j;if(jenis==="wajib")totalWajib+=keluar?-j:j;if(jenis==="pokok")totalPokok+=keluar?-j:j;});
+  pinjaman.forEach(p=>{totalPinjaman+=Number(p.jumlah||p.nominal||0);});
+  angsuran.forEach(a=>{totalAngsuran+=Number(a.pokok||0)+Number(a.jasa||0);});
+  const totalPokokAngsuran=angsuran.reduce((sum,a)=>sum+Number(a.pokok||0),0);
+  const sisaPinjaman=Math.max(0,totalPinjaman-totalPokokAngsuran);
+  return `<div class="card"><div class="section-title"><span class="material-icons" style="font-size:18px">dashboard</span>Ringkasan Anggota</div><div class="summary-grid"><div class="summary-box"><div class="summary-label">Total Simpanan</div><div class="summary-value">${rupiah(totalSimpanan)}</div></div><div class="summary-box"><div class="summary-label">Simpanan Sukarela</div><div class="summary-value">${rupiah(totalSukarela)}</div></div><div class="summary-box"><div class="summary-label">Simpanan Wajib</div><div class="summary-value">${rupiah(totalWajib)}</div></div><div class="summary-box"><div class="summary-label">Simpanan Pokok</div><div class="summary-value">${rupiah(totalPokok)}</div></div><div class="summary-box"><div class="summary-label">Total Pinjaman</div><div class="summary-value">${rupiah(totalPinjaman)}</div></div><div class="summary-box"><div class="summary-label">Sisa Pinjaman</div><div class="summary-value">${rupiah(sisaPinjaman)}</div></div><div class="summary-box"><div class="summary-label">Total Angsuran</div><div class="summary-value">${rupiah(totalAngsuran)}</div></div><div class="summary-box"><div class="summary-label">Jumlah Transaksi</div><div class="summary-value">${simpanan.length+pinjaman.length+angsuran.length}</div></div></div></div>`;
 }
-document.getElementById("inputCari").addEventListener("keypress",e=>{if(e.key==="Enter")cariAnggota(e.target.value);});
+function renderSimpanan(anggota,anggotaKey){
+  const list=getSimpananAnggota(anggota,anggotaKey);
+  if(!list.length)return`<div class="card"><div class="section-title">💰 Riwayat Simpanan</div><div class="empty">Belum ada riwayat simpanan.</div></div>`;
+  list.sort((a,b)=>Number(b.tanggal||b.timestamp||b.waktu||0)-Number(a.tanggal||a.timestamp||a.waktu||0));
+  let rows="";list.forEach(s=>{const jenis=s.jenis||s.tipe||"-";const jumlah=Number(s.jumlah||s.nominal||s.nilai||0);const keluar=["tarik","pencair","keluar"].includes(String(jenis).toLowerCase());rows+=`<tr><td>${esc(tanggal(s.tanggal||s.timestamp||s.waktu))}</td><td>${esc(jenis)}</td><td class="money" style="color:${keluar?"#dc2626":"#16a34a"};">${keluar?"- ":"+ "}${rupiah(jumlah)}</td></tr>`;});
+  return `<div class="card"><div class="section-title">💰 Riwayat Simpanan</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis</th><th>Jumlah</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+function renderPinjaman(anggota,anggotaKey){
+  const list=getPinjamanAnggota(anggota,anggotaKey);
+  if(!list.length)return`<div class="card"><div class="section-title">💳 Riwayat Pinjaman</div><div class="empty">Belum ada pinjaman.</div></div>`;
+  list.sort((a,b)=>Number(b.tanggal||b.timestamp||0)-Number(a.tanggal||a.timestamp||0));
+  let html="";list.forEach(p=>{
+    const nomor=String(p.nomor||"").trim();const jumlah=Number(p.jumlah||p.nominal||0);const jasa=Number(p.jasa||0);const sisaPokok=Number(p.sisaPokok??0);const status=String(p.status||"").trim();
+    html+=`<div class="loan-card"><div class="loan-header"><div><div class="loan-number">No. Pinjaman: ${esc(nomor)} - ${esc(p.nama||"")}</div><div class="loan-date">${tanggal(p.tanggal||p.timestamp)}</div></div><span class="badge">Pinjaman</span></div><div class="loan-grid"><div class="loan-item"><small>Jumlah Pinjaman</small><b>${rupiah(jumlah)}</b></div><div class="loan-item"><small>Jasa</small><b>${rupiah(jasa)}</b></div><div class="loan-item"><small>Sumber</small><b>${esc(p.sumber||p.sumberKas||"-")}</b></div><div class="loan-item"><small>Status</small><b>${esc(status||"-")}</b></div></div></div>`;
+  });
+  return `<div class="card"><div class="section-title">💳 Riwayat Pinjaman</div>${html}</div>`;
+}
+function renderAngsuran(anggota,anggotaKey){
+  const list=getAngsuranAnggota(anggota,anggotaKey);
+  if(!list.length)return`<div class="card"><div class="section-title">💵 Riwayat Angsuran</div><div class="empty">Belum ada riwayat angsuran.</div></div>`;
+  list.sort((a,b)=>Number(b.tanggal||b.timestamp||b.waktu||0)-Number(a.tanggal||a.timestamp||a.waktu||0));
+  let rows="";list.forEach(a=>{const pokok=Number(a.pokok||0);const jasa=Number(a.jasa||0);const total=pokok+jasa;const nomorPinjaman=getNomorPinjaman(a);rows+=`<tr><td>${tanggal(a.tanggal||a.timestamp||a.waktu)}</td><td><strong style="color:#0f3057;font-size:10px;">${esc(nomorPinjaman)}</strong></td><td class="money">${rupiah(pokok)}</td><td class="money">${rupiah(jasa)}</td><td class="money">${rupiah(total)}</td></tr>`;});
+  return `<div class="card"><div class="section-title">💵 Riwayat Angsuran</div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Pinjaman</th><th>Pokok</th><th>Jasa</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+document.getElementById("inputCari").addEventListener("input",e=>{cariAnggota(e.target.value);});
 </script>
 </body>
 </html>
