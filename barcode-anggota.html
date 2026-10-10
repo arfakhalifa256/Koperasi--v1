@@ -20,7 +20,7 @@ header{background:linear-gradient(135deg,#1e90ff,#0f3057);color:#fff;padding:12p
 .btn-icon{width:48px;height:48px;border-radius:14px;border:none;background:#0f2a4a;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .btn-tambah{height:48px;padding:0 16px;border-radius:14px;border:none;background:#fff;color:#1e90ff;font-weight:700;font-size:10px;display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap}
 .btn{padding:10px 16px;border:none;border-radius:12px;font-weight:700;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:6px}.btn-primary{background:#1e90ff;color:#fff}.btn-dark{background:#0f3057;color:#fff}.btn-danger{background:#fee2e2;color:#dc2626}
-.badge{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:800;display:inline-block}.aktif{background:#dcfce7;color:#16a34a}.keluar{background:#fee2e2;color:#dc2626}
+.badge{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:800;display:inline-block}.aktif,.lunas{background:#dcfce7;color:#16a34a;border:1px solid #86efac}.keluar{background:#000;color:#fff}.belum,.belum-lunas{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5}
 .table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:820px}th{padding:10px;background:#f8fafc;color:#64748b;font-size:10px;text-transform:uppercase;text-align:left}td{padding:10px;border-bottom:1px solid #f1f5f9;vertical-align:middle}tbody tr{cursor:pointer}tbody tr:hover{background:#f8fafc}
 .code-id{font-weight:800;color:#0f3057}.code-barcode{background:#eff6ff;padding:3px 7px;border-radius:6px;font-weight:700;color:#1e90ff}
 .mobile-list{display:none}.m-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:12px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start}.m-id{font-weight:800;font-size:13px;color:#0f3057}.m-barcode{color:#1e90ff;font-size:10px;font-weight:700}.m-name{font-weight:600;margin-top:3px}.m-info{font-size:11px;color:#64748b;margin-top:3px}
@@ -39,10 +39,10 @@ header{background:linear-gradient(135deg,#1e90ff,#0f3057);color:#fff;padding:12p
   <div class="top-action"><div class="search-box"><span class="material-icons">search</span><input type="text" id="searchAnggota" placeholder="Cari ID, nama, HP..." autocomplete="off"></div>
    <button class="btn-tambah" onclick="openModal()"><span class="material-icons">person_add</span></button>
   </div>
-  <div style="font-size:10px;color:#64748b;margin-top:8px">Total: <b id="totalAnggota">0</b> anggota • ID tetap • Barcode bisa berbeda</div></div>
+  <div style="font-size:10px;color:#64748b;margin-top:8px">Total: <b id="totalAnggota">0</b> anggota • <span id="infoStatus">memuat pinjaman...</span></div></div>
 <div class="table-wrap card"><table><thead><tr><th>ID Anggota</th><th>Barcode</th><th>Nama</th><th>HP</th><th>Status</th><th style="text-align:center">Barcode</th><th>Aksi</th></tr></thead><tbody id="tbodyAnggota"></tbody></table></div>
 <div class="mobile-list" id="mobileList"></div>
-<div class="card" id="detailCard"><div class="detail-header"><div class="detail-title">Detail Anggota</div><button class="detail-close" onclick="tutupDetail()"><span class="material-icons">close</span></button></div><div id="printArea"><div class="detail-grid"><div class="member-card"><div id="dId" class="member-id"></div><div id="dBarcodeText" class="member-barcode-text"></div><div id="dNama" class="member-name"></div><div id="dHp" class="member-info"></div><div id="dAlamat" class="member-address"></div><div id="dStatus" style="margin-top:8px"></div><div class="barcode-detail"><svg id="barcodeAnggota"></svg></div></div><div class="qr-box"><div style="font-weight:700;font-size:11px">QR ANGGOTA</div><div id="qrcodeAnggota"></div><div id="qrText" class="qr-small-text"></div></div></div></div><div class="detail-actions"><button class="btn btn-primary" onclick="shareWA()">WhatsApp</button><button class="btn btn-primary" onclick="window.print()">🖨️ Cetak</button><button class="btn btn-dark" onclick="editFromDetail()">✏️ Edit</button><button class="btn btn-danger" onclick="keluarkanAnggota(currentDetail?.key)">🚪 Keluar</button><button class="btn btn-danger" onclick="hapusFromDetail()">🗑️ Hapus</button></div></div>
+<div class="card" id="detailCard"><div class="detail-header"><div class="detail-title">Detail Anggota</div><button class="detail-close" onclick="tutupDetail()"><span class="material-icons">close</span></button></div><div id="printArea"><div class="detail-grid"><div class="member-card"><div id="dId" class="member-id"></div><div id="dBarcodeText" class="member-barcode-text"></div><div id="dNama" class="member-name"></div><div id="dHp" class="member-info"></div><div id="dAlamat" class="member-address"></div><div id="dStatus" style="margin-top:8px"></div><div id="dRincian" style="margin-top:10px;font-size:11px;background:#f8fafc;padding:8px;border-radius:10px"></div><div class="barcode-detail"><svg id="barcodeAnggota"></svg></div></div><div class="qr-box"><div style="font-weight:700;font-size:11px">QR ANGGOTA</div><div id="qrcodeAnggota"></div><div id="qrText" class="qr-small-text"></div></div></div></div><div class="detail-actions"><button class="btn btn-primary" onclick="shareWA()">WhatsApp</button><button class="btn btn-primary" onclick="window.print()">🖨️ Cetak</button><button class="btn btn-dark" onclick="editFromDetail()">✏️ Edit</button><button class="btn btn-danger" onclick="keluarkanAnggota(currentDetail?.key)">🚪 Keluar</button><button class="btn btn-danger" onclick="hapusFromDetail()">🗑️ Hapus</button></div></div>
 </div>
 <div id="modalAnggota" class="modal"><div class="modal-box"><div class="modal-title-row"><h3 id="modalTitle">Tambah Anggota</h3><div class="close-modal" onclick="closeModal()">✕</div></div><label>ID Anggota *</label><input type="text" id="inputIdAnggota" placeholder="AG001"><div style="font-size:9px;color:#64748b;margin-top:3px">Contoh: AG001, AG002</div><label>ID Barcode *</label><div class="input-row"><input type="text" id="inputBarcode" placeholder="AG001"><button type="button" class="btn btn-dark" onclick="buatPreview()">OK</button></div><div class="barcode-preview"><svg id="previewBarcode"></svg><div id="previewText" style="font-size:10px;color:#64748b"></div></div><label>Nama *</label><input type="text" id="inputNama" placeholder="Nama anggota"><label>HP / Telepon</label><input type="text" id="inputHp" placeholder="08xxxxxxxxxx"><label>Alamat</label><textarea id="inputAlamat" rows="2" placeholder="Alamat anggota"></textarea><label>Status</label><select id="inputStatus"><option value="aktif">aktif</option><option value="keluar">keluar</option></select><div style="display:flex;gap:8px;margin-top:16px"><button class="btn btn-primary" style="flex:1" onclick="simpanAnggota()" id="btnSimpan">💾 SIMPAN</button><button class="btn btn-dark" style="flex:1" onclick="closeModal()">Batal</button></div><div id="statusSimpan" style="text-align:center;font-size:11px;margin-top:10px;color:#16a34a"></div></div></div>
 <div id="toast" class="toast"></div>
@@ -54,11 +54,13 @@ const app=initializeApp(firebaseConfig); const db=getDatabase(app);
 const BASE_URL="https://koperasiarfa.my.id"; const SCAN_PAGE=BASE_URL+"/cari-anggota.html";
 function getScanUrl(barcode){return SCAN_PAGE+"?scan="+encodeURIComponent(String(barcode||"").trim())}
 let dataAnggota={},editKey=null,currentDetail=null;
+let pinjamanMap={}, angsuranMap={}, statusMap={};
 window.toggleSidebar=function(){document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active")};
 document.getElementById("overlay").addEventListener("click",toggleSidebar);
 document.getElementById("btnLogout").addEventListener("click",function(e){e.preventDefault();if(confirm("Yakin ingin logout?")){localStorage.clear();location.href="index.html"}});
 function showToast(m){const t=document.getElementById("toast");t.innerText=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500)}
 function normalizeId(v){return String(v||"").trim().toUpperCase()}
+function rupiah(n){return "Rp "+(Number(n)||0).toLocaleString("id-ID")}
 function getMemberId(a){return normalizeId(a.id||a.idAnggota||a.anggotaId||"")}function getBarcode(a){return String(a.barcode||getMemberId(a)).trim()}
 function getNama(a){return String(a.nama||a.name||"").trim()}function getHp(a){return String(a.telepon||a.hp||a.noHp||"").trim()}
 function getNextId(){let max=0;Object.values(dataAnggota).forEach(a=>{const m=getMemberId(a).match(/^AG(\d+)$/i);if(m){const n=parseInt(m[1],10);if(n>max)max=n}});return"AG"+String(max+1).padStart(3,"0")}
@@ -70,46 +72,107 @@ window.buatPreview=function(){let bc=document.getElementById("inputBarcode").val
 document.getElementById("inputBarcode").addEventListener("input",buatPreview);
 document.getElementById("inputIdAnggota").addEventListener("input",function(){const bc=document.getElementById("inputBarcode");if(!bc.value.trim())bc.value=this.value.toUpperCase();buatPreview()});
 window.simpanAnggota=async function(){const btn=document.getElementById("btnSimpan");const orig="💾 SIMPAN";try{btn.disabled=true;btn.innerText="Menyimpan...";let id=normalizeId(document.getElementById("inputIdAnggota").value);let barcode=document.getElementById("inputBarcode").value.trim();const nama=document.getElementById("inputNama").value.trim();const telepon=document.getElementById("inputHp").value.trim();const alamat=document.getElementById("inputAlamat").value.trim();const status=document.getElementById("inputStatus").value;if(!id){alert("ID anggota wajib diisi.");return}if(!nama){alert("Nama wajib diisi.");return}if(!barcode)barcode=id;if(idSudahDipakai(id,editKey)){alert("ID "+id+" sudah digunakan.");return}if(barcodeSudahDipakai(barcode,editKey)){alert("Barcode "+barcode+" sudah digunakan.");return}const data={id:id,idAnggota:id,barcode:barcode,nama:nama,telepon:telepon,hp:telepon,alamat:alamat,status:status};if(editKey){data.tanggalUpdate=Date.now();await update(ref(db,"anggota/"+editKey),data);showToast("Data diperbarui.")}else{const newRef=push(ref(db,"anggota"));data.tanggalMasuk=Date.now();await set(newRef,data);showToast("Anggota ditambahkan.")}document.getElementById("statusSimpan").innerText="✅ Berhasil";setTimeout(async()=>{closeModal();await loadAnggota()},500)}catch(e){alert("Gagal: "+e.message)}finally{btn.disabled=false;btn.innerText=orig}};
+window.keluarkanAnggota=async function(key){if(!key){alert("Pilih anggota dulu");return}const a=dataAnggota[key]; if(!a)return;const id=getMemberId(a); const nama=getNama(a);if(a.status==="keluar"){if(!confirm(`Aktifkan kembali ${id} - ${nama}?`)) return;await update(ref(db,"anggota/"+key),{status:"aktif",tanggalUpdate:Date.now()});showToast(`✅ ${nama} diaktifkan`);} else {if(!confirm(`Keluarkan ${id} - ${nama}?\nStatus jadi KELUAR`)) return;await update(ref(db,"anggota/"+key),{status:"keluar",tanggalKeluar:Date.now(),tanggalUpdate:Date.now()});showToast(`🚪 ${nama} dikeluarkan`);}await loadAnggota();if(currentDetail && currentDetail.key===key){const snap=await get(ref(db,"anggota/"+key)); if(snap.exists()){currentDetail={key,...snap.val()}; tampilkanDetail(currentDetail)}}}
 
-// KELUARKAN 1 KLIK
-window.keluarkanAnggota=async function(key){
-  if(!key){alert("Pilih anggota dulu");return}
-  const a=dataAnggota[key]; if(!a)return;
-  const id=getMemberId(a); const nama=getNama(a);
-  if(a.status==="keluar"){
-    if(!confirm(`Aktifkan kembali ${id} - ${nama}?`)) return;
-    await update(ref(db,"anggota/"+key),{status:"aktif",tanggalUpdate:Date.now()});
-    showToast(`✅ ${nama} diaktifkan`);
-  } else {
-    if(!confirm(`Keluarkan ${id} - ${nama}?\nStatus jadi KELUAR`)) return;
-    await update(ref(db,"anggota/"+key),{status:"keluar",tanggalKeluar:Date.now(),tanggalUpdate:Date.now()});
-    showToast(`🚪 ${nama} dikeluarkan`);
-  }
-  await loadAnggota();
-  if(currentDetail && currentDetail.key===key){
-    const snap=await get(ref(db,"anggota/"+key)); if(snap.exists()){currentDetail={key,...snap.val()}; tampilkanDetail(currentDetail)}
-  }
-}
-
+// ====== LOGIC BARU SESUAI STRUKTUR SCREENSHOT ======
 async function loadAnggota(){
   try{
-    const snap=await get(ref(db,"anggota")); const tbody=document.getElementById("tbodyAnggota"); const mobile=document.getElementById("mobileList"); tbody.innerHTML=""; mobile.innerHTML="";
-    if(!snap.exists()){dataAnggota={};document.getElementById("totalAnggota").innerText="0";renderEmpty();return}
-    dataAnggota=snap.val()||{};
+    const [snapAnggota, snapPinjam, snapAngsur] = await Promise.all([
+      get(ref(db,"anggota")),
+      get(ref(db,"pinjaman")),
+      get(ref(db,"angsuran"))
+    ]);
+    if(!snapAnggota.exists()){dataAnggota={};document.getElementById("totalAnggota").innerText="0";renderEmpty();return}
+    dataAnggota=snapAnggota.val()||{};
+    const pinjamanAll = snapPinjam.exists()? snapPinjam.val() : {};
+    const angsuranAll = snapAngsur.exists()? snapAngsur.val() : {};
+
+    // Mapping pushId anggota -> AG001
+    const pushToAG = {};
+    Object.entries(dataAnggota).forEach(([k,v])=>{pushToAG[k]=getMemberId(v); pushToAG[k.toLowerCase()]=getMemberId(v)});
+
+    pinjamanMap={}; angsuranMap={}; statusMap={};
+    // pinjaman: key = -OtNb-tCTbTrarm5LJxl, value {idAnggota: -Osy0v..., jumlah:200000, jasa:40000, status:belum, nomor:PJ012}
+    Object.entries(pinjamanAll).forEach(([pid,p])=>{
+      let agId = normalizeId(p.idAnggota || p.anggotaId || "");
+      if(!agId) return;
+      // translate jika idAnggota masih pushId (-Osy0a3...)
+      if(agId.startsWith("-")){ 
+        agId = pushToAG[agId] || pushToAG[agId.toLowerCase()] || agId;
+      }
+      if(agId.startsWith("-")) return; // masih tidak ketemu AG, skip
+      const jumlah = Number(p.jumlah||p.pokok||0);
+      const jasa = Number(p.jasa||0);
+      const total = jumlah + jasa;
+      pinjamanMap[pid] = {agId, total, jumlah, jasa, status: String(p.status||"belum").toLowerCase(), nomor: p.nomor||p.idPinjaman||pid};
+    });
+
+    // angsuran: key = -Ou..., value {idAnggota: AG001, idPinjaman: PJ010, pinjamanId: -OtNa..., pokok:100000, jasa:20000}
+    Object.entries(angsuranAll).forEach(([aid,a])=>{
+      const pid = a.pinjamanId || a.idPinjamanId || a.pinjaman || ""; // push id pinjaman
+      const agId = normalizeId(a.idAnggota || "");
+      const bayar = Number(a.pokok||0) + Number(a.jasa||0);
+      if(pid){
+        if(!angsuranMap[pid]) angsuranMap[pid]=0;
+        angsuranMap[pid]+=bayar;
+      }
+      // juga simpan by AG untuk fallback jika pinjamanId kosong
+      if(agId && agId.startsWith("AG")){
+        if(!angsuranMap["AG_"+agId]) angsuranMap["AG_"+agId]=0;
+        angsuranMap["AG_"+agId]+=bayar;
+      }
+    });
+
+    // Hitung status per AG
+    const rekapPerAG = {}; // AG001 -> {total, bayar, sisa, adaBelum}
+    Object.values(pinjamanMap).forEach(p=>{
+      if(!rekapPerAG[p.agId]) rekapPerAG[p.agId]={total:0,bayar:0};
+      rekapPerAG[p.agId].total += p.total;
+    });
+    Object.entries(pinjamanMap).forEach(([pid,p])=>{
+      const bayar = angsuranMap[pid]||0;
+      if(!rekapPerAG[p.agId]) rekapPerAG[p.agId]={total:0,bayar:0};
+      rekapPerAG[p.agId].bayar += bayar;
+    });
+
+    Object.entries(rekapPerAG).forEach(([agId, rec])=>{
+      const sisa = rec.total - rec.bayar;
+      // cek apakah ada pinjaman dengan status belum di AG ini
+      const adaPinjamanBelum = Object.values(pinjamanMap).some(p=> p.agId===agId && (p.status.includes("belum") || p.status.includes("aktif") || p.status==="") && (p.total - (angsuranMap[Object.keys(pinjamanMap).find(k=>pinjamanMap[k]===p)]||0) > 100));
+      let statusText="LUNAS", cls="lunas";
+      if(sisa>100 || adaPinjamanBelum){statusText="BELUM LUNAS"; cls="belum-lunas";}
+      statusMap[agId]={...rec, sisa: Math.max(0,sisa), status: statusText, cls, adaBelum: adaPinjamanBelum};
+    });
+
+    document.getElementById("infoStatus").innerText = `${Object.keys(pinjamanAll).length} pinjaman • ${Object.keys(angsuranAll).length} angsuran • Status dari pinjaman.status`;
+    document.getElementById("totalAnggota").innerText = Object.keys(dataAnggota).length;
+
     const list=Object.entries(dataAnggota).map(([k,v])=>({key:k,...v})).sort((a,b)=>getMemberId(a).localeCompare(getMemberId(b),undefined,{numeric:true}));
-    document.getElementById("totalAnggota").innerText=list.length;
     renderTable(list); renderMobile(list); checkScanParameter();
-  }catch(e){alert("Gagal load: "+e.message)}
+  }catch(e){alert("Gagal load: "+e.message); console.error(e)}
 }
+
+function getStatusAnggota(a){
+  const id=getMemberId(a);
+  const raw = String(a.status||"").toLowerCase();
+  if(raw.includes("keluar")) return {text:"KELUAR", cls:"keluar", sisa:0, total:0, bayar:0};
+  if(statusMap[id]){
+    const s=statusMap[id];
+    return {text:s.status, cls:s.cls, sisa:s.sisa, total:s.total, bayar:s.bayar};
+  }
+  return {text:"AKTIF", cls:"aktif", sisa:0, total:0, bayar:0};
+}
+
 function renderEmpty(){document.getElementById("tbodyAnggota").innerHTML=`<tr><td colspan="7"><div class="empty">Belum ada data</div></td></tr>`;document.getElementById("mobileList").innerHTML=`<div class="card empty">Belum ada data</div>`}
 function renderTable(list){
   const tbody=document.getElementById("tbodyAnggota"); tbody.innerHTML="";
   if(!list.length){tbody.innerHTML=`<tr><td colspan="7"><div class="empty">Tidak ditemukan</div></td></tr>`;return}
   list.forEach(a=>{
-    const id=getMemberId(a); const barcode=getBarcode(a); const nama=getNama(a); const hp=getHp(a); const status=a.status||"aktif";
+    const id=getMemberId(a); const barcode=getBarcode(a); const nama=getNama(a); const hp=getHp(a); 
+    const st=getStatusAnggota(a);
     const bcId="bc_"+Math.random().toString(36).substring(2,9);
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td><span class="code-id">${escapeHtml(id)}</span></td><td><span class="code-barcode">${escapeHtml(barcode)}</span></td><td><b>${escapeHtml(nama||"-")}</b></td><td>${escapeHtml(hp||"-")}</td><td><span class="badge ${status==="keluar"?"keluar":"aktif"}">${escapeHtml(status)}</span></td><td style="text-align:center"><svg id="${bcId}" style="width:110px;height:28px"></svg></td><td><div style="display:flex;flex-direction:column;gap:5px"><button class="btn btn-dark" style="padding:6px 9px;font-size:9px" data-edit="${a.key}">✏️ Edit</button><button class="btn btn-danger" style="padding:6px 9px;font-size:9px" data-keluar="${a.key}">${status==="keluar"?"✅ Aktifkan":"🚪 Keluar"}</button></div></td>`;
+    tr.innerHTML=`<td><span class="code-id">${escapeHtml(id)}</span></td><td><span class="code-barcode">${escapeHtml(barcode)}</span></td><td><b>${escapeHtml(nama||"-")}</b><div style="font-size:9px;color:#64748b">${st.total?`Sisa ${rupiah(st.sisa)}`:""}</div></td><td>${escapeHtml(hp||"-")}</td><td><span class="badge ${st.cls}">${st.text}</span>${st.sisa>0?`<div style="font-size:8px;color:#dc2626">${rupiah(st.sisa)}</div>`:""}</td><td style="text-align:center"><svg id="${bcId}" style="width:110px;height:28px"></svg></td><td><div style="display:flex;flex-direction:column;gap:5px"><button class="btn btn-dark" style="padding:6px 9px;font-size:9px" data-edit="${a.key}">✏️ Edit</button><button class="btn btn-danger" style="padding:6px 9px;font-size:9px" data-keluar="${a.key}">${a.status==="keluar"?"✅":"🚪"}</button></div></td>`;
     tr.addEventListener("click",()=>tampilkanDetail(a));
     tr.querySelector("[data-edit]").addEventListener("click",e=>{e.stopPropagation();openModal(a.key)});
     tr.querySelector("[data-keluar]").addEventListener("click",e=>{e.stopPropagation();keluarkanAnggota(a.key)});
@@ -121,10 +184,11 @@ function renderMobile(list){
   const mobile=document.getElementById("mobileList"); mobile.innerHTML="";
   if(!list.length){mobile.innerHTML=`<div class="card empty">Tidak ditemukan</div>`;return}
   list.forEach(a=>{
-    const id=getMemberId(a); const barcode=getBarcode(a); const nama=getNama(a); const hp=getHp(a); const status=a.status||"aktif";
+    const id=getMemberId(a); const barcode=getBarcode(a); const nama=getNama(a); const hp=getHp(a); 
+    const st=getStatusAnggota(a);
     const bcId="mbc_"+Math.random().toString(36).substring(2,9);
     const div=document.createElement("div"); div.className="m-card";
-    div.innerHTML=`<div style="flex:1;min-width:0"><div class="m-id">${escapeHtml(id)} <span class="m-barcode">(${escapeHtml(barcode)})</span> <span class="badge ${status==="keluar"?"keluar":"aktif"}">${escapeHtml(status)}</span></div><div class="m-name">${escapeHtml(nama||"-")}</div><div class="m-info">📞 ${escapeHtml(hp||"-")}</div><div style="margin-top:7px"><svg id="${bcId}" style="width:130px;height:32px"></svg></div></div><div style="display:flex;flex-direction:column;gap:5px"><button class="btn btn-dark" style="padding:7px 9px" data-edit-mobile="${a.key}">✏️</button><button class="btn btn-danger" style="padding:7px 9px;font-size:10px" data-keluar-mobile="${a.key}">${status==="keluar"?"✅":"🚪"}</button></div>`;
+    div.innerHTML=`<div style="flex:1;min-width:0"><div class="m-id">${escapeHtml(id)} <span class="m-barcode">(${escapeHtml(barcode)})</span> <span class="badge ${st.cls}">${st.text}</span></div><div class="m-name">${escapeHtml(nama||"-")}</div><div class="m-info">📞 ${escapeHtml(hp||"-")}<br>${st.total?`Pinjam ${rupiah(st.total)} • Bayar ${rupiah(st.bayar)} • Sisa ${rupiah(st.sisa)}`:"Tidak ada pinjaman"}</div><div style="margin-top:7px"><svg id="${bcId}" style="width:130px;height:32px"></svg></div></div><div style="display:flex;flex-direction:column;gap:5px"><button class="btn btn-dark" style="padding:7px 9px" data-edit-mobile="${a.key}">✏️</button><button class="btn btn-danger" style="padding:7px 9px;font-size:10px" data-keluar-mobile="${a.key}">🚪</button></div>`;
     div.addEventListener("click",()=>tampilkanDetail(a));
     div.querySelector("[data-edit-mobile]").addEventListener("click",e=>{e.stopPropagation();openModal(a.key)});
     div.querySelector("[data-keluar-mobile]").addEventListener("click",e=>{e.stopPropagation();keluarkanAnggota(a.key)});
@@ -134,8 +198,8 @@ function renderMobile(list){
 }
 window.filterAnggota=function(q){const query=String(q||document.getElementById("searchAnggota").value||"").trim().toLowerCase();const list=Object.entries(dataAnggota).map(([k,v])=>({key:k,...v})).filter(a=>{return getMemberId(a).toLowerCase().includes(query)||getBarcode(a).toLowerCase().includes(query)||getNama(a).toLowerCase().includes(query)||getHp(a).toLowerCase().includes(query)});renderTable(list);renderMobile(list)};
 document.getElementById("searchAnggota").addEventListener("input",e=>filterAnggota(e.target.value));
-window.tampilkanDetail=function(a){currentDetail=a;const id=getMemberId(a);const barcode=getBarcode(a);const nama=getNama(a);const hp=getHp(a);const alamat=a.alamat||"-";const status=a.status||"aktif";document.getElementById("detailCard").style.display="block";document.getElementById("dId").innerText="ID Anggota: "+id;document.getElementById("dBarcodeText").innerText="Barcode: "+barcode;document.getElementById("dNama").innerText=nama||"-";document.getElementById("dHp").innerText="📞 "+(hp||"-");document.getElementById("dAlamat").innerText="📍 "+alamat;document.getElementById("dStatus").innerHTML=`<span class="badge ${status==="keluar"?"keluar":"aktif"}">${escapeHtml(status)}</span>`;const qrC=document.getElementById("qrcodeAnggota");qrC.innerHTML="";const urlQR=getScanUrl(barcode);try{new QRCode(qrC,{text:urlQR,width:140,height:140,correctLevel:QRCode.CorrectLevel.H})}catch{}document.getElementById("qrText").innerText=urlQR;const bSvg=document.getElementById("barcodeAnggota");bSvg.innerHTML="";try{JsBarcode(bSvg,barcode,{format:"CODE128",width:1.3,height:45,displayValue:true,fontSize:10,margin:5})}catch{}document.getElementById("detailCard").scrollIntoView({behavior:"smooth"})};
-window.shareWA=function(){if(!currentDetail){showToast("Pilih anggota dulu.");return}const id=getMemberId(currentDetail);const nama=getNama(currentDetail);const barcode=getBarcode(currentDetail);const url=getScanUrl(barcode);const pesan=`Kartu Anggota Koperasi ARFA\n\nID: ${id}\nNama: ${nama}\nBarcode: ${barcode}\n\nLihat Kartu:\n${url}`;window.open("https://wa.me/?text="+encodeURIComponent(pesan),"_blank")};
+window.tampilkanDetail=function(a){currentDetail=a;const id=getMemberId(a);const barcode=getBarcode(a);const nama=getNama(a);const hp=getHp(a);const alamat=a.alamat||"-";const st=getStatusAnggota(a);document.getElementById("detailCard").style.display="block";document.getElementById("dId").innerText="ID Anggota: "+id;document.getElementById("dBarcodeText").innerText="Barcode: "+barcode;document.getElementById("dNama").innerText=nama||"-";document.getElementById("dHp").innerText="📞 "+(hp||"-");document.getElementById("dAlamat").innerText="📍 "+alamat;document.getElementById("dStatus").innerHTML=`<span class="badge ${st.cls}">${st.text}</span>`;document.getElementById("dRincian").innerHTML=`<b>Status Pinjaman:</b> ${st.text}<br><b>Total Pinjam:</b> ${rupiah(st.total)}<br><b>Sudah Bayar:</b> ${rupiah(st.bayar)}<br><b>Sisa:</b> <span style="color:${st.sisa>0?'#dc2626':'#16a34a'};font-weight:800">${rupiah(st.sisa)}</span>`;const qrC=document.getElementById("qrcodeAnggota");qrC.innerHTML="";const urlQR=getScanUrl(barcode);try{new QRCode(qrC,{text:urlQR,width:140,height:140,correctLevel:QRCode.CorrectLevel.H})}catch{}document.getElementById("qrText").innerText=urlQR;const bSvg=document.getElementById("barcodeAnggota");bSvg.innerHTML="";try{JsBarcode(bSvg,barcode,{format:"CODE128",width:1.3,height:45,displayValue:true,fontSize:10,margin:5})}catch{}document.getElementById("detailCard").scrollIntoView({behavior:"smooth"})};
+window.shareWA=function(){if(!currentDetail){showToast("Pilih anggota dulu.");return}const id=getMemberId(currentDetail);const nama=getNama(currentDetail);const barcode=getBarcode(currentDetail);const st=getStatusAnggota(currentDetail);const url=getScanUrl(barcode);const pesan=`Kartu Anggota Koperasi ARFA\n\nID: ${id}\nNama: ${nama}\nBarcode: ${barcode}\nStatus: ${st.text}\nSisa: ${rupiah(st.sisa)}\n\nLihat Kartu:\n${url}`;window.open("https://wa.me/?text="+encodeURIComponent(pesan),"_blank")};
 window.tutupDetail=function(){document.getElementById("detailCard").style.display="none";currentDetail=null};
 window.editFromDetail=function(){if(!currentDetail)return;openModal(currentDetail.key)};
 window.hapusFromDetail=async function(){if(!currentDetail)return;const nama=getNama(currentDetail);const id=getMemberId(currentDetail);if(!confirm(`Hapus ${id} - ${nama}?`))return;try{await remove(ref(db,"anggota/"+currentDetail.key));showToast("Anggota dihapus.");document.getElementById("detailCard").style.display="none";currentDetail=null;await loadAnggota()}catch(e){alert("Gagal: "+e.message)}};
