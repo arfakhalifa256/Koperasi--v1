@@ -42,7 +42,6 @@ button{padding:11px 14px;border:none;border-radius:10px;cursor:pointer;font-weig
 .btn-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
 .btn-riwayat{width:100%;margin-top:10px;background:#fee2e2;color:black;font-size:12px;padding:12px}
 .info-box{background:#eff6ff;padding:12px;border-radius:12px;margin-top:12px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center}
-/* SIDEBAR FIX */
 .sidebar{position:fixed;top:0;left:-280px;width:260px;height:100%;background:var(--primary-dark);padding:16px;transition:.3s ease;z-index:9999;overflow-y:auto}
 .sidebar.open{left:0}
 .sidebar a{color:#fff;text-decoration:none;display:flex;gap:10px;padding:12px;border-radius:10px;font-size:12px}
@@ -77,7 +76,8 @@ button{padding:11px 14px;border:none;border-radius:10px;cursor:pointer;font-weig
     <div class="form-group"><label>Jasa (auto)</label><input type="text" id="jasa" disabled></div>
     <div class="form-group"><label>Sukarela (auto)</label><input type="text" id="simpanan" disabled></div>
     <div class="info-box"><div>Total<br><b id="totalBayar">Rp0</b></div><div>Sisa Pokok<br><b id="sisaPokok">Rp0</b></div><div>Sisa Jasa<br><b id="sisaJasa">Rp0</b></div></div>
-    <div class="btn-group"><button type="button" class="btn-primary" id="btnSimpan">💾 Simpan</button><button type="button" class="btn-warning" id="btnNota" disabled>🧾 Cetak Nota</button></div>
+    <div class="btn-group"><button type="button" class="btn-primary" id="btnSimpan">💾 Simpan & Kirim WA</button>
+      <button type="button" class="btn-warning" id="btnNota" disabled>🧾 Cetak Nota</button></div>
     <button type="button" class="btn-riwayat" id="btnRiwayat">📋 Lihat Riwayat</button>
   </div>
 </div>
@@ -91,13 +91,11 @@ const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDom
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// ===== ROLE BASE FINAL =====
 const username = (localStorage.getItem("username")||"").trim();
 let role = (localStorage.getItem("role")||"user").toLowerCase().trim();
 if(!username){ alert("Login dulu"); location.href="index.html"; }
 const isAdmin = role === "admin";
 
-// KUNCI TOTAL UNTUK USER
 if(!isAdmin){
   const form = document.getElementById("formInput");
   form.innerHTML = `
@@ -108,11 +106,8 @@ if(!isAdmin){
         Halo <b>${username}</b> (${role})<br>
         Kamu <b>TIDAK BISA</b> input angsuran.<br>
         Kamu hanya bisa lihat riwayat, cetak nota & kirim WA.<br>
-        Input hanya untuk Admin.
       </p>
-      <button id="btnLihatRiwayatTerkunci" style="margin-top:15px;background:#1e90ff;color:#fff;padding:12px 20px;border-radius:10px;border:none;font-weight:700;width:100%">
-        📋 Lihat Riwayat Angsuran
-      </button>
+      <button id="btnLihatRiwayatTerkunci" style="margin-top:15px;background:#1e90ff;color:#fff;padding:12px 20px;border-radius:10px;border:none;font-weight:700;width:100%">📋 Lihat Riwayat Angsuran</button>
     </div>
   `;
   setTimeout(()=>{
@@ -121,7 +116,6 @@ if(!isAdmin){
   },100);
 }
 
-// SIDEBAR FIX - TARUH DI WINDOW
 window.toggleSidebar = function(){
   document.getElementById("sidebar").classList.toggle("open");
   document.getElementById("overlay").classList.toggle("active");
@@ -242,7 +236,7 @@ function hitungAlokasi(){
   document.getElementById("totalBayar").innerText=rupiah(bayar);
 }
 function buatPayloadKas(jumlah,kategori,tanggal,metode,angsuranId,anggotaId,idAnggota,nama){
-  return {jumlah:Number(jumlah||0),kategori,tipe:"masuk",sumberKas:metode||"cash",tanggal:Number(tanggal),keterangan:`Angsuran ${nama||""}`.trim(),angsuranId:angsuranId||"",anggotaId:anggotaId||"",idAnggota:idAnggota||"",nama:nama||"",dibuatPada:Date.now()};
+  return {jumlah:Number(jumlah||0),kategori,tipe:"masuk",sumberKas:metode||"cash",tanggal:Number(tanggal),keterangan:`${kategori.includes('pokok')?'Angsuran Pokok':kategori.includes('jasa')?'Jasa':''} ${nama||""} (${dataPinjaman[pinIdAktif]?.nomor||""})`.trim(),angsuranId:angsuranId||"",anggotaId:anggotaId||"",idAnggota:idAnggota||"",nama:nama||"",dibuatPada:Date.now()};
 }
 async function cariKasAngsuran(angsuranId,kategori){
   try{ const snap=await get(kasRef); const data=snap.val()||{}; for(const key in data){ const x=data[key]||{}; if(String(x.angsuranId||"")===String(angsuranId) && String(x.kategori||"")===String(kategori)) return {key,data:x}; } }catch(e){} return null;
@@ -265,7 +259,7 @@ if(isAdmin){
     if(!metodeEl.value) return showToast("Pilih metode",true);
     if(jumlahBayar<=0) return showToast("Isi jumlah bayar",true);
     const tanggal=tanggalInputKeTimestamp(tanggalEl.value); const metode=metodeEl.value;
-    const {pokokTagihan,jasaTagihan}=hitungTagihanBerjalan(pinIdAktif);
+    const {pokokTagihan,jasaTagihan,sisaPokok:spSebelum,sisaJasa:sjSebelum}=hitungTagihanBerjalan(pinIdAktif);
     let alP=0,alJ=0,alS=0;
     if(jumlahBayar<=pokokTagihan+jasaTagihan){ alP=Math.min(jumlahBayar,pokokTagihan); alJ=Math.min(jumlahBayar-alP,jasaTagihan); }
     else{ alP=pokokTagihan; alJ=jasaTagihan; alS=jumlahBayar-(pokokTagihan+jasaTagihan); }
@@ -279,7 +273,44 @@ if(isAdmin){
       if(kasJasaId) updates["kas/transaksi/"+kasJasaId]=buatPayloadKas(alJ,"pendapatan_jasa",tanggal,metode,angsuranId,anggota.key,anggota.idAnggota,anggota.nama);
       if(kasSimpananId) updates["kas/transaksi/"+kasSimpananId]=buatPayloadKas(alS,"simpanan_sukarela",tanggal,metode,angsuranId,anggota.key,anggota.idAnggota,anggota.nama);
       await updateData(ref(db),updates);
-      showToast(`Tersimpan ${anggota.nama} + transaksi kas`);
+      showToast(`Tersimpan ${anggota.nama} + kas masuk`);
+
+      // === AUTO KIRIM WA ===
+      const noWA=normalisasiWA(anggota.telepon);
+      const tglStr=new Date(Number(tanggal)).toLocaleDateString("id-ID",{day:'2-digit',month:'long',year:'numeric'});
+      const sisaPokokBaru=Math.max(0, spSebelum - alP);
+      const sisaJasaBaru=Math.max(0, sjSebelum - alJ);
+      const pesanWA=`*KOPERASI ARFA DRIVER*
+
+✅ *Angsuran Diterima*
+
+Nama: *${anggota.nama}*
+No Pinjaman: *${p.nomor||pinIdAktif}*
+Tanggal: ${tglStr}
+Metode: ${metode.toUpperCase()}
+
+Rincian:
+• Pokok: ${rupiah(alP)}
+• Jasa: ${rupiah(alJ)}
+• Sukarela: ${rupiah(alS)}
+• Total Bayar: *${rupiah(jumlahBayar)}*
+
+Sisa Tagihan:
+• Sisa Pokok: ${rupiah(sisaPokokBaru)}
+• Sisa Jasa: ${rupiah(sisaJasaBaru)}
+
+Terima kasih 🙏`;
+
+      if(noWA){
+        // buka WA otomatis setelah 600ms
+        setTimeout(()=>{
+          window.open(`https://wa.me/${noWA}?text=${encodeURIComponent(pesanWA)}`,"_blank");
+        },600);
+        showToast("Buka WA "+anggota.nama);
+      }else{
+        showToast("No WA anggota belum diisi",true);
+      }
+
       jumlahBayarEl.value=""; updateInfo(); btnNota.disabled=false; btnNota.onclick=()=>cetakNotaAngsuran(angsuranId); cetakNotaAngsuran(angsuranId);
     }catch(e){ console.error(e); showToast("Gagal menyimpan: "+e.message,true); }
   };
