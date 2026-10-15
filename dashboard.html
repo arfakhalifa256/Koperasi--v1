@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Koperasi ARFA + Bukti</title>
+<title>Dashboard - Koperasi ARFA Sort Terbaru</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0091ff">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -20,8 +20,6 @@ body{background:#f1f5f9;padding-bottom:80px}
 .logo p span{font-size:12px;font-weight:500;opacity:.9}
 .badge{background:rgba(255,255,255,.2);padding:5px 10px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer}
 .saldo-box{display:flex;justify-content:space-between;align-items:flex-start}
-.saldo-kiri.label{font-size:12px;color:#FFD700}
-.saldo-kiri.nominal{font-size:16px;font-weight:800;margin:4px 0;color:#DFF700}
 .saldo-detail{display:flex;gap:8px;font-size:10px;margin-top:6px;color:#00FF88;flex-wrap:wrap}
 .saldo-detail div{background:rgba(255,255,255,.15);padding:5px 8px;border-radius:8px;cursor:pointer}
 .total-anggota{font-size:10px;opacity:.9;margin-top:5px}
@@ -47,13 +45,11 @@ body{background:#f1f5f9;padding-bottom:80px}
 .member-status.keluar{background:#fee2e2;color:#b91c1c}
 .summary-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
 .summary-item{padding:7px 3px;border-radius:8px;text-align:center}
-.summary-item.label{font-size:8px;color:#64748b}
-.summary-item.value{font-size:10px;font-weight:700;word-break:break-word}
 .detail-button{display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;margin-top:9px;background:#0091ff;color:#fff;border-radius:8px;font-size:10px;font-weight:600;border:none;cursor:pointer;width:100%}
 .container{padding:16px}
 .menu-grid{background:#fff;padding:16px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.05);display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .menu-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;text-decoration:none;color:#1f2937}
-.menu-icon{width:50px;height:50px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.menu-icon{width:50px;height:50px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:16px}
 .menu-item span{font-size:10px;font-weight:500;line-height:1.2}
 .bottom-nav{position:fixed;bottom:0;left:0;width:100%;background:#fff;box-shadow:0 -2px 10px rgba(0,0,0,.08);display:flex;justify-content:space-around;padding:8px 0;z-index:99}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:#6b7280;font-size:9px}
@@ -67,7 +63,6 @@ body{background:#f1f5f9;padding-bottom:80px}
 .item-riwayat{background:#f8fafc;padding:10px;border-radius:10px;border-left:4px solid #3b82f6}
 .item-riwayat.masuk{border-color:#10b981}.item-riwayat.keluar{border-color:#dc2626}
 .empty-result{background:#fff;border-radius:12px;padding:15px;text-align:center;color:#64748b}
-.empty-result.error{color:#dc2626}
 </style>
 </head>
 <body>
@@ -82,15 +77,15 @@ body{background:#f1f5f9;padding-bottom:80px}
       <button onclick="cariAnggotaDashboard()"><span class="material-icons">search</span></button>
     </div>
     <div class="btn-aksi-cari" id="btnAksiCari" style="display:none;">
-      <button class="btn-pinjaman" id="btnPinjamanSatu"><span class="material-icons" style="font-size:16px">add_card</span> Ajukan Pinjaman</button>
-      <button class="btn-cair" id="btnCairSatu"><span class="material-icons" style="font-size:16px">payments</span> Pencairan</button>
+      <button class="btn-pinjaman" id="btnPinjamanSatu"><span class="material-icons" style="font-size:14px">add_card</span> Ajukan Pinjaman</button>
+      <button class="btn-cair" id="btnCairSatu"><span class="material-icons" style="font-size:14px">payments</span> Pencairan</button>
     </div>
   </div>
   <div id="hasilCariDashboard"></div>
   <div class="saldo-box" style="margin-top:14px">
     <div class="saldo-kiri">
-      <div class="label">Total Saldo Kas</div>
-      <div class="nominal">Rp<span id="saldoTotal">0</span></div>
+      <div style="font-size:10px;color:#FFD700">Total Saldo Kas</div>
+      <div style="font-size:16px;font-weight:800;margin:4px 0;color:#DFF700">Rp<span id="saldoTotal">0</span></div>
       <div class="saldo-detail">
         <div onclick="bukaRiwayatKas('cash')">💵 Cash: Rp<span id="saldoCash">0</span></div>
         <div onclick="bukaRiwayatKas('bank')">🏦 Bank: Rp<span id="saldoBank">0</span></div>
@@ -98,33 +93,31 @@ body{background:#f1f5f9;padding-bottom:80px}
       <div class="total-anggota"><span id="totalAnggota">0</span> Anggota Aktif</div>
     </div>
     <div class="info-pakai">
-      <div class="info-pakai-row"><span class="material-icons" style="font-size:12px">bar_chart</span><span>Rp<span id="totalPinjaman">0</span> sisa pinjaman</span></div>
+      <div class="info-pakai-row"><span class="material-icons" style="font-size:12px">bar_chart</span><span>Rp<span id="totalPinjaman">0</span> sisa</span></div>
       <div class="info-pakai-row"><span class="material-icons" style="font-size:12px">groups</span><span><span id="jumlahNasabahPinjam">0</span> Nasabah Aktif</span></div>
     </div>
   </div>
 </div>
-<div class="container">
-  <div class="menu-grid">
-    <a href="barcode-anggota.html" class="menu-item"><div class="menu-icon" style="background:#dbeafe">🙋</div><span>Data<br>Anggota</span></a>
-    <a href="kas.html" class="menu-item"><div class="menu-icon" style="background:#dcfce7">💵</div><span>Kas</span></a>
-    <a href="angsuran.html" class="menu-item"><div class="menu-icon" style="background:#fef3c7">📄</div><span>Angsuran</span></a>
-    <a href="simpanan.html" class="menu-item"><div class="menu-icon" style="background:#ffedd5">📊</div><span>Simpanan</span></a>
-    <a href="pinjaman.html" class="menu-item"><div class="menu-icon" style="background:#fee2e2">🏦</div><span>Pinjaman</span></a>
-    <a href="neraca.html" class="menu-item"><div class="menu-icon" style="background:#e0e7ff">📖</div><span>Neraca</span></a>
-    <a href="labarugi.html" class="menu-item"><div class="menu-icon" style="background:#f3e8ff">📈</div><span>Laba Rugi</span></a>
-    <a href="shu.html" class="menu-item"><div class="menu-icon" style="background:#f1f5f9">💰</div><span>SHU<br>Anggota</span></a>
-    <a href="backup.html" class="menu-item"><div class="menu-icon" style="background:#dbeafe">💾</div><span>Backup</span></a>
-    <a href="laporan-anggota.html" class="menu-item"><div class="menu-icon" style="background:#fee2e2">📚</div><span>Laporan</span></a>
-    <a href="cari-anggota.html" class="menu-item"><div class="menu-icon" style="background:#fef3c7">📷</div><span>Cari Anggota</span></a>
-    <a href="audit.html" class="menu-item"><div class="menu-icon" style="background:#dcfce7">📋</div><span>Audit Kas</span></a>
-  </div>
-</div>
+<div class="container"><div class="menu-grid">
+<a href="barcode-anggota.html" class="menu-item"><div class="menu-icon" style="background:#dbeafe">🙋</div><span>Data<br>Anggota</span></a>
+<a href="kas.html" class="menu-item"><div class="menu-icon" style="background:#dcfce7">💵</div><span>Kas</span></a>
+<a href="angsuran.html" class="menu-item"><div class="menu-icon" style="background:#fef3c7">📄</div><span>Angsuran</span></a>
+<a href="simpanan.html" class="menu-item"><div class="menu-icon" style="background:#ffedd5">📊</div><span>Simpanan</span></a>
+<a href="pinjaman.html" class="menu-item"><div class="menu-icon" style="background:#fee2e2">🏦</div><span>Pinjaman</span></a>
+<a href="neraca.html" class="menu-item"><div class="menu-icon" style="background:#e0e7ff">📖</div><span>Neraca</span></a>
+<a href="labarugi.html" class="menu-item"><div class="menu-icon" style="background:#f3e8ff">📈</div><span>Laba Rugi</span></a>
+<a href="shu.html" class="menu-item"><div class="menu-icon" style="background:#f1f5f9">💰</div><span>SHU</span></a>
+<a href="backup.html" class="menu-item"><div class="menu-icon" style="background:#dbeafe">💾</div><span>Backup</span></a>
+<a href="laporan-anggota.html" class="menu-item"><div class="menu-icon" style="background:#fee2e2">📚</div><span>Laporan</span></a>
+<a href="cari-anggota.html" class="menu-item"><div class="menu-icon" style="background:#fef3c7">📷</div><span>Cari</span></a>
+<a href="audit.html" class="menu-item"><div class="menu-icon" style="background:#dcfce7">📋</div><span>Audit</span></a>
+</div></div>
 <div class="bottom-nav">
-  <a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
-  <a href="nota.html" class="nav-item"><span class="material-icons">account_balance_wallet</span>NOTA</a>
-  <a href="scan.html" class="nav-item"><div class="nav-center"><span class="material-icons">qr_code_scanner</span></div></a>
-  <a href="transaksi.html" class="nav-item"><span class="material-icons">receipt_long</span>Riwayat</a>
-  <a href="profile.html" class="nav-item"><span class="material-icons">person</span>Profil</a>
+<a href="dashboard.html" class="nav-item active"><span class="material-icons">home</span>Beranda</a>
+<a href="nota.html" class="nav-item"><span class="material-icons">account_balance_wallet</span>NOTA</a>
+<a href="scan.html" class="nav-item"><div class="nav-center"><span class="material-icons">qr_code_scanner</span></div></a>
+<a href="transaksi.html" class="nav-item"><span class="material-icons">receipt_long</span>Riwayat</a>
+<a href="profile.html" class="nav-item"><span class="material-icons">person</span>Profil</a>
 </div>
 <div id="modalRiwayatKas" class="modal"><div class="modal-content"><div class="modal-header"><h3 id="judulRiwayat">Riwayat Kas</h3><span onclick="tutupRiwayatKas()" class="material-icons" style="cursor:pointer">close</span></div><div class="list-riwayat" id="listRiwayatKas"></div></div></div>
 
@@ -134,8 +127,6 @@ import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10
 const firebaseConfig = { apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo", authDomain:"arfa-c7dee.firebaseapp.com", databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com", projectId:"arfa-c7dee" };
 const app = initializeApp(firebaseConfig); const db = getDatabase(app);
 if(localStorage.getItem('login')!== 'true'){ location.replace('index.html'); }
-const roleLogin = localStorage.getItem("role"); const username = localStorage.getItem("username");
-if(!roleLogin ||!username){ location.href="index.html"; }
 
 window.lihatBuktiDashboard = function(src){
   if(!src) return alert("Bukti tidak ada");
@@ -163,13 +154,17 @@ function hitungPinjamanAnggota(idAnggota, anggotaKey=""){
     Object.entries(dataAngsuranD).forEach(([aid,a])=>{
       const kandidatPin=[a?.pinjamanId,a?.idPinjaman,a?.idLoan,a?.loanId,a?.noPinjaman,a?.nomorPinjaman,a?.id];
       if(!kandidatPin.some(v=>{const x=safeText(v).toLowerCase(); return x&&aliasPinjaman.has(x);})) return;
-      const bp=Number(a?.pokok||0), bj=Number(a?.jasa||0); bayarPokok+=bp; jasaBayar+=0; bayarJasa+=bj;
+      const bp=Number(a?.pokok||0), bj=Number(a?.jasa||0); bayarPokok+=bp; bayarJasa+=bj;
       riwayat.push({id:aid,...a,pokok:bp,jasa:bj});
     });
+    // SORT RIWAYAT TERBARU DI ATAS - FIX
+    riwayat.sort((a,b)=> Number(b.tanggal||b.timestamp||b.waktu||0) - Number(a.tanggal||a.timestamp||a.waktu||0));
     const sisaPokok=Math.max(0,pokok-bayarPokok); const sisaJasa=Math.max(0,jasa-bayarJasa);
     totalPokok+=pokok; totalJasa+=jasa; pokokBayar+=bayarPokok; jasaBayar+=bayarJasa;
-    daftarPinjaman.push({id:idPinjaman,firebaseKey:pid,data:p,pokok,jasa,bayarPokok,bayarJasa,sisaPokok,sisaJasa,sisaTotal:sisaPokok+sisaJasa,riwayat});
+    daftarPinjaman.push({id:idPinjaman,firebaseKey:pid,data:p,pokok,jasa,bayarPokok,bayarJasa,sisaPokok,sisaJasa,sisaTotal:sisaPokok+sisaJasa,riwayat,tglSort:Number(p.tanggal||p.timestamp||0)});
   });
+  // SORT PINJAMAN TERBARU DI ATAS - FIX UTAMA
+  daftarPinjaman.sort((a,b)=> b.tglSort - a.tglSort);
   return {totalPokok,totalJasa,totalPinjaman:totalPokok+totalJasa,pokokBayar,jasaBayar,totalBayar:pokokBayar+jasaBayar,sisaPokok:Math.max(0,totalPokok-pokokBayar),sisaJasa:Math.max(0,totalJasa-jasaBayar),sisaPinjaman:Math.max(0,totalPokok+totalJasa-pokokBayar-jasaBayar),daftarPinjaman};
 }
 
@@ -180,7 +175,7 @@ onValue(ref(db,"angsuran"), snap=>{ dataAngsuranD=snap.val()||{}; hitungPinjaman
 
 function hitungTotalAnggotaAktif(){
   const jumlah=Object.values(dataAnggotaD).filter(a=>{const s=safeText(a.status).toLowerCase(); return s===""||s==="aktif";}).length;
-  document.getElementById("totalAnggota").innerText=jumlah;
+  const el=document.getElementById("totalAnggota"); if(el) el.innerText=jumlah;
 }
 function hitungPinjamanBelumLunas(){
   let totalSisa=0; const nasabah=new Set();
@@ -201,7 +196,6 @@ function hitungSimpananAnggota(idAnggota){
   });
   return {masuk,keluar,saldo:Math.max(0,masuk-keluar)};
 }
-
 window.cariAnggotaDashboard=function(){
   const btn=document.getElementById("btnAksiCari"); if(btn) btn.style.display="none";
   const keyword=safeText(document.getElementById("keywordDashboard").value).toLowerCase();
@@ -211,7 +205,7 @@ window.cariAnggotaDashboard=function(){
     const nama=safeText(a.nama).toLowerCase(); const id=getIdAnggota(a,key).toLowerCase(); const hp=safeText(a.telepon??a.noHp??a.hp).toLowerCase();
     return nama.includes(keyword)||id.includes(keyword)||hp.includes(keyword);
   });
-  if(!hasil.length){ hasilDiv.innerHTML=`<div class="empty-result error">Anggota tidak ditemukan</div>`; return; }
+  if(!hasil.length){ hasilDiv.innerHTML=`<div class="empty-result">Anggota tidak ditemukan</div>`; return; }
   hasilDiv.innerHTML=`<div class="search-result-box"><div class="search-result-title">${hasil.length} anggota ditemukan</div>${hasil.map(([key,a])=>buatKartuAnggota(key,a)).join("")}</div>`;
   if(hasil.length===1){
     const [key,a]=hasil[0]; if(btn) btn.style.display="flex";
@@ -221,13 +215,11 @@ window.cariAnggotaDashboard=function(){
   }
 }
 function refreshPencarian(){ const input=document.getElementById("keywordDashboard"); if(input&&safeText(input.value)) cariAnggotaDashboard(); }
-
 function buatKartuAnggota(key,a){
   const idAnggota=getIdAnggota(a,key); const nama=safeText(a.nama)||"Tanpa Nama"; const telepon=safeText(a.telepon??a.noHp??a.hp)||"-"; const status=safeText(a.status).toLowerCase();
   const simpanan=hitungSimpananAnggota(idAnggota,key); const pinjaman=hitungPinjamanAnggota(idAnggota,key); const keluar=status==="keluar";
-  return `<div class="member-result"><div class="member-head"><img src="./img/icon-192.png" class="member-photo"><div class="member-info"><div class="member-name">${escapeHtml(nama)}</div><div class="member-meta">No. Anggota: <b>${escapeHtml(idAnggota)}</b></div><div class="member-meta">HP: ${escapeHtml(telepon)}</div></div><span class="member-status ${keluar?"keluar":""}">${keluar?"KELUAR":"AKTIF"}</span></div><div class="summary-mini"><div class="summary-item" style="background:#ecfdf5"><div class="label">Simpanan</div><div class="value" style="color:#059669">Rp ${formatRp(simpanan.saldo)}</div></div><div class="summary-item" style="background:#eff6ff"><div class="label">Total Pinjaman</div><div class="value" style="color:#2563eb">Rp ${formatRp(pinjaman.totalPinjaman)}</div></div><div class="summary-item" style="background:${pinjaman.sisaPinjaman>0?"#fef2f2":"#ecfdf5"}"><div class="label">Sisa Pinjaman</div><div class="value" style="color:${pinjaman.sisaPinjaman>0?"#dc2626":"#059669"}">Rp ${formatRp(pinjaman.sisaPinjaman)}</div></div></div><button class="detail-button" onclick="tampilkanDetailAnggota('${encodeURIComponent(key)}')"><span class="material-icons">visibility</span> Lihat Detail Lengkap</button></div>`;
+  return `<div class="member-result"><div class="member-head"><img src="./img/icon-192.png" class="member-photo"><div class="member-info"><div class="member-name">${escapeHtml(nama)}</div><div class="member-meta">No. Anggota: <b>${escapeHtml(idAnggota)}</b></div><div class="member-meta">HP: ${escapeHtml(telepon)}</div></div><span class="member-status ${keluar?"keluar":""}">${keluar?"KELUAR":"AKTIF"}</span></div><div class="summary-mini"><div class="summary-item" style="background:#ecfdf5"><div style="font-size:8px;color:#64748b">Simpanan</div><div style="font-size:10px;font-weight:700;color:#059669">Rp ${formatRp(simpanan.saldo)}</div></div><div class="summary-item" style="background:#eff6ff"><div style="font-size:8px;color:#64748b">Total Pinjaman</div><div style="font-size:10px;font-weight:700;color:#2563eb">Rp ${formatRp(pinjaman.totalPinjaman)}</div></div><div class="summary-item" style="background:${pinjaman.sisaPinjaman>0?"#fef2f2":"#ecfdf5"}"><div style="font-size:8px;color:#64748b">Sisa Pinjaman</div><div style="font-size:10px;font-weight:700;color:${pinjaman.sisaPinjaman>0?"#dc2626":"#059669"}">Rp ${formatRp(pinjaman.sisaPinjaman)}</div></div></div><button class="detail-button" onclick="tampilkanDetailAnggota('${encodeURIComponent(key)}')"><span class="material-icons">visibility</span> Lihat Detail Lengkap</button></div>`;
 }
-
 window.tampilkanDetailAnggota=function(encodedKey){
   const key=decodeURIComponent(encodedKey); const a=dataAnggotaD[key]; if(!a) return alert("Data anggota tidak ditemukan.");
   const idAnggota=getIdAnggota(a,key); const nama=safeText(a.nama)||"Tanpa Nama"; const telepon=safeText(a.telepon??a.noHp??a.hp)||"-"; const alamat=safeText(a.alamat)||"-"; const status=safeText(a.status)||"aktif";
@@ -236,30 +228,26 @@ window.tampilkanDetailAnggota=function(encodedKey){
   modal.classList.add("show");
   let pinjamanHtml = pinjaman.daftarPinjaman.length? pinjaman.daftarPinjaman.map(p=>`
     <div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px;background:#fff;margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:10px">Pinjaman #${escapeHtml(p.id)}</b><span style="font-size:8px;padding:3px 6px;border-radius:10px;background:${p.sisaTotal>0?"#fee2e2":"#dcfce7"};color:${p.sisaTotal>0?"#b91c1c":"#15803d"}">${p.sisaTotal>0?"BELUM LUNAS":"LUNAS"}</span></div>
-      <div style="margin-top:7px;font-size:9px;color:#64748b">
-        Pokok: <b>Rp ${formatRp(p.pokok)}</b> | Jasa: <b>Rp ${formatRp(p.jasa)}</b><br>
-        Dibayar Pokok: <b>Rp ${formatRp(p.bayarPokok)}</b> | Jasa: <b>Rp ${formatRp(p.bayarJasa)}</b><br>
-        <span style="color:#dc2626">Sisa: <b>Rp ${formatRp(p.sisaTotal)}</b></span>
-      </div>
+      <div style="display:flex;justify-content:space-between;gap:8px"><b style="font-size:10px">Pinjaman #${escapeHtml(p.id)} ${p.tglSort?`• ${new Date(p.tglSort).toLocaleDateString("id-ID")}`:""}</b><span style="font-size:8px;padding:3px 6px;border-radius:10px;background:${p.sisaTotal>0?"#fee2e2":"#dcfce7"};color:${p.sisaTotal>0?"#b91c1c":"#15803d"}">${p.sisaTotal>0?"BELUM LUNAS":"LUNAS"}</span></div>
+      <div style="margin-top:7px;font-size:9px;color:#64748b">Pokok: <b>Rp ${formatRp(p.pokok)}</b> | Jasa: <b>Rp ${formatRp(p.jasa)}</b><br>Dibayar Pokok: <b>Rp ${formatRp(p.bayarPokok)}</b> | Jasa: <b>Rp ${formatRp(p.bayarJasa)}</b><br><span style="color:#dc2626">Sisa: <b>Rp ${formatRp(p.sisaTotal)}</b></span></div>
       ${p.data.buktiBase64?`<div style="margin-top:8px;background:#fffbeb;border:1px dashed #f59e0b;padding:8px;border-radius:10px;text-align:center"><div style="font-size:8px;font-weight:700;color:#92400e;margin-bottom:4px">📎 BUKTI PENCAIRAN</div><img src="${p.data.buktiBase64}" style="width:100%;max-width:180px;border-radius:8px;border:1px solid #e2e8f0;cursor:pointer" onclick="lihatBuktiDashboard('${p.data.buktiBase64}')"><br><button onclick="lihatBuktiDashboard('${p.data.buktiBase64}')" style="margin-top:6px;background:#3b82f6;color:#fff;padding:6px 10px;border-radius:6px;border:none;font-size:8px;width:auto">🔍 Lihat Full + Simpan</button></div>`:""}
-      <div style="margin-top:9px;font-size:9px;font-weight:700;color:#334155">Riwayat Angsuran ${p.riwayat.length?`(${p.riwayat.length})`:""}</div>
-      ${p.riwayat.length? p.riwayat.sort((a,b)=>Number(b.tanggal||0)-Number(a.tanggal||0)).map(a=>{
-        const bukti = a.buktiBase64? `<div style="margin-top:6px;display:flex;align-items:center;gap:6px;background:#fffbeb;border:1px dashed #f59e0b;padding:6px;border-radius:8px"><img src="${a.buktiBase64}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;border:1px solid #10b981;cursor:pointer" onclick="lihatBuktiDashboard('${a.buktiBase64}')"><div style="flex:1"><div style="font-size:8px;font-weight:700;color:#92400e">📎 BUKTI TRANSFER</div><div style="font-size:7px;color:#64748b">Klik untuk full • ${escapeHtml(a.metode||'bank')} • ${a.tanggal?new Date(Number(a.tanggal)).toLocaleDateString("id-ID"):"-"}</div></div><button onclick="lihatBuktiDashboard('${a.buktiBase64}')" style="background:#3b82f6;color:#fff;padding:4px 8px;border-radius:6px;border:none;font-size:7px;width:auto">🔍 FULL</button></div>` : `<div style="margin-top:4px;font-size:7px;color:#94a3b8">Tanpa bukti (cash)</div>`;
-        return `<div style="margin-top:5px;padding:7px;background:#f8fafc;border-radius:7px;font-size:8px"><div style="display:flex;justify-content:space-between"><span>${a.tanggal?new Date(Number(a.tanggal)).toLocaleDateString("id-ID"):"-"}</span><b style="color:#059669">Rp ${formatRp(Number(a.pokok||0)+Number(a.jasa||0))}</b></div><div style="color:#64748b;margin-top:2px">Pokok: Rp ${formatRp(a.pokok)} | Jasa: Rp ${formatRp(a.jasa)}</div>${bukti}</div>`;
+      <div style="margin-top:9px;font-size:9px;font-weight:700;color:#334155">Riwayat Angsuran Terbaru di Atas ${p.riwayat.length?`(${p.riwayat.length})`:""}</div>
+      ${p.riwayat.length? p.riwayat.map(a=>{
+        const tglFull = a.tanggal? new Date(Number(a.tanggal)).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}) : "-";
+        const bukti = a.buktiBase64? `<div style="margin-top:6px;display:flex;align-items:center;gap:6px;background:#fffbeb;border:1px dashed #f59e0b;padding:6px;border-radius:8px"><img src="${a.buktiBase64}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;border:1px solid #10b981;cursor:pointer" onclick="lihatBuktiDashboard('${a.buktiBase64}')"><div style="flex:1"><div style="font-size:8px;font-weight:700;color:#92400e">📎 BUKTI TRANSFER - ${tglFull}</div><div style="font-size:7px;color:#64748b">Klik untuk full • ${escapeHtml(a.metode||'bank')}</div></div><button onclick="lihatBuktiDashboard('${a.buktiBase64}')" style="background:#3b82f6;color:#fff;padding:4px 8px;border-radius:6px;border:none;font-size:7px;width:auto">🔍 FULL</button></div>` : `<div style="margin-top:4px;font-size:7px;color:#94a3b8">Tanpa bukti (cash) • ${tglFull}</div>`;
+        return `<div style="margin-top:5px;padding:7px;background:#f8fafc;border-radius:7px;font-size:8px;border-left:3px solid ${a.buktiBase64?"#10b981":"#e2e8f0"}"><div style="display:flex;justify-content:space-between"><span>📅 ${tglFull}</span><b style="color:#059669">Rp ${formatRp(Number(a.pokok||0)+Number(a.jasa||0))}</b></div><div style="color:#64748b;margin-top:2px">Pokok: Rp ${formatRp(a.pokok)} | Jasa: Rp ${formatRp(a.jasa)} | ${escapeHtml(a.metode||'')}</div>${bukti}</div>`;
       }).join("") : `<div style="margin-top:8px;padding:8px;background:#f8fafc;border-radius:7px;font-size:9px;color:#94a3b8;text-align:center">Belum ada pembayaran angsuran</div>`}
     </div>
   `).join("") : `<div style="padding:15px;text-align:center;background:#f8fafc;border-radius:10px;color:#94a3b8;font-size:10px">Anggota belum memiliki pinjaman</div>`;
 
-  modal.innerHTML=`<div class="modal-content"><div class="modal-header"><h3>Detail Anggota</h3><span class="material-icons" style="cursor:pointer" onclick="tutupDetailAnggota()">close</span></div>
-  <div style="display:flex;align-items:center;gap:12px;background:#f8fafc;padding:12px;border-radius:12px"><img src="./img/icon-192.png" style="width:55px;height:55px;border-radius:50%;object-fit:contain;background:#fff"><div><div style="font-size:16px;font-weight:700">${escapeHtml(nama)}</div><div style="font-size:10px;color:#64748b">ID: <b>${escapeHtml(idAnggota)}</b></div><div style="font-size:10px;color:#64748b">HP: ${escapeHtml(telepon)}</div></div></div>
+  modal.innerHTML=`<div class="modal-content"><div class="modal-header"><h3>Detail Anggota - Terbaru di Atas</h3><span class="material-icons" style="cursor:pointer" onclick="tutupDetailAnggota()">close</span></div>
+  <div style="display:flex;align-items:center;gap:12px;background:#f8fafc;padding:12px;border-radius:12px"><img src="./img/icon-192.png" style="width:55px;height:55px;border-radius:50%;object-fit:contain;background:#fff"><div><div style="font-size:12px;font-weight:700">${escapeHtml(nama)}</div><div style="font-size:10px;color:#64748b">ID: <b>${escapeHtml(idAnggota)}</b></div><div style="font-size:10px;color:#64748b">HP: ${escapeHtml(telepon)}</div></div></div>
   <div style="margin-top:10px;padding:10px;background:#f8fafc;border-radius:10px;font-size:10px;color:#475569"><b>Informasi Anggota</b><div style="margin-top:5px">Status: <b>${escapeHtml(status.toUpperCase())}</b></div><div style="margin-top:4px">Alamat: ${escapeHtml(alamat)}</div></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><div style="background:#ecfdf5;padding:10px;border-radius:10px"><div style="font-size:9px;color:#64748b">Saldo Simpanan</div><b style="color:#059669;font-size:13px">Rp ${formatRp(simpanan.saldo)}</b></div><div style="background:#eff6ff;padding:10px;border-radius:10px"><div style="font-size:9px;color:#64748b">Total Pinjaman</div><b style="color:#2563eb;font-size:13px">Rp ${formatRp(pinjaman.totalPinjaman)}</b></div><div style="background:#fef3c7;padding:10px;border-radius:10px"><div style="font-size:9px;color:#64748b">Pokok Dibayar</div><b style="color:#92400e;font-size:13px">Rp ${formatRp(pinjaman.pokokBayar)}</b></div><div style="background:#fef2f2;padding:10px;border-radius:10px"><div style="font-size:9px;color:#64748b">Sisa Pinjaman</div><b style="color:#dc2626;font-size:13px">Rp ${formatRp(pinjaman.sisaPinjaman)}</b></div></div>
-  <div style="margin-top:14px;font-size:12px;font-weight:700">Rincian Pinjaman + Bukti FREE</div><div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">${pinjamanHtml}</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"><div style="background:#ecfdf5;padding:10px;border-radius:10px"><div style="font-size:9px;color:#64748b">Saldo Simpanan</div><b style="color:#059669;font-size:12px">Rp ${formatRp(simpanan.saldo)}</b></div><div style="background:#eff6ff;padding:10px;border-radius:10px"><div style="font-size:9px;color:#64748b">Total Pinjaman</div><b style="color:#2563eb;font-size:12px">Rp ${formatRp(pinjaman.totalPinjaman)}</b></div><div style="background:#fef3c7;padding:10px;border-radius:10px"><div style="font-size:9px;color:#64748b">Pokok Dibayar</div><b style="color:#92400e;font-size:12px">Rp ${formatRp(pinjaman.pokokBayar)}</b></div><div style="background:#fef2f2;padding:10px;border-radius:10px"><div style="font-size:9px;color:#64748b">Sisa Pinjaman</div><b style="color:#dc2626;font-size:12px">Rp ${formatRp(pinjaman.sisaPinjaman)}</b></div></div>
+  <div style="margin-top:14px;font-size:12px;font-weight:700">Rincian Pinjaman - Sort Terbaru di Atas</div><div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">${pinjamanHtml}</div>
   <button onclick="tutupDetailAnggota()" style="width:100%;margin-top:14px;padding:10px;border:none;border-radius:10px;background:#0091ff;color:white;font-weight:600;cursor:pointer">Tutup</button></div>`;
 };
 window.tutupDetailAnggota=function(){ const m=document.getElementById("modalDetailAnggota"); if(m) m.classList.remove("show"); };
-
 onValue(ref(db,"kas/saldoAwal"), snap=>{ dataSaldoAwal=snap.val()||{}; hitungSaldo(); });
 onValue(ref(db,"kas/transaksi"), snap=>{ dataTransaksi=snap.val()||{}; hitungSaldo(); });
 let saldoCash=0,saldoBank=0;
@@ -289,7 +277,7 @@ window.bukaRiwayatKas=function(sumber){
 window.tutupRiwayatKas=function(){ document.getElementById("modalRiwayatKas").classList.remove("show"); };
 document.getElementById("modalRiwayatKas").addEventListener("click", e=>{ if(e.target.id==="modalRiwayatKas") tutupRiwayatKas(); });
 const badge=document.getElementById("roleBadge"); const role=safeText(localStorage.getItem("role"))||"user"; const user=safeText(localStorage.getItem("username"))||"Tamu";
-badge.innerText=role; badge.title=`Login sebagai: ${user}`; badge.onclick=function(){ if(confirm(`Logout dari akun ${user}?`)){ localStorage.clear(); location.replace("index.html"); } };
+badge.innerText=role; badge.onclick=function(){ if(confirm(`Logout dari akun ${user}?`)){ localStorage.clear(); location.replace("index.html"); } };
 document.addEventListener("click", function(e){ const modal=document.getElementById("modalDetailAnggota"); if(modal&&e.target===modal) tutupDetailAnggota(); });
 history.pushState(null,null,location.href); window.onpopstate=function(){ history.go(1); };
 </script>
