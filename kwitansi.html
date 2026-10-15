@@ -67,8 +67,8 @@ tr:hover{background:#f8fafc}
 <div class="card no-print">
 <h3>1. Data Kwitansi</h3>
 <div class="form">
-  <div class="form-card"><label>🏢 Nama Perusahaan</label><input type="text" id="perusahaan" value="KOPERASI ARFA DRIVER"></div>
-  <div class="form-card"><label>📍 ALAMAT</label><input type="text" id="alamat" value="Pondok Betung"></div>
+  <div class="form-card"><label>🏢 Koperasi ARFA SEJHTERA</label><input type="text" id="perusahaan" value="KOPERASI ARFA SEJAHTERA"></div>
+  <div class="form-card"><label>📍 ALAMAT</label><input type="text" id="alamat" value=""></div>
   <div class="form-card"><label>🧾 No. Kwitansi</label><input type="text" id="noKwitansi" value="0001"></div>
   <div class="form-card"><label>📅 Tanggal</label><input type="date" id="tanggal"></div>
   <div class="form-card"><label>👤 Sudah terima dari</label><input type="text" id="dari" placeholder="Nama anggota"></div>
@@ -86,7 +86,7 @@ tr:hover{background:#f8fafc}
 <label style="font-size:11px;font-weight:600;margin-top:12px;display:block">Atau Coret2 TTD</label>
 <canvas id="canvasTtd" width="600" height="200"></canvas><br>
 <button class="btn btn-clear" onclick="clearCanvas()" style="margin-top:8px">🗑️ Hapus Coretan</button>
-<label style="font-size:11px;font-weight:600;margin-top:12px;display:block">Nama Penandatangan</label><input type="text" id="ttd" value="Nur ali">
+<label style="font-size:11px;font-weight:600;margin-top:12px;display:block">Nama Penandatangan</label><input type="text" id="ttd" value="">
 </div>
 
 <div class="card">
@@ -273,7 +273,7 @@ function updatePreview(){
   document.getElementById("pJumlah").innerText = val.toLocaleString("id-ID");
   document.getElementById("pTerbilang").innerText = terbilangFix(val).toUpperCase() + " RUPIAH";
   const tanggal = document.getElementById("tanggal").value;
-  if(tanggal){const tgl = new Date(tanggal + "T00:00:00"); document.getElementById("pKotaTgl").innerText = "Pd Betung, " + tgl.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});}
+  if(tanggal){const tgl = new Date(tanggal + "T00:00:00"); document.getElementById("pKotaTgl").innerText = "Pd Aren, " + tgl.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});}
 }
 
 function terbilangFix(n){n = Math.floor(n); if(n === 0) return "nol"; const angka = ["","satu","dua","tiga","empat","lima","enam","tujuh","delapan","sembilan","sepuluh","sebelas"]; let result = ""; if(n < 12){result = angka[n];} else if(n < 20){result = terbilangFix(n - 10) + " belas";} else if(n < 100){result = terbilangFix(Math.floor(n / 10)) + " puluh " + terbilangFix(n % 10);} else if(n < 200){result = "seratus " + terbilangFix(n - 100);} else if(n < 1000){result = terbilangFix(Math.floor(n / 100)) + " ratus " + terbilangFix(n % 100);} else if(n < 2000){result = "seribu " + terbilangFix(n - 1000);} else if(n < 1000000){result = terbilangFix(Math.floor(n / 1000)) + " ribu " + terbilangFix(n % 1000);} else{result = terbilangFix(Math.floor(n / 1000000)) + " juta " + terbilangFix(n % 1000000);} return result.replace(/\bnol\b/g,"").replace(/\s+/g," ").trim();}
