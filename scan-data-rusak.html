@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pembersih Universal Koperasi ARFA</title>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<style>
+body{font-family:sans-serif;padding:15px;background:#f1f5f9;font-size:13px}
+.card{background:#fff;padding:14px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.item{background:#fff;padding:10px;border-radius:8px;margin-bottom:6px;border-left:4px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center}
+.item.rusak{border-left-color:#dc2626;background:#fef2f2}
+button{padding:10px 12px;border:none;border-radius:8px;font-weight:700;cursor:pointer}
+.tab{display:flex;gap:6px;overflow:auto;margin-bottom:12px}
+.tab button{background:#e2e8f0}.tab button.active{background:#1e90ff;color:#fff}
+</style>
+</head><body>
+<h2>🧹 Pembersih Universal ARFA</h2>
+<div class="tab">
+<button class="active" onclick="setPath('angsuran')">Angsuran</button>
+<button onclick="setPath('pinjaman')">Pinjaman</button>
+<button onclick="setPath('kas/transaksi')">Kas Transaksi</button>
+<button onclick="setPath('simpanan')">Simpanan</button>
+<button onclick="setPath('anggota')">Anggota</button>
+</div>
+<input id="cari" placeholder="Cari nama / ID (mis: Djodi)" style="width:100%;padding:12px;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:10px">
+<div style="display:flex;gap:8px;margin-bottom:10px">
+<button onclick="scanRusak()" style="background:#f59e0b;color:#fff;flex:1">🔍 Scan Data Rusak</button>
+<button onclick="tampilkanSemua()" style="background:#1e90ff;color:#fff;flex:1">👁️ Tampilkan Semua</button>
+</div>
+<div id="info" style="font-size:11px;color:#64748b;margin-bottom:8px"></div>
+<div id="list">Memuat...</div>
+<button id="btnHapus" onclick="hapusTerpilih()" style="background:#dc2626;color:#fff;width:100%;padding:14px;margin-top:12px;display:none">🗑️ HAPUS YANG DITANDAI + KAS TERKAIT</button>
+
+<script>
+var cfg={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
+firebase.initializeApp(cfg); var db=firebase.database();
+let currentPath='angsuran';
+let allData={};
+let showOnlyRusak=true;
+
+function setPath(p){
+  currentPath=p;
+  document.querySelectorAll(".tab button").forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+  load();
+}
+async function load(){
+  document.getElementById("list").innerHTML="Memuat "+currentPath+"...";
+  const snap=await db.ref(currentPath).once("value");
+  allData=snap.val()||{};
+  render();
+}
+function isRusak(path,a){
+  if(!a) return true;
+  if(path==='angsuran'){
+    const tglInvalid=!a.tanggal||String(a.tanggal).includes("Invalid")||isNaN(Number(a.tanggal));
+    const totalNol=Number(a.jumlahBayar||0)===0;
+    const namaKosong=!a.nama;
+    return tglInvalid||totalNol||namaKosong;
+  }
+  if(path==='pinjaman'){
+    return!a.nama || Number(a.jumlah||0)===0 ||!a.tanggal;
+  }
+  if(path==='kas/transaksi'){
+    return Number(a.jumlah||0)===0 ||!a.tanggal || String(a.tanggal).includes("Invalid");
+  }
+  if(path==='simpanan'){
+    return Number(a.jumlah||0)===0 ||!a.nama;
+  }
+  if(path==='anggota'){
+    return!a.nama;
+  }
+  return false;
+}
+function render(){
+  const filter=document.getElementById("cari").value.toLowerCase();
+  const list=document.getElementById("list");
+  const info=document.getElementById("info");
+  let html=""; let jml=0; let rusakCount=0;
+  Object.entries(allData).forEach(([k,a])=>{
+    if(!a) return;
+    if(filter && JSON.stringify(a).toLowerCase().indexOf(filter)===-1) return;
+    const rusak=isRusak(currentPath,a);
+    if(showOnlyRusak &&!rusak &&!filter) return;
+    if(rusak) rusakCount++;
+    jml++;
+    const nama=a.nama||a.keterangan||a.kategori||"-";
+    const tgl=a.tanggal? new Date(Number(a.tanggal)).toLocaleString("id-ID") : "Invalid";
+    const jumlah=a.jumlah||a.jumlahBayar||a.pokok||0;
+    html+=`<div class="item ${rusak?'rusak':''}"><label style="flex:1"><input type="checkbox" class="chk" value="${k}" ${rusak?'checked':''}> <b>${nama}</b><br><small>${k.slice(0,10)} | ${tgl} | Rp${Number(jumlah).toLocaleString("id-ID")} | ${a.metode||a.tipe||""}</small>${rusak?'<br><small style="color:#dc2626">⚠️ RUSAK</small>':''}</label><button onclick="hapusSatu('${k}')" style="background:#fee2e2;color:#dc2626">Hapus</button></div>`;
+  });
+  info.innerText=`Path: ${currentPath} | Tampil: ${jml} | Rusak: ${rusakCount} | Total di Firebase: ${Object.keys(allData).length}`;
+  list.innerHTML=jml?html:`<div class="card" style="text-align:center;color:#94a3b8">✅ Tidak ada data${showOnlyRusak?' rusak':''} di ${currentPath}</div>`;
+  document.getElementById("btnHapus").style.display=jml?"block":"none";
+}
+function scanRusak(){ showOnlyRusak=true; render(); }
+function tampilkanSemua(){ showOnlyRusak=false; render(); }
+document.getElementById("cari").oninput=render;
+
+async function hapusSatu(id){
+  if(!confirm("Hapus "+id+"?")) return;
+  await db.ref(currentPath+"/"+id).remove();
+  // kalau hapus pinjaman atau angsuran, hapus kas terkait juga
+  if(currentPath==='pinjaman' || currentPath==='angsuran'){
+    const ks=await db.ref("kas/transaksi").once("value");
+    const kdata=ks.val()||{};
+    for(const kk in kdata){
+      if(String(kdata[kk].angsuranId||"")===id || String(kdata[kk].pinjamanId||"")===id || String(kdata[kk].anggotaId||"")===id){
+        await db.ref("kas/transaksi/"+kk).remove();
+      }
+    }
+  }
+  alert("Terhapus");
+  load();
+}
+async function hapusTerpilih(){
+  const chks=document.querySelectorAll(".chk:checked");
+  if(!chks.length) return alert("Pilih dulu");
+  if(!confirm("Hapus "+chks.length+" data di "+currentPath+" + kas terkait?")) return;
+  for(const c of chks){
+    const id=c.value;
+    await db.ref(currentPath+"/"+id).remove();
+    if(currentPath==='pinjaman' || currentPath==='angsuran'){
+      const ks=await db.ref("kas/transaksi").once("value");
+      const kdata=ks.val()||{};
+      for(const kk in kdata){
+        if(String(kdata[kk].angsuranId||"")===id || String(kdata[kk].pinjamanId||"")===id){
+          await db.ref("kas/transaksi/"+kk).remove();
+        }
+      }
+    }
+  }
+  alert("Bersih "+chks.length+" data!");
+  load();
+}
+load();
+</script>
+</body></html>
