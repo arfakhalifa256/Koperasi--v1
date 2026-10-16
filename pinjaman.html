@@ -2,21 +2,18 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Pinjaman - FREE Bukti</title>
+<title>Data Pinjaman - FREE Bukti SEARCHABLE</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--primary:#3b82f6;--primary-dark:#2563eb;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--radius:12px;--success:#10b981;--danger:#dc2626;--warning:#f59e0b;--gray-50:#f8fafc;--gray-200:#e5e7eb}
+:root{--primary:#3b82f6;--card:#ffffff;--bg:#f1f5f9;--text:#1f2937;--muted:#6b7280;--border:#e2e8f0;--success:#10b981;--danger:#dc2626;--warning:#f59e0b;--gray-50:#f8fafc;--gray-200:#e5e7eb}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;padding-bottom:20px}
 header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:101}
-.brand{display:flex;align-items:center;gap:10px;font-weight:700;}.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px;}
-.menu-btn{cursor:pointer;font-size:24px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.2);user-select:none}
 .container{padding:14px;max-width:1200px;margin:0 auto}
 .card{background:var(--card);padding:16px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid var(--border)}
-.card h3{margin:0 0 12px 0;font-size:14px;font-weight:700}
-.form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}.form-group.full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;position:relative}
 .form-group label{font-size:11px;font-weight:600;color:var(--muted)}
 .form-group input,.form-group select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px}
 .btn-primary{width:100%;padding:10px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600;margin-top:4px}
@@ -30,94 +27,75 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:white;padding:
 .btn-update{background:var(--primary);color:white}.btn-cancel{background:var(--gray-200)}
 button{padding:10px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:600;width:100%;cursor:pointer}
 .btn-secondary{font-size:11px;background:#fff;color:#1f2937;border:1px solid var(--border);margin-top:8px}.btn-danger{background:var(--danger)}
-.alert.success{background:#dcfce7;color:#166534;border:1px solid #bbf7d0;padding:10px 14px;border-radius:8px;font-size:12px;margin-top:10px}
 .sidebar{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0f3057;padding:16px;transition:.3s ease;z-index:9999;overflow-y:auto}.sidebar.open{left:0;}
 .sidebar a{color:#fff;text-decoration:none;display:flex;gap:10px;padding:12px;border-radius:10px;font-size:12px}.sidebar a.active{background:rgba(255,255,255,.2);}
 .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;z-index:9998;}.overlay.active{display:block;}
 .custom-alert{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px}
 .custom-alert-box{width:100%;max-width:320px;background:#fff;border-radius:18px;padding:24px 20px;text-align:center}
 h3 {background:#ffedd5;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--border);font-size:13px}
-.bukti-preview img{width:100%;max-width:260px;border-radius:12px;border:2px solid #e2e8f0;margin-top:8px}
-.free-badge{background:#dcfce7;color:#065f46;padding:6px 10px;border-radius:20px;font-size:9px;font-weight:800}
+/* SEARCHABLE */
+.search-list{position:absolute;top:62px;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;max-height:240px;overflow:auto;display:none;z-index:50;box-shadow:0 8px 20px rgba(0,0,0,.15)}
+.s-item{padding:9px 12px;border-bottom:1px solid #f1f5f9;cursor:pointer;font-size:12px;display:flex;justify-content:space-between}
+.s-item:hover{background:#eff6ff}
+.s-item small{color:#64748b}
 </style>
 </head>
 <body>
-<div id="sidebar" class="sidebar"><a href="dashboard.html">🏠 Beranda</a><a href="pinjaman.html" class="active">💰 Pinjaman FREE</a><a href="angsuran.html">📄 Angsuran</a><a href="log-aktivitas.html">📋 Log Aktivitas</a><a href="#" id="btnLogout">🚪 Logout</a></div>
+<div id="sidebar" class="sidebar"><a href="dashboard.html">🏠 Beranda</a><a href="pinjaman.html" class="active">💰 Pinjaman</a><a href="angsuran.html">📄 Angsuran</a><a href="#" id="btnLogout">🚪 Logout</a></div>
 <div id="overlay" class="overlay"></div>
-<header><div class="brand"><img src="img/icon-192.png"><div>DATA PINJAMAN <span class="free-badge">💚 FREE BUKTI</span></div></div><span class="menu-btn" id="btnMenu">☰</span></header>
+<header><div>DATA PINJAMAN SEARCHABLE</div><span class="menu-btn" id="btnMenu">☰</span></header>
 
 <div class="container">
     <div class="card" id="formPinjaman">
-      <h3>Tambah Pinjaman + Bukti Transfer FREE</h3>
-      <div style="background:#dcfce7;padding:8px;border-radius:8px;font-size:10px;margin-bottom:10px">✅ Screenshot / Foto bukti pencairan bisa, kompres otomatis ~100KB, tersimpan di Firebase (kelihatan semua HP)</div>
-      <div class="form-group"><label>Anggota</label><select id="anggota" onchange="isiTelepon()"></select></div>
+      <h3>Tambah Pinjaman + Bukti</h3>
+      <!-- SEARCHABLE ANGGOTA -->
+      <div class="form-group">
+        <label>Anggota (ketik nama)</label>
+        <input type="text" id="anggotaSearch" placeholder="🔍 Ketik nama anggota...">
+        <div id="anggotaList" class="search-list"></div>
+        <input type="hidden" id="anggota">
+        <div id="anggotaTerpilih" style="margin-top:6px;background:#eff6ff;padding:6px 10px;border-radius:8px;font-size:11px;display:none"></div>
+      </div>
+
       <div class="form-group"><label>No Telepon</label><input type="text" id="telepon" readonly></div>
-      <div class="form-group"><label>No Pinjaman</label><input type="text" id="noPinjaman" value="Loading..." disabled></div>
+      <div class="form-group"><label>No Pinjaman</label><input type="text" id="noPinjaman" disabled></div>
       <div class="form-group"><label>Tanggal</label><input type="date" id="tanggal"></div>
       <div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih metode</option><option value="cash">Cash</option><option value="bank">Bank / Transfer</option></select></div>
       <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" min="1" placeholder="0" oninput="hitungJasa()"></div>
-      <div class="form-group"><label>Jasa (20% otomatis)</label><input type="number" id="jasa" readonly></div>
-      <div class="form-group full" id="groupBukti" style="display:none;background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px">
-        <label>📎 Bukti Pencairan - Screenshot bisa</label>
-        <input type="file" id="buktiTransfer" accept="image/*">
-        <div id="previewBukti" class="bukti-preview"></div>
-        <input type="hidden" id="buktiBase64">
-        <small style="font-size:10px">Wajib jika metode Bank</small>
+      <div class="form-group"><label>Jasa (20%)</label><input type="number" id="jasa" readonly></div>
+      <div class="form-group" id="groupBukti" style="display:none;background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px">
+        <label>📎 Bukti Pencairan</label><input type="file" id="buktiTransfer" accept="image/*"><div id="previewBukti"></div><input type="hidden" id="buktiBase64">
       </div>
-      <div class="form-group full"><label>Keterangan</label><input type="text" id="ket" placeholder="Keterangan opsional"></div>
-      <button class="btn-primary" id="btnSimpanPinjaman" onclick="simpanPinjaman()">💾 Simpan Pinjaman + Bukti FREE</button>
-      <button class="btn-secondary" id="btnLihatPinjaman" onclick="bukaRiwayat()">📋 Lihat Pinjaman (<span id="jmlPinjaman">0</span>)</button>
+      <div class="form-group"><label>Keterangan</label><input type="text" id="ket"></div>
+      <button class="btn-primary" onclick="simpanPinjaman()">💾 Simpan</button>
+      <button class="btn-secondary" onclick="bukaRiwayat()">📋 Lihat Pinjaman (<span id="jmlPinjaman">0</span>)</button>
       <div id="notif"></div>
     </div>
-    <div class="card" id="cardUserOnly" style="display:none;text-align:center">
-      <div style="font-size:48px">🔒</div>
-      <h3 style="background:#fee2e2;color:#dc2626;border:none">Akses Terbatas</h3>
-      <p style="font-size:12px;color:#64748b;margin-top:8px" id="userInfoText"></p>
-      <button class="btn-primary" onclick="bukaRiwayat()" style="margin-top:12px">📋 Lihat Daftar Pinjaman + Bukti</button>
-    </div>
 </div>
 
-<div id="popupRiwayat" class="popup">
-  <div class="popup-box large">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h3 style="margin:0">Daftar Pinjaman + Bukti</h3>
-      <button onclick="tutupRiwayat()" style="background:#dc2626;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-weight:700;width:auto">✕</button>
-    </div>
-    <div style="display:flex;gap:6px;margin-bottom:12px">
-      <input type="text" id="searchPinjaman" placeholder="Cari nama / no pinjaman..." style="flex:1;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px">
-      <select id="filterStatus" style="padding:9px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:11px"><option value="">Semua</option><option value="lunas">LUNAS</option><option value="belum">BELUM LUNAS</option></select>
-    </div>
-    <div id="tabelPinjaman" style="max-height:65vh;overflow-y:auto"></div>
-  </div>
-</div>
-
-<div id="popupEdit" class="popup"><div class="popup-box">
-  <h3>✏️ Edit Pinjaman + Bukti</h3>
-  <div class="form-group"><label>No Pinjaman</label><input type="text" id="editNoPinjaman" disabled></div>
-  <div class="form-group"><label>Anggota</label><select id="editAnggota"></select></div>
-  <div class="form-group"><label>Tanggal</label><input type="date" id="editTanggal"></div>
-  <div class="form-group"><label>Metode</label><select id="editMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
-  <div class="form-group"><label>Jumlah</label><input type="number" id="editJumlah" oninput="hitungJasaEdit()"></div>
-  <div class="form-group"><label>Jasa</label><input type="number" id="editJasa" readonly></div>
-  <div class="form-group full" style="background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px">
-    <label>📎 Bukti Saat Ini - Simpan / Hapus</label>
-    <div id="editPreviewBukti" style="text-align:center;min-height:60px;background:#f8fafc;border-radius:10px;padding:10px"></div>
-    <div style="display:flex;gap:6px;margin-top:8px">
-      <button type="button" id="btnLihatFull" style="flex:1;background:#3b82f6;color:#fff;padding:8px;border-radius:8px">🔍 Full</button>
-      <button type="button" id="btnSimpanGambar" style="flex:1;background:#10b981;color:#fff;padding:8px;border-radius:8px">💾 Simpan</button>
-      <button type="button" id="btnHapusGambar" style="flex:1;background:#dc2626;color:#fff;padding:8px;border-radius:8px">🗑️ Hapus</button>
-    </div>
-    <hr style="margin:10px 0">
-    <label>Ganti Bukti Baru (Screenshot)</label>
-    <input type="file" id="editBuktiTransfer" accept="image/*">
-    <div id="editPreviewBaru" class="bukti-preview"></div>
-    <input type="hidden" id="editBuktiBase64">
-  </div>
-  <div class="form-group full"><label>Keterangan</label><input type="text" id="editKet"></div>
-  <div class="popup-btns"><button class="btn-update" onclick="updatePinjaman()">💾 Update + Bukti</button><button class="btn-cancel" onclick="tutupPopup()">Batal</button></div>
+<div id="popupRiwayat" class="popup"><div class="popup-box large">
+<div style="display:flex;justify-content:space-between"><h3>Daftar Pinjaman</h3><button onclick="tutupRiwayat()" style="background:#dc2626;width:auto;padding:6px 12px">✕</button></div>
+<input type="text" id="searchPinjaman" placeholder="Cari..." style="width:100%;padding:9px;margin:10px 0;border:1px solid #e2e8f0;border-radius:8px">
+<div id="tabelPinjaman" style="max-height:65vh;overflow-y:auto"></div>
 </div></div>
 
-<div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div id="alertText" style="font-weight:600;margin-bottom:12px">Alert</div><button onclick="tutupAlert()" style="background:var(--primary);border:none;padding:10px 18px;border-radius:10px;color:white;font-weight:700;width:100%">OK</button></div></div>
+<div id="popupEdit" class="popup"><div class="popup-box">
+<h3>Edit Pinjaman</h3>
+<div class="form-group"><label>No Pinjaman</label><input type="text" id="editNoPinjaman" disabled></div>
+<div class="form-group"><label>Anggota (searchable)</label>
+<input type="text" id="editAnggotaSearch" placeholder="Ketik nama..."><div id="editAnggotaList" class="search-list"></div><input type="hidden" id="editAnggota"></div>
+<div class="form-group"><label>Tanggal</label><input type="date" id="editTanggal"></div>
+<div class="form-group"><label>Metode</label><select id="editMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
+<div class="form-group"><label>Jumlah</label><input type="number" id="editJumlah" oninput="hitungJasaEdit()"></div>
+<div class="form-group"><label>Jasa</label><input type="number" id="editJasa" readonly></div>
+<div class="form-group" style="background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px">
+<div id="editPreviewBukti"></div><input type="file" id="editBuktiTransfer" accept="image/*"><div id="editPreviewBaru"></div><input type="hidden" id="editBuktiBase64">
+</div>
+<div class="form-group"><label>Keterangan</label><input type="text" id="editKet"></div>
+<div class="popup-btns"><button class="btn-update" onclick="updatePinjaman()">💾 Update</button><button class="btn-cancel" onclick="tutupPopup()">Batal</button></div>
+</div></div>
+
+<div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div id="alertText"></div><button onclick="tutupAlert()" style="background:var(--primary);padding:10px;border-radius:10px;color:#fff;width:100%;margin-top:10px">OK</button></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -125,212 +103,126 @@ import { getDatabase, ref, push, onValue, update, remove, get, runTransaction } 
 const firebaseConfig={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app=initializeApp(firebaseConfig); const db=getDatabase(app);
 
-const username = (localStorage.getItem("username")||"").trim();
-let role = (localStorage.getItem("role")||"user").toLowerCase().trim();
-if(!username){ alert("Login dulu"); location.href="index.html"; }
-const isAdmin = role === "admin";
-if(!isAdmin){
-  document.getElementById("formPinjaman").style.display="none";
-  document.getElementById("cardUserOnly").style.display="block";
-  document.getElementById("userInfoText").innerHTML = `Halo <b>${username}</b><br>Hanya bisa lihat pinjaman + bukti.<br>Input hanya Admin.`;
-}
-window.toggleSidebar=()=>{document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active");};
-window.closeSidebar=()=>{document.getElementById("sidebar").classList.remove("open");document.getElementById("overlay").classList.remove("active");};
-document.getElementById("btnMenu").addEventListener("click", window.toggleSidebar);
-document.getElementById("overlay").addEventListener("click", window.closeSidebar);
-document.getElementById("btnLogout").onclick=(e)=>{e.preventDefault(); if(confirm("Logout?")){localStorage.clear(); location.href="index.html";}};
+const role=(localStorage.getItem("role")||"admin"); const isAdmin=role==="admin";
+document.getElementById("btnMenu").onclick=()=>{document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active")};
+document.getElementById("overlay").onclick=()=>{document.getElementById("sidebar").classList.remove("open");document.getElementById("overlay").classList.remove("active")};
+document.getElementById("btnLogout").onclick=(e)=>{e.preventDefault();localStorage.clear();location.href="index.html";};
 
 const anggotaRef=ref(db,"anggota"), pinjamanRef=ref(db,"pinjaman"), angsuranRef=ref(db,"angsuran"), kasTransaksiRef=ref(db,"kas/transaksi");
-const anggotaSelect=document.getElementById("anggota"), tabelPinjaman=document.getElementById("tabelPinjaman");
-let dataPinjaman={}, dataAnggota={}, dataAngsuran={}, editId=null;
+let dataPinjaman={}, dataAnggota={}, dataAnggotaList=[], dataAngsuran={}, editId=null;
 const format=x=>new Intl.NumberFormat("id-ID").format(x||0);
 const inputDate=t=>{if(!t) return ""; return new Date(Number(t)).toISOString().split("T")[0]}
-const formatTanggal=t=>{if(!t) return "-"; const d=new Date(Number(t)); if(isNaN(d)) return t; return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});}
+const formatTanggal=t=>{if(!t) return "-"; const d=new Date(Number(t)); return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"});}
 
 function kompresFoto(file, cb){
-  const r=new FileReader();
-  r.onload=e=>{
-    const img=new Image();
-    img.onload=()=>{
-      const c=document.createElement("canvas");
-      const maxW=900; const scale=Math.min(1,maxW/img.width);
-      c.width=img.width*scale; c.height=img.height*scale;
-      const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,c.width,c.height);
-      cb(c.toDataURL("image/jpeg",0.65));
-    }; img.src=e.target.result;
-  }; r.readAsDataURL(file);
+  const r=new FileReader(); r.onload=e=>{ const img=new Image(); img.onload=()=>{ const c=document.createElement("canvas"); const maxW=900; const sc=Math.min(1,maxW/img.width); c.width=img.width*sc; c.height=img.height*sc; c.getContext("2d").drawImage(img,0,0,c.width,c.height); cb(c.toDataURL("image/jpeg",0.65)); }; img.src=e.target.result; }; r.readAsDataURL(file);
 }
-function showAlert(msg){const b=document.getElementById("customAlert"); document.getElementById("alertText").innerText=msg; b.style.display="flex";}
+function showAlert(m){document.getElementById("alertText").innerText=m; document.getElementById("customAlert").style.display="flex";}
 window.tutupAlert=()=>document.getElementById("customAlert").style.display="none";
-window.hitungJasa=()=>{if(!isAdmin) return; document.getElementById("jasa").value=Math.round(Number(document.getElementById("jumlah").value||0)*0.2);}
-window.hitungJasaEdit=()=>{document.getElementById("editJasa").value=Math.round(Number(document.getElementById("editJumlah").value||0)*0.2);}
-window.isiTelepon=()=>{const id=anggotaSelect.value; const d=dataAnggota[id]; document.getElementById("telepon").value=d?.telepon||d?.noHp||"-";}
-window.bukaRiwayat=()=>{document.getElementById("popupRiwayat").style.display="flex"; renderPinjaman();}
-window.tutupRiwayat=()=>{document.getElementById("popupRiwayat").style.display="none";}
-window.onclick=(e)=>{if(e.target.id==="popupRiwayat") tutupRiwayat(); if(e.target.id==="popupEdit") tutupPopup();}
+window.hitungJasa=()=>{ document.getElementById("jasa").value=Math.round(Number(document.getElementById("jumlah").value||0)*0.2); }
+window.hitungJasaEdit=()=>{ document.getElementById("editJasa").value=Math.round(Number(document.getElementById("editJumlah").value||0)*0.2); }
 
 onValue(anggotaRef, snap=>{
   dataAnggota=snap.val()||{};
-  if(!isAdmin) return;
-  anggotaSelect.innerHTML="<option value=''>Pilih anggota</option>";
-  const seen=new Set();
-  Object.entries(dataAnggota).sort((a,b)=>(a[1].nama||"").localeCompare(b[1].nama||"")).forEach(([id,a])=>{
-    let nama=(a.nama||"").trim(); if(!nama) return; if(nama.endsWith("-")) return; let key=nama.toLowerCase(); if(seen.has(key)) return; seen.add(key);
-    anggotaSelect.innerHTML+=`<option value="${id}">${a.nama} - ${a.idAnggota||''}</option>`;
-  });
-  loadDropdownEdit();
+  dataAnggotaList=Object.entries(dataAnggota).map(([id,a])=>({id, nama:(a.nama||"").trim(), idAnggota:a.idAnggota||"", telepon:a.telepon||a.noHp||""})).filter(x=>x.nama &&!x.nama.endsWith("-")).sort((a,b)=>a.nama.localeCompare(b.nama));
+  initSearchable();
 });
-onValue(pinjamanRef, snap=>{
-  dataPinjaman={}; if(!snap.exists()){ tabelPinjaman.innerHTML=`<div style="text-align:center;padding:20px;color:#6b7280">Belum ada data</div>`; document.getElementById("jmlPinjaman").innerText="0"; return;}
-  snap.forEach(d=>{let p=d.val(); p.id=d.key; dataPinjaman[d.key]=p;});
-  document.getElementById("jmlPinjaman").innerText=Object.keys(dataPinjaman).length;
-  renderPinjaman();
-});
+onValue(pinjamanRef, snap=>{ dataPinjaman={}; snap.forEach(d=>{let p=d.val(); p.id=d.key; dataPinjaman[d.key]=p;}); document.getElementById("jmlPinjaman").innerText=Object.keys(dataPinjaman).length; renderPinjaman(); });
 onValue(angsuranRef, snap=>{dataAngsuran=snap.val()||{}; renderPinjaman();});
-document.getElementById("searchPinjaman").addEventListener("input", renderPinjaman);
-document.getElementById("filterStatus").addEventListener("change", renderPinjaman);
+
+function initSearchable(){
+  const searchInput=document.getElementById("anggotaSearch"), listDiv=document.getElementById("anggotaList"), hiddenInput=document.getElementById("anggota"), teleponInput=document.getElementById("telepon");
+  const editSearch=document.getElementById("editAnggotaSearch"), editList=document.getElementById("editAnggotaList"), editHidden=document.getElementById("editAnggota");
+
+  function renderAnggota(filter, targetList, onSelect){
+    const f=filter.toLowerCase().trim();
+    let filtered=f? dataAnggotaList.filter(x=> x.nama.toLowerCase().includes(f)||x.idAnggota.toLowerCase().includes(f)) : dataAnggotaList.slice(0,30);
+    if(filtered.length===0){ targetList.innerHTML=`<div style="padding:10px;color:#94a3b8">Tidak ketemu</div>`; return; }
+    let html=""; filtered.slice(0,50).forEach(x=>{ html+=`<div class="s-item" data-id="${x.id}"><div><b>${x.nama}</b><br><small>${x.idAnggota} | ${x.telepon||"-"}</small></div><small>pilih</small></div>`; });
+    targetList.innerHTML=html;
+    targetList.querySelectorAll(".s-item").forEach(el=>{ el.onclick=()=>onSelect(el.dataset.id); });
+  }
+
+  function pilihAnggota(id){
+    const x=dataAnggotaList.find(v=>v.id===id); if(!x) return;
+    hiddenInput.value=x.id; searchInput.value=x.nama; teleponInput.value=x.telepon||"-";
+    document.getElementById("anggotaTerpilih").style.display="block";
+    document.getElementById("anggotaTerpilih").innerHTML=`✅ Terpilih: <b>${x.nama}</b> (${x.idAnggota})`;
+    listDiv.style.display="none";
+  }
+  function pilihAnggotaEdit(id){
+    const x=dataAnggotaList.find(v=>v.id===id); if(!x) return;
+    editHidden.value=x.id; editSearch.value=x.nama; editList.style.display="none";
+  }
+
+  searchInput.onfocus=()=>{ listDiv.style.display="block"; renderAnggota(searchInput.value, listDiv, pilihAnggota); };
+  searchInput.oninput=()=>{ listDiv.style.display="block"; renderAnggota(searchInput.value, listDiv, pilihAnggota); };
+  editSearch.onfocus=()=>{ editList.style.display="block"; renderAnggota(editSearch.value, editList, pilihAnggotaEdit); };
+  editSearch.oninput=()=>{ editList.style.display="block"; renderAnggota(editSearch.value, editList, pilihAnggotaEdit); };
+  document.addEventListener("click",(e)=>{ if(!e.target.closest("#anggotaSearch")&&!e.target.closest("#anggotaList")) listDiv.style.display="none"; if(!e.target.closest("#editAnggotaSearch")&&!e.target.closest("#editAnggotaList")) editList.style.display="none"; });
+
+  window.pilihAnggota=pilihAnggota; window.pilihAnggotaEdit=pilihAnggotaEdit;
+}
 
 function renderPinjaman(){
-  const search = (document.getElementById("searchPinjaman")?.value || "").toLowerCase().trim();
-  const filterStatus = document.getElementById("filterStatus")?.value || "";
-  let list = Object.values(dataPinjaman).sort((a,b)=> Number(b.tanggal||0) - Number(a.tanggal||0));
-  if(search) list = list.filter(p => (p.nama||"").toLowerCase().includes(search) || (p.nomor||"").toLowerCase().includes(search));
-  if(filterStatus){
-    list = list.filter(p => {
-      let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah||0)*0.2));
-      let total = Number(p.jumlah||0) + jasaOtomatis;
-      let totalAngsuran = 0;
-      Object.values(dataAngsuran).forEach(a=>{ if(a.pinjamanId === p.id) totalAngsuran += Number(a.pokok||0) + Number(a.jasa||0); });
-      let lunas = totalAngsuran >= total && total > 0;
-      if(filterStatus === "lunas") return lunas;
-      if(filterStatus === "belum") return!lunas;
-      return true;
-    });
-  }
-  tabelPinjaman.innerHTML = "";
-  if(document.getElementById("jmlPinjaman")) document.getElementById("jmlPinjaman").innerText = Object.keys(dataPinjaman).length + ` (tampil ${list.length})`;
-  if(list.length === 0){ tabelPinjaman.innerHTML = `<div style="text-align:center;padding:20px;color:#6b7280">Tidak ada data sesuai filter</div>`; return; }
+  const tabel=document.getElementById("tabelPinjaman"); const search=(document.getElementById("searchPinjaman")?.value||"").toLowerCase();
+  let list=Object.values(dataPinjaman).sort((a,b)=>Number(b.tanggal||0)-Number(a.tanggal||0));
+  if(search) list=list.filter(p=>(p.nama||"").toLowerCase().includes(search)||(p.nomor||"").toLowerCase().includes(search));
+  tabel.innerHTML=""; if(list.length===0){ tabel.innerHTML=`<div style="padding:20px;text-align:center;color:#6b7280">Tidak ada</div>`; return; }
   list.forEach(p=>{
-    let jasaOtomatis = Number(p.jasa?? Math.round(Number(p.jumlah||0)*0.2));
-    let total = Number(p.jumlah||0) + jasaOtomatis;
-    let totalAngsuran = 0;
-    Object.values(dataAngsuran).forEach(a=>{ if(a.pinjamanId === p.id) totalAngsuran += Number(a.pokok||0) + Number(a.jasa||0); });
-    let lunas = totalAngsuran >= total && total > 0;
-    let warna = lunas? "#10b981" : "#ef4444";
-    let status = lunas? "LUNAS" : "BELUM LUNAS";
-    const buktiHtml = p.buktiBase64? `<div style="margin-top:8px"><img src="${p.buktiBase64}" style="width:100%;max-width:200px;border-radius:10px;border:1px solid #e2e8f0" onclick="window.open(this.src)"><br><small>📎 Bukti pencairan - klik perbesar</small><br><button onclick="downloadBuktiPinjaman('${p.id}')" style="margin-top:4px;background:#10b981;color:#fff;padding:5px 10px;border-radius:6px;border:none;width:auto;font-size:10px">💾 Simpan</button></div>` : `<small style="color:#94a3b8">Tanpa bukti</small>`;
-    let card = document.createElement("div");
-    card.className = "pinjaman-card";
-    card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
-        <div><div style="font-weight:700;font-size:13px">${p.nomor||"-"}</div><div style="font-size:11px;color:#6b7280">${p.nama||"-"} • ${formatTanggal(p.tanggal)} • ${p.sumberKas||""}</div></div>
-        <div style="background:${warna};color:white;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700">${status}</div>
-      </div>
-      <div style="font-size:11px">Jumlah Rp ${format(p.jumlah)} + Jasa Rp ${format(jasaOtomatis)} = <b>Rp ${format(total)}</b></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px"><span>Sudah Bayar</span><span><b>Rp ${format(totalAngsuran)}</b></span></div>
-      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px"><span>Sisa</span><span style="color:${warna};font-weight:700">Rp ${format(Math.max(total-totalAngsuran,0))}</span></div>
-      ${buktiHtml}
-      <div class="pinjaman-actions" style="margin-top:10px">
-        <button class="btn-wa" onclick="kirimWA('${p.id}')">💬 WA</button>
-        <button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>
-        ${isAdmin?`<button class="btn-edit" onclick="editPinjaman('${p.id}')">✏️ Edit + Bukti</button><button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>`:''}
-      </div>`;
-    tabelPinjaman.appendChild(card);
+    let jasaOto=Number(p.jasa??Math.round(Number(p.jumlah||0)*0.2)); let total=Number(p.jumlah||0)+jasaOto; let totalAngs=0; Object.values(dataAngsuran).forEach(a=>{if(a.pinjamanId===p.id) totalAngs+=Number(a.pokok||0)+Number(a.jasa||0);});
+    let lunas=totalAngs>=total&&total>0; let warna=lunas?"#10b981":"#ef4444";
+    const bukti=p.buktiBase64?`<div style="margin-top:6px"><img src="${p.buktiBase64}" style="width:100%;max-width:200px;border-radius:10px;border:1px solid #e2e8f0"></div>`:`<small style="color:#94a3b8">Tanpa bukti</small>`;
+    const div=document.createElement("div"); div.className="pinjaman-card";
+    div.innerHTML=`<div style="display:flex;justify-content:space-between"><b>${p.nomor}</b><span style="background:${warna};color:#fff;padding:2px 8px;border-radius:10px;font-size:10px">${lunas?"LUNAS":"BELUM"}</span></div><div style="font-size:11px">${p.nama} • ${formatTanggal(p.tanggal)}</div><div style="font-size:11px">Rp ${format(p.jumlah)} + Jasa Rp ${format(jasaOto)} = <b>Rp ${format(total)}</b> | Sisa Rp ${format(Math.max(total-totalAngs,0))}</div>${bukti}<div class="pinjaman-actions" style="margin-top:8px"><button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button><button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button><button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button></div>`;
+    tabel.appendChild(div);
   });
 }
-window.downloadBuktiPinjaman=id=>{
-  const p=dataPinjaman[id]; if(!p||!p.buktiBase64) return showAlert("Tidak ada bukti");
-  const a=document.createElement("a"); a.href=p.buktiBase64; a.download=`bukti_pinjaman_${p.nomor||id}.jpg`; a.click();
-}
+document.getElementById("searchPinjaman")?.addEventListener("input", renderPinjaman);
+
+window.bukaRiwayat=()=>{document.getElementById("popupRiwayat").style.display="flex"; renderPinjaman();}
+window.tutupRiwayat=()=>document.getElementById("popupRiwayat").style.display="none";
+window.tutupPopup=()=>{document.getElementById("popupEdit").style.display="none"; editId=null; bukaRiwayat();}
+
 async function previewNoPinjaman(){const snap=await get(ref(db,"counter/pinjaman")); let no=(snap.val()||0)+1; return "PJ"+String(no).padStart(3,"0");}
 async function generateNoPinjaman(){const counterRef=ref(db,"counter/pinjaman"); const result=await runTransaction(counterRef,(c)=>(c||0)+1); return "PJ"+String(result.snapshot.val()).padStart(3,"0");}
-window.onload=async()=>{if(!isAdmin) return; document.getElementById("tanggal").value=new Date().toISOString().split("T")[0]; document.getElementById("noPinjaman").value=await previewNoPinjaman();}
+window.onload=async()=>{ document.getElementById("tanggal").value=new Date().toISOString().split("T")[0]; document.getElementById("noPinjaman").value=await previewNoPinjaman(); }
 
-if(isAdmin){
-  document.getElementById("metode").addEventListener("change", function(){
-    const g=document.getElementById("groupBukti");
-    if(this.value==="bank") g.style.display="block"; else { g.style.display="none"; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML=""; }
-  });
-  document.getElementById("buktiTransfer").addEventListener("change", function(e){
-    const f=e.target.files[0]; if(!f) return;
-    document.getElementById("previewBukti").innerHTML="⏳ Kompres...";
-    kompresFoto(f, b64=>{
-      document.getElementById("buktiBase64").value=b64;
-      document.getElementById("previewBukti").innerHTML=`<img src="${b64}"><br><small>✅ Siap FREE ~${Math.round(b64.length/1024)}KB</small>`;
-    });
-  });
-}
+document.getElementById("metode").addEventListener("change", function(){ const g=document.getElementById("groupBukti"); if(this.value==="bank") g.style.display="block"; else { g.style.display="none"; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML=""; } });
+document.getElementById("buktiTransfer").addEventListener("change", function(e){ const f=e.target.files[0]; if(!f) return; document.getElementById("previewBukti").innerHTML="⏳"; kompresFoto(f, b64=>{ document.getElementById("buktiBase64").value=b64; document.getElementById("previewBukti").innerHTML=`<img src="${b64}" style="width:100%;max-width:200px;border-radius:10px"><br><small>✅ ${Math.round(b64.length/1024)}KB</small>`; }); });
 
 window.simpanPinjaman=async()=>{
-  if(!isAdmin) return showAlert("Hanya admin!");
-  let idAnggota=anggota.value; if(!idAnggota) return showAlert("Pilih anggota!");
-  const ag=dataAnggota[idAnggota]; let nama=ag.nama.trim();
-  let tanggalInput=document.getElementById("tanggal").value; let jumlah=Number(document.getElementById("jumlah").value); let jasa=Math.round(jumlah*0.2); let metode=document.getElementById("metode").value;
+  let idAnggota=document.getElementById("anggota").value; if(!idAnggota) return showAlert("Pilih anggota dulu - ketik nama!");
+  const ag=dataAnggota[idAnggota]; let nama=ag.nama.trim(); let tanggalInput=document.getElementById("tanggal").value; let jumlah=Number(document.getElementById("jumlah").value); let jasa=Math.round(jumlah*0.2); let metode=document.getElementById("metode").value;
   if(!tanggalInput||!metode||!jumlah) return showAlert("Lengkapi form!");
-  if(metode==="bank" &&!document.getElementById("buktiBase64").value) return showAlert("Metode Bank wajib upload bukti transfer / screenshot!");
-  let nomor=await generateNoPinjaman(); let tanggal=new Date(tanggalInput).getTime();
-  const buktiBase64=document.getElementById("buktiBase64").value||"";
+  if(metode==="bank" &&!document.getElementById("buktiBase64").value) return showAlert("Bank wajib bukti!");
+  let nomor=await generateNoPinjaman(); let tanggal=new Date(tanggalInput).getTime(); const buktiBase64=document.getElementById("buktiBase64").value||"";
   let kas=await push(kasTransaksiRef,{tanggal,keterangan:`Pinjaman ${nama} (${nomor})`,tipe:"keluar",kategori:"pinjaman",sumberKas:metode,jumlah,idAnggota,namaAnggota:nama});
   await push(pinjamanRef,{nomor,idAnggota,nama,tanggal,jumlah,jasa,sumberKas:metode,ket:document.getElementById("ket").value,kasId:kas.key,status:"belum",buktiBase64});
-  document.getElementById("notif").innerHTML=`<div class="alert success">Berhasil + Bukti FREE ✅</div>`;
-  setTimeout(()=>document.getElementById("notif").innerHTML="",2000);
+  document.getElementById("notif").innerHTML=`<div style="background:#dcfce7;padding:8px;border-radius:8px;margin-top:8px">Berhasil ✅</div>`;
   document.getElementById("jumlah").value=""; document.getElementById("jasa").value=""; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML=""; document.getElementById("groupBukti").style.display="none";
-  document.getElementById("noPinjaman").value=await previewNoPinjaman();
-  bukaRiwayat();
+  document.getElementById("anggotaSearch").value=""; document.getElementById("anggota").value=""; document.getElementById("telepon").value=""; document.getElementById("anggotaTerpilih").style.display="none";
+  document.getElementById("noPinjaman").value=await previewNoPinjaman(); bukaRiwayat();
 }
-function loadDropdownEdit(){
-  const editAnggota=document.getElementById("editAnggota"); editAnggota.innerHTML="<option value=''>Pilih anggota</option>";
-  const seen=new Set(); Object.entries(dataAnggota).sort((a,b)=>(a[1].nama||"").localeCompare(b[1].nama||"")).forEach(([id,a])=>{let nama=(a.nama||"").trim(); if(!nama||nama.endsWith("-")) return; let key=nama.toLowerCase(); if(seen.has(key)) return; seen.add(key); editAnggota.innerHTML+=`<option value="${id}">${a.nama}</option>`;});
-}
+
 window.editPinjaman=id=>{
-  if(!isAdmin) return showAlert("Hanya admin!");
   let p=dataPinjaman[id]; editId=id;
-  document.getElementById("editNoPinjaman").value=p.nomor; document.getElementById("editAnggota").value=p.idAnggota; document.getElementById("editTanggal").value=inputDate(p.tanggal); document.getElementById("editMetode").value=p.sumberKas; document.getElementById("editJumlah").value=p.jumlah; document.getElementById("editJasa").value=p.jasa??Math.round(Number(p.jumlah||0)*0.2); document.getElementById("editKet").value=p.ket||"";
+  document.getElementById("editNoPinjaman").value=p.nomor;
+  document.getElementById("editAnggota").value=p.idAnggota;
+  document.getElementById("editAnggotaSearch").value=p.nama;
+  document.getElementById("editTanggal").value=inputDate(p.tanggal);
+  document.getElementById("editMetode").value=p.sumberKas;
+  document.getElementById("editJumlah").value=p.jumlah;
+  document.getElementById("editJasa").value=p.jasa??Math.round(Number(p.jumlah||0)*0.2);
+  document.getElementById("editKet").value=p.ket||"";
   const bukti=p.buktiBase64||""; document.getElementById("editBuktiBase64").value=bukti; document.getElementById("editPreviewBaru").innerHTML="";
-  if(bukti) document.getElementById("editPreviewBukti").innerHTML=`<img src="${bukti}" style="width:100%;max-width:260px;border-radius:12px;border:2px solid #10b981"><br><small>✅ Bukti ada</small>`;
-  else document.getElementById("editPreviewBukti").innerHTML=`<div style="padding:15px;color:#94a3b8">📭 Belum ada bukti<br>Upload screenshot baru</div>`;
-  document.getElementById("popupEdit").style.display="flex"; tutupRiwayat();
+  document.getElementById("editPreviewBukti").innerHTML=bukti?`<img src="${bukti}" style="width:100%;max-width:260px;border-radius:12px">`:`<div style="padding:10px;color:#94a3b8">Belum ada bukti</div>`;
+  document.getElementById("popupEdit").style.display="flex";
 }
-window.tutupPopup=()=>{document.getElementById("popupEdit").style.display="none"; editId=null; bukaRiwayat();}
-document.getElementById("btnLihatFull").onclick=()=>{const s=document.getElementById("editBuktiBase64").value; if(!s) return showAlert("Belum ada bukti"); window.open(s,"_blank");};
-document.getElementById("btnSimpanGambar").onclick=()=>{const s=document.getElementById("editBuktiBase64").value; if(!s) return showAlert("Belum ada bukti"); const a=document.createElement("a"); a.href=s; a.download=`bukti_pinjaman_${document.getElementById("editNoPinjaman").value}.jpg`; a.click();};
-document.getElementById("btnHapusGambar").onclick=()=>{
-  const s=document.getElementById("editBuktiBase64").value; if(!s) return showAlert("Belum ada bukti");
-  if(!confirm("Hapus bukti pencairan ini?")) return;
-  document.getElementById("editBuktiBase64").value=""; document.getElementById("editPreviewBukti").innerHTML=`<div style="padding:15px;color:#dc2626">🗑️ Ditandai terhapus<br><small>Klik Update</small></div>`; document.getElementById("editPreviewBaru").innerHTML=""; document.getElementById("editBuktiTransfer").value="";
-};
-document.getElementById("editBuktiTransfer").addEventListener("change", e=>{
-  const f=e.target.files[0]; if(!f) return;
-  document.getElementById("editPreviewBaru").innerHTML="⏳ Kompres...";
-  kompresFoto(f, b64=>{
-    document.getElementById("editBuktiBase64").value=b64;
-    document.getElementById("editPreviewBaru").innerHTML=`<img src="${b64}"><br><small>✅ Bukti baru siap - klik Update</small>`;
-  });
-});
-window.updatePinjaman=async()=>{
-  if(!editId||!isAdmin) return;
-  let pLama=dataPinjaman[editId];
-  let idBaru=document.getElementById("editAnggota").value; let agBaru=dataAnggota[idBaru]; let nama=agBaru.nama.trim();
-  let tanggal=new Date(document.getElementById("editTanggal").value).getTime();
-  let jumlah=Number(document.getElementById("editJumlah").value); let jasa=Number(document.getElementById("editJasa").value); let metode=document.getElementById("editMetode").value;
-  let buktiBase64=document.getElementById("editBuktiBase64").value||"";
-  const updates={};
-  updates[`/pinjaman/${editId}`]={...pLama,nama,idAnggota:idBaru,tanggal,jumlah,jasa,sumberKas:metode,ket:document.getElementById("editKet").value,buktiBase64};
-  if(pLama.kasId){updates[`/kas/transaksi/${pLama.kasId}`]={tanggal,jumlah,sumberKas:metode,keterangan:`Pinjaman ${nama} (${pLama.nomor})`,tipe:"keluar",kategori:"pinjaman",idAnggota:idBaru,namaAnggota:nama};}
-  await update(ref(db),updates); tutupPopup();
-}
-window.hapusPinjaman=async id=>{if(!isAdmin) return; let p=dataPinjaman[id]; if(!confirm(`Hapus ${p.nomor}? Bukti juga hilang`)) return; await remove(ref(db,`pinjaman/${id}`)); if(p.kasId) await remove(ref(db,`kas/transaksi/${p.kasId}`)); delete dataPinjaman[id]; renderPinjaman();}
-window.cetakNota=id=>{
-  const p=dataPinjaman[id]; if(!p) return;
-  const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a5"});
-  const tgl=new Date(Number(p.tanggal)).toLocaleDateString("id-ID");
-  doc.text("KOPERASI ARFA - BUKTI PINJAMAN FREE",74,15,{align:"center"});
-  doc.text(`No: ${p.nomor}`,15,30); doc.text(`Nama: ${p.nama}`,15,37); doc.text(`Tanggal: ${tgl}`,15,44);
-  doc.text(`Metode: ${p.sumberKas}`,15,51); doc.text(`Jumlah: Rp ${format(p.jumlah)}`,15,58); doc.text(`Jasa: Rp ${format(p.jasa)}`,15,65);
-  if(p.buktiBase64){ try{ doc.addImage(p.buktiBase64,"JPEG",15,72,80,55); }catch(e){} }
-  doc.save(`Nota_${p.nomor}.pdf`);
-}
-window.kirimWA=id=>{const p=dataPinjaman[id]; const ag=dataAnggota[p.idAnggota]; let noHp=(ag?.telepon||"").replace(/[^0-9]/g,""); if(noHp.startsWith("0")) noHp="62"+noHp.substring(1); if(!noHp) return showAlert("No WA kosong"); let total=Number(p.jumlah||0)+Number(p.jasa||0); const pesan=`Halo *${p.nama}*%0ANo: ${p.nomor}%0APinjaman: Rp ${format(p.jumlah)}%0ATotal: Rp ${format(total)}%0AMetode: ${p.sumberKas}`; window.open(`https://wa.me/${noHp}?text=${pesan}`,'_blank');}
+document.getElementById("editBuktiTransfer").addEventListener("change", e=>{ const f=e.target.files[0]; if(!f) return; document.getElementById("editPreviewBaru").innerHTML="⏳"; kompresFoto(f, b64=>{ document.getElementById("editBuktiBase64").value=b64; document.getElementById("editPreviewBaru").innerHTML=`<img src="${b64}" style="width:100%;max-width:200px;border-radius:10px"><br><small>✅ Baru</small>`; }); });
+window.updatePinjaman=async()=>{ if(!editId) return; let pLama=dataPinjaman[editId]; let idBaru=document.getElementById("editAnggota").value; let agBaru=dataAnggota[idBaru]; let nama=agBaru?.nama||pLama.nama; let tanggal=new Date(document.getElementById("editTanggal").value).getTime(); let jumlah=Number(document.getElementById("editJumlah").value); let jasa=Number(document.getElementById("editJasa").value); let metode=document.getElementById("editMetode").value; let buktiBase64=document.getElementById("editBuktiBase64").value||""; const updates={}; updates[`/pinjaman/${editId}`]={...pLama,nama,idAnggota:idBaru,tanggal,jumlah,jasa,sumberKas:metode,ket:document.getElementById("editKet").value,buktiBase64}; if(pLama.kasId){updates[`/kas/transaksi/${pLama.kasId}`]={tanggal,jumlah,sumberKas:metode,keterangan:`Pinjaman ${nama} (${pLama.nomor})`,tipe:"keluar",kategori:"pinjaman",idAnggota:idBaru,namaAnggota:nama};} await update(ref(db),updates); tutupPopup(); }
+window.hapusPinjaman=async id=>{ let p=dataPinjaman[id]; if(!confirm(`Hapus ${p.nomor}?`)) return; await remove(ref(db,`pinjaman/${id}`)); if(p.kasId) await remove(ref(db,`kas/transaksi/${p.kasId}`)); delete dataPinjaman[id]; renderPinjaman(); }
+window.cetakNota=id=>{ const p=dataPinjaman[id]; if(!p) return; const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a5"}); doc.text(`Nota ${p.nomor} - ${p.nama}`,15,20); doc.text(`Jumlah Rp ${format(p.jumlah)} + Jasa Rp ${format(p.jasa)}`,15,30); if(p.buktiBase64){ try{ doc.addImage(p.buktiBase64,"JPEG",15,40,80,55);}catch(e){} } doc.save(`Nota_${p.nomor}.pdf`); }
 </script>
 </body>
 </html>
