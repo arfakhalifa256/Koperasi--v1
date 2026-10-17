@@ -184,11 +184,11 @@ window.cetakPDF=async function(){
     doc.text(kiri,6,y); doc.text(kanan,76,y,{align:"right"}); y+=4.5;
   }
   dashedRect(2,2,76,215);
-  y=4;
+  y=2;
   if(logoBase64){ try{ doc.addImage(logoBase64, 'PNG', 34, y, 12, 12); y+=14; }catch(e){} }
   doc.setFontSize(11); doc.setFont("helvetica","bold"); doc.text("KOPERASI ARFA DRIVER",40,y,{align:"center"}); y+=4;
   doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.text("BUKTI PEMBAYARAN ANGSURAN",40,y,{align:"center"}); y+=6;
-  dashedLine(y); y+=6;
+  dashedLine(y); y+=20;
   doc.setFontSize(9);
   row("No Nota", notaData.noNota);
   row("Tanggal", tglIndo(notaData.tanggal));
