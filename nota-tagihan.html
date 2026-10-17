@@ -222,7 +222,7 @@ window.cetakPDF=async function(){
   row("Bayar Pokok", rupiah(notaData.pokok));
   row("Bayar Jasa", rupiah(notaData.jasa));
   y+=1; dashedLine(y); y+=3;
-  doc.setFont("helvetica","bold"); doc.setFontSize(12);
+  doc.setFont("helvetica","bold"); doc.setFontSize(10);
   doc.text("TOTAL BAYAR",6,y); doc.text(rupiah(notaData.total),76,y,{align:"right"}); y+=6;
   dashedLine(y); y+=5;
   doc.setFontSize(9); doc.setFont("helvetica","normal");
