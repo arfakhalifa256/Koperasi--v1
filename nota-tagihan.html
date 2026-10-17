@@ -63,7 +63,7 @@ select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size
 <header class="topbar">
   <div class="brand-top">
     <img src="img/icon-192.png" alt="Koperasi ARFA">
-    <div>NOTA TAGIHAN PINJAMAN</div>
+    <div>NOTA PINJAMAN</div>
   </div>
   <button class="btn-back" onclick="kembali()">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -72,19 +72,19 @@ select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size
 
 <div class="container">
   <div class="card-form">
-    <h3>📄 Buat Nota Tagihan</h3>
-    <label>Pilih Anggota / Pinjaman</label>
+    <h3>📄 Buat Nota Pinjaman</h3>
+    <label>Pilih Anggota / Peminjam</label>
     <select id="selectPinjaman">
       <option value="">-- Memuat data... --</option>
     </select>
-    <button class="btn-buat" onclick="buatNotaTagihan()">Buat Nota Tagihan</button>
+    <button class="btn-buat" onclick="buatNotaTagihan()">Buat Nota Pinjaman</button>
   </div>
 
   <div class="nota" id="nota">
     <div class="nota-header">
       <img src="./img/icon-192.png" alt="Logo" class="nota-logo">
       <h2>KOPERASI ARFA Sejahtera</h2>
-      <p>NOTA TAGIHAN PINJAMAN</p>
+      <p>NOTA PINJAMAN</p>
     </div>
 
     <div class="row"><span>No Tagihan</span><span id="noTagihan">-</span></div>
@@ -103,11 +103,11 @@ select{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;font-size
     <div class="divider"></div>
 
     <div class="row total">
-      <span>TOTAL TAGIHAN</span>
+      <span>TOTAL PINJAMAN</span>
       <span id="totalTagihan">Rp 0</span>
     </div>
 
-    <div class="note-bayar">* Segera lunasi tagihan ini. Keterlambatan dikenakan denda.</div>
+    <div class="note-bayar"> </div>
     <div class="footer"><p>Terima kasih</p><p>Koperasi ARFA Sejahtera</p></div>
   </div>
 
