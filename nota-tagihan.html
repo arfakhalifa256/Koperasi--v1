@@ -161,11 +161,12 @@ window.buatNota=function(){
 }
 
 // === PDF SAMA KAYAK PREVIEW + LOGO ===
+// === PDF SAMA KAYAK PREVIEW + LOGO FIX JARAK ===
 window.cetakPDF=async function(){
   if(!notaData) return;
   const {jsPDF}=window.jspdf; 
-  const doc=new jsPDF({unit:"mm",format:[80,230]});
-  let y=5;
+  const doc=new jsPDF({unit:"mm",format:[80,235]});
+  let y=4;
 
   async function getLogoBase64(){
     try{
@@ -183,12 +184,26 @@ window.cetakPDF=async function(){
     doc.setFontSize(size); doc.setFont("helvetica", bold?"bold":"normal");
     doc.text(kiri,6,y); doc.text(kanan,76,y,{align:"right"}); y+=4.5;
   }
-  dashedRect(2,2,76,215);
-  y=2;
-  if(logoBase64){ try{ doc.addImage(logoBase64, 'PNG', 34, y, 12, 12); y+=14; }catch(e){} }
-  doc.setFontSize(11); doc.setFont("helvetica","bold"); doc.text("KOPERASI ARFA DRIVER",40,y,{align:"center"}); y+=4;
-  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.text("BUKTI PEMBAYARAN ANGSURAN",40,y,{align:"center"}); y+=6;
-  dashedLine(y); y+=20;
+  dashedRect(2,2,76,222);
+
+  // LOGO - JARAK AMAN
+  y=5;
+  if(logoBase64){ 
+    try{ 
+      doc.addImage(logoBase64, 'PNG', 33, y, 14, 14); // logo tengah
+      y += 18; // <-- jarak aman setelah logo
+    }catch(e){ y+=2; } 
+  }
+  
+  // JUDUL - SUDAH TURUN JAUH DARI LOGO
+  doc.setFontSize(11); doc.setFont("helvetica","bold"); 
+  doc.text("KOPERASI ARFA DRIVER",40,y,{align:"center"}); 
+  y+=5; // jarak judul ke subjudul
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); 
+  doc.text("BUKTI PEMBAYARAN ANGSURAN",40,y,{align:"center"}); 
+  y+=7; // jarak subjudul ke garis
+  dashedLine(y); y+=5;
+
   doc.setFontSize(9);
   row("No Nota", notaData.noNota);
   row("Tanggal", tglIndo(notaData.tanggal));
@@ -215,10 +230,10 @@ window.cetakPDF=async function(){
   doc.setFont("helvetica","bold"); doc.setTextColor(200,0,0);
   row("Sisa Baru", rupiah(notaData.sisaBaru), true, 10);
   doc.setTextColor(0,0,0);
-  y+=2; dashedLine(y); y+=6;
+  y+=2; dashedLine(y); y+=7;
   doc.setFontSize(7); doc.setFont("helvetica","normal");
   doc.text("- Simpan sebagai bukti sah -",40,y,{align:"center"}); y+=4;
-  doc.text("Terima kasih",40,y,{align:"center"}); y+=3.5;
+  doc.text("Terima kasih",40,y,{align:"center"}); y+=4;
   doc.text(new Date().toLocaleString("id-ID"),40,y,{align:"center"});
   doc.save(`Nota_${notaData.nama}_${notaData.noNota}.pdf`);
 }
