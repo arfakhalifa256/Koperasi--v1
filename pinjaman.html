@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pinjaman V14 FIX Tombol WA</title>
+<title>Pinjaman V15 Anti Lupa 2 Bukti</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
@@ -12,22 +12,11 @@ header{background:linear-gradient(to right,#1e90ff,#0f3057);color:#fff;padding:1
 .form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;position:relative}label{font-size:11px;font-weight:600;color:#6b7280}
 input,select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px}
 .btn-primary{width:100%;padding:11px;border:none;border-radius:10px;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer}
-
-/* FIX UTAMA TOMBOL BOS */
 .pinjaman-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:16px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .pinjaman-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.pinjaman-actions button{
-  border:none; border-radius:10px; padding:10px 8px; font-size:12px; font-weight:700; 
-  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;
-  box-shadow:0 1px 3px rgba(0,0,0,.1); transition:.15s; outline:none;
-}
+.pinjaman-actions button{border:none;border-radius:10px;padding:10px 8px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 1px 3px rgba(0,0,0,.1);outline:none}
 .pinjaman-actions button:active{transform:scale(.96)}
-.btn-wa{background:#25D366;color:#fff}
-.btn-nota{background:#0f3057;color:#fff}
-.btn-edit{background:#f59e0b;color:#fff}
-.btn-delete{background:#ef4444;color:#fff}
-.btn-buka{grid-column:span 2;background:#10b981;color:#fff}
-
+.btn-wa{background:#25D366;color:#fff}.btn-nota{background:#0f3057;color:#fff}.btn-edit{background:#f59e0b;color:#fff}.btn-delete{background:#ef4444;color:#fff}.btn-buka{grid-column:span 2;background:#10b981;color:#fff}
 .popup{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;justify-content:center;align-items:center;z-index:2000;padding:10px}
 .popup-box{background:#fff;padding:20px;border-radius:16px;width:100%;max-width:420px;max-height:92vh;overflow:auto}.popup-box.large{max-width:640px}
 .search-list{position:absolute;top:62px;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;max-height:240px;overflow:auto;display:none;z-index:50;box-shadow:0 8px 20px rgba(0,0,0,.15)}
@@ -35,13 +24,15 @@ input,select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radiu
 .badge-sudah{background:#dcfce7;color:#166534;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid #bbf7d0}
 .badge-belum{background:#fef3c7;color:#92400e;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid #fde68a}
 .custom-alert{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:99999;padding:20px}
-.custom-alert-box{width:100%;max-width:320px;background:#fff;border-radius:18px;padding:24px 20px;text-align:center}
+.custom-alert-box{width:100%;max-width:340px;background:#fff;border-radius:18px;padding:24px 20px;text-align:center}
 </style>
 </head>
 <body>
-<header>PINJAMAN V14 FIX TOMBOL</header>
+<header>PINJAMAN V15 ANTI LUPA 2 BUKTI</header>
 <div class="container"><div class="card">
-<h3 style="background:#ffedd5;text-align:center;padding:10px;border-radius:10px;margin-bottom:12px">Tambah Pinjaman + WA</h3>
+<h3 style="background:#ffedd5;text-align:center;padding:10px;border-radius:10px;margin-bottom:12px">Pinjaman + Bukti WA Anti Lupa</h3>
+<div style="background:#dcfce7;padding:10px;border-radius:10px;font-size:11px;margin-bottom:12px">✅ V15: WAJIB Upload Chat WA Pengajuan sebagai bukti anti lupa pinjam</div>
+
 <div class="form-group"><label>Anggota</label><input type="text" id="anggotaSearch" placeholder="🔍 Ketik nama..." autocomplete="off"><div id="anggotaList" class="search-list"></div><input type="hidden" id="anggota"><div id="anggotaTerpilih" style="display:none;margin-top:6px;background:#eff6ff;padding:6px 10px;border-radius:8px;font-size:11px"></div></div>
 <div class="form-group"><label>No Telepon (auto)</label><input type="text" id="telepon" readonly></div>
 <div class="form-group"><label>No Pinjaman</label><input type="text" id="noPinjaman" disabled></div>
@@ -49,16 +40,39 @@ input,select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radiu
 <div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih</option><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
 <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" oninput="hitungJasa()"></div>
 <div class="form-group"><label>Jasa 20%</label><input type="number" id="jasa" readonly></div>
-<div class="form-group" id="groupBukti" style="display:none;background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px"><label>📎 Bukti Transfer</label><input type="file" id="buktiTransfer" accept="image/*"><div id="previewBukti"></div><input type="hidden" id="buktiBase64"></div>
-<div class="form-group"><label>Keterangan</label><input type="text" id="ket"></div>
-<button class="btn-primary" onclick="simpanPinjaman()">💾 Simpan + Nota + WA Otomatis</button>
+
+<!-- BUKTI 1 WAJIB ANTI LUPA -->
+<div class="form-group" style="background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px">
+  <label style="color:#d97706;font-weight:700">📱 Bukti 1 WAJIB: Screenshot Chat WA Pengajuan</label>
+  <small style="color:#92400e;font-size:10px">Ini bukti kalau anggota memang minta pinjam, anti ngeles lupa</small>
+  <input type="file" id="buktiWa" accept="image/*" style="margin-top:8px;background:#fff">
+  <div id="previewWa" style="margin-top:8px"></div>
+  <input type="hidden" id="buktiWaBase64">
+</div>
+
+<!-- BUKTI 2 TRANSFER -->
+<div class="form-group" id="groupBukti" style="display:none;background:#eff6ff;border:2px dashed #3b82f6;padding:12px;border-radius:12px">
+  <label style="color:#1e40af;font-weight:700">💸 Bukti 2: Bukti Transfer (Jika BANK)</label>
+  <input type="file" id="buktiTransfer" accept="image/*" style="margin-top:8px;background:#fff">
+  <div id="previewBukti" style="margin-top:8px"></div>
+  <input type="hidden" id="buktiBase64">
+</div>
+
+<div class="form-group"><label>Keterangan</label><input type="text" id="ket" placeholder="contoh: pinjam untuk bensin"></div>
+<button class="btn-primary" onclick="simpanPinjaman()">💾 Simpan + Nota 2 Bukti + WA</button>
 <button class="btn-primary" style="background:#fff;color:#1f2937;border:1px solid #e2e8f0;margin-top:8px" onclick="bukaRiwayat()">📋 Lihat Pinjaman (<span id="jmlPinjaman">0</span>)</button>
 </div></div>
 
-<div id="popupRiwayat" class="popup"><div class="popup-box large"><div style="display:flex;justify-content:space-between"><h3>Daftar Pinjaman</h3><button onclick="tutupRiwayat()" style="background:#ef4444;padding:6px 12px;color:#fff;border:none;border-radius:8px">✕</button></div><input type="text" id="searchPinjaman" placeholder="Cari..." style="width:100%;padding:9px;margin:10px 0;border:1px solid #e2e8f0;border-radius:10px"><div id="tabelPinjaman" style="max-height:75vh;overflow-y:auto"></div></div></div>
-<div id="popupEdit" class="popup"><div class="popup-box"><h3>Edit</h3><div class="form-group"><label>No Pinjaman</label><input type="text" id="editNoPinjaman" disabled></div><div class="form-group"><label>Anggota</label><input type="text" id="editAnggotaSearch"><div id="editAnggotaList" class="search-list"></div><input type="hidden" id="editAnggota"></div><div class="form-group"><label>Tanggal</label><input type="date" id="editTanggal"></div><div class="form-group"><label>Metode</label><select id="editMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div><div class="form-group"><label>Jumlah</label><input type="number" id="editJumlah" oninput="hitungJasaEdit()"></div><div class="form-group"><label>Jasa</label><input type="number" id="editJasa" readonly></div><div class="form-group"><label>Bukti</label><div id="editPreviewBukti"></div><input type="file" id="editBuktiTransfer" accept="image/*"><div id="editPreviewBaru"></div><input type="hidden" id="editBuktiBase64"></div><div class="form-group"><label>Keterangan</label><input type="text" id="editKet"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn-primary" style="flex:1" onclick="updatePinjaman()">Update</button><button style="flex:1;background:#e5e7eb;border:none;border-radius:8px" onclick="tutupPopup()">Batal</button></div></div></div>
-<div id="popupNota" class="popup" style="z-index:3000"><div class="popup-box large" style="max-width:380px;text-align:center"><h3 id="judulPreviewNota">Nota Siap</h3><div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;padding:18px;margin:14px 0"><div style="font-size:38px">📄</div><b id="namaNotaPreview" style="font-size:12px"></b><br><small id="statusNotaUpload" style="font-size:11px"></small></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn-nota" style="padding:11px;border-radius:10px;border:none" onclick="bukaNotaTemp()">Buka PDF</button><button style="padding:11px;border-radius:10px;border:none;background:#10b981;color:#fff" onclick="downloadNotaTemp()">Download</button><button class="btn-wa" style="padding:11px;border-radius:10px;border:none" onclick="kirimWATemp()">Kirim WA</button><button style="padding:11px;border-radius:10px;border:none;background:#3b82f6;color:#fff" onclick="uploadNotaTemp()">Simpan</button></div><button style="width:100%;margin-top:8px;padding:8px;background:#e5e7eb;border:none;border-radius:8px" onclick="tutupNotaPopup()">Tutup</button></div></div>
-<div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div id="alertText"></div><button onclick="tutupAlert()" style="background:#3b82f6;padding:10px;border-radius:10px;color:#fff;width:100%;margin-top:10px;border:0">OK</button></div></div>
+<div id="popupRiwayat" class="popup"><div class="popup-box large"><div style="display:flex;justify-content:space-between"><h3>Daftar Pinjaman V15</h3><button onclick="tutupRiwayat()" style="background:#ef4444;padding:6px 12px;color:#fff;border:none;border-radius:8px">✕</button></div><input type="text" id="searchPinjaman" placeholder="🔍 Cari nama / PJ... " style="width:100%;padding:10px;margin:10px 0;border:1.5px solid #3b82f6;border-radius:10px"><div id="tabelPinjaman" style="max-height:75vh;overflow-y:auto"></div></div></div>
+
+<div id="popupEdit" class="popup"><div class="popup-box"><h3>Edit Pinjaman</h3><div class="form-group"><label>No Pinjaman</label><input type="text" id="editNoPinjaman" disabled></div><div class="form-group"><label>Anggota</label><input type="text" id="editAnggotaSearch"><div id="editAnggotaList" class="search-list"></div><input type="hidden" id="editAnggota"></div><div class="form-group"><label>Tanggal</label><input type="date" id="editTanggal"></div><div class="form-group"><label>Metode</label><select id="editMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div><div class="form-group"><label>Jumlah</label><input type="number" id="editJumlah" oninput="hitungJasaEdit()"></div><div class="form-group"><label>Jasa</label><input type="number" id="editJasa" readonly></div>
+<div class="form-group"><label>Bukti WA</label><div id="editPreviewWa"></div><input type="file" id="editBuktiWa" accept="image/*"><input type="hidden" id="editBuktiWaBase64"><div id="editPreviewWaBaru"></div></div>
+<div class="form-group"><label>Bukti Transfer</label><div id="editPreviewBukti"></div><input type="file" id="editBuktiTransfer" accept="image/*"><input type="hidden" id="editBuktiBase64"><div id="editPreviewBaru"></div></div>
+<div class="form-group"><label>Keterangan</label><input type="text" id="editKet"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn-primary" style="flex:1" onclick="updatePinjaman()">Update</button><button style="flex:1;background:#e5e7eb;border:none;border-radius:8px" onclick="tutupPopup()">Batal</button></div></div></div>
+
+<div id="popupNota" class="popup" style="z-index:3000"><div class="popup-box large" style="max-width:380px;text-align:center"><h3 id="judulPreviewNota">Nota Siap</h3><div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;padding:18px;margin:14px 0"><div style="font-size:38px">📄</div><b id="namaNotaPreview" style="font-size:12px"></b><br><small id="statusNotaUpload" style="font-size:11px"></small></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn-nota" style="padding:11px;border-radius:10px;border:none" onclick="bukaNotaTemp()">Buka PDF</button><button style="padding:11px;border-radius:10px;border:none;background:#10b981;color:#fff" onclick="downloadNotaTemp()">Download</button><button class="btn-wa" style="padding:11px;border-radius:10px;border:none" onclick="kirimWATemp()">Kirim WA</button><button style="padding:11px;border-radius:10px;border:none;background:#3b82f6;color:#fff" onclick="uploadNotaTemp()">Simpan Nota</button></div><button style="width:100%;margin-top:8px;padding:8px;background:#e5e7eb;border:none;border-radius:8px" onclick="tutupNotaPopup()">Tutup</button></div></div>
+
+<div id="customAlert" class="custom-alert"><div class="custom-alert-box"><div id="alertIcon" style="font-size:36px;margin-bottom:8px"></div><div id="alertText" style="font-size:13px;line-height:1.5"></div><button onclick="tutupAlert()" style="background:#3b82f6;padding:10px;border-radius:10px;color:#fff;width:100%;margin-top:12px;border:0;font-weight:700">OK</button></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -71,16 +85,31 @@ let tempNotaBase64=null, tempNotaBlobUrl=null, tempNotaId=null, tempNotaNama="",
 const format=x=>new Intl.NumberFormat("id-ID").format(Number(x)||0);
 const inputDate=t=>{if(!t) return ""; const d=new Date(Number(t)); return isNaN(d.getTime())?"":new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);};
 const escapeHTML=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function showAlert(m){document.getElementById("alertText").innerText=m; document.getElementById("customAlert").style.display="flex";}
+function showAlert(m,icon="⚠️"){document.getElementById("alertText").innerText=m; document.getElementById("alertIcon").innerText=icon; document.getElementById("customAlert").style.display="flex";}
 window.tutupAlert=()=>document.getElementById("customAlert").style.display="none";
 window.hitungJasa=()=>{document.getElementById("jasa").value=Math.round(Number(document.getElementById("jumlah").value||0)*0.2);};
 window.hitungJasaEdit=()=>{document.getElementById("editJasa").value=Math.round(Number(document.getElementById("editJumlah").value||0)*0.2);};
-function kompresFoto(file,cb){const r=new FileReader(); r.onload=e=>{const img=new Image(); img.onload=()=>{const c=document.createElement("canvas"); const maxW=900; const sc=Math.min(1,maxW/img.width); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); c.getContext("2d").drawImage(img,0,0,c.width,c.height); cb(c.toDataURL("image/jpeg",0.65));}; img.src=e.target.result;}; r.readAsDataURL(file);}
+
+// KOMPRES HD ANTI BURAM
+function kompresFotoHD(file,cb){
+  const r=new FileReader(); r.onload=e=>{
+    const img=new Image(); img.onload=()=>{
+      const c=document.createElement("canvas"); 
+      const maxW=1500; const sc=Math.min(1,maxW/img.width); 
+      c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc);
+      const ctx=c.getContext("2d"); ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,c.width,c.height);
+      ctx.drawImage(img,0,0,c.width,c.height); 
+      cb(c.toDataURL("image/jpeg",0.92));
+    }; img.src=e.target.result;
+  }; r.readAsDataURL(file);
+}
 function dataURLToBlob(dataurl){try{const arr=dataurl.split(','), mime=arr[0].match(/:(.*?);/)[1], bstr=atob(arr[1]); let n=bstr.length; const u8arr=new Uint8Array(n); while(n--){u8arr[n]=bstr.charCodeAt(n);} return new Blob([u8arr],{type:mime});}catch(e){return null;}}
 function revokeTempBlob(){if(tempNotaBlobUrl){URL.revokeObjectURL(tempNotaBlobUrl); tempNotaBlobUrl=null;}}
 function formatHpKe62(hp){let h=String(hp||"").replace(/\D/g,""); if(!h) return ""; if(h.startsWith('0')) h='62'+h.slice(1); return h;}
+
 onValue(anggotaRef,snap=>{dataAnggota=snap.val()||{}; dataAnggotaList=Object.entries(dataAnggota).map(([k,m])=>({id:k,nama:String(m?.nama||"").trim(),idAnggota:String(m?.idAnggota||""),telepon:String(m?.telepon||m?.noHp||"")})).filter(x=>x.nama&&!x.nama.endsWith("-")).sort((a,b)=>a.nama.localeCompare(b.nama,"id")); initSearchable();});
 onValue(pinjamanRef,snap=>{dataPinjaman={}; snap.forEach(c=>{const v=c.val(); if(v&&typeof v==="object") dataPinjaman[c.key]={...v,id:c.key};}); document.getElementById("jmlPinjaman").innerText=Object.keys(dataPinjaman).length; renderPinjaman();});
+
 function initSearchable(){
   const s=document.getElementById("anggotaSearch"), l=document.getElementById("anggotaList"), h=document.getElementById("anggota"), t=document.getElementById("telepon");
   const es=document.getElementById("editAnggotaSearch"), el=document.getElementById("editAnggotaList"), eh=document.getElementById("editAnggota");
@@ -90,6 +119,7 @@ function initSearchable(){
   s.onfocus=()=>{l.style.display="block"; rend(s.value,l,pilih);}; s.oninput=()=>{h.value=""; t.value=""; document.getElementById("anggotaTerpilih").style.display="none"; l.style.display="block"; rend(s.value,l,pilih);};
   es.onfocus=()=>{el.style.display="block"; rend(es.value,el,pilihE);}; es.oninput=()=>{eh.value=""; el.style.display="block"; rend(es.value,el,pilihE);};
 }
+
 function renderPinjaman(){
   const tabel=document.getElementById("tabelPinjaman"); const search=(document.getElementById("searchPinjaman")?.value||"").toLowerCase().trim();
   let list=Object.values(dataPinjaman).sort((a,b)=>Number(b.tanggal||0)-Number(a.tanggal||0));
@@ -97,9 +127,10 @@ function renderPinjaman(){
   tabel.innerHTML=""; if(!list.length){tabel.innerHTML='<div style="padding:20px;text-align:center;color:#6b7280">Tidak ada data</div>'; return;}
   list.forEach(p=>{
     const jasa=Number(p.jasa??Math.round(Number(p.jumlah||0)*0.2));
-    const bukti=p.buktiBase64?`<div style="margin-top:8px"><img src="${p.buktiBase64}" style="width:100%;max-width:220px;border-radius:12px;border:1px solid #e2e8f0"></div>`:`<div style="margin-top:6px;color:#94a3b8;font-size:11px">Tanpa bukti</div>`;
+    const buktiWa = p.buktiWaBase64 ? `<div style="margin-top:8px;display:flex;gap:8px;align-items:center;background:#fffbeb;border:1px dashed #f59e0b;padding:6px;border-radius:8px"><img src="${p.buktiWaBase64}" style="width:45px;height:45px;object-fit:cover;border-radius:6px"><small>📱 Bukti WA Pengajuan</small></div>` : `<small style="color:#ef4444">⚠️ Tanpa bukti WA</small>`;
+    const buktiTf = p.buktiBase64 ? `<div style="margin-top:6px;display:flex;gap:8px;align-items:center;background:#eff6ff;border:1px dashed #3b82f6;padding:6px;border-radius:8px"><img src="${p.buktiBase64}" style="width:45px;height:45px;object-fit:cover;border-radius:6px"><small>💸 Bukti Transfer</small></div>` : ``;
     const ag=dataAnggota[p.idAnggota]||{}; const hp=ag.telepon||"-";
-    let notaBadge=p.notaPencairanBase64?`<span class="badge-sudah">✅ Nota</span>`:`<span class="badge-belum">Belum Nota</span>`;
+    let notaBadge=p.notaPencairanBase64?`<span class="badge-sudah">✅ Nota Tersimpan</span>`:`<span class="badge-belum">Belum Nota</span>`;
     let div=document.createElement("div"); div.className="pinjaman-card";
     div.innerHTML=`
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
@@ -108,10 +139,11 @@ function renderPinjaman(){
       </div>
       <div style="font-size:12px;margin-top:6px;color:#334155">${new Date(Number(p.tanggal)).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})} • Rp ${format(p.jumlah)} + Jasa Rp ${format(jasa)}</div>
       <div style="margin-top:6px">${notaBadge}</div>
-      ${bukti}
+      ${buktiWa}
+      ${buktiTf}
       <div class="pinjaman-actions">
         <button class="btn-wa" onclick="kirimWAPinjaman('${p.id}')">WA</button>
-        <button class="btn-nota" onclick="cetakNota('${p.id}')">Nota</button>
+        <button class="btn-nota" onclick="cetakNota('${p.id}')">Nota 2 Bukti</button>
         <button class="btn-edit" onclick="editPinjaman('${p.id}')">Edit</button>
         <button class="btn-delete" onclick="hapusPinjaman('${p.id}')">Hapus</button>
         ${p.notaPencairanBase64?`<button class="btn-buka" onclick="lihatNotaTersimpan('${p.id}')">👁️ Buka Nota Tersimpan</button>`:''}
@@ -126,8 +158,12 @@ window.tutupPopup=()=>{document.getElementById("popupEdit").style.display="none"
 async function previewNoPinjaman(){const snap=await get(ref(db,"counter/pinjaman")); let no=(snap.val()||0)+1; return "PJ"+String(no).padStart(3,"0");}
 async function generateNoPinjaman(){const c=ref(db,"counter/pinjaman"); const r=await runTransaction(c,v=>(v||0)+1); return "PJ"+String(r.snapshot.val()).padStart(3,"0");}
 window.addEventListener("load",async()=>{document.getElementById("tanggal").value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10); try{document.getElementById("noPinjaman").value=await previewNoPinjaman();}catch(e){document.getElementById("noPinjaman").value="Otomatis";}});
+
+// UPLOAD HANDLER
 document.getElementById("metode").addEventListener("change",function(){const g=document.getElementById("groupBukti"); if(this.value==="bank") g.style.display="flex"; else{ g.style.display="none"; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML="";}});
-document.getElementById("buktiTransfer").addEventListener("change",e=>{const f=e.target.files?.[0]; if(!f) return; kompresFoto(f,b=>{document.getElementById("buktiBase64").value=b; document.getElementById("previewBukti").innerHTML=`<img src="${b}" style="width:100%;max-width:200px;border-radius:12px">`;});});
+document.getElementById("buktiWa").addEventListener("change",e=>{const f=e.target.files?.[0]; if(!f) return; document.getElementById("previewWa").innerHTML="⏳ HD..."; kompresFotoHD(f,b=>{document.getElementById("buktiWaBase64").value=b; document.getElementById("previewWa").innerHTML=`<img src="${b}" style="width:100%;max-width:250px;border-radius:12px;border:2px solid #f59e0b"><br><small>✅ Bukti WA ${Math.round(b.length/1024)}KB HD</small>`;});});
+document.getElementById("buktiTransfer").addEventListener("change",e=>{const f=e.target.files?.[0]; if(!f) return; document.getElementById("previewBukti").innerHTML="⏳ HD..."; kompresFotoHD(f,b=>{document.getElementById("buktiBase64").value=b; document.getElementById("previewBukti").innerHTML=`<img src="${b}" style="width:100%;max-width:250px;border-radius:12px;border:2px solid #3b82f6"><br><small>✅ Transfer ${Math.round(b.length/1024)}KB HD</small>`;});});
+
 window.kirimWAPinjaman=(id)=>{
   const p=dataPinjaman[id]; if(!p) return showAlert("Data tidak ketemu");
   const ag=dataAnggota[p.idAnggota]||{}; let hp=formatHpKe62(ag.telepon||document.getElementById('telepon').value);
@@ -138,47 +174,131 @@ window.kirimWAPinjaman=(id)=>{
   window.open(`https://wa.me/${hp}?text=${pesan}`,'_blank');
 }
 window.kirimWATemp=()=>{ if(!tempNotaId) return showAlert("Buat nota dulu"); kirimWAPinjaman(tempNotaId); }
+
 window.simpanPinjaman=async()=>{
-  const id=document.getElementById("anggota").value; if(!id) return showAlert("Pilih anggota dulu");
-  const ag=dataAnggota[id]; const tgl=document.getElementById("tanggal").value; const jml=Number(document.getElementById("jumlah").value); const met=document.getElementById("metode").value;
-  if(!tgl||!met||!jml) return showAlert("Lengkapi form");
-  const nomor=await generateNoPinjaman(); const tanggal=new Date(tgl+"T00:00:00").getTime(); const bukti=document.getElementById("buktiBase64").value||"";
-  const kas=await push(kasTransaksiRef,{tanggal,keterangan:`Pinjaman ${ag.nama} (${nomor})`,tipe:"keluar",kategori:"pinjaman",sumberKas:met,jumlah:jml,idAnggota:id,namaAnggota:ag.nama});
-  const pinjamanBaru=await push(pinjamanRef,{nomor,idAnggota:id,nama:ag.nama,tanggal,jumlah:jml,jasa:Math.round(jml*0.2),sumberKas:met,ket:document.getElementById("ket").value,kasId:kas.key,status:"belum",buktiBase64:bukti});
-  document.getElementById("jumlah").value=""; document.getElementById("jasa").value=""; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML=""; document.getElementById("groupBukti").style.display="none"; document.getElementById("anggotaSearch").value=""; document.getElementById("anggota").value=""; document.getElementById("telepon").value=""; document.getElementById("anggotaTerpilih").style.display="none"; document.getElementById("noPinjaman").value=await previewNoPinjaman();
-  bukaRiwayat(); setTimeout(()=>cetakNota(pinjamanBaru.key),800);
+  const buktiWa=document.getElementById("buktiWaBase64").value;
+  if(!buktiWa){
+    return showAlert("⚠️ WAJIB Upload Screenshot Chat WA Pengajuan dulu bos!\n\nIni bukti anti lupa pinjam. Kalau gak ada, anggota bisa ngeles 'saya lupa pinjam'.\n\nSilakan screenshot chat WA anggota yang minta pinjam, upload di kotak kuning.","📱");
+  }
+  const idAng=document.getElementById("anggota").value; if(!idAng) return showAlert("Pilih anggota dulu");
+  const ag=dataAnggota[idAng]; if(!ag) return showAlert("Data anggota tidak ketemu");
+  const tgl=document.getElementById("tanggal").value; const jml=Number(document.getElementById("jumlah").value); const met=document.getElementById("metode").value;
+  if(!tgl||!met||!jml) return showAlert("Lengkapi tanggal, metode, jumlah");
+  if(jml<1000) return showAlert("Minimal Rp 1000");
+  if(met==="bank" && !document.getElementById("buktiBase64").value) return showAlert("Metode BANK wajib upload bukti transfer juga bos");
+  try{
+    const nomor=await generateNoPinjaman(); 
+    const tanggal=new Date(tgl+"T00:00:00").getTime(); 
+    const buktiTf=document.getElementById("buktiBase64").value||"";
+    const ket=document.getElementById("ket").value||"";
+    const kas=await push(kasTransaksiRef,{tanggal,keterangan:`Pinjaman ${ag.nama} (${nomor})`,tipe:"keluar",kategori:"pinjaman",sumberKas:met,jumlah:jml,idAnggota:idAng,namaAnggota:ag.nama,dibuatPada:Date.now()});
+    const pinjamanBaru=await push(pinjamanRef,{
+      nomor,idAnggota:idAng,nama:ag.nama,tanggal,jumlah:jml,jasa:Math.round(jml*0.2),sumberKas:met,ket,
+      kasId:kas.key,status:"belum",
+      buktiWaBase64:buktiWa, buktiBase64:buktiTf, buktiBase64Tgl:Date.now()
+    });
+    // reset
+    document.getElementById("jumlah").value=""; document.getElementById("jasa").value=""; 
+    document.getElementById("buktiBase64").value=""; document.getElementById("buktiWaBase64").value="";
+    document.getElementById("previewBukti").innerHTML=""; document.getElementById("previewWa").innerHTML="";
+    document.getElementById("groupBukti").style.display="none"; document.getElementById("anggotaSearch").value=""; 
+    document.getElementById("anggota").value=""; document.getElementById("telepon").value=""; 
+    document.getElementById("anggotaTerpilih").style.display="none"; document.getElementById("ket").value="";
+    document.getElementById("noPinjaman").value=await previewNoPinjaman();
+    showAlert(`✅ Tersimpan ${ag.nama} ${nomor}\n2 Bukti aman, Nota siap + WA otomatis`,"✅");
+    bukaRiwayat(); setTimeout(()=>cetakNota(pinjamanBaru.key),800);
+  }catch(e){ showAlert("Gagal: "+e.message); }
 };
-window.editPinjaman=id=>{const p=dataPinjaman[id]; editId=id; document.getElementById("editNoPinjaman").value=p.nomor; document.getElementById("editAnggota").value=p.idAnggota; document.getElementById("editAnggotaSearch").value=p.nama; document.getElementById("editTanggal").value=inputDate(p.tanggal); document.getElementById("editMetode").value=p.sumberKas; document.getElementById("editJumlah").value=p.jumlah; document.getElementById("editJasa").value=p.jasa; document.getElementById("editKet").value=p.ket||""; document.getElementById("editBuktiBase64").value=p.buktiBase64||""; document.getElementById("editPreviewBukti").innerHTML=p.buktiBase64?`<img src="${p.buktiBase64}" style="width:100%">`:"Belum ada"; document.getElementById("popupEdit").style.display="flex";};
-window.updatePinjaman=async()=>{if(!editId) return; let pL=dataPinjaman[editId]; let tanggal=new Date(document.getElementById("editTanggal").value+"T00:00:00").getTime(); let jml=Number(document.getElementById("editJumlah").value); let jasa=Number(document.getElementById("editJasa").value); let met=document.getElementById("editMetode").value; let bukti=document.getElementById("editBuktiBase64").value||""; const up={}; up[`/pinjaman/${editId}`]={...pL,tanggal,jumlah:jml,jasa,sumberKas:met,ket:document.getElementById("editKet").value,buktiBase64:bukti}; await update(ref(db),up); tutupPopup(); bukaRiwayat();};
-window.hapusPinjaman=async id=>{if(!confirm("Hapus?")) return; let p=dataPinjaman[id]; await remove(ref(db,`pinjaman/${id}`)); if(p.kasId) await remove(ref(db,`kas/transaksi/${p.kasId}`)); renderPinjaman();};
+
+window.editPinjaman=id=>{
+  const p=dataPinjaman[id]; editId=id; 
+  document.getElementById("editNoPinjaman").value=p.nomor; 
+  document.getElementById("editAnggota").value=p.idAnggota; 
+  document.getElementById("editAnggotaSearch").value=p.nama; 
+  document.getElementById("editTanggal").value=inputDate(p.tanggal); 
+  document.getElementById("editMetode").value=p.sumberKas; 
+  document.getElementById("editJumlah").value=p.jumlah; 
+  document.getElementById("editJasa").value=p.jasa; 
+  document.getElementById("editKet").value=p.ket||""; 
+  document.getElementById("editBuktiBase64").value=p.buktiBase64||"";
+  document.getElementById("editBuktiWaBase64").value=p.buktiWaBase64||"";
+  document.getElementById("editPreviewBukti").innerHTML=p.buktiBase64?`<img src="${p.buktiBase64}" style="width:100%;border-radius:10px">`:"Belum ada bukti TF";
+  document.getElementById("editPreviewWa").innerHTML=p.buktiWaBase64?`<img src="${p.buktiWaBase64}" style="width:100%;border-radius:10px;border:2px solid #f59e0b">`:"Belum ada bukti WA";
+  document.getElementById("editPreviewBaru").innerHTML=""; document.getElementById("editPreviewWaBaru").innerHTML="";
+  document.getElementById("popupEdit").style.display="flex";
+};
+
+window.updatePinjaman=async()=>{
+  if(!editId) return; 
+  let pL=dataPinjaman[editId]; 
+  let tanggal=new Date(document.getElementById("editTanggal").value+"T00:00:00").getTime(); 
+  let jml=Number(document.getElementById("editJumlah").value); let jasa=Number(document.getElementById("editJasa").value); 
+  let met=document.getElementById("editMetode").value; 
+  let buktiTf=document.getElementById("editBuktiBase64").value||""; 
+  let buktiWa=document.getElementById("editBuktiWaBase64").value||"";
+  if(!buktiWa) return showAlert("Bukti WA Wajib ada bos, ini anti lupa");
+  const up={}; up[`/pinjaman/${editId}`]={...pL,tanggal,jumlah:jml,jasa,sumberKas:met,ket:document.getElementById("editKet").value,buktiBase64:buktiTf,buktiWaBase64:buktiWa,updatedAt:Date.now()}; 
+  await update(ref(db),up); tutupPopup(); bukaRiwayat(); showAlert("✅ Update 2 bukti berhasil","✅");
+};
+
+window.hapusPinjaman=async id=>{if(!confirm("Hapus pinjaman & kas & 2 bukti?")) return; let p=dataPinjaman[id]; await remove(ref(db,`pinjaman/${id}`)); if(p.kasId) await remove(ref(db,`kas/transaksi/${p.kasId}`)); renderPinjaman(); showAlert("Terhapus","🗑️");};
+
+// CETAK NOTA 2 BUKTI HD
 window.cetakNota=async id=>{
   const p=dataPinjaman[id]; if(!p) return showAlert("Data tidak ketemu");
-  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"mm",format:[80,200]}); let y=6;
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"mm",format:[80,300]}); let y=6;
   const rupiah=n=>"Rp "+Number(n||0).toLocaleString("id-ID");
   const tglIndo=t=>new Date(Number(t)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
   const tglJam=new Date().toLocaleString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit"});
   function dashedLine(yy){doc.setLineDash([1.5,1.5],0); doc.line(4,yy,76,yy); doc.setLineDash([]);}
-  function dashedRect(){doc.setLineDash([1.2,1.2],0); doc.rect(2,2,76,190); doc.setLineDash([]);}
+  function dashedRect(){doc.setLineDash([1.2,1.2],0); doc.rect(2,2,76,285); doc.setLineDash([]);}
   function row(l,r,bold=false,size=9){doc.setFontSize(size); doc.setFont("helvetica",bold?"bold":"normal"); doc.text(l,6,y); doc.text(r,74,y,{align:"right"}); y+=5;}
   dashedRect(); doc.setFontSize(13); doc.setFont("helvetica","bold"); doc.text("KOPERASI ARFA DRIVER",40,y,{align:"center"}); y+=6; doc.setFontSize(11); doc.text("BUKTI PENCAIRAN PINJAMAN",40,y,{align:"center"}); y+=8; dashedLine(y); y+=7;
   const ag=dataAnggota[p.idAnggota]||{}; row("No Pinjam", p.nomor||"-"); row("Tanggal", tglIndo(p.tanggal)); row("Nama", p.nama||"-"); row("No Anggota", ag.idAnggota||"-"); row("Metode", (p.sumberKas||"-").toUpperCase()); y+=2; dashedLine(y); y+=7;
   doc.setFontSize(11); doc.setFont("helvetica","bold"); doc.text("RINCIAN",6,y); y+=6; doc.setFontSize(9); doc.setFont("helvetica","normal");
   const jasa=Number(p.jasa??Math.round(Number(p.jumlah||0)*0.2)); row("Jumlah Pinjam", rupiah(p.jumlah)); row("Jasa 20%", rupiah(jasa)); y+=2; dashedLine(y); y+=8;
   doc.setFontSize(13); doc.setFont("helvetica","bold"); doc.text("TOTAL TERIMA",6,y); doc.text(rupiah(p.jumlah),74,y,{align:"right"}); y+=6; doc.setFontSize(9); doc.text(`Total Kembali: ${rupiah(Number(p.jumlah||0)+jasa)}`,6,y); y+=8; dashedLine(y); y+=8;
-  if(p.ket){ doc.setFontSize(10); doc.setFont("helvetica","bold"); doc.text(`Ket: ${p.ket}`,6,y); y+=7; dashedLine(y); y+=8; }
-  doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.text("- Simpan sebagai bukti sah -",40,y,{align:"center"}); y+=6; doc.setFont("helvetica","bold"); doc.text("Terima kasih",40,y,{align:"center"}); y+=6; doc.setFont("helvetica","normal"); doc.text(tglJam,40,y,{align:"center"});
+  if(p.ket){ doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.text(`Ket: ${p.ket}`,6,y); y+=7; dashedLine(y); y+=8; }
+
+  // BUKTI 1 WA
+  if(p.buktiWaBase64){
+    try{
+      doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.text("BUKTI WA PENGAJUAN - ANTI LUPA:",6,y); y+=5;
+      const imgProps = doc.getImageProperties(p.buktiWaBase64);
+      const pdfW = 68; const pdfH = (imgProps.height * pdfW) / imgProps.width;
+      const finalH = Math.min(pdfH, 70);
+      if(y + finalH > 270){ doc.addPage([80,300]); y=6; }
+      doc.addImage(p.buktiWaBase64,'JPEG',6,y,pdfW,finalH, undefined,'FAST'); y+=finalH+6; dashedLine(y); y+=6;
+    }catch(e){}
+  }
+  // BUKTI 2 TRANSFER
+  if(p.buktiBase64){
+    try{
+      doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.text("BUKTI TRANSFER:",6,y); y+=5;
+      const imgProps = doc.getImageProperties(p.buktiBase64);
+      const pdfW = 68; const pdfH = (imgProps.height * pdfW) / imgProps.width;
+      const finalH = Math.min(pdfH, 70);
+      if(y + finalH > 270){ doc.addPage([80,300]); y=6; }
+      doc.addImage(p.buktiBase64,'JPEG',6,y,pdfW,finalH, undefined,'FAST'); y+=finalH+6; dashedLine(y); y+=6;
+    }catch(e){}
+  }
+
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.text("- Simpan sebagai bukti sah -",40,y,{align:"center"}); y+=5; doc.setFont("helvetica","bold"); doc.text("Terima kasih - Anti Lupa Pinjam",40,y,{align:"center"}); y+=5; doc.setFont("helvetica","normal"); doc.text(tglJam,40,y,{align:"center"});
   const blob=doc.output('blob'); revokeTempBlob(); tempNotaBlobUrl=URL.createObjectURL(blob); tempNotaBase64=doc.output('datauristring'); tempNotaId=id; tempNotaNama=p.nama; tempNotaNomor=p.nomor;
   window.open(tempNotaBlobUrl,'_blank');
-  document.getElementById('judulPreviewNota').innerText=`Nota ${p.nomor} Siap`; document.getElementById('namaNotaPreview').innerText=`${p.nomor} - ${p.nama} - ${rupiah(p.jumlah)} | HP: ${ag.telepon||'-'}`; document.getElementById('statusNotaUpload').innerText="PDF terbuka - Klik WA untuk kirim";
+  document.getElementById('judulPreviewNota').innerText=`Nota ${p.nomor} 2 Bukti Siap`; document.getElementById('namaNotaPreview').innerText=`${p.nomor} - ${p.nama} - ${rupiah(p.jumlah)} | WA: ${ag.telepon||'-'}`; document.getElementById('statusNotaUpload').innerText="PDF 2 bukti terbuka - HD, Klik WA";
   document.getElementById('popupNota').style.display="flex";
 };
+
 window.tutupNotaPopup=()=>{document.getElementById('popupNota').style.display="none"; revokeTempBlob();};
 window.bukaNotaTemp=()=>{ if(!tempNotaBlobUrl){ if(tempNotaBase64){ const blob=dataURLToBlob(tempNotaBase64); tempNotaBlobUrl=URL.createObjectURL(blob);} else return showAlert("Belum ada nota"); } window.open(tempNotaBlobUrl,'_blank'); };
-window.downloadNotaTemp=()=>{ if(!tempNotaBase64) return showAlert("Belum ada nota"); const a=document.createElement('a'); a.href=tempNotaBase64; a.download=`Nota_${tempNotaNomor}_${tempNotaNama}.pdf`; a.click(); };
-window.uploadNotaTemp=async()=>{ if(!tempNotaBase64||!tempNotaId) return showAlert("Buat nota dulu"); await update(ref(db),{ [`/pinjaman/${tempNotaId}/notaPencairanBase64`]:tempNotaBase64, [`/pinjaman/${tempNotaId}/notaPencairanTgl`]:Date.now() }); showAlert("✅ Nota disimpan"); renderPinjaman(); };
+window.downloadNotaTemp=()=>{ if(!tempNotaBase64) return showAlert("Belum ada nota"); const a=document.createElement('a'); a.href=tempNotaBase64; a.download=`Nota_${tempNotaNomor}_${tempNotaNama}_2Bukti.pdf`; a.click(); };
+window.uploadNotaTemp=async()=>{ if(!tempNotaBase64||!tempNotaId) return showAlert("Buat nota dulu"); await update(ref(db),{ [`/pinjaman/${tempNotaId}/notaPencairanBase64`]:tempNotaBase64, [`/pinjaman/${tempNotaId}/notaPencairanTgl`]:Date.now() }); showAlert("✅ Nota 2 Bukti disimpan","✅"); renderPinjaman(); };
 window.lihatNotaTersimpan=id=>{ const p=dataPinjaman[id]; if(!p?.notaPencairanBase64) return showAlert("Belum ada nota"); const blob=dataURLToBlob(p.notaPencairanBase64); if(blob){ const url=URL.createObjectURL(blob); window.open(url,'_blank'); setTimeout(()=>URL.revokeObjectURL(url),8000); } };
-window.downloadNotaTersimpan=id=>{const p=dataPinjaman[id]; if(!p?.notaPencairanBase64) return; const a=document.createElement('a'); a.href=p.notaPencairanBase64; a.download=`Nota_${p.nomor}_${p.nama}.pdf`; a.click();};
-document.getElementById("editBuktiTransfer").addEventListener("change",e=>{const f=e.target.files?.[0]; if(!f) return; kompresFoto(f,b=>{document.getElementById("editBuktiBase64").value=b; document.getElementById("editPreviewBaru").innerHTML=`<img src="${b}" style="width:100%;max-width:200px;border-radius:10px">`;});});
+
+document.getElementById("editBuktiTransfer").addEventListener("change",e=>{const f=e.target.files?.[0]; if(!f) return; kompresFotoHD(f,b=>{document.getElementById("editBuktiBase64").value=b; document.getElementById("editPreviewBaru").innerHTML=`<img src="${b}" style="width:100%;max-width:200px;border-radius:10px"><br><small>✅ Baru ${Math.round(b.length/1024)}KB</small>`;});});
+document.getElementById("editBuktiWa").addEventListener("change",e=>{const f=e.target.files?.[0]; if(!f) return; kompresFotoHD(f,b=>{document.getElementById("editBuktiWaBase64").value=b; document.getElementById("editPreviewWaBaru").innerHTML=`<img src="${b}" style="width:100%;max-width:200px;border-radius:10px"><br><small>✅ Baru ${Math.round(b.length/1024)}KB</small>`;});});
+
 </script>
 </body>
 </html>
