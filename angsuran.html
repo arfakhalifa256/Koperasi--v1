@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angsuran V6 WA Otomatis</title>
+<title>Angsuran V7 Searchable Riwayat + WA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
@@ -12,22 +12,30 @@ header{background:linear-gradient(135deg,#1e90ff,#0f3057);color:#fff;padding:14p
 .container{padding:15px;max-width:900px;margin:auto}.card{background:#fff;padding:18px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .form-group{margin-bottom:12px}label{font-weight:600;font-size:10px;margin-bottom:5px;display:block}
 input,select{width:100%;padding:11px;border:1px solid #e2e8f0;border-radius:10px;font-size:13px}
-button{padding:11px 14px;border:none;border-radius:10px;font-weight:600;cursor:pointer;font-size:11px}
-.btn-primary{background:#1e90ff;color:#fff}.btn-danger{background:#dc2626;color:#fff}.btn-warning{background:#f59e0b;color:#fff}.btn-success{background:#10b981;color:#fff}.btn-dark{background:#0f3057;color:#fff}.btn-wa{background:#25D366;color:#fff}
-.list{display:flex;flex-direction:column;gap:10px}.item{background:#fff;padding:14px;border-radius:12px;border:1px solid #e2e8f0}
+button{padding:11px 14px;border:none;border-radius:10px;font-weight:600;cursor:pointer;font-size:11px;outline:none}
+.btn-primary{background:#1e90ff;color:#fff}.btn-danger{background:#ef4444;color:#fff}.btn-warning{background:#f59e0b;color:#fff}.btn-success{background:#10b981;color:#fff}.btn-dark{background:#0f3057;color:#fff}.btn-wa{background:#25D366;color:#fff}
+
+/* FIX TOMBOL RIWAYAT BOS - GRID RAPI */
+.list{display:flex;flex-direction:column;gap:12px}
+.item{background:#fff;padding:14px;border-radius:14px;border:1.5px solid #e2e8f0;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+.item-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.item-actions button{border:none;border-radius:10px;padding:10px 6px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.item-actions button:active{transform:scale(.96)}
+
 .toast{position:fixed;bottom:20px;right:20px;background:#10b981;color:#fff;padding:12px 18px;border-radius:10px;opacity:0;transition:.3s;z-index:9999}.toast.show{opacity:1}.toast.error{background:#dc2626}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;justify-content:center;align-items:center;z-index:2000;padding:15px}.modal.show{display:flex}
-.modal-content{background:#fff;width:95%;max-width:560px;border-radius:16px;padding:18px;max-height:92vh;overflow:auto}
-.p-item{padding:8px 10px;border-bottom:1px solid #f1f5f9;cursor:pointer;font-size:11px;display:flex;justify-content:space-between}.p-item:hover{background:#eff6ff}
-.badge-sudah{background:#dcfce7;color:#166534;padding:3px 8px;border-radius:8px;font-size:9px;font-weight:700;border:1px solid #bbf7d0}
-.badge-belum{background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:8px;font-size:9px;font-weight:700;border:1px solid #fde68a}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;justify-content:center;align-items:center;z-index:2000;padding:12px}.modal.show{display:flex}
+.modal-content{background:#fff;width:100%;max-width:600px;border-radius:16px;padding:16px;max-height:92vh;overflow:auto;display:flex;flex-direction:column}
+.p-item{padding:10px 12px;border-bottom:1px solid #f1f5f9;cursor:pointer;font-size:11px;display:flex;justify-content:space-between;align-items:center}.p-item:hover{background:#eff6ff}
+.badge-sudah{background:#dcfce7;color:#166534;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid #bbf7d0}
+.badge-belum{background:#fef3c7;color:#92400e;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid #fde68a}
+.search-box{position:sticky;top:0;background:#fff;padding-bottom:10px;z-index:10}
 </style>
 </head>
 <body>
-<header><div>ANGSURAN V6 WA OTOMATIS</div><div onclick="location.href='dashboard.html'">🏠</div></header>
+<header><div>ANGSURAN V7 SEARCHABLE + WA</div><div onclick="location.href='dashboard.html'">🏠</div></header>
 <div class="container"><div class="card">
 <h2 style="text-align:center;font-size:14px;background:#ffedd5;padding:10px;border-radius:10px">Input Angsuran + Nota + WA Otomatis</h2>
-<div style="background:#dcfce7;padding:10px;border-radius:10px;font-size:10px;margin:10px 0">✅ V6: Nota otomatis + Kirim WA peminjam otomatis persis pinjaman SS</div>
+<div style="background:#dcfce7;padding:10px;border-radius:10px;font-size:10px;margin:10px 0">✅ V7: Riwayat Searchable Peminjam + Filter + Tombol Fix Anti Kotak Hitam</div>
 <div class="form-group" style="position:relative"><label>Pilih Peminjam (ketik nama)</label><input type="text" id="pinjamanSearch" placeholder="🔍 Ketik nama..." autocomplete="off" style="font-weight:600"><div id="pinjamanList" style="position:absolute;top:66px;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;max-height:240px;overflow:auto;display:none;z-index:100;box-shadow:0 8px 20px rgba(0,0,0,.15)"></div><input type="hidden" id="pinjamanSelect"><div id="pinjamanTerpilih" style="margin-top:8px;background:#eff6ff;padding:8px 10px;border-radius:8px;font-size:11px;display:none"></div></div>
 <div class="form-group"><label>Tanggal</label><input type="date" id="tanggal"></div>
 <div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih</option><option value="cash">Cash</option><option value="bank">Bank / Transfer</option></select></div>
@@ -38,13 +46,26 @@ button{padding:11px 14px;border:none;border-radius:10px;font-weight:600;cursor:p
 <div class="form-group"><label>Sukarela (auto)</label><input type="text" id="simpanan" disabled></div>
 <div class="form-group" id="groupBukti" style="background:#fffbeb;border:2px dashed #f59e0b;padding:14px;border-radius:14px;display:none"><label>📎 Bukti Transfer</label><input type="file" id="buktiTransfer" accept="image/*"><div id="previewBukti"></div><input type="hidden" id="buktiBase64"></div>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;background:#eff6ff;padding:12px;border-radius:12px;text-align:center;margin-top:10px;font-size:11px"><div>Total Bayar<br><b id="totalBayar">Rp0</b></div><div>Sisa Pokok<br><b id="sisaPokok">Rp0</b></div><div>Sisa TOTAL<br><b id="sisaTotal" style="color:#dc2626">Rp0</b></div></div>
-<div style="display:flex;gap:10px;margin-top:12px"><button class="btn-primary" id="btnSimpan" style="flex:1">💾 Simpan + Nota + WA</button><button class="btn-warning" id="btnNota" disabled style="flex:1">🧾 Nota</button></div>
-<button id="btnRiwayat" style="width:100%;margin-top:10px;background:#fee2e2;padding:12px;border-radius:10px;border:none">📋 Riwayat Terbaru</button>
+<div style="display:flex;gap:10px;margin-top:12px"><button class="btn-primary" id="btnSimpan" style="flex:1">💾 Simpan + Nota + WA</button><button class="btn-warning" id="btnNota" disabled style="flex:1">Nota</button></div>
+<button id="btnRiwayat" style="width:100%;margin-top:10px;background:#fee2e2;padding:12px;border-radius:10px;border:none">📋 Riwayat Terbaru (<span id="jmlRiwayat">0</span>)</button>
 </div></div>
 
-<div id="modalRiwayat" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>Riwayat</h2><button id="btnCloseRiwayat" style="background:#dc2626;color:#fff;padding:5px 10px;border-radius:6px;border:none">✕</button></div><div id="listTransaksi" class="list" style="margin-top:12px"></div></div></div>
-<div id="modalEditAngsuran" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>✏️ Edit</h2><button id="btnCloseEdit" style="background:#dc2626;color:#fff;padding:6px 12px;border-radius:8px;border:none">✕</button></div><input type="hidden" id="editAngsuranId"><div class="form-group"><label>Nama</label><input type="text" id="editAngsuranNama" disabled></div><div class="form-group"><label>Tanggal</label><input type="date" id="editAngsuranTanggal"></div><div class="form-group"><label>Metode</label><select id="editAngsuranMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div><div class="form-group"><label>Jumlah Bayar</label><input type="text" id="editJumlahBayar"></div><div class="form-group" style="background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px"><label>📎 Bukti</label><div id="editPreviewBukti" style="text-align:center;min-height:60px;background:#fff;border-radius:10px;padding:10px;border:1px solid #fde68a"></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn-primary" id="btnLihatFull" style="flex:1">🔍 Lihat</button><button class="btn-success" id="btnSimpanGambar" style="flex:1">💾 Gambar</button><button class="btn-danger" id="btnHapusGambar" style="flex:1">🗑️ Hapus</button></div><hr style="margin:12px 0"><label style="color:#d97706;font-weight:700">📤 Ganti Bukti Baru</label><input type="file" id="editBuktiTransfer" accept="image/*" style="margin-top:6px;background:#fff"><div id="editPreviewBaru" style="margin-top:8px"></div><input type="hidden" id="editBuktiBase64"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn-primary" id="btnUpdateAngsuran" style="flex:1">💾 Update + Nota + WA</button><button class="btn-danger" id="btnHapusAngsuran" style="flex:1">🗑️ Hapus</button></div></div></div>
-<div id="popupNota" class="modal"><div class="modal-content" style="max-width:400px;text-align:center"><h3 id="judulNota">Nota Siap</h3><div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;padding:18px;margin:14px 0"><div style="font-size:38px">📄</div><b id="namaNotaPreview" style="font-size:12px"></b><br><small id="statusNota" style="font-size:11px;color:#166534"></small></div><div style="display:flex;gap:8px"><button class="btn-dark" id="btnBukaNota" style="flex:1">👁️ Buka PDF</button><button class="btn-success" id="btnDownloadNota" style="flex:1">📥 Download</button></div><div style="display:flex;gap:8px;margin-top:8px"><button class="btn-wa" id="btnKirimWA" style="flex:1">💬 Kirim WA Peminjam</button><button class="btn-primary" id="btnSimpanNota" style="flex:1">☁️ Simpan</button></div><button style="width:100%;margin-top:8px;padding:8px;background:#e5e7eb;border:none;border-radius:8px" onclick="document.getElementById('popupNota').classList.remove('show')">Tutup</button></div></div>
+<!-- MODAL RIWAYAT SEARCHABLE BOS -->
+<div id="modalRiwayat" class="modal"><div class="modal-content">
+  <div class="search-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h2 style="font-size:16px">Riwayat Angsuran</h2><button id="btnCloseRiwayat" style="background:#ef4444;color:#fff;padding:6px 12px;border-radius:8px;border:none">✕</button></div>
+    <input type="text" id="searchRiwayat" placeholder="🔍 Cari peminjam, No Pinjam..." style="width:100%;padding:12px;border:1.5px solid #3b82f6;border-radius:10px;font-weight:600;background:#eff6ff">
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <select id="filterTanggal" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e2e8f0;font-size:11px"><option value="">Semua Tanggal</option><option value="today">Hari Ini</option><option value="week">Minggu Ini</option><option value="month">Bulan Ini</option></select>
+      <select id="filterMetode" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e2e8f0;font-size:11px"><option value="">Semua Metode</option><option value="cash">Cash</option><option value="bank">Bank</option></select>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#64748b">Menampilkan <b id="infoJumlah">0</b> transaksi • <span id="infoSearch"></span></div>
+  </div>
+  <div id="listTransaksi" class="list" style="margin-top:12px"></div>
+</div></div>
+
+<div id="modalEditAngsuran" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>✏️ Edit</h2><button id="btnCloseEdit" style="background:#ef4444;color:#fff;padding:6px 12px;border-radius:8px;border:none">✕</button></div><input type="hidden" id="editAngsuranId"><div class="form-group"><label>Nama</label><input type="text" id="editAngsuranNama" disabled></div><div class="form-group"><label>Tanggal</label><input type="date" id="editAngsuranTanggal"></div><div class="form-group"><label>Metode</label><select id="editAngsuranMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div><div class="form-group"><label>Jumlah Bayar</label><input type="text" id="editJumlahBayar"></div><div class="form-group" style="background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px"><label>📎 Bukti</label><div id="editPreviewBukti" style="text-align:center;min-height:60px;background:#fff;border-radius:10px;padding:10px;border:1px solid #fde68a"></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn-primary" id="btnLihatFull" style="flex:1">Lihat</button><button class="btn-success" id="btnSimpanGambar" style="flex:1">Gambar</button><button class="btn-danger" id="btnHapusGambar" style="flex:1">Hapus</button></div><hr style="margin:12px 0"><label style="color:#d97706;font-weight:700">📤 Ganti Bukti Baru</label><input type="file" id="editBuktiTransfer" accept="image/*" style="margin-top:6px;background:#fff"><div id="editPreviewBaru" style="margin-top:8px"></div><input type="hidden" id="editBuktiBase64"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn-primary" id="btnUpdateAngsuran" style="flex:1">💾 Update + Nota + WA</button><button class="btn-danger" id="btnHapusAngsuran" style="flex:1">🗑️ Hapus</button></div></div></div>
+<div id="popupNota" class="modal"><div class="modal-content" style="max-width:400px;text-align:center"><h3 id="judulNota">Nota Siap</h3><div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;padding:18px;margin:14px 0"><div style="font-size:38px">📄</div><b id="namaNotaPreview" style="font-size:12px"></b><br><small id="statusNota" style="font-size:11px;color:#166534"></small></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn-dark" id="btnBukaNota" style="padding:11px">Buka PDF</button><button class="btn-success" id="btnDownloadNota" style="padding:11px">Download</button><button class="btn-wa" id="btnKirimWA" style="padding:11px">Kirim WA</button><button class="btn-primary" id="btnSimpanNota" style="padding:11px">Simpan</button></div><button style="width:100%;margin-top:8px;padding:8px;background:#e5e7eb;border:none;border-radius:8px" onclick="document.getElementById('popupNota').classList.remove('show')">Tutup</button></div></div>
 <div id="toast" class="toast"></div>
 
 <script type="module">
@@ -63,7 +84,8 @@ function timestampKeTanggalInput(ts){if(!ts) return ""; const d=new Date(Number(
 function formatHpKe62(hp){let h=String(hp||"").replace(/\D/g,""); if(!h) return ""; if(h.startsWith('0')) h='62'+h.slice(1); return h;}
 onValue(ref(db,"anggota"), s=>{dataAnggotaCache={}; s.forEach(d=>{dataAnggotaCache[d.key]={key:d.key,...(d.val()||{})}}); loadPinjaman()});
 onValue(pinjamanRef, s=>{dataPinjaman={}; s.forEach(d=>{const v=d.val(); if(!v) return; dataPinjaman[d.key]={id:d.key,key:d.key,...v}}); loadPinjaman()});
-onValue(angsuranRef, s=>{dataAngsuran={}; s.forEach(d=>{const v=d.val(); if(!v) return; dataAngsuran[d.key]={id:d.key,...v}}); loadPinjaman(); renderRiwayat()});
+onValue(angsuranRef, s=>{dataAngsuran={}; s.forEach(d=>{const v=d.val(); if(!v) return; dataAngsuran[d.key]={id:d.key,...v}}); loadPinjaman(); renderRiwayat();});
+
 async function getAnggotaByPinjaman(pid){
   const p=dataPinjaman[pid]; if(!p) return {key:pid,idAnggota:"-",nama:"",telepon:""};
   const kandidat=[p.anggotaId,p.idAnggota].filter(Boolean).map(v=>String(v).trim());
@@ -146,12 +168,110 @@ document.getElementById('btnDownloadNota').onclick=()=>{ if(!tempNotaBase64) ret
 document.getElementById('btnSimpanNota').onclick=async()=>{ if(!tempNotaBase64||!tempNotaId) return; await updateData(ref(db),{[`/angsuran/${tempNotaId}/notaBase64`]:tempNotaBase64,[`/angsuran/${tempNotaId}/notaTgl`]:Date.now()}); showToast("✅ Nota disimpan"); renderRiwayat(); };
 document.getElementById('btnKirimWA').onclick=()=>{ if(!tempNotaId) return; kirimWAAngsuran(tempNotaId); };
 
-function renderRiwayat(){
-  const list=document.getElementById("listTransaksi"); if(!list) return; const arr=Object.entries(dataAngsuran).filter(([k,v])=>v&&v.nama).sort((a,b)=>Number(b[1].tanggal||0)-Number(a[1].tanggal||0)); if(arr.length===0){list.innerHTML=`<div class="item">Belum ada transaksi</div>`; return} let html=""; arr.forEach(([id,a])=>{
-    const tgl=new Date(Number(a.tanggal)).toLocaleString("id-ID",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}); const buktiImg=a.buktiBase64?`<div style="margin-top:8px;display:flex;align-items:center;gap:8px;background:#fffbeb;border:1px dashed #f59e0b;padding:8px;border-radius:10px"><img src="${a.buktiBase64}" style="width:42px;height:42px;object-fit:cover;border-radius:8px"><small>📎 Ada bukti</small></div>`:`<small style="color:#94a3b8">Cash • ${tgl}</small>`; const notaBadge=a.notaBase64?`<span class="badge-sudah">✅ Nota</span>`:`<span class="badge-belum">⚠️ Belum Nota</span>`;
-    html+=`<div class="item"><div style="display:flex;justify-content:space-between"><b>${a.nama}</b><span>${notaBadge}</span></div><small>No: ${a.idPinjaman||"-"} | ${tgl}</small><div style="margin-top:6px">Pokok ${rupiah(a.pokok)} | Jasa ${rupiah(a.jasa)} | Total <b>${rupiah(a.jumlahBayar)}</b></div>${buktiImg}<div style="display:flex;gap:8px;margin-top:8px"><button class="btn-wa" onclick="kirimWAAngsuran('${id}')" style="flex:1">💬 WA</button><button class="btn-dark" onclick="cetakNotaAngsuran('${id}')" style="flex:1">📄 Nota</button><button class="btn-warning" onclick="editAngsuran('${id}')" style="flex:1">✏️ Edit</button></div></div>`;
-  }); list.innerHTML=html;
+ 
+// === TAMBAHAN TOMBOL BUKA NOTA TERSIMPAN BOS ===
+window.lihatNotaTersimpan = (id) => {
+  const a = dataAngsuran[id];
+  if(!a?.notaBase64) return showToast("Belum ada nota tersimpan", true);
+  try{
+    const arr = a.notaBase64.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length; const u8arr = new Uint8Array(n);
+    while(n--){ u8arr[n]=bstr.charCodeAt(n); }
+    const blob = new Blob([u8arr], {type: mime});
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(()=>URL.revokeObjectURL(url), 10000);
+  }catch(e){
+    window.open(a.notaBase64, '_blank');
+  }
 }
+window.downloadNotaTersimpan = (id) => {
+  const a = dataAngsuran[id];
+  if(!a?.notaBase64) return showToast("Belum ada nota", true);
+  const link = document.createElement('a');
+  link.href = a.notaBase64;
+  link.download = `Nota_Tersimpan_${a.nama}_${a.idPinjaman}.pdf`;
+  link.click();
+}
+
+function renderRiwayat(){
+  const list=document.getElementById("listTransaksi");
+  const searchVal=(document.getElementById("searchRiwayat")?.value||"").toLowerCase().trim();
+  const filterTgl=document.getElementById("filterTanggal")?.value||"";
+  const filterMet=document.getElementById("filterMetode")?.value||"";
+  if(!list) return;
+  let arr=Object.entries(dataAngsuran).filter(([k,v])=>v&&v.nama).sort((a,b)=>Number(b[1].tanggal||0)-Number(a[1].tanggal||0));
+  
+  if(searchVal){
+    arr=arr.filter(([id,a])=>{
+      return String(a.nama||"").toLowerCase().includes(searchVal) ||
+             String(a.idPinjaman||"").toLowerCase().includes(searchVal) ||
+             String(a.idAnggota||"").toLowerCase().includes(searchVal);
+    });
+  }
+  if(filterMet){ arr=arr.filter(([id,a])=> (a.metode||"")===filterMet); }
+  if(filterTgl){
+    const now=Date.now();
+    arr=arr.filter(([id,a])=>{
+      const t=Number(a.tanggal||0);
+      if(filterTgl==="today") return new Date(t).toDateString()===new Date(now).toDateString();
+      if(filterTgl==="week") return now - t < 7*24*60*60*1000;
+      if(filterTgl==="month") return now - t < 30*24*60*60*1000;
+      return true;
+    });
+  }
+
+  document.getElementById("jmlRiwayat").innerText=Object.keys(dataAngsuran).length;
+  document.getElementById("infoJumlah").innerText=arr.length;
+  document.getElementById("infoSearch").innerText=searchVal?`hasil cari "${searchVal}"`:"semua data";
+
+  if(arr.length===0){
+    list.innerHTML=`<div style="padding:20px;text-align:center;color:#94a3b8"><div style="font-size:32px">🔍</div><b>Tidak ada data</b><br><small>Coba kata kunci lain</small><br><button onclick="document.getElementById('searchRiwayat').value='';document.getElementById('filterTanggal').value='';document.getElementById('filterMetode').value='';renderRiwayat()" style="margin-top:10px;padding:8px 12px;background:#eff6ff;border:1px solid #3b82f6;border-radius:8px">Reset Filter</button></div>`;
+    return;
+  }
+
+  let html="";
+  arr.slice(0,100).forEach(([id,a])=>{
+    const tgl=new Date(Number(a.tanggal)).toLocaleString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    const buktiImg=a.buktiBase64?`<div style="margin-top:8px;display:flex;align-items:center;gap:8px;background:#fffbeb;border:1px dashed #f59e0b;padding:8px;border-radius:10px"><img src="${a.buktiBase64}" style="width:42px;height:42px;object-fit:cover;border-radius:8px"><small>📎 Ada bukti</small></div>`:`<small style="color:#94a3b8">💵 ${a.metode?.toUpperCase()||'CASH'} • ${tgl}</small>`;
+    const notaBadge=a.notaBase64?`<span class="badge-sudah">✅ Nota Tersimpan ${a.notaTgl?new Date(Number(a.notaTgl)).toLocaleDateString('id-ID'):''}</span>`:`<span class="badge-belum">Belum Nota</span>`;
+    
+    // TOMBOL BARU: BUKA NOTA TERSIMPAN
+    let tombolNotaTersimpan = "";
+    if(a.notaBase64){
+      tombolNotaTersimpan = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+          <button class="btn-dark" style="padding:10px;background:#0f3057;color:#fff;border:none;border-radius:10px;font-weight:700" onclick="lihatNotaTersimpan('${id}')">👁️ Buka Nota Tersimpan</button>
+          <button class="btn-success" style="padding:10px;background:#10b981;color:#fff;border:none;border-radius:10px;font-weight:700" onclick="downloadNotaTersimpan('${id}')">📥 Download Nota</button>
+        </div>
+      `;
+    }
+
+    html+=`<div class="item">
+      <div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
+        <div><b style="font-size:13px">${a.nama}</b><br><small style="color:#64748b">No: ${a.idPinjaman||"-"} | ${a.idAnggota||"-"}</small><br><small style="color:#94a3b8">${tgl}</small></div>
+        <span>${notaBadge}</span>
+      </div>
+      <div style="margin-top:8px;background:#f8fafc;padding:8px 10px;border-radius:8px;font-size:11px">Pokok <b>${rupiah(a.pokok)}</b> + Jasa <b>${rupiah(a.jasa)}</b> = Total <b style="color:#0f3057">${rupiah(a.jumlahBayar)}</b></div>
+      ${buktiImg}
+      ${tombolNotaTersimpan}
+      <div class="item-actions" style="margin-top:8px">
+        <button class="btn-wa" onclick="kirimWAAngsuran('${id}')">WA</button>
+        <button class="btn-dark" onclick="cetakNotaAngsuran('${id}')">Buat Nota Baru</button>
+        <button class="btn-warning" onclick="editAngsuran('${id}')">Edit</button>
+      </div>
+    </div>`;
+  });
+  if(arr.length>100) html+=`<div style="padding:12px;text-align:center;color:#64748b;font-size:11px">Menampilkan 100 dari ${arr.length} — ketik nama lebih spesifik</div>`;
+  list.innerHTML=html;
+}
+// Event search riwayat
+document.getElementById("searchRiwayat")?.addEventListener("input",renderRiwayat);
+document.getElementById("filterTanggal")?.addEventListener("change",renderRiwayat);
+document.getElementById("filterMetode")?.addEventListener("change",renderRiwayat);
+
 document.getElementById("btnSimpan").onclick=async()=>{
   if(!pinIdAktif) return showToast("Pilih peminjam dulu",true);
   const jumlahBayar=getNumber(jumlahBayarEl.value); const p=dataPinjaman[pinIdAktif]; if(!p) return showToast("Pinjaman tidak ada",true);
@@ -172,7 +292,7 @@ document.getElementById("btnSimpan").onclick=async()=>{
     if(kasJasaId) updates["kas/transaksi/"+kasJasaId]=buatPayloadKas(alJ,"pendapatan_jasa",tanggal,metode,aId,anggota.key,anggota.idAnggota,anggota.nama);
     if(kasSimpananId) updates["kas/transaksi/"+kasSimpananId]=buatPayloadKas(alS,"simpanan_sukarela",tanggal,metode,aId,anggota.key,anggota.idAnggota,anggota.nama);
     await updateData(ref(db),updates); showToast(`Tersimpan ${anggota.nama} - Nota + WA otomatis`); jumlahBayarEl.value=""; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML=""; document.getElementById("groupBukti").style.display="none"; updateInfo();
-    setTimeout(()=>{ cetakNotaAngsuran(aId,true); setTimeout(()=>{ if(confirm(`Kirim WA angsuran ke ${anggota.nama}?`)) kirimWAAngsuran(aId); },800); },400);
+    setTimeout(()=>{ cetakNotaAngsuran(aId,true); },400);
   }catch(e){showToast("Gagal: "+e.message,true)}
 };
 window.editAngsuran=function(id){
