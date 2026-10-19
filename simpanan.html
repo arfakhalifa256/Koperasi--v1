@@ -2,57 +2,79 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simpanan Anggota</title>
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<title>Simpanan V6.2 Searchable</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-.sidebar{position:fixed;top:0;left:-260px;width:240px;height:100%;background:#0f3057;padding:16px;transition:0.3s;z-index:9999;}.sidebar.open{left:0;}.sidebar a{display:flex;gap:10px;color:#fff;text-decoration:none;padding:10px;border-radius:10px;font-size:11px}.sidebar a.active{background:rgba(255,255,255,.2);}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:999;}.overlay.active{display:block;}
 :root{--primary:#1e90ff;--primary-dark:#0f3057;--bg:#f1f5f9;--border:#e2e8f0;--shadow:0 2px 8px rgba(0,0,0,.06);--radius:12px;--danger:#dc2626;}
 body{background:var(--bg);font-size:12px}
-header{background:linear-gradient(to right,var(--primary),var(--primary-dark));color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+header{background:linear-gradient(to right,var(--primary),var(--primary-dark));color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:101}
 .brand{display:flex;align-items:center;gap:10px;font-weight:700}.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px}
 .container{padding:14px;max-width:600px;margin:0 auto}
 .card{background:#fff;padding:14px;border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
 .total{background:#dbeafe;font-size:14px;font-weight:700;text-align:center;color:var(--primary-dark)}
-.form-group{margin-bottom:10px}.form-group label{font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px}
+.form-group{margin-bottom:10px;position:relative}.form-group label{font-size:11px;font-weight:600;color:#6b7280;display:block;margin-bottom:4px}
 input,select{width:100%;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px}
 button{padding:10px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:600;width:100%;cursor:pointer}
-.btn-secondary{font-size:10px;color:#1f2937;border:1px solid var(--border)}.btn-danger{background:var(--danger)}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:200;padding:10px}.modal.show{display:flex}
+.btn-secondary{font-size:10px;color:#1f2937;border:1px solid var(--border);background:#fff}.btn-danger{background:var(--danger)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:2000;padding:10px}.modal.show{display:flex}
 .modal-content{background:#fff;padding:18px;width:95%;max-width:700px;border-radius:12px;max-height:90vh;overflow:auto}
 .list{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow-y:auto;margin-top:10px}
 .item{background:#fff;padding:10px;border-radius:10px;border:1px solid var(--border);font-size:11px}
 h3 {background:#ffedd5;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--border);font-size:13px}
-
-  </style>
+.sidebar{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0f3057;padding:16px;transition:0.3s ease;z-index:9999;overflow-y:auto}.sidebar.open{left:0;}
+.sidebar a{display:flex;gap:10px;color:#fff;text-decoration:none;padding:12px;border-radius:10px;font-size:12px}.sidebar a.active{background:rgba(255,255,255,.2);}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9998;}.overlay.active{display:block;}
+.menu-btn{cursor:pointer;font-size:24px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.2);user-select:none}
+.id-badge{background:#0f3057;color:#fff;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;display:inline-block;margin-left:6px}
+.id-input{background:#f8fafc;color:#0f3057;font-weight:700}
+.warn{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;padding:8px;border-radius:8px;font-size:10px;margin-bottom:8px}
+/* searchable anggota */
+.dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;z-index:50;display:none;box-shadow:var(--shadow)}
+.dropdown.show{display:block}
+.dropdown-item{padding:8px 10px;cursor:pointer;font-size:11px;border-bottom:1px solid #f1f5f9}
+.dropdown-item:hover{background:#dbeafe}
+.dropdown-item b{color:#0f3057}
+</style>
 </head>
 <body>
-<div id="sidebar" class="sidebar"><a href="dashboard.html">🏠 Beranda</a><a href="simpanan.html" class="active">📊 Simpanan</a><a href="#" id="btnLogout">🚪 Logout</a></div>
+<div id="sidebar" class="sidebar"><a href="dashboard.html">🏠 Beranda</a><a href="simpanan.html" class="active">📊 Simpanan V6.2 Searchable</a><a href="kas.html">💵 Kas V5</a><a href="shu.html">📊 SHU V4</a><a href="#" id="btnLogout">🚪 Logout</a></div>
 <div id="overlay" class="overlay"></div>
-<header><div class="brand"><img src="img/icon-192.png"><div>SIMPANAN ANGGOTA</div></div><span onclick="toggleSidebar()">☰</span></header>
+<header><div class="brand"><img src="img/icon-192.png"><div>SIMPANAN V6.2 SEARCHABLE</div></div><span class="menu-btn" id="btnMenu">☰</span></header>
 
 <div class="container">
   <div class="card total">Total Simpanan : Rp <span id="totalSimpanan">0</span><br><small id="infoAnggota">0 anggota</small></div>
   <div class="card" id="formTambah">
-    <h3>Form Input Simpanan</h3>
-    <div class="form-group"><label>Pilih Anggota</label><select id="anggotaSelect"></select></div>
-    <div class="form-group"><label>Jenis</label><select id="jenis"><option value="pokok">Pokok</option><option value="wajib">Wajib</option><option value="sukarela">Sukarela</option></select></div>
+    <h3>Form Input - Searchable Anggota</h3>
+    <div class="form-group">
+      <label>Cari Anggota (Ketik AG001 / Nama)</label>
+      <input type="text" id="anggotaCari" placeholder="Ketik AG... atau Nama Ferry..." autocomplete="off" oninput="filterAnggota()" onfocus="filterAnggota()">
+      <div id="dropdownAnggota" class="dropdown"></div>
+    </div>
+    <div class="form-group"><label>ID Anggota Terpilih</label><input type="text" id="idAnggotaDisplay" class="id-input" readonly placeholder="Belum pilih"><input type="hidden" id="idAnggotaHidden"><input type="hidden" id="anggotaKeyHidden"></div>
+    <div class="form-group"><label>Jenis (Pokok/Wajib)</label><select id="jenis"><option value="pokok">Pokok</option><option value="wajib">Wajib</option><option value="sukarela">Sukarela</option></select></div>
     <div class="form-group"><label>Metode</label><select id="metode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
     <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" placeholder="0"></div>
     <div class="form-group"><label>Keterangan</label><input type="text" id="keterangan" placeholder="Setoran..."></div>
-    <button id="btnSimpan">Simpan</button>
-    <button class="btn-secondary" onclick="bukaRiwayat()" style="margin-top:8px;background:#ffedd5;">📋 Lihat Riwayat (<span id="jmlRiwayat">0</span>) - <span id="jmlTampil">0 tampil</span></button>
+    <button id="btnSimpan">💾 Simpan</button>
+    <button class="btn-secondary" id="btnRiwayat" style="margin-top:8px;background:#ffedd5;">📋 Riwayat (<span id="jmlRiwayat">0</span>) - <span id="jmlTampil">0</span> tampil</button>
+  </div>
+  <div class="card" id="cardUserOnly" style="display:none;text-align:center">
+    <div style="font-size:48px">🔒</div>
+    <h3 style="background:#fee2e2;color:#dc2626;border:none">Akses Terbatas</h3>
+    <p style="font-size:12px;color:#64748b;margin-top:8px" id="userInfoText"></p>
+    <button class="btn-secondary" style="background:#ffedd5;margin-top:12px" onclick="bukaRiwayat()">📋 Lihat Riwayat</button>
   </div>
 </div>
 
 <div class="modal" id="modalRiwayat"><div class="modal-content">
-  <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:10p"><h3>📋 Riwayat Simpanan</h3><button onclick="tutupRiwayat()" style="width:auto;background:#dc2626;padding:6px 12px;border-radius:8px">✕</button></div>
+  <div style="display:flex;justify-content:space-between;margin-bottom:10px"><h3>📋 Riwayat + Search Full</h3><button onclick="tutupRiwayat()" style="width:auto;background:#dc2626;padding:6px 12px;border-radius:8px">✕</button></div>
+  <div class="warn">Search sekarang bisa: Nama, AG001, Rp 50000, tanggal, cash/bank, pokok/wajib, keterangan</div>
+  <button id="btnFixJenis" onclick="fixKasBedaJenis()" style="background:#f59e0b;color:#fff;padding:10px;border-radius:8px;width:100%;margin-bottom:8px;font-weight:700">🔧 Fix Kas Beda Jenis (Scan & Benerin)</button>
   <div style="display:flex;gap:6px;flex-wrap:wrap">
-    <input type="text" id="searchRiwayat" placeholder="Cari nama..." style="flex:1;min-width:120px">
-    <select id="filterJenis" style="width:105px"><option value="">Semua Jenis</option><option value="pokok">Pokok</option><option value="wajib">Wajib</option><option value="sukarela">Sukarela</option></select>
-    <select id="filterMetode" style="width:105px"><option value="">Semua Metode</option><option value="cash">Cash</option><option value="bank">Bank</option></select>
+    <input type="text" id="searchRiwayat" placeholder="🔍 Cari: AG001 / Ferry / 50000 / 20/10 / cash..." style="flex:1;min-width:180px">
+    <select id="filterJenis" style="width:110px"><option value="">Semua Jenis</option><option value="pokok">Pokok</option><option value="wajib">Wajib</option><option value="sukarela">Sukarela</option></select>
+    <select id="filterMetode" style="width:110px"><option value="">Semua Metode</option><option value="cash">Cash</option><option value="bank">Bank</option></select>
   </div>
   <div class="list" id="listRiwayat"></div>
 </div></div>
@@ -61,22 +83,73 @@ h3 {background:#ffedd5;text-align:center;padding:10px;border-radius:10px;border:
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, push, set, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue, push, set, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app=initializeApp(firebaseConfig); const db=getDatabase(app);
-const anggotaRef=ref(db,"/anggota"), simpananRef=ref(db,"/simpanan"), kasRef=ref(db,"/kas/transaksi");
-let anggotaMap={}, kasList=[], allSimpanan=[];
 
+const username = (localStorage.getItem("username")||"").trim();
+let role = (localStorage.getItem("role")||"user").toLowerCase().trim();
+if(!username){ alert("Login dulu"); location.href="index.html"; }
+const isAdmin = role === "admin";
+if(!isAdmin){
+  document.getElementById("formTambah").style.display="none";
+  document.getElementById("cardUserOnly").style.display="block";
+  document.getElementById("userInfoText").innerHTML = `Halo <b>${username}</b> (${role})<br>Hanya bisa lihat riwayat.`;
+}
 window.toggleSidebar=()=>{document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active");};
-document.getElementById("overlay").onclick=window.toggleSidebar;
+window.closeSidebar=()=>{document.getElementById("sidebar").classList.remove("open");document.getElementById("overlay").classList.remove("active");};
+document.getElementById("btnMenu").addEventListener("click", window.toggleSidebar);
+document.getElementById("overlay").addEventListener("click", window.closeSidebar);
 document.getElementById("btnLogout").onclick=e=>{e.preventDefault(); localStorage.clear(); location.href="index.html";};
 
-onValue(anggotaRef,snap=>{
-  const sel=document.getElementById("anggotaSelect"); sel.innerHTML="<option value=''>Pilih Anggota</option>"; anggotaMap={};
-  snap.forEach(c=>{anggotaMap[c.key]=c.val(); const o=document.createElement("option"); o.value=c.key; o.textContent=c.val().nama+" ("+c.val().id+")"; sel.appendChild(o);});
-});
-onValue(kasRef,snap=>{kasList=[]; snap.forEach(c=>{kasList.push({id:c.key,...c.val()});});});
+const anggotaRef=ref(db,"/anggota"), simpananRef=ref(db,"/simpanan"), kasRef=ref(db,"/kas/transaksi");
+let anggotaMap={}, anggotaList=[], kasList=[], allSimpanan=[];
 
+function getKodeAG(ag){ if(!ag) return "-"; return ag.idAnggota || ag.id || ag.kode || "-"; }
+
+onValue(anggotaRef,snap=>{
+  anggotaMap={}; anggotaList=[];
+  snap.forEach(c=>{
+    let v=c.val(); v._key=c.key;
+    anggotaMap[c.key]=v;
+    anggotaList.push({key:c.key, nama:v.nama||"-", kode:getKodeAG(v), hp:v.telepon||v.hp||"", full: `${v.nama||""} ${getKodeAG(v)} ${v.telepon||""}`.toLowerCase()});
+  });
+  anggotaList.sort((a,b)=>a.kode.localeCompare(b.kode));
+});
+
+window.filterAnggota=()=>{
+  let q=(document.getElementById("anggotaCari").value||"").toLowerCase().trim();
+  let dd=document.getElementById("dropdownAnggota");
+  if(!q){ 
+    // tampilkan 20 pertama
+    let first=anggotaList.slice(0,20);
+    dd.innerHTML=first.map(a=>`<div class="dropdown-item" onclick="pilihAnggota('${a.key}')"><b>${a.kode}</b> - ${a.nama} <small style="color:#64748b">${a.hp}</small></div>`).join("");
+    dd.classList.add("show");
+    return;
+  }
+  let filtered=anggotaList.filter(a=> a.full.includes(q) || a.kode.toLowerCase().includes(q) || a.nama.toLowerCase().includes(q)).slice(0,30);
+  if(filtered.length===0){ dd.innerHTML=`<div class="dropdown-item">Tidak ketemu "${q}"</div>`; dd.classList.add("show"); return; }
+  dd.innerHTML=filtered.map(a=>`<div class="dropdown-item" onclick="pilihAnggota('${a.key}')"><b>${a.kode}</b> - ${a.nama}</div>`).join("");
+  dd.classList.add("show");
+};
+
+window.pilihAnggota=(key)=>{
+  let ag=anggotaMap[key]; if(!ag) return;
+  let kode=getKodeAG(ag);
+  document.getElementById("anggotaCari").value=`${kode} - ${ag.nama}`;
+  document.getElementById("idAnggotaDisplay").value=kode;
+  document.getElementById("idAnggotaHidden").value=kode;
+  document.getElementById("anggotaKeyHidden").value=key;
+  document.getElementById("dropdownAnggota").classList.remove("show");
+};
+
+document.addEventListener("click",e=>{
+  let dd=document.getElementById("dropdownAnggota");
+  let input=document.getElementById("anggotaCari");
+  if(!dd.contains(e.target) && e.target!==input) dd.classList.remove("show");
+});
+
+onValue(kasRef,snap=>{kasList=[]; snap.forEach(c=>{kasList.push({id:c.key,...c.val()});}); renderRiwayat();});
 onValue(simpananRef,snap=>{
   allSimpanan=[]; let total=0; let anggotaUnik=new Set();
   snap.forEach(child=>{const d=child.val(); allSimpanan.push({id:child.key,...d}); total+=Number(d.jumlah||0); anggotaUnik.add(d.anggotaId);});
@@ -90,51 +163,117 @@ window.bukaRiwayat=()=>{document.getElementById("modalRiwayat").classList.add("s
 window.tutupRiwayat=()=>document.getElementById("modalRiwayat").classList.remove("show");
 document.getElementById("modalRiwayat").addEventListener("click",e=>{if(e.target.id==="modalRiwayat") tutupRiwayat();});
 
+window.fixKasBedaJenis = async () => {
+  if(!isAdmin) return alert("Hanya admin");
+  let beda=0; let updates={};
+  for(let s of allSimpanan){
+    const kas = kasList.find(k => k.simpananId === s.id);
+    if(!kas) continue;
+    const katKas = String(kas.kategori||"").toLowerCase();
+    const jenisSimp = String(s.jenis||"").toLowerCase();
+    const jumlahSimp = Number(s.jumlah||0);
+    const jumlahKas = Number(kas.jumlah||0);
+    if(!katKas.includes(jenisSimp) || jumlahKas!==jumlahSimp){
+      updates[`/kas/transaksi/${kas.id}/kategori`] = `simpanan ${jenisSimp}`;
+      updates[`/kas/transaksi/${kas.id}/keterangan`] = `Simpanan ${jenisSimp} - ${s.idAnggota||""} ${s.nama||""} (FIX SINKRON)`;
+      updates[`/kas/transaksi/${kas.id}/jumlah`] = jumlahSimp;
+      updates[`/kas/transaksi/${kas.id}/sumberKas`] = s.metode||kas.sumberKas||"cash";
+      beda++;
+    }
+  }
+  if(beda===0) return alert("✅ Semua sudah sinkron Pokok/Wajib nya");
+  if(!confirm(`Ditemukan ${beda} data beda. Benerin semua?`)) return;
+  await update(ref(db), updates);
+  alert(`✅ ${beda} data kas berhasil dibenerin`);
+};
+
 function renderRiwayat(){
   const search=(document.getElementById("searchRiwayat").value||"").toLowerCase().trim();
   const fJenis=(document.getElementById("filterJenis").value||"").toLowerCase();
   const fMetode=(document.getElementById("filterMetode").value||"").toLowerCase();
   let arr=[...allSimpanan].sort((a,b)=>Number(b.tanggal||0)-Number(a.tanggal||0));
-  if(search) arr=arr.filter(x=> `${x.nama||""} ${x.idAnggota||""}`.toLowerCase().includes(search));
+  if(search){
+    arr=arr.filter(x=> {
+      let tgl = x.tanggal?new Date(Number(x.tanggal)).toLocaleDateString("id-ID").toLowerCase():"";
+      let jumlahStr = String(x.jumlah||"");
+      let gabung = `${x.nama||""} ${x.idAnggota||""} ${x.kodeAnggota||""} ${x.jenis||""} ${x.metode||""} ${x.keterangan||""} ${jumlahStr} ${tgl}`.toLowerCase();
+      return gabung.includes(search);
+    });
+  }
   if(fJenis) arr=arr.filter(x=> String(x.jenis||"").toLowerCase()===fJenis);
   if(fMetode) arr=arr.filter(x=> String(x.metode||"").toLowerCase()===fMetode);
-  document.getElementById("jmlTampil").innerText=arr.length+" tampil";
+  const jmlTampilEl=document.getElementById("jmlTampil");
+  if(jmlTampilEl) jmlTampilEl.innerText=arr.length;
   const list=document.getElementById("listRiwayat");
-  if(arr.length===0){list.innerHTML=`<div class="item">Tidak ada data</div>`; return;}
+  if(arr.length===0){list.innerHTML=`<div class="item">Tidak ada data untuk "${search}"</div>`; return;}
   let html="";
   arr.forEach(d=>{
     const tgl=d.tanggal?new Date(Number(d.tanggal)).toLocaleDateString("id-ID"):"-";
     const warna=d.jenis==="pokok"?"#1e90ff":d.jenis==="wajib"?"#10b981":"#f59e0b";
-    html+=`<div class="item"><div style="display:flex;justify-content:space-between"><b>${d.nama||"-"}</b><span style="background:${warna};color:#fff;padding:2px 6px;border-radius:6px;font-size:9px">${(d.jenis||"").toUpperCase()}</span></div><small>${tgl} | ${(d.metode||"").toUpperCase()} | ${d.keterangan||"-"}</small><br><b>Rp ${Number(d.jumlah||0).toLocaleString("id-ID")}</b><div style="display:flex;gap:6px;margin-top:6px"><button style="flex:1;padding:6px" onclick="editItem('${d.id}','${d.jenis}',${d.jumlah},'${d.metode||"cash"}',${d.tanggal||0})">Edit</button><button style="flex:1;padding:6px" class="btn-danger" onclick="hapusItem('${d.id}')">Hapus</button></div></div>`;
+    const kode = d.idAnggota || d.kodeAnggota || anggotaMap[d.anggotaId]?.idAnggota || "-";
+    const kas = kasList.find(k=>k.simpananId===d.id);
+    const kasKat = kas?kas.kategori:"-";
+    const isBeda = kas && !String(kasKat).toLowerCase().includes(String(d.jenis||"").toLowerCase());
+    const btnAdmin = isAdmin ? `<div style="display:flex;gap:6px;margin-top:6px"><button style="flex:1;padding:6px" onclick="editItem('${d.id}','${d.jenis}',${d.jumlah},'${d.metode||"cash"}',${d.tanggal||0},'${kode}','${d.anggotaId}')">Edit</button><button style="flex:1;padding:6px" class="btn-danger" onclick="hapusItem('${d.id}')">Hapus</button></div>` : '';
+    html+=`<div class="item" style="${isBeda?'border:2px solid #ef4444;background:#fef2f2':''}"><div style="display:flex;justify-content:space-between"><b>${d.nama||"-"} <span class="id-badge">${kode}</span></b><span style="background:${warna};color:#fff;padding:2px 6px;border-radius:6px;font-size:9px">${(d.jenis||"").toUpperCase()}</span></div><small>ID: ${kode} | ${tgl} | ${(d.metode||"").toUpperCase()} | Rp ${Number(d.jumlah||0).toLocaleString("id-ID")} | Kas: ${kasKat} ${isBeda?'<b style="color:#dc2626">⚠️ BEDA!</b>':''}<br>${d.keterangan||"-"}</small>${btnAdmin}</div>`;
   });
   list.innerHTML=html;
 }
-document.getElementById("searchRiwayat").addEventListener("input",renderRiwayat);
-document.getElementById("filterJenis").addEventListener("change",renderRiwayat);
-document.getElementById("filterMetode").addEventListener("change",renderRiwayat);
+document.getElementById("searchRiwayat")?.addEventListener("input",renderRiwayat);
+document.getElementById("filterJenis")?.addEventListener("change",renderRiwayat);
+document.getElementById("filterMetode")?.addEventListener("change",renderRiwayat);
 
 document.getElementById("btnSimpan").onclick=async()=>{
-  const sel=document.getElementById("anggotaSelect"); if(!sel.value) return alert("Pilih anggota");
-  const anggota=anggotaMap[sel.value]; const jumlah=Number(document.getElementById("jumlah").value); if(!jumlah) return alert("Isi jumlah");
+  if(!isAdmin) return alert("Hanya admin!");
+  const anggotaKey=document.getElementById("anggotaKeyHidden").value;
+  if(!anggotaKey) return alert("Pilih anggota dulu (ketik AG... lalu klik)");
+  const anggota=anggotaMap[anggotaKey];
+  const jumlah=Number(document.getElementById("jumlah").value); if(!jumlah) return alert("Isi jumlah");
   const jenis=document.getElementById("jenis").value, metode=document.getElementById("metode").value, ket=document.getElementById("keterangan").value||"-", waktu=Date.now();
-  const baru=push(simpananRef); await set(baru,{anggotaId:sel.value,idAnggota:anggota.id||"-",nama:anggota.nama,jenis,jumlah,metode,keterangan:ket,tanggal:waktu});
-  const kasBaru=push(kasRef); await set(kasBaru,{simpananId:baru.key,anggotaId:sel.value,namaAnggota:anggota.nama,tanggal:waktu,tipe:"masuk",kategori:`simpanan ${jenis}`,sumberKas:metode,jumlah,keterangan:`Simpanan ${jenis} - ${anggota.nama}`});
-  document.getElementById("jumlah").value=""; document.getElementById("keterangan").value=""; alert("Berhasil ✅"); bukaRiwayat();
+  const kodeAG = getKodeAG(anggota);
+  const baru=push(simpananRef); 
+  await set(baru,{anggotaId:anggotaKey,idAnggota:kodeAG,kodeAnggota:kodeAG,nama:anggota.nama,jenis,jumlah,metode,keterangan:ket,tanggal:waktu});
+  const kasBaru=push(kasRef); 
+  await set(kasBaru,{simpananId:baru.key,anggotaId:anggotaKey,idAnggota:kodeAG,namaAnggota:anggota.nama,tanggal:waktu,tipe:"masuk",kategori:`simpanan ${jenis}`,sumberKas:metode,jumlah,keterangan:`Simpanan ${jenis} - ${kodeAG} ${anggota.nama}`});
+  document.getElementById("jumlah").value=""; document.getElementById("keterangan").value=""; 
+  document.getElementById("anggotaCari").value=""; document.getElementById("idAnggotaDisplay").value=""; 
+  document.getElementById("idAnggotaHidden").value=""; document.getElementById("anggotaKeyHidden").value="";
+  alert(`Berhasil ✅ ${kodeAG} ${jenis} Rp ${jumlah.toLocaleString("id-ID")}`); bukaRiwayat();
 };
 
-window.editItem=(id,jenis,jumlah,metode,tanggal)=>{
+window.editItem=(id,jenis,jumlah,metode,tanggal,kode,anggotaId)=>{
+  if(!isAdmin) return alert("Hanya admin!");
   const tglFormat=tanggal?new Date(tanggal).toISOString().split("T")[0]:new Date().toISOString().split("T")[0];
   document.getElementById("modalForm").classList.add("show");
-  document.getElementById("modalFormContent").innerHTML=`<h3>Edit</h3><div class="form-group"><label>Tanggal</label><input type="date" id="eTanggal" value="${tglFormat}"></div><div class="form-group"><label>Jenis</label><select id="eJenis"><option value="pokok" ${jenis==="pokok"?"selected":""}>Pokok</option><option value="wajib" ${jenis==="wajib"?"selected":""}>Wajib</option><option value="sukarela" ${jenis==="sukarela"?"selected":""}>Sukarela</option></select></div><div class="form-group"><label>Metode</label><select id="eMetode"><option value="cash" ${metode==="cash"?"selected":""}>Cash</option><option value="bank" ${metode==="bank"?"selected":""}>Bank</option></select></div><div class="form-group"><label>Jumlah</label><input type="number" id="eJumlah" value="${jumlah}"></div><button onclick="simpanEdit('${id}')">Simpan</button><button class="btn-secondary" onclick="tutupModal()" style="margin-top:6px">Batal</button>`;
+  document.getElementById("modalFormContent").innerHTML=`
+  <h3>Edit + Auto Sinkron Kas</h3>
+  <div class="form-group"><label>ID Anggota</label><input type="text" value="${kode}" readonly class="id-input"><input type="hidden" id="eKode" value="${kode}"></div>
+  <div class="form-group"><label>Tanggal</label><input type="date" id="eTanggal" value="${tglFormat}"></div>
+  <div class="form-group"><label>Jenis</label><select id="eJenis"><option value="pokok" ${jenis==="pokok"?"selected":""}>Pokok</option><option value="wajib" ${jenis==="wajib"?"selected":""}>Wajib</option><option value="sukarela" ${jenis==="sukarela"?"selected":""}>Sukarela</option></select></div>
+  <div class="form-group"><label>Metode</label><select id="eMetode"><option value="cash" ${metode==="cash"?"selected":""}>Cash</option><option value="bank" ${metode==="bank"?"selected":""}>Bank</option></select></div>
+  <div class="form-group"><label>Jumlah</label><input type="number" id="eJumlah" value="${jumlah}"></div>
+  <button onclick="simpanEdit('${id}')">💾 Simpan & Sinkron Kas</button><button class="btn-secondary" onclick="tutupModal()" style="margin-top:6px">Batal</button>`;
 };
 window.simpanEdit=async(id)=>{
+  if(!isAdmin) return;
   const jenis=document.getElementById("eJenis").value, jumlah=Number(document.getElementById("eJumlah").value), metode=document.getElementById("eMetode").value, tanggal=new Date(document.getElementById("eTanggal").value).getTime();
-  await update(ref(db,"/simpanan/"+id),{jenis,jumlah,metode,tanggal});
-  const kasItem=kasList.find(k=>k.simpananId===id); if(kasItem) await update(ref(db,"/kas/transaksi/"+kasItem.id),{jumlah,sumberKas:metode,tanggal,kategori:`simpanan ${jenis}`});
-  tutupModal(); alert("Update ok");
+  const kode=document.getElementById("eKode").value;
+  await update(ref(db,"/simpanan/"+id),{jenis,jumlah,metode,tanggal,idAnggota:kode,kodeAnggota:kode});
+  const kasItem=kasList.find(k=>k.simpananId===id); 
+  if(kasItem){
+    await update(ref(db,"/kas/transaksi/"+kasItem.id),{jumlah,sumberKas:metode,tanggal,kategori:`simpanan ${jenis}`,keterangan:`Simpanan ${jenis} - ${kode} (EDIT SINKRON)`,idAnggota:kode});
+  }
+  tutupModal(); alert("Update ok & Kas sinkron "+kode+" jadi "+jenis);
 };
-window.hapusItem=async(id)=>{if(!confirm("Hapus?")) return; await remove(ref(db,"/simpanan/"+id)); const k=kasList.find(x=>x.simpananId===id); if(k) await remove(ref(db,"/kas/transaksi/"+k.id)); alert("Dihapus");};
+window.hapusItem=async(id)=>{
+  if(!isAdmin) return alert("Hanya admin!");
+  if(!confirm("Hapus simpanan + kas?")) return; 
+  await remove(ref(db,"/simpanan/"+id)); 
+  const k=kasList.find(x=>x.simpananId===id); if(k) await remove(ref(db,"/kas/transaksi/"+k.id)); 
+  alert("Dihapus + kas");
+};
 window.tutupModal=()=>document.getElementById("modalForm").classList.remove("show");
+document.getElementById("btnRiwayat")?.addEventListener("click", bukaRiwayat);
 </script>
 </body>
 </html>
