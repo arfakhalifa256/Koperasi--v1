@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kas Koperasi</title>
+<title>Kas Koperasi V5 SHU POS</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -13,18 +13,16 @@ header{background:linear-gradient(to right,var(--primary),var(--primary-dark));c
 .container{padding:14px;max-width:1200px;margin:0 auto}
 .card{background:var(--card);padding:14px;border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
 .card h3{margin:0 0 12px 0;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
-.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}.summary-item{background:#f8fafc;padding:10px;border-radius:8px;border:1px solid var(--border);text-align:center}.summary-item.total{grid-column:1/-1}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form-group{display:flex;flex-direction:column;gap:4px}.form-group.full{grid-column:1/-1}
 .form-group label{font-size:11px;font-weight:600;color:var(--muted)}
 .form-group input,.form-group select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px}
 .btn-primary{width:100%;padding:9px 12px;border:none;border-radius:8px;background:var(--primary);color:white;cursor:pointer;font-size:13px;font-weight:600}
 .btn-secondary{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);cursor:pointer;font-size:12px;font-weight:600;margin-top:8px}
-.btn-danger{background:var(--danger)}
 .table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--border);border-radius:8px}
-table{width:100%;border-collapse:collapse;font-size:11px;min-width:750px}
+table{width:100%;border-collapse:collapse;font-size:11px;min-width:800px}
 th{background:#f8fafc;padding:8px;text-align:left;font-weight:600;color:var(--muted);border-bottom:2px solid var(--border);white-space:nowrap}
-td{padding:7px 8px;border-bottom:1px solid var(--border)}
+td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
 .masuk{color:var(--success);font-weight:600}.keluar{color:var(--danger);font-weight:600}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:2000;padding:10px}
 .modal.show{display:flex}
@@ -34,32 +32,28 @@ td{padding:7px 8px;border-bottom:1px solid var(--border)}
 .btn-save{flex:1;padding:10px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-weight:600;cursor:pointer}
 .btn-delete{flex:1;padding:10px;border:none;border-radius:8px;background:var(--danger);color:#fff;font-weight:600;cursor:pointer}
 .btn-cancel{flex:1;padding:10px;border:none;border-radius:8px;background:#6b7280;color:#fff;font-weight:600;cursor:pointer}
-/* SIDEBAR FIX */
 .sidebar{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0f3057;padding:16px;transition:0.3s ease;z-index:9999;overflow-y:auto}
 .sidebar.open{left:0;}.sidebar a{display:flex;gap:10px;color:#fff;text-decoration:none;padding:12px;border-radius:10px;font-size:12px}
 .sidebar a.active{background:rgba(255,255,255,.2);}.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9998;}.overlay.active{display:block;}
 .menu-btn{cursor:pointer;font-size:24px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.2);user-select:none}
 .toast{position:fixed;bottom:20px;right:20px;background:#10b981;color:#fff;padding:12px 18px;border-radius:10px;opacity:0;transition:.3s;z-index:99999;max-width:90%}
 .toast.show{opacity:1}.toast.error{background:var(--danger)}
+.badge-pj{background:#dbeafe;color:#1e40af;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;border:1px solid #93c5fd;white-space:nowrap}
+.badge-shu{background:#f3e8ff;color:#7c3aed;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:800;border:1px solid #c4b5fd;white-space:nowrap}
 </style>
 </head>
 <body>
 <div id="sidebar" class="sidebar">
-  <a href="dashboard.html">🏠 Beranda</a><a href="kas.html" class="active">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="pinjaman.html">💰 Pinjaman</a><a href="log-aktivitas.html">📋 Log Aktivitas</a><a href="#" id="btnLogout">🚪 Logout</a>
+  <a href="dashboard.html">🏠 Beranda</a><a href="kas.html" class="active">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="pinjaman.html">💰 Pinjaman</a><a href="shu.html">📊 SHU</a><a href="log-aktivitas.html">📋 Log</a><a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
-<header><div class="brand"><img src="img/icon-192.png"><div>KAS KOPERASI ARFA</div></div><span class="menu-btn" id="btnMenu">☰</span></header>
+<header><div class="brand"><img src="img/icon-192.png"><div>KAS V5 POS SHU</div></div><span class="menu-btn" id="btnMenu">☰</span></header>
 
 <div class="container">
-  <div class="card" id="cardSaldoAwal">
-    <h3>⚙️ Pengaturan Saldo Awal</h3>
-    <button class="btn-primary" onclick="location.href='set-saldo.html'">Buka Halaman Set Saldo Awal</button>
-  </div>
+  <div style="background:#dbeafe;padding:8px 12px;border-radius:8px;margin-bottom:10px;font-size:11px;border:1px solid #93c5fd">👤 <b id="petugasDisplay">-</b> | Cash: <b id="saldoCash">Rp 0</b> | Bank: <b id="saldoBank">Rp 0</b> | Total: <b id="saldoTotal">Rp 0</b></div>
 
-  <div style="background:#dbeafe;padding:8px 12px;border-radius:8px;margin-bottom:10px;font-size:11px;border:1px solid #93c5fd">👤 Input sebagai: <b id="petugasDisplay">-</b> | Cash: <b id="saldoCash">Rp 0</b> | Bank: <b id="saldoBank">Rp 0</b> | Total: <b id="saldoTotal">Rp 0</b></div>
-
-  <div class="card" id="cardInputKas">
-    <h3>💵 Input Transaksi Kas</h3>
+  <div class="card">
+    <h3>💵 Input Kas + POS SHU</h3>
     <div class="form-grid">
       <div class="form-group"><label>Sumber Kas</label><select id="sumberKas"><option value="cash">Cash</option><option value="bank">Bank</option></select></div>
       <div class="form-group"><label>Tipe</label><select id="tipe" onchange="toggleKategori()"><option value="masuk">Kas Masuk</option><option value="keluar">Kas Keluar</option><option value="biaya">Biaya Operasional</option></select></div>
@@ -67,31 +61,26 @@ td{padding:7px 8px;border-bottom:1px solid var(--border)}
       <div class="form-group" id="formAnggota" style="display:none"><label>Pilih Anggota</label><select id="anggotaSelect"><option value="">Pilih Anggota</option></select></div>
       <div class="form-group"><label>Tanggal</label><input type="datetime-local" id="tanggal"></div>
       <div class="form-group"><label>Jumlah</label><input type="number" id="jumlah" placeholder="0"></div>
-      <div class="form-group full"><label>Keterangan</label><input type="text" id="keterangan" placeholder="Otomatis: Nama Anggota - Kategori"></div>
+      <div class="form-group full"><label>Keterangan</label><input type="text" id="keterangan" placeholder="Otomatis: Nama - Kategori"></div>
       <div class="form-group full">
         <button class="btn-primary" id="btnSimpan">💾 Simpan Transaksi</button>
-       <button onclick="bukaRiwayatKas()" type="button" class="btn-secondary" id="btnTampilkanRiwayat">📋 Tampilkan Riwayat Kas (<span id="jmlKas">0</span>)</button>      </div>
+       <button onclick="bukaRiwayatKas()" type="button" class="btn-secondary">📋 Riwayat Kas (<span id="jmlKas">0</span>)</button>
+      </div>
     </div>
-  </div>
-
-  <!-- CARD USER ONLY -->
-  <div class="card" id="cardUserOnly" style="display:none;text-align:center">
-    <div style="font-size:64px">🔒</div>
-    <h3 style="justify-content:center;background:#fee2e2;color:#dc2626;border:none">Akses Terbatas</h3>
-    <p style="font-size:12px;color:#64748b;margin-top:10px;line-height:1.6" id="lockedText"></p>
-    <button class="btn-primary" style="margin-top:12px" onclick="bukaRiwayatKas()">📋 Lihat Riwayat Kas</button>
+    <div style="margin-top:10px;background:#fffbeb;padding:8px 10px;border-radius:8px;font-size:10px;border:1px dashed #f59e0b">
+    <b>Info SHU 750rb:</b> Cadangan 150rb TIDAK KELUAR CASH (tahan). Yang keluar cash cuma Modal 112.5rb + Usaha 187.5rb + Pengurus 75rb + Sosial 75rb + Pendidikan 75rb + Ops 75rb = 600rb
+    </div>
   </div>
 </div>
 
-<!-- POPUP RIWAYAT KAS -->
 <div class="modal" id="modalRiwayatKas">
   <div class="modal-content large">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <h3 style="margin:0">📒 Riwayat Transaksi Kas</h3>
-      <button onclick="tutupRiwayatKas()" style="background:#dc2626;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-weight:700;cursor:pointer;width:auto">✕</button>
+      <h3 style="margin:0">📒 Riwayat Kas V5</h3>
+      <button onclick="tutupRiwayatKas()" style="background:#dc2626;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-weight:700;cursor:pointer">✕</button>
     </div>
     <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
-      <input type="text" id="searchKas" placeholder="Cari keterangan / anggota..." style="flex:1;min-width:160px;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px" oninput="renderRiwayatFiltered()">
+      <input type="text" id="searchKas" placeholder="Cari SHU / PJ / nama..." style="flex:1;min-width:160px;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px" oninput="renderRiwayatFiltered()">
       <select id="filterTipeKas" style="padding:8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px" onchange="renderRiwayatFiltered()"><option value="">Semua Tipe</option><option value="masuk">MASUK</option><option value="keluar">KELUAR</option></select>
       <select id="filterSumberKas" style="padding:8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:11px" onchange="renderRiwayatFiltered()"><option value="">Semua Sumber</option><option value="cash">CASH</option><option value="bank">BANK</option></select>
     </div>
@@ -101,7 +90,6 @@ td{padding:7px 8px;border-bottom:1px solid var(--border)}
         <tbody id="riwayat"></tbody>
       </table>
     </div>
-    <div style="margin-top:8px;font-size:10px;color:#6b7280">* Klik baris untuk edit (admin only)</div>
   </div>
 </div>
 
@@ -127,79 +115,124 @@ import { getDatabase, ref, push, onValue, update, remove, get } from "https://ww
 const firebaseConfig={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app=initializeApp(firebaseConfig); const db=getDatabase(app);
 
-// ===== ROLE BASE + TOAST + GEMBOK SEPERTI PINJAMAN =====
 function showToast(m,e=false){ const t=document.getElementById("toast"); t.innerText=m; t.className="toast show"+(e?" error":""); setTimeout(()=>t.className="toast",3500); }
-
 const username = (localStorage.getItem("username")||"").trim();
 let role = (localStorage.getItem("role")||"user").toLowerCase().trim();
 if(!username){ showToast("Session habis, login ulang!", true); setTimeout(()=> location.href="index.html", 1500); }
 const isAdmin = role === "admin";
-
-const cardInput = document.getElementById("cardInputKas");
-const cardSaldo = document.getElementById("cardSaldoAwal");
-const cardUser = document.getElementById("cardUserOnly");
-
-if(!isAdmin){
-  cardInput.style.display="none";
-  cardSaldo.style.display="none";
-  cardUser.style.display="block";
-  document.getElementById("lockedText").innerHTML = `Halo <b>${username}</b> (${role})<br>Kamu tidak bisa input kas.<br>Hanya bisa lihat riwayat kas.<br>Input hanya untuk Admin.`;
-  showToast("Mode lihat saja - hanya admin bisa input", true);
-}
-
-// SIDEBAR FIX
 window.toggleSidebar=()=>{document.getElementById("sidebar").classList.toggle("open"); document.getElementById("overlay").classList.toggle("active");};
 window.closeSidebar=()=>{document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active");};
 document.getElementById("btnMenu").addEventListener("click", window.toggleSidebar);
 document.getElementById("overlay").addEventListener("click", window.closeSidebar);
 document.getElementById("btnLogout").addEventListener("click",()=>{localStorage.clear(); location.href="index.html";});
 
-const kasTransaksiRef=ref(db,"kas/transaksi"), saldoAwalRef=ref(db,"kas/saldoAwal"), anggotaRef=ref(db,"anggota");
-let saldoCash=0, saldoBank=0, totalMasuk=0, totalKeluar=0, dataSaldoAwal={}, dataTransaksi={}, dataAnggota={};
+const kasTransaksiRef=ref(db,"kas/transaksi"), saldoAwalRef=ref(db,"kas/saldoAwal"), anggotaRef=ref(db,"anggota"), pinjamanRef=ref(db,"pinjaman"), angsuranRef=ref(db,"angsuran");
+let saldoCash=0, saldoBank=0, dataSaldoAwal={}, dataTransaksi={}, dataAnggota={}, dataPinjaman={}, dataAngsuran={};
+
 function formatRp(n){return Number(n||0).toLocaleString("id-ID");}
 function formatTanggalWIB(ts){if(!ts) return "-"; return new Date(Number(ts)).toLocaleString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",timeZone:"Asia/Jakarta"});}
 function getTanggalLocalInput(ts=null){const now=ts?new Date(Number(ts)):new Date(); const pad=n=>String(n).padStart(2,"0"); return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;}
-function simpanLog(aksi,data){try{const waktu=new Date().toLocaleString("id-ID",{timeZone:"Asia/Jakarta"}); push(ref(db,"/log_aktivitas"),{waktu:Date.now(),waktu_baca:waktu,aksi,oleh:username,role,username:data.namaAnggota||username,...data});}catch(e){console.log(e);}}
+function simpanLog(aksi,data){try{const waktu=new Date().toLocaleString("id-ID",{timeZone:"Asia/Jakarta"}); push(ref(db,"/log_aktivitas"),{waktu:Date.now(),waktu_baca:waktu,aksi,oleh:username,role,...data});}catch(e){}}
 
-window.bukaRiwayatKas = ()=>{
-  const m = document.getElementById("modalRiwayatKas");
-  m.style.display = "flex";
-  m.classList.add("show");
-  renderRiwayatFiltered();
-  showToast("Riwayat dibuka");
-}
-window.tutupRiwayatKas = ()=>{
-  const m = document.getElementById("modalRiwayatKas");
-  m.style.display = "none";
-  m.classList.remove("show");
-}
-  document.getElementById("modalRiwayatKas").addEventListener("click",e=>{if(e.target.id==="modalRiwayatKas") tutupRiwayatKas();});
+window.bukaRiwayatKas = ()=>{ const m = document.getElementById("modalRiwayatKas"); m.style.display = "flex"; m.classList.add("show"); renderRiwayatFiltered(); }
+window.tutupRiwayatKas = ()=>{ const m = document.getElementById("modalRiwayatKas"); m.style.display = "none"; m.classList.remove("show"); }
 
 onValue(anggotaRef,snap=>{dataAnggota=snap.val()||{}; const sel=document.getElementById("anggotaSelect"); sel.innerHTML="<option value=''>Pilih Anggota</option>"; Object.entries(dataAnggota).forEach(([k,ag])=>{const idAng=ag.idAnggota||ag.id||k; sel.innerHTML+=`<option value="${k}">${ag.nama||"-"} - ${idAng}</option>`;});});
-window.toggleAnggota=()=>{const kat=document.getElementById("kategori").value; const f=document.getElementById("formAnggota"); if(kat.includes("simpanan")||kat.includes("angsuran")||kat.includes("shu")) f.style.display="flex"; else{ f.style.display="none"; document.getElementById("anggotaSelect").value=""; }};
+onValue(pinjamanRef,snap=>{dataPinjaman=snap.val()||{}; renderRiwayatFiltered();});
+onValue(angsuranRef,snap=>{dataAngsuran=snap.val()||{}; renderRiwayatFiltered();});
+
+window.toggleAnggota=()=>{
+  const kat=document.getElementById("kategori").value; 
+  const f=document.getElementById("formAnggota"); 
+  if(kat.includes("simpanan")||kat.includes("angsuran")||kat.includes("jasa")||kat.includes("shu_modal")||kat.includes("shu_usaha")) f.style.display="flex"; 
+  else{ f.style.display="none"; document.getElementById("anggotaSelect").value=""; }
+};
 function getLoginDetail(){let roleL=localStorage.getItem("role")||"ADMIN"; let userL=localStorage.getItem("username")||"Unknown"; let namaL=localStorage.getItem("nama")||userL; return{role:String(roleL).toUpperCase(),username:String(userL),nama:String(namaL),petugasDisplay:`${userL} (${String(roleL).toUpperCase()})`};}
 
 document.addEventListener("DOMContentLoaded",()=>{const LD=getLoginDetail(); const el=document.getElementById("petugasDisplay"); if(el) el.innerText=LD.petugasDisplay;});
 
-function isiOpsiKategori(el,tipe,selected=""){let html=""; if(tipe==="masuk"){html=`<option value="simpanan_pokok" ${selected==="simpanan_pokok"?"selected":""}>Simpanan Pokok</option><option value="simpanan_wajib" ${selected==="simpanan_wajib"?"selected":""}>Simpanan Wajib</option><option value="simpanan_sukarela" ${selected==="simpanan_sukarela"?"selected":""}>Simpanan Sukarela</option><option value="angsuran_pokok" ${selected==="angsuran_pokok"?"selected":""}>Angsuran Pokok</option><option value="pendapatan_jasa" ${selected==="pendapatan_jasa"?"selected":""}>Pendapatan Jasa</option><option value="pendapatan_lain" ${selected==="pendapatan_lain"?"selected":""}>Pendapatan Lain-lain</option>`;}else{html=`<option value="konsumsi" ${selected==="konsumsi"?"selected":""}>Konsumsi</option><option value="biaya_operasional" ${selected==="biaya_operasional"?"selected":""}>Biaya Operasional</option><option value="pinjaman" ${selected==="pinjaman"?"selected":""}>Pinjaman</option><option value="pengambilan_simpanan" ${selected==="pengambilan_simpanan"?"selected":""}>Pengambilan Simpanan</option><option value="transfer_bank" ${selected==="transfer_bank"?"selected":""}>Transfer Bank</option>`;} el.innerHTML=html;}
+function isiOpsiKategori(el,tipe){
+  let html=""; 
+  if(tipe==="masuk"){
+    html=`<option value="simpanan_pokok">Simpanan Pokok</option><option value="simpanan_wajib">Simpanan Wajib</option><option value="simpanan_sukarela">Simpanan Sukarela</option><option value="angsuran_pokok">Angsuran Pokok</option><option value="pendapatan_jasa">Pendapatan Jasa</option><option value="pendapatan_lain">Pendapatan Lain-lain</option>`;
+  }else{
+    html=`
+    <optgroup label="-- Beban Umum --">
+    <option value="konsumsi">Konsumsi</option>
+    <option value="biaya_operasional">Biaya Operasional</option>
+    <option value="pinjaman">Pinjaman (Pencairan)</option>
+    <option value="pengambilan_simpanan">Pengambilan Simpanan</option>
+    <option value="transfer_bank">Transfer Bank</option>
+    </optgroup>
+    <optgroup label="-- POS SHU (Alokasi 750rb) --">
+    <option value="shu_cadangan">SHU - Cadangan 20% (TIDAK KELUAR CASH - Tahan)</option>
+    <option value="shu_modal">SHU - Jasa Modal 15% (Ke Anggota)</option>
+    <option value="shu_usaha">SHU - Jasa Usaha 25% (Ke Anggota)</option>
+    <option value="shu_pengurus">SHU - Pengurus 10%</option>
+    <option value="shu_sosial">SHU - Sosial 10%</option>
+    <option value="shu_pendidikan">SHU - Pendidikan 10%</option>
+    <option value="shu_operasional">SHU - Operasional SHU 10%</option>
+    </optgroup>
+    `;
+  } 
+  el.innerHTML=html;
+}
 window.toggleKategori=()=>{const tipe=document.getElementById("tipe").value; isiOpsiKategori(document.getElementById("kategori"),tipe==="biaya"?"keluar":tipe); toggleAnggota();};
 window.toggleEditKategori=()=>{const tipe=document.getElementById("editKasTipe").value; isiOpsiKategori(document.getElementById("editKasKategori"),tipe==="biaya"?"keluar":tipe);};
+
+function extractPJ(text){ if(!text) return ""; const m=String(text).match(/\(?(PJ\d+)\)?/i); return m?m[1].toUpperCase():""; }
+function getNoPinjamanUntukKas(item){
+  let pj = extractPJ(item.keterangan||""); if(pj) return pj;
+  if(item.idPinjaman && String(item.idPinjaman).toUpperCase().startsWith("PJ")) return String(item.idPinjaman).toUpperCase();
+  if(item.anggotaId){
+    const idUpper = String(item.anggotaId).toUpperCase();
+    const listAngs = Object.values(dataAngsuran).filter(a=> String(a.idAnggota||a.anggotaId||"").toUpperCase()===idUpper);
+    if(listAngs.length>0){
+      let closest = listAngs[0]; let bestDiff = Math.abs(Number(item.tanggal||0)-Number(closest.tanggal||0));
+      listAngs.forEach(a=>{ const d=Math.abs(Number(item.tanggal||0)-Number(a.tanggal||0)); if(d<bestDiff){ bestDiff=d; closest=a; } });
+      if(closest.idPinjaman && String(closest.idPinjaman).toUpperCase().startsWith("PJ")) return closest.idPinjaman.toUpperCase();
+    }
+  }
+  return "";
+}
 
 document.getElementById("btnSimpan").onclick=async()=>{
   if(!isAdmin) return showToast("Hanya admin!", true);
   const LD=getLoginDetail(); const sumberKas=document.getElementById("sumberKas").value; let tipe=document.getElementById("tipe").value; const jumlah=Number(document.getElementById("jumlah").value); const ket=document.getElementById("keterangan").value; const tanggalInput=document.getElementById("tanggal").value; const kategori=document.getElementById("kategori").value||""; const anggotaId=document.getElementById("anggotaSelect").value;
   if(!jumlah||jumlah<=0){showToast("Jumlah wajib diisi", true); return;}
   let namaAnggota="", keteranganFinal=ket||kategori;
-  if(kategori.includes("simpanan")||kategori.includes("angsuran")||kategori.includes("shu")){if(!anggotaId){showToast("Pilih anggota dulu", true); return;} namaAnggota=dataAnggota[anggotaId]?.nama||"-"; keteranganFinal=`${namaAnggota} - ${ket||kategori}`;}
-  if(tipe==="keluar"||tipe==="biaya"){const saldoSaat=sumberKas==="cash"?saldoCash:saldoBank; if(jumlah>saldoSaat){showToast(`Saldo ${sumberKas.toUpperCase()} tidak cukup: Rp ${formatRp(saldoSaat)}`, true); return;}}
+  if(kategori.includes("simpanan")||kategori.includes("angsuran")||kategori.includes("jasa")||kategori.includes("shu_modal")||kategori.includes("shu_usaha")){
+    if(kategori.includes("shu_modal")||kategori.includes("shu_usaha")){
+      // SHU anggota boleh tanpa pilih anggota (dibagi rata sistem SHU) tapi kalau pilih, catat namanya
+      if(anggotaId) namaAnggota=dataAnggota[anggotaId]?.nama||"-";
+    } else {
+      if(!anggotaId){showToast("Pilih anggota dulu", true); return;}
+      namaAnggota=dataAnggota[anggotaId]?.nama||"-";
+    }
+    let pjText=""; if(kategori.includes("angsuran")||kategori.includes("jasa")){ const dummy={keterangan:ket, anggotaId, tanggal:Date.now()}; const pj = getNoPinjamanUntukKas(dummy); if(pj) pjText=` (${pj})`; }
+    keteranganFinal=`${namaAnggota?namaAnggota+" ":""}${ket||kategori}${pjText}`.trim();
+    if(kategori.includes("shu_modal")) keteranganFinal=`SHU Modal ${namaAnggota||""} - ${ket||""}`.trim();
+    if(kategori.includes("shu_usaha")) keteranganFinal=`SHU Usaha ${namaAnggota||""} - ${ket||""}`.trim();
+  }
+  // KHUSUS CADANGAN: JANGAN POTONG SALDO CASH
+  if(kategori==="shu_cadangan"){
+    showToast("Cadangan tidak keluar cash - dicatat saja sebagai alokasi", false);
+    // tetap simpan tapi tipe = masuk cadangan? kita simpan sebagai keluar tapi flag tahan
+  }
+  if(tipe==="keluar"||tipe==="biaya"){
+    if(kategori!=="shu_cadangan"){
+      const saldoSaat=sumberKas==="cash"?saldoCash:saldoBank; 
+      if(jumlah>saldoSaat){showToast(`Saldo ${sumberKas.toUpperCase()} tidak cukup`, true); return;}
+    }
+  }
   if(tipe==="biaya") tipe="keluar";
   const tanggal=tanggalInput?new Date(tanggalInput).getTime():Date.now();
   const dataBaru={sumberKas,tipe,jumlah,kategori,keterangan:keteranganFinal,anggotaId:anggotaId||null,namaAnggota:namaAnggota||null,tanggal,petugas:LD.petugasDisplay,petugas_username:LD.username,petugas_role:LD.role,created_by:LD.username,created_at:Date.now()};
   try{
     const snapKas=await push(kasTransaksiRef,dataBaru);
     await push(ref(db,"audit/log"),{tanggal:Date.now(),aksi:tipe==="masuk"?"KAS MASUK":"KAS KELUAR",user:LD.username,role:LD.role,keterangan:keteranganFinal,jumlah,sumberKas,kategori,anggotaId:anggotaId||null,refKas:snapKas.key});
-    simpanLog(tipe==="masuk"?"KAS_MASUK":"KAS_KELUAR",{idAnggota:anggotaId||"-",nama:namaAnggota||"-",namaAnggota:namaAnggota||keteranganFinal,jumlah,kategori,sumberKas,keterangan:keteranganFinal,petugas:LD.petugasDisplay});
-    showToast(`Berhasil disimpan oleh ${LD.petugasDisplay}`);
+    simpanLog(tipe==="masuk"?"KAS_MASUK":"KAS_KELUAR",{idAnggota:anggotaId||"-",nama:namaAnggota||"-",jumlah,kategori,sumberKas,keterangan:keteranganFinal});
+    showToast(`Berhasil: ${kategori}`);
     document.getElementById("jumlah").value=""; document.getElementById("keterangan").value=""; document.getElementById("anggotaSelect").value=""; document.getElementById("tanggal").value=getTanggalLocalInput();
     bukaRiwayatKas();
   }catch(e){showToast("Gagal: "+e.message, true);}
@@ -209,12 +242,12 @@ onValue(saldoAwalRef,snap=>{dataSaldoAwal=snap.val()||{}; hitungDanRender();});
 onValue(kasTransaksiRef,snap=>{dataTransaksi=snap.val()||{}; hitungDanRender();});
 
 function hitungDanRender(){
-  saldoCash=Number(dataSaldoAwal.cash||0); saldoBank=Number(dataSaldoAwal.bank||0); totalMasuk=0; totalKeluar=0;
+  saldoCash=Number(dataSaldoAwal.cash||0); saldoBank=Number(dataSaldoAwal.bank||0);
   const count=Object.keys(dataTransaksi||{}).length; document.getElementById("jmlKas").innerText=count;
   if(!dataTransaksi||Object.keys(dataTransaksi).length===0){updateSummary(); document.getElementById("riwayat").innerHTML=`<tr><td colspan="7" style="text-align:center;padding:20px">Belum ada transaksi</td></tr>`; return;}
   Object.values(dataTransaksi).forEach(i=>{
+    if(String(i.kategori)==="shu_cadangan") return; // cadangan tidak potong saldo
     const jumlah=Number(i.jumlah)||0; let tipe=String(i.tipe||"").toLowerCase(); if(tipe==="biaya") tipe="keluar"; const sumber=String(i.sumberKas||"cash").toLowerCase();
-    if(tipe==="masuk") totalMasuk+=jumlah; else totalKeluar+=jumlah;
     if(sumber==="cash"){ if(tipe==="masuk") saldoCash+=jumlah; else saldoCash-=jumlah; }
     if(sumber==="bank"){ if(tipe==="masuk") saldoBank+=jumlah; else saldoBank-=jumlah; }
   });
@@ -228,15 +261,24 @@ function renderRiwayatFiltered(){
   const filterTipe=document.getElementById("filterTipeKas")?.value||"";
   const filterSumber=document.getElementById("filterSumberKas")?.value||"";
   let data=Object.entries(dataTransaksi).sort((a,b)=>Number(b[1].tanggal||0)-Number(a[1].tanggal||0));
-  if(search){ data=data.filter(([k,i])=> `${i.keterangan||""} ${i.namaAnggota||""} ${i.kategori||""}`.toLowerCase().includes(search)); }
+  if(search){ data=data.filter(([k,i])=> `${i.keterangan||""} ${i.kategori||""} ${i.namaAnggota||""} ${getNoPinjamanUntukKas(i)}`.toLowerCase().includes(search)); }
   if(filterTipe){ data=data.filter(([k,i])=>{let t=String(i.tipe||"").toLowerCase(); if(t==="biaya") t="keluar"; return t===filterTipe;}); }
   if(filterSumber){ data=data.filter(([k,i])=> String(i.sumberKas||"").toLowerCase()===filterSumber); }
   riwayat.innerHTML="";
-  if(data.length===0){riwayat.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:20px">Tidak ada data sesuai filter</td></tr>`; return;}
-  data.slice(0,200).forEach(([key,i])=>{
-    const jumlah=Number(i.jumlah)||0; let tipe=String(i.tipe||"").toLowerCase(); if(tipe==="biaya") tipe="keluar"; const sumber=String(i.sumberKas||"cash").toLowerCase(); const tanggal=formatTanggalWIB(i.tanggal); const className=tipe==="masuk"?"masuk":"keluar"; const labelTipe=tipe==="masuk"?"MASUK":"KELUAR"; const petugas=i.petugas||i.petugas_username||i.created_by||"-";
+  if(data.length===0){riwayat.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:20px">Tidak ada data</td></tr>`; return;}
+  data.slice(0,300).forEach(([key,i])=>{
+    const jumlah=Number(i.jumlah)||0; let tipe=String(i.tipe||"").toLowerCase(); if(tipe==="biaya") tipe="keluar";
+    const sumber=String(i.sumberKas||"cash").toLowerCase(); const tanggal=formatTanggalWIB(i.tanggal);
+    const className=tipe==="masuk"?"masuk":"keluar";
+    const pj = getNoPinjamanUntukKas(i);
+    let ketTampil = i.keterangan||"-";
+    ketTampil = ketTampil.replace(/\s-([A-Za-z0-9_-]{6,})\b/g,"").replace(/\(\s*-[A-Za-z0-9_-]{5,}\s*\)/g,"").trim();
+    if(pj){ ketTampil = ketTampil.replace(new RegExp("\\(?\\s*"+pj+"\\s*\\)?","i"), "").trim(); ketTampil = `${ketTampil} <span class="badge-pj">${pj}</span>`; }
+    if(String(i.kategori||"").includes("shu")){ ketTampil = `${ketTampil} <span class="badge-shu">SHU</span>`; }
+    if(!ketTampil) ketTampil = (i.namaAnggota||"-") + (pj?` <span class="badge-pj">${pj}</span>`:"");
+    const petugas=i.petugas||i.petugas_username||"-";
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${tanggal}</td><td>${i.keterangan||"-"}</td><td class="${className}">${labelTipe}</td><td style="text-align:right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${i.kategori||"-"}</td><td>${petugas}</td>`;
+    tr.innerHTML=`<td>${tanggal}</td><td>${ketTampil}</td><td class="${className}">${tipe.toUpperCase()}</td><td style="text-align:right">Rp ${formatRp(jumlah)}</td><td>${sumber.toUpperCase()}</td><td>${i.kategori||"-"}</td><td>${petugas}</td>`;
     if(isAdmin){tr.style.cursor="pointer"; tr.addEventListener("click",()=>{tutupRiwayatKas(); editKas(key);});}
     riwayat.appendChild(tr);
   });
@@ -260,15 +302,12 @@ window.updateKas=async function(){
   if(!jumlah||jumlah<=0){showToast("Jumlah wajib diisi", true); return;}
   const tanggal=tanggalInput?new Date(tanggalInput).getTime():Date.now(); if(tipe==="biaya") tipe="keluar";
   await update(ref(db,"kas/transaksi/"+key),{sumberKas:sumber,tipe,kategori,jumlah,keterangan:keterangan||"Transaksi Kas",tanggal});
-  const LD=getLoginDetail(); simpanLog("EDIT_KAS",{idAnggota:dataLama.anggotaId||"-",nama:dataLama.namaAnggota||"-",namaAnggota:dataLama.namaAnggota||keterangan,jumlah,jumlahLama:dataLama.jumlah,kategori,keterangan,petugas:LD.petugasDisplay});
   showToast("Data diperbarui"); tutupModalKas(); bukaRiwayatKas();
 };
 window.hapusKasModal=async function(){
   const key=document.getElementById("editKasKey").value; if(!key) return;
-  const snapLama=await get(ref(db,"kas/transaksi/"+key)); const dataLama=snapLama.val(); if(!dataLama) return;
   if(!confirm("Yakin hapus transaksi ini?")) return;
   await remove(ref(db,"kas/transaksi/"+key));
-  const LD=getLoginDetail(); simpanLog("HAPUS_KAS",{idAnggota:dataLama.anggotaId||"-",nama:dataLama.namaAnggota||"-",namaAnggota:dataLama.namaAnggota||dataLama.keterangan,jumlah:dataLama.jumlah,kategori:dataLama.kategori,keterangan:dataLama.keterangan,petugas:LD.petugasDisplay});
   showToast("Data dihapus"); tutupModalKas(); bukaRiwayatKas();
 };
 document.getElementById("tanggal").value=getTanggalLocalInput();
