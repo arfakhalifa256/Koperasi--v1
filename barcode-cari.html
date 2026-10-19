@@ -12,14 +12,16 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
-body{background:#ffedd5;color:#1f2937;padding:12px;max-width:650px;margin:auto;padding-bottom:90px}
+body{background:#ffedd5;color:#1f2937;padding:12px;max-width:650px;margin:auto;padding-bottom:90px;overflow-x:hidden}
 .head{background:linear-gradient(135deg,#0f3057,#1e90ff);color:#fff;padding:16px;border-radius:20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
 .head-title{font-weight:800;font-size:16px}.head small{font-size:10px;opacity:.9}
-.scan-button{color:#fff;background:rgba(255,255,255,.18);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none}
-.card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);margin-bottom:12px;border:1px solid #eef2f7}
-.search{position:sticky;top:10px;z-index:10;display:flex;gap:8px;margin-bottom:12px;background:#f1f5f9;padding:4px 0}
-.search input{flex:1;padding:13px 14px;border-radius:14px;border:1px solid #e2e8f0;outline:none;font-size:13px}
-.btn{padding:11px 15px;border-radius:12px;border:none;background:#0f2a4a;color:#fff;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center;font-size:11px}
+.scan-button{color:#fff;background:rgba(255,255,255,.18);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0}
+.card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.06);margin-bottom:12px;border:1px solid #eef2f7;width:100%;max-width:100%;overflow:hidden}
+.search{position:sticky;top:0;z-index:10;display:flex;gap:8px;margin-bottom:12px;background:#ffedd5;padding:8px 0 8px 0;width:100%;max-width:100%;align-items:center}
+.search input{flex:1;min-width:0;padding:13px 14px;border-radius:14px;border:1px solid #e2e8f0;outline:none;font-size:13px;background:#fff;width:100%}
+.search .btn{flex-shrink:0;white-space:nowrap;padding:11px 14px;min-width:78px}
+.btn{padding:11px 15px;border-radius:12px;border:none;background:#0f2a4a;color:#fff;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;justify-content:center;font-size:11px;line-height:1}
+.btn .material-icons{font-size:18px;line-height:1;display:inline-flex;align-items:center}
 .btn-primary{background:#1e90ff}.btn-success{background:#16a34a}.btn-light{background:#fff;color:#334155;border:1px solid #e2e8f0}
 .profile{display:flex;gap:12px;align-items:center}
 .avatar{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#dbeafe,#1e90ff);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex-shrink:0}
@@ -29,15 +31,12 @@ body{background:#ffedd5;color:#1f2937;padding:12px;max-width:650px;margin:auto;p
 .qr-section{margin-top:14px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:15px;padding:12px;text-align:center}
 .qr-title{font-size:11px;font-weight:800;color:#0f3057;margin-bottom:8px}.qr{display:flex;justify-content:center}.barcode{margin-top:10px;display:flex;justify-content:center;overflow:hidden}
 .valid{margin-top:10px;background:#dcfce7;color:#166534;padding:8px;border-radius:10px;font-size:10px;font-weight:700;text-align:center}
-.action-row{display:flex;gap:7px;margin-top:10px}.action-row.btn{flex:1}
+.action-row{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
 .section-title{display:flex;align-items:center;gap:6px;color:#0f3057;font-size:14px;font-weight:800;margin-bottom:10px}
 .summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .summary-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:11px}.summary-label{font-size:9px;color:#64748b}.summary-value{margin-top:3px;font-size:14px;font-weight:800;color:#0f3057}
-.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:10px;min-width:520px}th{background:#f8fafc;color:#64748b;padding:9px;text-align:left;font-size:9px;white-space:nowrap}td{padding:9px;border-bottom:1px solid #f1f5f9;vertical-align:top}.money{text-align:right;font-weight:700;white-space:nowrap}
-.loan-card{border:1px solid #e2e8f0;border-radius:14px;padding:11px;margin-bottom:8px;background:#fff}.loan-header{display:flex;justify-content:space-between}.loan-number{font-weight:800;color:#0f3057;font-size:13px}.loan-date{font-size:9px;color:#64748b;margin-top:2px}.loan-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:9px}.loan-item{background:#f8fafc;border-radius:10px;padding:8px}.loan-item small{display:block;font-size:8px;color:#64748b}.loan-item b{display:block;margin-top:2px;font-size:10px;color:#0f3057}
-.loading{text-align:center;padding:30px;color:#64748b;font-size:12px}.empty{text-align:center;padding:20px;color:#94a3b8;font-size:11px}
-.link-box{background:#f8fafc;border:1px dashed #cbd5e1;padding:8px;border-radius:10px;font-size:9px;word-break:break-all;color:#475569;margin-top:8px}
-</style>
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%}table{width:100%;border-collapse:collapse;font-size:10px;min-width:520px}th{background:#f8fafc;color:#64748b;padding:9px;text-align:left;font-size:9px;white-space:nowrap}td{padding:9px;border-bottom:1px solid #f1f5f9;vertical-align:top}.money{text-align:right;font-weight:700;white-space:nowrap}
+.loan-card{border:1px solid #e2e8f0;border-radius:14px;padding:11px;margin-bottom:8px;background:#fff;width:100%;max-width:100%;overflow:hidden}.loan-header{display:flex;justify-content:space-between;gap:8px}.loan-number{font-weight:800;color:#0f3057;font-size:13px;word-break:break-word}.loan-date{font-size:9px;color:#64748b;margin-top:2px}.loan-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:9px}.loan-item{background:#f8fafc;border-radius:10px;padding:8px;</style>
 </head>
 <body>
 <div class="head"><div><div class="head-title">👤 Kartu Anggota V7 FIX</div><small id="scanInfo">Memuat data...</small></div><a href="scan.html" class="scan-button"><span class="material-icons">qr_code_scanner</span></a></div>
