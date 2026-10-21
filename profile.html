@@ -12,12 +12,12 @@ body{font-family:sans-serif;background:#f5f7fa;margin:0;}
 .back-btn{font-size:22px;cursor:pointer;}
 .profile-card{background:#fff;margin:16px;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);}
 .profile-logo{text-align:center;margin-bottom:20px;border-bottom:1px solid #f0f0f0;padding-bottom:16px;}
-.profile-logo img{width:80px;height:80px;border-radius:20px;background:#f5f5f5;padding:8px;margin-bottom:8px;}
+.profile-logo img{width:80px;height:80px;border-radius:20px;background:#f5f5f5;padding:8px;margin-bottom:8px;object-fit:cover;}
 .profile-logo h2{margin:4px 0;font-size:20px;color:#0B1F3A;}
 .status-badge{background:#00D084;color:#fff;padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;}
 .profile-info{display:flex;flex-direction:column;gap:16px;}
 .info-item{display:flex;gap:12px;align-items:flex-start;}
-.info-item .icon{font-size:20px;margin-top:2px;}
+.info-item.icon{font-size:20px;margin-top:2px;}
 .info-item label{font-size:11px;color:#888;display:block;}
 .info-item p{margin:2px 0 0 0;font-size:14px;font-weight:600;color:#333;line-height:1.5;}
 .visi-misi{margin-top:20px;padding-top:16px;border-top:1px solid #f0f0f0;}
@@ -35,34 +35,28 @@ body{font-family:sans-serif;background:#f5f7fa;margin:0;}
 .layanan-keterangan h3{font-size:14px;color:#1A4D8F;margin-bottom:12px;}
 .layanan-list{display:flex;flex-direction:column;gap:12px;}
 .layanan-item{display:flex;gap:12px;align-items:flex-start;background:#F8F9FC;padding:12px;border-radius:14px;}
-.layanan-item .icon{font-size:24px;margin-top:2px;}
+.layanan-item.icon{font-size:24px;margin-top:2px;}
 .layanan-item b{font-size:13px;color:#0B1F3A;}
 .layanan-item p{margin:2px 0 0 0;font-size:12px;color:#666;line-height:1.5;}
 .btn-edit{width:100%;margin-top:20px;background:#1A4D8F;color:#fff;border:none;padding:14px;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;}
-.btn-edit:hover{background:#0B1F3A;}
 .modal{display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
-.modal-content{background:#fff;margin:5% auto;padding:20px;border-radius:20px;width:90%;max-width:400px;max-height:85vh;overflow-y:auto;}
+.modal-content{background:#fff;margin:3% auto;padding:20px;border-radius:20px;width:90%;max-width:430px;max-height:90vh;overflow-y:auto;}
 .close-btn{float:right;font-size:24px;font-weight:bold;cursor:pointer;color:#888;}
 .modal-content h2{margin-top:0;color:#0B1F3A;font-size:18px;}
 .modal-content label{display:block;margin-top:12px;font-size:12px;font-weight:600;color:#555;}
 .modal-content input,.modal-content textarea{width:100%;padding:10px;margin-top:4px;border:1px solid #ddd;border-radius:10px;font-size:14px;box-sizing:border-box;}
 .btn-simpan{width:100%;margin-top:20px;background:#00D084;color:#fff;border:none;padding:14px;border-radius:14px;font-weight:700;font-size:14px;cursor:pointer;}
-.btn-simpan:disabled{opacity:.6;cursor:not-allowed;}
-.pengurus-form{margin-top:8px;display:flex;flex-direction:column;gap:10px;}
+.btn-simpan:disabled{opacity:.6}
+.pengurus-form{display:flex;flex-direction:column;gap:10px;}
 .pengurus-input{background:#F8F9FC;padding:10px;border-radius:12px;}
-.pengurus-input label{margin-top:0;margin-bottom:4px;}
 .judul-form-pengurus{margin-top:18px;margin-bottom:5px;padding:10px;background:#EAF1FA;border-radius:10px;color:#1A4D8F;font-size:13px;font-weight:700;}
-
-/* CSS BARU BUAT LAYAN DINAMIS */
 .layanan-form-item{background:#F8F9FC;padding:12px;border-radius:12px;margin-bottom:10px;position:relative;border:1px dashed #ddd;}
 .btn-hapus-layanan{position:absolute;top:8px;right:8px;background:#ff4d4d;color:#fff;border:none;border-radius:8px;padding:4px 8px;font-size:11px;cursor:pointer;}
-.btn-hapus-layanan:hover{background:#d93636;}
-.btn-tambah-layanan{width:100%;background:#1A4D8F;color:#fff;border:2px dashed #1A4D8F;border-radius:10px;padding:10px;font-weight:600;font-size:13px;cursor:pointer;margin-top:8px;}
-.btn-tambah-layanan:hover{background:#0B1F3A;}
-
-  .footer{text-align:center;margin-top:30px;color:#94a3b8;font-size:11px}
-
-  </style>
+.btn-tambah-layanan{width:100%;background:#fff;border:2px dashed #1A4D8F;color:#1A4D8F;border-radius:10px;padding:10px;font-weight:600;font-size:13px;cursor:pointer;margin-top:8px;}
+.footer{text-align:center;margin-top:30px;color:#94a3b8;font-size:11px}
+.logo-edit-wrap{text-align:center;margin-bottom:12px;background:#F8F9FC;padding:14px;border-radius:14px}
+#previewLogo{width:90px;height:90px;border-radius:18px;object-fit:cover;border:2px solid #e2e8f0;background:#fff}
+</style>
 </head>
 <body>
 
@@ -89,6 +83,17 @@ body{font-family:sans-serif;background:#f5f7fa;margin:0;}
     <span class="close-btn" id="closeModal">&times;</span>
     <h2>Edit Profil Koperasi</h2>
     <form id="formProfil">
+      <div class="logo-edit-wrap">
+        <img id="previewLogo" src="./img/icon-192.png">
+        <div style="margin-top:10px">
+          <label style="display:inline-block;background:#1A4D8F;color:#fff;padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer">
+            📷 Ganti Logo
+            <input type="file" id="inputLogo" accept="image/*" style="display:none">
+          </label>
+        </div>
+        <div id="statusLogo" style="font-size:10px;color:#64748b;margin-top:6px">Maks 2MB - JPG/PNG</div>
+      </div>
+
       <label>Nama Koperasi</label><input type="text" id="inputNama" required>
       <label>Alamat Kantor</label><textarea id="inputAlamat" rows="3" required></textarea>
       <label>No. Telepon / WA</label><input type="tel" id="inputTelepon" required>
@@ -96,7 +101,7 @@ body{font-family:sans-serif;background:#f5f7fa;margin:0;}
       <label>No. Badan Hukum</label><input type="text" id="inputBadanHukum">
       <label>Tanggal Berdiri</label><input type="date" id="inputTanggal">
       <label>Visi</label><textarea id="inputVisi" rows="3"></textarea>
-      <label>Misi - pisahkan dengan koma ,</label><textarea id="inputMisi" rows="3"></textarea>
+      <label>Misi - pisahkan dengan koma,</label><textarea id="inputMisi" rows="3"></textarea>
 
       <div class="judul-form-pengurus">👥 Susunan Pengurus</div>
       <div class="pengurus-form">
@@ -108,222 +113,180 @@ body{font-family:sans-serif;background:#f5f7fa;margin:0;}
       </div>
 
       <div class="judul-form-pengurus">💼 Layanan Koperasi</div>
-      <div id="layananFormContainer"></div> <!-- WADAH LAYAN DINAMIS -->
+      <div id="layananFormContainer"></div>
       <button type="button" class="btn-tambah-layanan" id="btnTambahLayanan">+ Tambah Layanan</button>
 
       <button type="submit" class="btn-simpan">💾 Simpan Perubahan</button>
     </form>
   </div>
 </div>
-<p class="footer">ARFA Sejahtra v3.0 • Nur ali PWA Standalone</p>
-</div>
+<p class="footer">ARFA Sejahtera v3.1 • Logo tersimpan di Firebase</p>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref as dbRef, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getStorage, ref as stRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee",storageBucket:"arfa-c7dee.firebasestorage.app",messagingSenderId:"468058520812",appId:"1:468058520812:web:f9cbc82fe7e88ecda9b9c9"};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const profilRef = ref(db,"profil_koperasi");
+const storage = getStorage(app);
+const profilRef = dbRef(db,"profil_koperasi");
 
 const role = (localStorage.getItem("role") || "").trim().toLowerCase();
 const isAdmin = role === "admin";
 
-let layananCounter = 0; // buat id unik
+let layananCounter = 0;
+let logoFile = null;
+let logoBase64 = null;
+let currentLogoUrl = "./img/icon-192.png";
 
 function formatTanggalIndo(tanggal){
-  if(!tanggal){return "-";}
-  const date = new Date(tanggal);
-  if(isNaN(date)){return tanggal;}
-  return date.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+  if(!tanggal) return "-";
+  const d=new Date(tanggal); if(isNaN(d)) return tanggal;
+  return d.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
 }
-
-function renderFormLayanan(layananArray = []){
-  const container = document.getElementById("layananFormContainer");
-  container.innerHTML = "";
-  layananCounter = 0;
-  
-  if(layananArray.length === 0){
-    tambahFormLayananKosong(); // kasih 1 form kosong
-  }else{
-    layananArray.forEach(l => tambahFormLayanan(l.nama, l.icon, l.deskripsi));
-  }
+function renderFormLayanan(arr=[]){
+  const c=document.getElementById("layananFormContainer"); c.innerHTML=""; layananCounter=0;
+  if(arr.length===0) tambahFormLayanan("","","");
+  else arr.forEach(l=>tambahFormLayanan(l.nama,l.icon,l.deskripsi));
 }
-
-function tambahFormLayananKosong(){
-  tambahFormLayanan("", "💰", "");
-}
-
-function tambahFormLayanan(nama="", icon="💰", deskripsi=""){
+function tambahFormLayanan(nama="",icon="💰",deskripsi=""){
   layananCounter++;
-  const container = document.getElementById("layananFormContainer");
-  const div = document.createElement("div");
-  div.className = "layanan-form-item";
-  div.id = `layanan-item-${layananCounter}`;
-  div.innerHTML = `
-    <button type="button" class="btn-hapus-layanan" onclick="hapusFormLayanan(${layananCounter})">✕</button>
-    <label>Icon Emoji</label>
-    <input type="text" class="input-icon" value="${icon}" placeholder="Contoh: 💰 🏦 📈" maxlength="4">
-    <label>Nama Layanan</label>
-    <input type="text" class="input-nama" value="${nama}" placeholder="Contoh: Simpanan" required>
-    <label>Deskripsi</label>
-    <textarea class="input-deskripsi" rows="2" placeholder="Penjelasan layanan...">${deskripsi}</textarea>
-  `;
-  container.appendChild(div);
+  const c=document.getElementById("layananFormContainer");
+  const div=document.createElement("div");
+  div.className="layanan-form-item"; div.id=`layanan-item-${layananCounter}`;
+  div.innerHTML=`<button type="button" class="btn-hapus-layanan" onclick="hapusFormLayanan(${layananCounter})">✕</button>
+    <label>Icon Emoji</label><input type="text" class="input-icon" value="${icon}" maxlength="4">
+    <label>Nama Layanan</label><input type="text" class="input-nama" value="${nama}">
+    <label>Deskripsi</label><textarea class="input-deskripsi" rows="2">${deskripsi}</textarea>`;
+  c.appendChild(div);
 }
+window.hapusFormLayanan=function(id){ document.getElementById(`layanan-item-${id}`)?.remove(); }
 
-window.hapusFormLayanan = function(id){
-  document.getElementById(`layanan-item-${id}`).remove();
-}
+document.addEventListener("DOMContentLoaded",()=>{
+  const btnEdit=document.getElementById("btnEdit");
+  const modalEdit=document.getElementById("modalEdit");
+  const closeModal=document.getElementById("closeModal");
+  const formProfil=document.getElementById("formProfil");
+  const pengurusList=document.getElementById("pengurusList");
+  const layananList=document.getElementById("layananList");
+  const btnTambahLayanan=document.getElementById("btnTambahLayanan");
+  const inputLogo=document.getElementById("inputLogo");
+  const previewLogo=document.getElementById("previewLogo");
+  const logoKoperasi=document.getElementById("logoKoperasi");
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btnEdit = document.getElementById("btnEdit");
-  const modalEdit = document.getElementById("modalEdit");
-  const closeModal = document.getElementById("closeModal");
-  const formProfil = document.getElementById("formProfil");
-  const pengurusList = document.getElementById("pengurusList");
-  const layananList = document.getElementById("layananList");
-  const btnTambahLayanan = document.getElementById("btnTambahLayanan");
+  if(!isAdmin){ btnEdit.disabled=true; btnEdit.innerHTML="🔒 Hanya Admin"; btnEdit.style.opacity="0.6"; }
 
-  if(!isAdmin){
-    btnEdit.disabled = true; btnEdit.innerHTML = "🔒 Hanya Admin";
-    btnEdit.style.opacity = "0.6"; btnEdit.style.cursor = "not-allowed";
-  }
-
-  btnTambahLayanan.addEventListener("click", tambahFormLayananKosong);
-
-  onValue(profilRef, (snapshot) => {
-    const data = snapshot.val() || {};
-    document.getElementById("namaKoperasi").textContent = data.nama || "-";
-    document.getElementById("namaKoperasiJudul").textContent = data.nama || "Koperasi ARFA";
-    document.getElementById("alamat").textContent = data.alamat || "-";
-    document.getElementById("telepon").textContent = data.telepon || "-";
-    document.getElementById("email").textContent = data.email || "-";
-    document.getElementById("badanHukum").textContent = data.badanHukum || "-";
-    document.getElementById("tanggalBerdiri").textContent = formatTanggalIndo(data.tanggalBerdiri);
-    document.getElementById("visi").textContent = data.visi || "-";
-
-    const misiList = document.getElementById("misiList"); misiList.innerHTML = "";
-    if(Array.isArray(data.misi)){ data.misi.forEach(misi => { if(misi && misi.trim() !== ""){ const li = document.createElement("li"); li.textContent = misi; misiList.appendChild(li); } }); }
-
-    pengurusList.innerHTML = "";
-    const pengurus = data.pengurus || {};
-    const daftarPengurus = [
-      {jabatan:"Ketua",nama:pengurus.ketua || ""}, {jabatan:"Wakil Ketua",nama:pengurus.wakilKetua || ""},
-      {jabatan:"Sekretaris",nama:pengurus.sekretaris || ""}, {jabatan:"Bendahara",nama:pengurus.bendahara || ""},
-      {jabatan:"Pengawas",nama:pengurus.pengawas || ""}
-    ];
-    let jumlahPengurus = 0;
-    daftarPengurus.forEach(item => {
-      if(item.nama && item.nama.trim() !== ""){
-        jumlahPengurus++;
-        const div = document.createElement("div");
-        div.className = "pengurus-item";
-        div.innerHTML = `<div class="pengurus-icon">👤</div><div><b>${item.jabatan}</b><p>${item.nama}</p></div>`;
-        pengurusList.appendChild(div);
-      }
-    });
-    if(jumlahPengurus === 0){ pengurusList.innerHTML = `<div class="pengurus-item"><div class="pengurus-icon">👤</div><div><b>Susunan Pengurus</b><p>Belum diisi</p></div></div>`; }
-
-    // ================================ LAYAN ================================
-    layananList.innerHTML = "";
-    const layanan = Array.isArray(data.layanan) ? data.layanan : [];
-    if(layanan.length === 0){
-      layananList.innerHTML = `<div class="layanan-item"><div class="icon">ℹ️</div><div><b>Belum ada layanan</b><p>Silahkan tambah layanan di menu edit</p></div></div>`;
-    }else{
-      layanan.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "layanan-item";
-        div.innerHTML = `<div class="icon">${item.icon || "💼"}</div><div><b>${item.nama}</b><p>${item.deskripsi}</p></div>`;
-        layananList.appendChild(div);
-      });
-    }
-  });
-
-  btnEdit.addEventListener("click", async () => {
-    if(!isAdmin){ alert("⚠️ Hanya Admin yang dapat mengedit profil."); return; }
-    const snapshot = await get(profilRef);
-    const data = snapshot.val() || {};
-
-    document.getElementById("inputNama").value = data.nama || "";
-    document.getElementById("inputAlamat").value = data.alamat || "";
-    document.getElementById("inputTelepon").value = data.telepon || "";
-    document.getElementById("inputEmail").value = data.email || "";
-    document.getElementById("inputBadanHukum").value = data.badanHukum || "";
-    document.getElementById("inputTanggal").value = data.tanggalBerdiri || "";
-    document.getElementById("inputVisi").value = data.visi || "";
-    document.getElementById("inputMisi").value = Array.isArray(data.misi) ? data.misi.join(", ") : data.misi || "";
-
-    const pengurus = data.pengurus || {};
-    document.getElementById("inputKetua").value = pengurus.ketua || "";
-    document.getElementById("inputWakilKetua").value = pengurus.wakilKetua || "";
-    document.getElementById("inputSekretaris").value = pengurus.sekretaris || "";
-    document.getElementById("inputBendahara").value = pengurus.bendahara || "";
-    document.getElementById("inputPengawas").value = pengurus.pengawas || "";
-
-    const layanan = Array.isArray(data.layanan) ? data.layanan : [];
-    renderFormLayanan(layanan);
-
-    modalEdit.style.display = "block"; document.body.style.overflow = "hidden";
-  });
-
-  closeModal.addEventListener("click", () => { modalEdit.style.display = "none"; document.body.style.overflow = ""; });
-  window.addEventListener("click", (event) => { if(event.target === modalEdit){ modalEdit.style.display = "none"; document.body.style.overflow = ""; } });
-
-  formProfil.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    if(!isAdmin){ alert("⚠️ Hanya Admin yang dapat menyimpan perubahan."); return; }
-
-    const nama = document.getElementById("inputNama").value.trim();
-    const alamat = document.getElementById("inputAlamat").value.trim();
-    const telepon = document.getElementById("inputTelepon").value.trim();
-    const email = document.getElementById("inputEmail").value.trim();
-    const badanHukum = document.getElementById("inputBadanHukum").value.trim();
-    const tanggalBerdiri = document.getElementById("inputTanggal").value;
-    const visi = document.getElementById("inputVisi").value.trim();
-    const misiArray = document.getElementById("inputMisi").value.split(",").map(m => m.trim()).filter(m => m !== "");
-
-    const pengurus = {
-      ketua: document.getElementById("inputKetua").value.trim(),
-      wakilKetua: document.getElementById("inputWakilKetua").value.trim(),
-      sekretaris: document.getElementById("inputSekretaris").value.trim(),
-      bendahara: document.getElementById("inputBendahara").value.trim(),
-      pengawas: document.getElementById("inputPengawas").value.trim()
+  inputLogo.addEventListener("change",e=>{
+    const file=e.target.files[0]; if(!file) return;
+    if(file.size>2*1024*1024){ alert("Maksimal 2MB bos"); return; }
+    logoFile=file;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      logoBase64=ev.target.result;
+      previewLogo.src=logoBase64;
+      document.getElementById("statusLogo").innerText="✅ Siap simpan: "+file.name;
     };
+    reader.readAsDataURL(file);
+  });
 
-    // AMBIL DATA LAYAN DINAMIS
-    const layananArray = [];
-    document.querySelectorAll(".layanan-form-item").forEach(item => {
-      const nama = item.querySelector(".input-nama").value.trim();
-      const icon = item.querySelector(".input-icon").value.trim();
-      const deskripsi = item.querySelector(".input-deskripsi").value.trim();
-      if(nama){ layananArray.push({nama, icon, deskripsi}); }
+  btnTambahLayanan.addEventListener("click",()=>tambahFormLayanan("","",""));
+
+  onValue(profilRef,(snap)=>{
+    const data=snap.val()||{};
+    currentLogoUrl=data.logoUrl||data.logoBase64||"./img/icon-192.png";
+    logoKoperasi.src=currentLogoUrl;
+    previewLogo.src=currentLogoUrl;
+    document.getElementById("namaKoperasi").textContent=data.nama||"-";
+    document.getElementById("namaKoperasiJudul").textContent=data.nama||"Koperasi ARFA";
+    document.getElementById("alamat").textContent=data.alamat||"-";
+    document.getElementById("telepon").textContent=data.telepon||"-";
+    document.getElementById("email").textContent=data.email||"-";
+    document.getElementById("badanHukum").textContent=data.badanHukum||"-";
+    document.getElementById("tanggalBerdiri").textContent=formatTanggalIndo(data.tanggalBerdiri);
+    document.getElementById("visi").textContent=data.visi||"-";
+    const misiList=document.getElementById("misiList"); misiList.innerHTML="";
+    if(Array.isArray(data.misi)){ data.misi.forEach(m=>{ if(m.trim()){ const li=document.createElement("li"); li.textContent=m; misiList.appendChild(li); } }); }
+    pengurusList.innerHTML="";
+    const pengurus=data.pengurus||{};
+    const daftar=[{j:"Ketua",n:pengurus.ketua},{j:"Wakil Ketua",n:pengurus.wakilKetua},{j:"Sekretaris",n:pengurus.sekretaris},{j:"Bendahara",n:pengurus.bendahara},{j:"Pengawas",n:pengurus.pengawas}];
+    let jml=0; daftar.forEach(it=>{ if(it.n&&it.n.trim()){ jml++; const d=document.createElement("div"); d.className="pengurus-item"; d.innerHTML=`<div class="pengurus-icon">👤</div><div><b>${it.j}</b><p>${it.n}</p></div>`; pengurusList.appendChild(d); } });
+    if(jml===0) pengurusList.innerHTML=`<div class="pengurus-item"><div class="pengurus-icon">👤</div><div><b>Belum diisi</b><p>-</p></div></div>`;
+    layananList.innerHTML="";
+    const lay=Array.isArray(data.layanan)?data.layanan:[];
+    if(lay.length===0) layananList.innerHTML=`<div class="layanan-item"><div class="icon">ℹ️</div><div><b>Belum ada layanan</b><p>Tambah di edit</p></div></div>`;
+    else lay.forEach(it=>{ const d=document.createElement("div"); d.className="layanan-item"; d.innerHTML=`<div class="icon">${it.icon||"💼"}</div><div><b>${it.nama}</b><p>${it.deskripsi}</p></div>`; layananList.appendChild(d); });
+  });
+
+  btnEdit.addEventListener("click",async()=>{
+    if(!isAdmin){ alert("Hanya Admin"); return; }
+    const snap=await get(profilRef); const data=snap.val()||{};
+    currentLogoUrl=data.logoUrl||data.logoBase64||"./img/icon-192.png";
+    document.getElementById("previewLogo").src=currentLogoUrl;
+    document.getElementById("inputNama").value=data.nama||"";
+    document.getElementById("inputAlamat").value=data.alamat||"";
+    document.getElementById("inputTelepon").value=data.telepon||"";
+    document.getElementById("inputEmail").value=data.email||"";
+    document.getElementById("inputBadanHukum").value=data.badanHukum||"";
+    document.getElementById("inputTanggal").value=data.tanggalBerdiri||"";
+    document.getElementById("inputVisi").value=data.visi||"";
+    document.getElementById("inputMisi").value=Array.isArray(data.misi)?data.misi.join(", "):"";
+    const p=data.pengurus||{};
+    document.getElementById("inputKetua").value=p.ketua||"";
+    document.getElementById("inputWakilKetua").value=p.wakilKetua||"";
+    document.getElementById("inputSekretaris").value=p.sekretaris||"";
+    document.getElementById("inputBendahara").value=p.bendahara||"";
+    document.getElementById("inputPengawas").value=p.pengawas||"";
+    renderFormLayanan(Array.isArray(data.layanan)?data.layanan:[]);
+    modalEdit.style.display="block"; document.body.style.overflow="hidden";
+    logoFile=null; logoBase64=null; document.getElementById("statusLogo").innerText="Maks 2MB - JPG/PNG";
+  });
+
+  closeModal.addEventListener("click",()=>{ modalEdit.style.display="none"; document.body.style.overflow=""; });
+  window.addEventListener("click",e=>{ if(e.target===modalEdit){ modalEdit.style.display="none"; document.body.style.overflow=""; } });
+
+  formProfil.addEventListener("submit",async e=>{
+    e.preventDefault();
+    if(!isAdmin){ alert("Hanya Admin"); return; }
+    const nama=document.getElementById("inputNama").value.trim();
+    const alamat=document.getElementById("inputAlamat").value.trim();
+    const telepon=document.getElementById("inputTelepon").value.trim();
+    const email=document.getElementById("inputEmail").value.trim();
+    const badanHukum=document.getElementById("inputBadanHukum").value.trim();
+    const tanggalBerdiri=document.getElementById("inputTanggal").value;
+    const visi=document.getElementById("inputVisi").value.trim();
+    const misiArray=document.getElementById("inputMisi").value.split(",").map(m=>m.trim()).filter(Boolean);
+    const pengurus={ ketua:document.getElementById("inputKetua").value.trim(), wakilKetua:document.getElementById("inputWakilKetua").value.trim(), sekretaris:document.getElementById("inputSekretaris").value.trim(), bendahara:document.getElementById("inputBendahara").value.trim(), pengawas:document.getElementById("inputPengawas").value.trim() };
+    const layananArray=[]; document.querySelectorAll(".layanan-form-item").forEach(it=>{
+      const nm=it.querySelector(".input-nama").value.trim(); const ic=it.querySelector(".input-icon").value.trim(); const ds=it.querySelector(".input-deskripsi").value.trim(); if(nm) layananArray.push({nama:nm,icon:ic,deskripsi:ds});
     });
+    if(!nama||!alamat||!telepon||!email){ alert("Lengkapi data wajib"); return; }
 
-    if(!nama){ alert("Nama koperasi wajib diisi."); return; }
-    if(!alamat){ alert("Alamat kantor wajib diisi."); return; }
-    if(!telepon){ alert("No. Telepon / WA wajib diisi."); return; }
-    if(!email){ alert("Email wajib diisi."); return; }
-
-    const btnSimpan = formProfil.querySelector(".btn-simpan");
-    btnSimpan.disabled = true; btnSimpan.innerHTML = "⏳ Menyimpan...";
-
+    const btn=formProfil.querySelector(".btn-simpan"); btn.disabled=true; btn.innerHTML="⏳ Menyimpan...";
     try{
-      await update(profilRef, {
-        nama, alamat, telepon, email, badanHukum, tanggalBerdiri, visi, misi:misiArray, pengurus, layanan:layananArray // SIMPAN SEBAGAI ARRAY
-      });
-      modalEdit.style.display = "none"; document.body.style.overflow = "";
-      alert("✅ Profil koperasi berhasil disimpan.");
-    }catch(error){
-      console.error("Gagal menyimpan profil:", error);
-      alert("❌ Gagal menyimpan profil.\n\n" + error.message);
-    }finally{
-      btnSimpan.disabled = false; btnSimpan.innerHTML = "💾 Simpan Perubahan";
-    }
+      let finalLogoUrl=currentLogoUrl;
+      if(logoFile){
+        document.getElementById("statusLogo").innerText="⏳ Upload logo...";
+        try{
+          const sRef=stRef(storage,"profil_koperasi/logo_"+Date.now()+"_"+logoFile.name);
+          await uploadBytes(sRef,logoFile);
+          finalLogoUrl=await getDownloadURL(sRef);
+        }catch(err){
+          console.warn("Storage gagal, pakai Base64",err);
+          finalLogoUrl=logoBase64||currentLogoUrl;
+        }
+      } else if(logoBase64){
+        finalLogoUrl=logoBase64;
+      }
+      await update(profilRef,{ nama,alamat,telepon,email,badanHukum,tanggalBerdiri,visi,misi:misiArray,pengurus,layanan:layananArray, logoUrl:finalLogoUrl, logoUpdate:Date.now() });
+      modalEdit.style.display="none"; document.body.style.overflow=""; logoFile=null; logoBase64=null;
+      alert("✅ Profil + Logo berhasil disimpan ke Firebase");
+    }catch(err){ alert("❌ Gagal: "+err.message); console.error(err); }
+    finally{ btn.disabled=false; btn.innerHTML="💾 Simpan Perubahan"; document.getElementById("statusLogo").innerText="Maks 2MB - JPG/PNG"; }
   });
 });
-
-window.goBack = function(){ if(document.referrer && document.referrer !== ""){ history.back(); }else{ window.location.href = "dashboard.html"; } };
+window.goBack=function(){ if(document.referrer) history.back(); else location.href="dashboard.html"; };
 </script>
 </body>
 </html>

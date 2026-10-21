@@ -4,11 +4,11 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Neraca Koperasi ARFA</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--primary:#1e90ff;--primary-dark:#0f3057;--bg:#f1f5f9;--card:#fff;--text:#1f2937;--muted:#64748b;--border:#e2e8f0;--success:#16a34a;--danger:#dc2626;--warning:#d97706;--shadow:0 2px 8px rgba(0,0,0,.08);--radius:14px}
+:root{--primary:#1e90ff;--primary-dark:#0f3057;--bg:#f1f5f9;--card:#fff;--text:#1f2937;--muted:#64748b;--border:#e2e8f0;--success:#16a34a;--danger:#dc2626;--warning:#d97706;--shadow:0 2px 8px rgba(0,0,0,.08)}
 body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);font-size:13px;padding-bottom:30px;}
 header{height:68px;background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:white;display:flex;align-items:center;justify-content:space-between;padding:10px 15px;position:sticky;top:0;z-index:101}
 .header-left{display:flex;align-items:center;gap:10px}.brand{display:flex;align-items:center;gap:9px}.brand img{width:40px;height:40px;border-radius:50%;background:#fff;padding:2px}
@@ -37,20 +37,19 @@ header{height:68px;background:linear-gradient(90deg,var(--primary),var(--primary
 <div class="container" id="mainContent">
 <h2 class="page-title">NERACA KOPERASI ARFA</h2>
 <div class="period" id="periode"></div>
-
-<div class="card"><h3>Neraca - Metode Akrual (Piutang Jasa Dihitung)</h3><div class="neraca">
+<div class="card"><h3>Neraca - Piutang Jasa Dihitung</h3><div class="neraca">
 <div class="neraca-column"><div class="neraca-header">AKTIVA</div><div class="neraca-body">
 <div class="row"><div>Kas Cash</div><div>Rp <span id="aCash">0</span></div></div>
 <div class="row"><div>Kas Bank</div><div>Rp <span id="aBank">0</span></div></div>
-<div class="row"><div>Piutang Pokok (belum dibayar)</div><div>Rp <span id="aPokok">0</span></div></div>
-<div class="row" style="background:#fff7ed"><div>Piutang Jasa (telat bayar) ⚠️</div><div style="color:#d97706;font-weight:800">Rp <span id="aJasa">0</span></div></div>
+<div class="row"><div>Piutang Pokok</div><div>Rp <span id="aPokok">0</span></div></div>
+<div class="row" style="background:#fff7ed"><div>Piutang Jasa ⚠️</div><div style="color:#d97706;font-weight:800">Rp <span id="aJasa">0</span></div></div>
 <div class="row total-row"><div>TOTAL AKTIVA</div><div>Rp <span id="totalAktiva">0</span></div></div>
 </div></div>
 <div class="neraca-column"><div class="neraca-header">PASIVA</div><div class="neraca-body">
 <div class="row"><div>Modal Awal</div><div>Rp <span id="pModal">0</span></div></div>
-<div class="row"><div style="padding-left:10px;font-size:11px;color:#64748b">Simpanan Pokok</div><div>Rp <span id="pPokok">0</span></div></div>
-<div class="row"><div style="padding-left:10px;font-size:11px;color:#64748b">Simpanan Wajib</div><div>Rp <span id="pWajib">0</span></div></div>
-<div class="row"><div style="padding-left:10px;font-size:11px;color:#64748b">Simpanan Sukarela</div><div>Rp <span id="pSukarela">0</span></div></div>
+<div class="row"><div style="padding-left:10px;color:#64748b;font-size:11px">Simpanan Pokok</div><div>Rp <span id="pPokok">0</span></div></div>
+<div class="row"><div style="padding-left:10px;color:#64748b;font-size:11px">Simpanan Wajib</div><div>Rp <span id="pWajib">0</span></div></div>
+<div class="row"><div style="padding-left:10px;color:#64748b;font-size:11px">Simpanan Sukarela</div><div>Rp <span id="pSukarela">0</span></div></div>
 <div class="row"><div>SHU Berjalan (Akrual)</div><div class="green">Rp <span id="pSHU">0</span></div></div>
 <div class="row total-row"><div>TOTAL PASIVA</div><div>Rp <span id="totalPasiva">0</span></div></div>
 </div></div>
@@ -60,15 +59,15 @@ header{height:68px;background:linear-gradient(90deg,var(--primary),var(--primary
 
 <div class="card"><h3>Analisa Jasa Telat Bayar</h3><div class="grid">
 <div class="box"><div class="box-title">Total Jasa Seharusnya</div><div class="box-value">Rp <span id="totalJasa">0</span></div></div>
-<div class="box"><div class="box-title">Jasa Sudah Dibayar (Kas Masuk)</div><div class="box-value green">Rp <span id="jasaTerbayar">0</span></div></div>
-<div class="box"><div class="box-title">Jasa Belum Dibayar (Piutang) - NAGIH!</div><div class="box-value orange">Rp <span id="sisaJasa">0</span></div></div>
+<div class="box"><div class="box-title">Jasa Sudah Dibayar</div><div class="box-value green">Rp <span id="jasaTerbayar">0</span></div></div>
+<div class="box"><div class="box-title">Jasa Belum Dibayar - NAGIH!</div><div class="box-value orange">Rp <span id="sisaJasa">0</span></div></div>
 <div class="box"><div class="box-title">Pendapatan Lain</div><div class="box-value green">Rp <span id="pendapatanLain">0</span></div></div>
-<div class="box"><div class="box-title">Beban Operasional</div><div class="box-value red">Rp <span id="beban">0</span></div></div>
-<div class="box"><div class="box-title">SHU Akrual (untuk Neraca)</div><div class="box-value green">Rp <span id="shu">0</span></div></div>
-<div class="box" style="grid-column:1/-1;background:#f0fdf4;border:2px solid #16a34a"><div class="box-title">SHU Cash (yang bisa dibagi)</div><div class="box-value" style="font-size:14px;color:#16a34a">Rp <span id="shuCash">0</span></div><div style="font-size:10px;color:#64748b;margin-top:4px">SHU Cash = Jasa Kas + Lain - Beban (real uang)</div></div>
+<div class="box"><div class="box-title">Beban</div><div class="box-value red">Rp <span id="beban">0</span></div></div>
+<div class="box"><div class="box-title">SHU Akrual</div><div class="box-value green">Rp <span id="shu">0</span></div></div>
+<div class="box" style="grid-column:1/-1;background:#f0fdf4;border:2px solid #16a34a"><div class="box-title">SHU Cash (bisa dibagi)</div><div class="box-value" style="font-size:14px;color:#16a34a">Rp <span id="shuCash">0</span></div></div>
 </div></div>
 
-<div class="card"><h3>Ringkasan Kas & Piutang</h3><div class="grid">
+<div class="card"><h3>Ringkasan</h3><div class="grid">
 <div class="box"><div class="box-title">Kas Cash</div><div class="box-value blue">Rp <span id="kasCash">0</span></div></div>
 <div class="box"><div class="box-title">Kas Bank</div><div class="box-value blue">Rp <span id="kasBank">0</span></div></div>
 <div class="box"><div class="box-title">Piutang Pokok</div><div class="box-value orange">Rp <span id="piutangPokok">0</span></div></div>
@@ -79,9 +78,7 @@ header{height:68px;background:linear-gradient(90deg,var(--primary),var(--primary
 <div class="card"><div style="display:flex;gap:8px"><button class="btn" onclick="window.print()">🖨️ Cetak</button><button class="btn" style="background:#dc2626" onclick="exportPDFNeraca()">📄 PDF</button></div></div>
 </div>
 
-<div class="container" id="lockedCard" style="display:none"><div class="card" style="text-align:center;padding:30px"><div style="font-size:64px">🔒</div><h3 style="background:#fee2e2;color:#dc2626">Akses Terbatas</h3><p id="lockedText"></p></div></div>
 <div id="toast" class="toast"></div>
-
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getDatabase,ref,onValue} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -89,29 +86,25 @@ const firebaseConfig={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomai
 const app=initializeApp(firebaseConfig);const db=getDatabase(app);
 function showToast(m,e=false){const t=document.getElementById("toast");t.innerText=m;t.className="toast show"+(e?" error":"");setTimeout(()=>t.className="toast",3500);}
 const username=(localStorage.getItem("username")||"").trim();let role=(localStorage.getItem("role")||"user").toLowerCase().trim();
-if(!username){location.href="index.html"}const isAdmin=role==="admin";
-if(!isAdmin){document.getElementById("mainContent").style.display="none";document.getElementById("lockedCard").style.display="block";document.getElementById("lockedText").innerHTML=`Halo <b>${username}</b> (${role})<br>Hanya admin`;}
+if(!username)location.href="index.html";
 document.getElementById("userInfo").innerText=username+" ("+role+")";
 window.toggleSidebar=()=>{document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active");}
 window.closeSidebar=()=>{document.getElementById("sidebar").classList.remove("open");document.getElementById("overlay").classList.remove("active");}
 document.getElementById("btnMenu").addEventListener("click",window.toggleSidebar);document.getElementById("overlay").addEventListener("click",window.closeSidebar);
-document.getElementById("btnLogout").addEventListener("click",e=>{e.preventDefault();localStorage.clear();location.href="index.html"});
+document.getElementById("btnLogout").addEventListener("click",e=>{e.preventDefault();localStorage.clear();location.href="index.html";});
 
 let dataKas={},dataSaldoAwal={},dataPinjaman={},dataAngsuran={},dataSimpanan={};
 function num(v){if(v==null||v==="")return 0;if(typeof v==="string"){v=v.replace(/\./g,"").replace(/,/g,"")}const n=Number(v);return isFinite(n)?n:0}
 function rupiah(v){return num(v).toLocaleString("id-ID")}
-function firstNumber(o,fields){for(const f of fields){if(o&&o[f]!=null&&o[f]!=="")return num(o[f])}return 0}
+function firstNumber(o,f){for(const k of f){if(o&&o[k]!=null&&o[k]!=="")return num(o[k])}return 0}
 function safeSet(id,val){const el=document.getElementById(id);if(el)el.innerText=rupiah(val)}
 
-if(isAdmin){
 onValue(ref(db,"kas"),snap=>{const d=snap.val()||{};dataSaldoAwal=d.saldoAwal||{};dataKas=d.transaksi||{};hitung()});
 onValue(ref(db,"pinjaman"),snap=>{dataPinjaman=snap.val()||{};hitung()});
 onValue(ref(db,"angsuran"),snap=>{dataAngsuran=snap.val()||{};hitung()});
 onValue(ref(db,"simpanan"),snap=>{dataSimpanan=snap.val()||{};hitung()});
-}
 
 function hitung(){
-if(!isAdmin)return;
 let kasCash=num(dataSaldoAwal.cash),kasBank=num(dataSaldoAwal.bank);
 let beban=0,jasaKas=0,lain=0;
 Object.values(dataKas||{}).forEach(t=>{
@@ -119,17 +112,16 @@ const j=firstNumber(t,["jumlah"]);const tipe=String(t.tipe||"").toLowerCase();co
 if(tipe==="masuk"){if(sumber==="bank")kasBank+=j;else kasCash+=j; if(kat.includes("jasa"))jasaKas+=j; else if(kat.includes("lain"))lain+=j;} else if(tipe==="keluar"||tipe==="biaya"){if(sumber==="bank")kasBank-=j;else kasCash-=j; if(kat.includes("biaya")||kat.includes("konsumsi")||kat.includes("operasional"))beban+=j;}
 });
 let totPinPokok=0,totJasa=0;
-Object.values(dataPinjaman||{}).forEach(p=>{const st=String(p.status||"").toLowerCase();if(st==="batal")return;const pok=firstNumber(p,["jumlah","jumlahPinjaman"]);let j=firstNumber(p,["jasa","totalJasa"]);if(j===0&&pok>0)j=Math.round(pok*0.2);totPinPokok+=pok;totJasa+=j;});
+Object.values(dataPinjaman||{}).forEach(p=>{if(String(p.status||"").toLowerCase()==="batal")return;const pok=firstNumber(p,["jumlah","jumlahPinjaman"]);let j=firstNumber(p,["jasa","totalJasa"]);if(j===0&&pok>0)j=Math.round(pok*0.2);totPinPokok+=pok;totJasa+=j;});
 let bayarPokok=0,bayarJasa=0;
 Object.values(dataAngsuran||{}).forEach(a=>{bayarPokok+=firstNumber(a,["pokok"]);bayarJasa+=firstNumber(a,["jasa"]);});
 const piutangPokok=Math.max(0,totPinPokok-bayarPokok);const piutangJasa=Math.max(0,totJasa-bayarJasa);
 let sPokok=0,sWajib=0,sSuka=0;
-Object.values(dataSimpanan||{}).forEach(s=>{const jen=String(s.jenis||s.kategori||"").toLowerCase();const j=firstNumber(s,["jumlah"]);if(jen.includes("pokok"))sPokok+=j;else if(jen.includes("wajib"))sWajib+=j;else if(jen.includes("sukarela"))sSuka+=j;});
-if(Object.keys(dataSimpanan).length===0){Object.values(dataKas||{}).forEach(t=>{const j=firstNumber(t,["jumlah"]);const kat=String(t.kategori||"").toLowerCase();const tipe=String(t.tipe||"").toLowerCase();if(tipe==="masuk"){if(kat.includes("simpanan_pokok"))sPokok+=j;if(kat.includes("simpanan_wajib"))sWajib+=j;if(kat.includes("simpanan_sukarela"))sSuka+=j;}});}
+Object.values(dataSimpanan||{}).forEach(s=>{const jen=String(s.jenis||"").toLowerCase();const j=firstNumber(s,["jumlah"]);if(jen.includes("pokok"))sPokok+=j;else if(jen.includes("wajib"))sWajib+=j;else if(jen.includes("sukarela"))sSuka+=j;});
+if(Object.keys(dataSimpanan).length===0){Object.values(dataKas||{}).forEach(t=>{const j=firstNumber(t,["jumlah"]);const kat=String(t.kategori||"").toLowerCase();if(String(t.tipe||"").toLowerCase()==="masuk"){if(kat.includes("simpanan_pokok"))sPokok+=j;if(kat.includes("simpanan_wajib"))sWajib+=j;if(kat.includes("simpanan_sukarela"))sSuka+=j;}});}
 let modal=firstNumber(dataSaldoAwal,["modalAwal"]);if(modal===0)modal=num(dataSaldoAwal.cash)+num(dataSaldoAwal.bank);
-const totalPendAkrual=totJasa+lain;
-const shuAkrual=totalPendAkrual-beban;
-const shuCash=jasaKas+lain-beban;
+const shuAkrual=(totJasa+lain)-beban;
+const shuCash=(jasaKas+lain)-beban;
 const totalAktiva=kasCash+kasBank+piutangPokok+piutangJasa;
 const totalSimp=sPokok+sWajib+sSuka;
 const totalPasiva=modal+totalSimp+shuAkrual;
@@ -139,20 +131,78 @@ safeSet("aCash",kasCash);safeSet("aBank",kasBank);safeSet("aPokok",piutangPokok)
 safeSet("pModal",modal);safeSet("pPokok",sPokok);safeSet("pWajib",sWajib);safeSet("pSukarela",sSuka);safeSet("pSHU",shuAkrual);safeSet("totalPasiva",totalPasiva);
 safeSet("kasCash",kasCash);safeSet("kasBank",kasBank);safeSet("piutangPokok",piutangPokok);safeSet("totalPinjamanPokok",totPinPokok);
 safeSet("totalJasa",totJasa);safeSet("jasaTerbayar",jasaKas);safeSet("sisaJasa",piutangJasa);safeSet("pendapatanLain",lain);safeSet("beban",beban);safeSet("shu",shuAkrual);safeSet("shuCash",shuCash);
-
 document.getElementById("selisih").innerText=rupiah(Math.abs(selisih));
 const box=document.getElementById("balanceBox"),st=document.getElementById("statusBalance");
-if(Math.abs(selisih)<1){box.classList.remove("warning");st.innerText="✓ NERACA SEIMBANG - Piutang Jasa tetap ditagih";st.style.color="#16a34a";}else{box.classList.add("warning");st.innerText="⚠ BELUM SEIMBANG "+rupiah(selisih);st.style.color="#dc2626";}
-document.getElementById("debug").innerText=`KONDISI: Anggota bayar pokok saja, jasa telat
-Total Pinjaman Pokok: ${rupiah(totPinPokok)} - Bayar Pokok: ${rupiah(bayarPokok)} = Piutang Pokok ${rupiah(piutangPokok)}
-Total Jasa: ${rupiah(totJasa)} - Jasa Kas Masuk: ${rupiah(jasaKas)} = Piutang Jasa ${rupiah(piutangJasa)} (INI YANG DITAGIH)
-
-AKTIVA = Cash ${rupiah(kasCash)} + Bank ${rupiah(kasBank)} + Piutang Pokok ${rupiah(piutangPokok)} + Piutang Jasa ${rupiah(piutangJasa)} = ${rupiah(totalAktiva)}
-PASIVA = Modal ${rupiah(modal)} + Simpanan ${rupiah(totalSimp)} + SHU Akrual ${rupiah(shuAkrual)} = ${rupiah(totalPasiva)}
-SHU Cash (bagi): Jasa Kas ${rupiah(jasaKas)} + Lain ${rupiah(lain)} - Beban ${rupiah(beban)} = ${rupiah(shuCash)}
-Selisih: ${rupiah(selisih)}`;
+if(Math.abs(selisih)<1){box.classList.remove("warning");st.innerText="✓ NERACA SEIMBANG";st.style.color="#16a34a";}else{box.classList.add("warning");st.innerText="⚠ BELUM SEIMBANG "+rupiah(selisih);st.style.color="#dc2626";}
+document.getElementById("debug").innerText=`Total Pinjaman ${rupiah(totPinPokok)} - Bayar ${rupiah(bayarPokok)} = Piutang Pokok ${rupiah(piutangPokok)}\nTotal Jasa ${rupiah(totJasa)} - Kas ${rupiah(jasaKas)} = Piutang Jasa ${rupiah(piutangJasa)}\nAKTIVA ${rupiah(totalAktiva)} = Cash ${rupiah(kasCash)}+Bank ${rupiah(kasBank)}+Pokok ${rupiah(piutangPokok)}+Jasa ${rupiah(piutangJasa)}\nPASIVA ${rupiah(totalPasiva)} = Modal ${rupiah(modal)}+Simpanan ${rupiah(totalSimp)}+SHU Akrual ${rupiah(shuAkrual)}\nSHU Cash bagi = ${rupiah(shuCash)}`;
 }
-window.exportPDFNeraca=()=>{const {jsPDF}=window.jspdf;const doc=new jsPDF();doc.text("NERACA ARFA - Piutang Jasa Dihitung",10,10);doc.save("neraca.pdf");}
+
+window.exportPDFNeraca=()=>{
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF("p","mm","a4");
+  const get = id => document.getElementById(id)?.innerText || "0";
+  const periode = document.getElementById("periode").innerText;
+
+  doc.setFont("helvetica","bold");
+  doc.setFontSize(14);
+  doc.text("KOPERASI ARFA SEJAHTERA",105,14,{align:"center"});
+  doc.setFontSize(11);
+  doc.text("NERACA - Piutang Jasa Dihitung",105,21,{align:"center"});
+  doc.setFont("helvetica","normal");
+  doc.setFontSize(9);
+  doc.text(periode,105,27,{align:"center"});
+
+  // Cek apakah autoTable ada
+  if(typeof doc.autoTable === "function"){
+    doc.setFont("helvetica","bold"); doc.text("AKTIVA",14,36);
+    doc.autoTable({
+      startY:38, head:[["Uraian","Jumlah"]],
+      body:[["Kas Cash","Rp "+get("aCash")],["Kas Bank","Rp "+get("aBank")],["Piutang Pokok","Rp "+get("aPokok")],["Piutang Jasa (Telat)","Rp "+get("aJasa")],["TOTAL AKTIVA","Rp "+get("totalAktiva")]],
+      theme:"grid", styles:{fontSize:9}, headStyles:{fillColor:[30,144,255]}, columnStyles:{1:{halign:"right"}}
+    });
+    let y=doc.lastAutoTable.finalY+6;
+    doc.text("PASIVA",14,y);
+    doc.autoTable({
+      startY:y+2, head:[["Uraian","Jumlah"]],
+      body:[["Modal Awal","Rp "+get("pModal")],["Simpanan Pokok","Rp "+get("pPokok")],["Simpanan Wajib","Rp "+get("pWajib")],["Simpanan Sukarela","Rp "+get("pSukarela")],["SHU Akrual","Rp "+get("pSHU")],["TOTAL PASIVA","Rp "+get("totalPasiva")]],
+      theme:"grid", styles:{fontSize:9}, headStyles:{fillColor:[15,48,87]}, columnStyles:{1:{halign:"right"}}
+    });
+    y=doc.lastAutoTable.finalY+6;
+    doc.text("ANALISA",14,y);
+    doc.autoTable({
+      startY:y+2,
+      body:[["Total Jasa","Rp "+get("totalJasa")],["Jasa Dibayar","Rp "+get("jasaTerbayar")],["Jasa Belum Dibayar","Rp "+get("sisaJasa")],["Lain","Rp "+get("pendapatanLain")],["Beban","Rp "+get("beban")],["SHU Akrual","Rp "+get("shu")],["SHU Cash (Bagi)","Rp "+get("shuCash")],["Selisih","Rp "+get("selisih")]],
+      theme:"grid", styles:{fontSize:9}, columnStyles:{1:{halign:"right",fontStyle:"bold"}}
+    });
+  } else {
+    // FALLBACK kalau autotable gagal load - tulis manual
+    let y=35;
+    doc.setFont("helvetica","bold"); doc.text("AKTIVA:",14,y); y+=6;
+    doc.setFont("helvetica","normal");
+    doc.text(`Kas Cash: Rp ${get("aCash")}`,14,y); y+=5;
+    doc.text(`Kas Bank: Rp ${get("aBank")}`,14,y); y+=5;
+    doc.text(`Piutang Pokok: Rp ${get("aPokok")}`,14,y); y+=5;
+    doc.text(`Piutang Jasa: Rp ${get("aJasa")}`,14,y); y+=5;
+    doc.setFont("helvetica","bold"); doc.text(`TOTAL AKTIVA: Rp ${get("totalAktiva")}`,14,y); y+=10;
+    doc.text("PASIVA:",14,y); y+=6;
+    doc.setFont("helvetica","normal");
+    doc.text(`Modal Awal: Rp ${get("pModal")}`,14,y); y+=5;
+    doc.text(`Simpanan Pokok: Rp ${get("pPokok")}`,14,y); y+=5;
+    doc.text(`Simpanan Wajib: Rp ${get("pWajib")}`,14,y); y+=5;
+    doc.text(`Simpanan Sukarela: Rp ${get("pSukarela")}`,14,y); y+=5;
+    doc.text(`SHU Akrual: Rp ${get("pSHU")}`,14,y); y+=5;
+    doc.setFont("helvetica","bold"); doc.text(`TOTAL PASIVA: Rp ${get("totalPasiva")}`,14,y); y+=10;
+    doc.text(`Jasa Telat: Rp ${get("sisaJasa")} | SHU Cash Bagi: Rp ${get("shuCash")}`,14,y);
+  }
+
+  let yy = doc.internal.pageSize.height - 30;
+  doc.setFont("helvetica","normal"); doc.setFontSize(9);
+  doc.text("Parigi, "+new Date().toLocaleDateString("id-ID"),140,yy);
+  doc.text("Ketua Koperasi",140,yy+18);
+  doc.save(`Neraca_ARFA_${new Date().toISOString().slice(0,10)}.pdf`);
+  showToast("PDF berhasil didownload");
+};
+
 document.getElementById("periode").innerText="Perhitungan realtime • "+new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
 </script>
 </body>

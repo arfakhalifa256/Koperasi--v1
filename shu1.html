@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>SHU ARFA V3 FIX AG + JASA 20%</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:#ffedd5;color:#1f2937;padding:10px;max-width:1150px;margin:auto;padding-bottom:40px}
+.head{background:linear-gradient(135deg,#0f3057,#1e90ff);color:#fff;padding:16px;border-radius:18px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.head h1{font-size:16px;font-weight:800}.head p{font-size:10px;opacity:.9;margin-top:4px}
+.card{background:#fff;border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(0,0,0,.06);border:1px solid #eef2f7}
+.section-title{font-size:12px;font-weight:800;color:#0f3057;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:750px){.grid4{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr}}
+.box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:11px;text-align:center}
+.box small{display:block;font-size:8px;color:#64748b;font-weight:600;text-transform:uppercase}
+.box b{display:block;margin-top:4px;font-size:13px;font-weight:800;color:#0f3057}
+.box.green{border:2px solid #10b981;background:#f0fdf4}
+.box.red{border:2px solid #ef4444;background:#fef2f2}
+.box.blue{border:2px solid #1e90ff;background:#eff6ff}
+.box.yellow{background:#fffbeb;border-color:#fde68a}
+.alert{padding:10px 12px;border-radius:12px;font-size:10px;line-height:1.5;margin-bottom:10px}
+.alert-yellow{background:#fef3c7;border:1px solid #fcd34d;color:#92400e}
+.alert-green{background:#dcfce7;border:1px solid #bbf7d0;color:#065f46}
+label{font-size:9px;font-weight:700;color:#475569;display:block;margin-bottom:4px;text-transform:uppercase}
+input{width:100%;padding:11px 12px;border:1px solid #e2e8f0;border-radius:12px;font-size:12px;font-weight:600;outline:none}
+.btn{padding:11px 14px;border:none;border-radius:12px;font-weight:800;font-size:11px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px;width:100%}
+.btn-blue{background:#1e90ff}.btn-green{background:#10b981}.btn-dark{background:#0f3057}.btn-orange{background:#f59e0b}
+.table-wrap{overflow-x:auto;border:1px solid #e2e8f0;border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:10px;min-width:680px}
+th{background:#f8fafc;color:#64748b;padding:10px 8px;text-align:left;font-size:9px;text-transform:uppercase;white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid #f1f5f9}
+.money{text-align:right;font-weight:700;white-space:nowrap}
+.badge{padding:4px 8px;border-radius:20px;font-size:9px;font-weight:800;display:inline-block}.badge-belum{background:#fee2e2;color:#dc2626}
+.piutang-item{display:flex;justify-content:space-between;gap:10px;padding:10px;border-bottom:1px solid #f1f5f9}
+.piutang-title{font-size:11px;font-weight:700}.piutang-desc{font-size:9px;color:#64748b;margin-top:3px}
+</style>
+</head>
+<body>
+
+<div class="head">
+<div><h1>📊 SHU KOPERASI ARFA V3 FIX</h1><p>AG + Jasa 20% Auto + PDF</p></div>
+<div style="display:flex;gap:8px"><button class="btn btn-orange" onclick="fixJasaNol()" style="width:auto;padding:8px 12px;font-size:9px">🔧 Fix Jasa 0</button><button class="btn btn-green" onclick="exportPDF()" style="width:auto;padding:8px 14px">📄 PDF</button></div>
+</div>
+
+<div class="card">
+<div class="section-title">💰 Ringkasan Aset vs Pendapatan FIX 20%</div>
+<div class="grid4">
+<div class="box yellow"><small>Pokok Dicairkan (ASET)</small><b id="pokokTagih">Rp 0</b></div>
+<div class="box"><small>Jasa Ditagih (Akrual) 20%</small><b id="jasaTagih">Rp 0</b></div>
+<div class="box green"><small>Jasa Dibayar (Cash)</small><b id="jasaBayar">Rp 0</b></div>
+<div class="box red"><small>Jasa Belum (Piutang)</small><b id="jasaBelum">Rp 0</b></div>
+</div>
+<div class="grid3" style="margin-top:10px">
+<div class="box blue"><small>SHU Laporan (Dinas)</small><b id="shuLaporan">Rp 0</b><small>Jasa Tagih - Beban</small></div>
+<div class="box green"><small>SHU Bagi (Dibagikan)</small><b id="shuBagi">Rp 0</b><small>Jasa Bayar - Beban</small></div>
+<div class="box"><small>Beban Operasional</small><b id="bebanTxt">Rp 0</b><small id="bebanRincian" style="font-size:8px;color:#64748b">Kas Rp 0</small><input id="inputBeban" type="number" placeholder="Tambah manual" style="margin-top:6px"></div>
+</div>
+</div>
+
+<div class="card">
+<div class="section-title">⚙️ Setting Pembagian</div>
+<div class="grid4">
+<div><label>Cadangan 20%</label><input id="pCad" value="20" type="number"></div>
+<div><label>Jasa Modal 15%</label><input id="pModal" value="15" type="number"></div>
+<div><label>Jasa Usaha 25%</label><input id="pUsaha" value="25" type="number"></div>
+<div><label>Pengurus 10%</label><input id="pPeng" value="10" type="number"></div>
+</div>
+<div class="grid4" style="margin-top:8px">
+<div><label>Sosial 10%</label><input id="pSos" value="10" type="number"></div>
+<div><label>Pendidikan 10%</label><input id="pDid" value="10" type="number"></div>
+<div><label>Operasional 10%</label><input id="pOps" value="10" type="number"></div>
+<div><label>&nbsp;</label><button class="btn btn-blue" onclick="hitung()">🔄 Hitung</button></div>
+</div>
+<div id="hasilBagi" style="margin-top:12px"></div>
+</div>
+
+<div class="card">
+<div class="section-title">👤 SHU Bagi Per Anggota (Tanpa Desimal) <span style="margin-left:auto"><button class="btn btn-dark" onclick="exportPDF()" style="padding:6px 10px;font-size:9px;width:auto">📄 Cetak PDF Anggota</button></span></div>
+<div class="table-wrap"><table><thead><tr><th>AG - Nama</th><th>Simpanan Pokok+Wajib</th><th>Jasa Dibayar</th><th>Jasa Belum</th><th>SHU Modal</th><th>SHU Usaha</th><th>Total SHU</th></tr></thead><tbody id="tbody"></tbody></table></div>
+</div>
+
+<div class="card"><div class="section-title">📋 Piutang Belum Lunas FIX JASA</div><div id="listPiutang"></div></div>
+
+<script>
+const db=firebase.initializeApp({databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com"}).database();
+function bulatRibu(n){ return Math.round(Number(n||0)/1000)*1000; }
+function rupiah(n){ return "Rp "+bulatRibu(n).toLocaleString("id-ID",{maximumFractionDigits:0}); }
+function angka(n){ return bulatRibu(n).toLocaleString("id-ID",{maximumFractionDigits:0}); }
+function norm(v){return String(v||"").trim().toUpperCase();}
+function getJasaFix(p){
+  let jasa = Number(p.jasa||0);
+  if(jasa===0 && Number(p.jumlah||0)>0){
+    jasa = Math.round(Number(p.jumlah||0)*0.2);
+  }
+  return jasa;
+}
+function getKodeAG(agObj){
+  if(!agObj) return "-";
+  return agObj.idAnggota || agObj.kode || agObj.id || "-";
+}
+
+let anggota={}, pinjaman={}, angsuran={}, simpanan={}, kasTransaksi={}, lastData={};
+
+db.ref("anggota").on("value", s=>{ anggota={}; s.forEach(d=>{anggota[d.key]=d.val()}); hitung(); });
+db.ref("pinjaman").on("value", s=>{ pinjaman={}; s.forEach(d=>{pinjaman[d.key]={key:d.key,...d.val()}}); hitung(); });
+db.ref("angsuran").on("value", s=>{ angsuran={}; s.forEach(d=>{angsuran[d.key]=d.val()}); hitung(); });
+db.ref("simpanan").on("value", s=>{ simpanan={}; s.forEach(d=>{simpanan[d.key]=d.val()}); hitung(); });
+db.ref("kas/transaksi").on("value", s=>{ kasTransaksi={}; s.forEach(d=>{kasTransaksi[d.key]=d.val()}); hitung(); });
+db.ref("kas").on("value", s=>{
+  s.forEach(d=>{
+    const v=d.val();
+    if(v && v.jumlah && (String(v.tipe).toLowerCase()==="keluar" || String(v.kategori||"").toLowerCase().includes("beban"))){
+      kasTransaksi[d.key]=v;
+    }
+  });
+  hitung();
+});
+
+function hitung(){
+ if(!Object.keys(pinjaman).length) return;
+ let totalPokokTagih=0, totalJasaTagih=0;
+ Object.values(pinjaman).forEach(p=>{ if(Number(p.jumlah||0)<=0) return; totalPokokTagih+=Number(p.jumlah||0); totalJasaTagih+=getJasaFix(p); });
+ const bayarMap=new Map();
+ Object.values(pinjaman).forEach(p=>{
+   bayarMap.set(p.key,{pokok:0,jasa:0,data:p});
+   if(p.nomor) bayarMap.set(norm(p.nomor),{pokok:0,jasa:0,data:p});
+ });
+ let totalJasaBayar=0;
+ Object.values(angsuran).forEach(a=>{
+   const pid=String(a.pinjamanId||"").trim();
+   const idPin=norm(a.idPinjaman||"");
+   let t=bayarMap.get(pid) || bayarMap.get(idPin) || bayarMap.get(norm(pid));
+   if(t){ t.pokok+=Number(a.pokok||0); t.jasa+=Number(a.jasa||0); totalJasaBayar+=Number(a.jasa||0); }
+ });
+ const totalJasaBelum=Math.max(0,totalJasaTagih-totalJasaBayar);
+
+ let bebanKas=0;
+ Object.values(kasTransaksi).forEach(k=>{
+   if(!k) return;
+   const tipe=String(k.tipe||"").toLowerCase();
+   const kat=String(k.kategori||"").toLowerCase();
+   if(tipe!=="keluar" && tipe!=="biaya" &&!kat.includes("beban") &&!kat.includes("biaya")) return;
+   if(["pinjaman","simpanan","pencairan","modal","shu","transfer","angsuran"].some(x=>kat.includes(x))) return;
+   bebanKas+=Number(k.jumlah||0);
+ });
+ const bebanManual=Number(document.getElementById("inputBeban").value||0);
+ const totalBeban=bulatRibu(bebanKas+bebanManual);
+ const shuLaporan=bulatRibu(Math.max(0,totalJasaTagih-totalBeban));
+ const shuBagi=bulatRibu(Math.max(0,totalJasaBayar-totalBeban));
+
+ document.getElementById("pokokTagih").innerText=rupiah(totalPokokTagih);
+ document.getElementById("jasaTagih").innerText=rupiah(totalJasaTagih);
+ document.getElementById("jasaBayar").innerText=rupiah(totalJasaBayar);
+ document.getElementById("jasaBelum").innerText=rupiah(totalJasaBelum);
+ document.getElementById("bebanTxt").innerHTML=`${rupiah(totalBeban)}`;
+ document.getElementById("bebanRincian").innerText=`Kas ${rupiah(bebanKas)} + Manual ${rupiah(bebanManual)}`;
+ document.getElementById("shuLaporan").innerText=rupiah(shuLaporan);
+ document.getElementById("shuBagi").innerText=rupiah(shuBagi);
+
+ const pCad=Number(document.getElementById("pCad").value||0)/100;
+ const pMod=Number(document.getElementById("pModal").value||0)/100;
+ const pUsa=Number(document.getElementById("pUsaha").value||0)/100;
+ const pPeng=Number(document.getElementById("pPeng").value||0)/100;
+ const nCad=bulatRibu(shuBagi*pCad), nMod=bulatRibu(shuBagi*pMod), nUsa=bulatRibu(shuBagi*pUsa), nPeng=bulatRibu(shuBagi*pPeng);
+
+ document.getElementById("hasilBagi").innerHTML=`<div class="grid4"><div class="box"><small>Cadangan</small><b>${rupiah(nCad)}</b></div><div class="box green"><small>Jasa Modal</small><b>${rupiah(nMod)}</b></div><div class="box green"><small>Jasa Usaha</small><b>${rupiah(nUsa)}</b></div><div class="box"><small>Pengurus</small><b>${rupiah(nPeng)}</b></div></div><div class="alert alert-green" style="margin-top:10px">SHU Laporan ${rupiah(shuLaporan)} | SHU Bagi ${rupiah(shuBagi)} | Beban ${rupiah(totalBeban)} (Kas ${rupiah(bebanKas)}) | Piutang ${rupiah(totalJasaBelum)} TIDAK dibagi - JASA AUTO 20%</div>`;
+
+ const simPerKey=new Map(), jasaBayarPerKey=new Map(), jasaBelumPerKey=new Map();
+ Object.keys(anggota).forEach(k=>{ simPerKey.set(k,0); jasaBayarPerKey.set(k,0); jasaBelumPerKey.set(k,0); });
+ Object.values(simpanan).forEach(s=>{
+   let ak=s.idAnggota||s.anggotaId||""; let real=anggota[ak]?ak : (Object.entries(anggota).find(([k,v])=> (v.idAnggota===ak || v.id===ak))?.[0]||"");
+   if(real && simPerKey.has(real)){
+     const jenis=String(s.jenis||"").toLowerCase();
+     if(jenis.includes("pokok")||jenis.includes("wajib")) simPerKey.set(real, simPerKey.get(real)+Number(s.jumlah||0));
+   }
+ });
+ Object.values(angsuran).forEach(a=>{
+   let ak=a.idAnggota||a.anggotaId||a.anggotaId||""; 
+   let real=anggota[ak]?ak : (Object.entries(anggota).find(([k,v])=> v.idAnggota===ak || v.id===ak)?.[0]||"");
+   if(!real){
+     const p=pinjaman[a.pinjamanId]; if(p){ real=p.idAnggota; if(anggota[real]) {} else real=Object.keys(anggota).find(k=>anggota[k].idAnggota===p.kodeAnggota)||""; }
+   }
+   if(real && jasaBayarPerKey.has(real)) jasaBayarPerKey.set(real, jasaBayarPerKey.get(real)+Number(a.jasa||0));
+ });
+ Object.values(pinjaman).forEach(p=>{
+   let ak=p.idAnggota||""; let real=anggota[ak]?ak : (Object.entries(anggota).find(([k,v])=>v.idAnggota===p.kodeAnggota || v.id===ak)?.[0]||"");
+   if(!real) real=ak;
+   if(!jasaBelumPerKey.has(real)) return;
+   const bayar=bayarMap.get(p.key)||{jasa:0};
+   const jasaFix=getJasaFix(p);
+   const belum=Math.max(0, jasaFix-bayar.jasa);
+   jasaBelumPerKey.set(real, (jasaBelumPerKey.get(real)||0)+belum);
+ });
+ const totSim=[...simPerKey.values()].reduce((a,b)=>a+b,0);
+ const totJasaBayarAll=[...jasaBayarPerKey.values()].reduce((a,b)=>a+b,0);
+
+ let rows="", rowsForPDF=[];
+ Object.entries(anggota).forEach(([k,ag])=>{
+   const sim=simPerKey.get(k)||0, jb=jasaBayarPerKey.get(k)||0, jblm=jasaBelumPerKey.get(k)||0;
+   if(sim===0 && jb===0 && jblm===0) return;
+   const kodeAG = ag.idAnggota || ag.id || k.slice(0,6);
+   const shuM=bulatRibu(totSim? nMod*sim/totSim :0);
+   const shuU=bulatRibu(totJasaBayarAll? nUsa*jb/totJasaBayarAll :0);
+   const tot=shuM+shuU;
+   rows+=`<tr><td><b>${kodeAG}</b><br><span style="font-size:9px;color:#64748b">${ag.nama||""}</span></td><td class="money">${rupiah(sim)}</td><td class="money" style="color:#10b981">${rupiah(jb)}</td><td class="money" style="color:#ef4444">${rupiah(jblm)}</td><td class="money">${rupiah(shuM)}</td><td class="money">${rupiah(shuU)}</td><td class="money"><b>${rupiah(tot)}</b></td></tr>`;
+   rowsForPDF.push({id:kodeAG, nama:ag.nama||"", sim, jb, jblm, shuM, shuU, tot});
+ });
+ document.getElementById("tbody").innerHTML=rows||`<tr><td colspan="7" style="text-align:center;padding:20px">Belum ada data</td></tr>`;
+
+ let piutangHtml="";
+ Object.values(pinjaman).forEach(p=>{
+   const b=bayarMap.get(p.key)||{pokok:0,jasa:0};
+   const jasaFix=getJasaFix(p);
+   const sisaP=Math.max(0,Number(p.jumlah||0)-b.pokok), sisaJ=Math.max(0,jasaFix-b.jasa);
+   if(sisaP>0||sisaJ>0){
+     const ag=anggota[p.idAnggota]||{};
+     const kodeAG = p.kodeAnggota || ag.idAnggota || ag.id || p.idAnggota?.slice(0,6) || "-";
+     const namaAG = ag.nama || p.nama || "";
+     piutangHtml+=`<div class="piutang-item"><div><div class="piutang-title">${p.nomor||p.key.slice(0,6)} - ${kodeAG} ${namaAG}</div><div class="piutang-desc">Pokok ${rupiah(sisaP)} | Jasa ${rupiah(sisaJ)} ${Number(p.jasa||0)===0?'<span style="color:#f59e0b">(auto 20%)</span>':''}</div></div><span class="badge badge-belum">BELUM</span></div>`;
+   }
+ });
+ document.getElementById("listPiutang").innerHTML=piutangHtml||`<div style="text-align:center;padding:20px;color:#10b981">✅ Semua Lunas</div>`;
+
+ lastData={totalPokokTagih,totalJasaTagih,totalJasaBayar,totalJasaBelum,totalBeban,bebanKas,bebanManual,shuLaporan,shuBagi,nCad,nMod,nUsa,nPeng,rowsForPDF};
+}
+document.getElementById("inputBeban").addEventListener("input",hitung);
+
+function fixJasaNol(){
+  if(!confirm("Perbaiki semua pinjaman yang jasa nya 0 jadi 20% di database?")) return;
+  let upd={}; let c=0;
+  Object.values(pinjaman).forEach(p=>{
+    if(Number(p.jasa||0)===0 && Number(p.jumlah||0)>0){
+      upd[`/pinjaman/${p.key}/jasa`] = Math.round(Number(p.jumlah||0)*0.2);
+      c++;
+    }
+  });
+  if(c===0) return alert("Semua jasa sudah 20% bos ✅");
+  db.ref().update(upd).then(()=> alert("✅ "+c+" pinjaman di-fix jasa 20% - reload")).catch(e=>alert("Gagal: "+e.message));
+}
+
+function exportPDF(){
+ const {jsPDF}=window.jspdf;
+ const doc=new jsPDF("l","mm","a4");
+ const d=lastData;
+ if(!d.rowsForPDF){ alert("Hitung dulu!"); return; }
+ doc.setFont("helvetica","bold"); doc.setFontSize(14);
+ doc.text("LAPORAN SHU KOPERASI ARFA V3 - FIX JASA 20% + AG", 148, 12, {align:"center"});
+ doc.setFontSize(9); doc.setFont("helvetica","normal");
+ doc.text(`Pokok Cair (Aset): ${angka(d.totalPokokTagih)} | Jasa Tagih (Akrual) FIX 20%: ${angka(d.totalJasaTagih)} | Jasa Bayar (Cash): ${angka(d.totalJasaBayar)} | Piutang Jasa: ${angka(d.totalJasaBelum)}`, 14, 18);
+ doc.text(`Beban: Kas ${angka(d.bebanKas)} + Manual ${angka(d.bebanManual)} = ${angka(d.totalBeban)} | SHU Laporan: ${angka(d.shuLaporan)} | SHU Bagi: ${angka(d.shuBagi)}`, 14, 23);
+ doc.text(`Pembagian: Cadangan ${angka(d.nCad)} | Modal ${angka(d.nMod)} | Usaha ${angka(d.nUsa)} | Pengurus ${angka(d.nPeng)}`, 14, 28);
+ doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString("id-ID")} - Tanpa Desimal, Bulat Ribu, JASA AUTO 20%`, 14, 33);
+ let y=40;
+ doc.setFont("helvetica","bold"); doc.setFontSize(8);
+ const headers=["AG","Nama","Simp Pokok+Wajib","Jasa Dibayar","Jasa Belum","SHU Modal","SHU Usaha","Total SHU"];
+ const colX=[14,28,60,90,115,140,165,190];
+ headers.forEach((h,i)=>{ doc.text(h, colX[i], y); });
+ doc.line(14,y+1,283,y+1);
+ y+=6;
+ doc.setFont("helvetica","normal");
+ d.rowsForPDF.forEach(r=>{
+   if(y>190){ doc.addPage(); y=15; }
+   doc.text(String(r.id), colX[0], y);
+   doc.text(String(r.nama).substring(0,18), colX[1], y);
+   doc.text(angka(r.sim), colX[2], y, {align:"right"});
+   doc.text(angka(r.jb), colX[3], y, {align:"right"});
+   doc.text(angka(r.jblm), colX[4], y, {align:"right"});
+   doc.text(angka(r.shuM), colX[5], y, {align:"right"});
+   doc.text(angka(r.shuU), colX[6], y, {align:"right"});
+   doc.text(angka(r.tot), colX[7], y, {align:"right"});
+   y+=5;
+ });
+ y+=4;
+ doc.setFont("helvetica","bold");
+ doc.text(`TOTAL SHU BAGI CASH: ${rupiah(d.shuBagi)} | Piutang Jasa TIDAK DIBAGI: ${rupiah(d.totalJasaBelum)}`, 14, y);
+ doc.save(`SHU_ARFA_V3_FIX_${new Date().toISOString().slice(0,10)}.pdf`);
+}
+</script>
+</body>
+</html>

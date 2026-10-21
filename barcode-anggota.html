@@ -51,9 +51,11 @@ import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase
 import {getDatabase,ref,get,set,push,update,remove} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 const firebaseConfig={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
 const app=initializeApp(firebaseConfig); const db=getDatabase(app);
-const BASE_URL="https://koperasiarfa.my.id"; const SCAN_PAGE=BASE_URL+"/cari-anggota.html";
-function getScanUrl(barcode){return SCAN_PAGE+"?scan="+encodeURIComponent(String(barcode||"").trim())}
-let dataAnggota={},editKey=null,currentDetail=null;
+const BASE_URL="https://koperasiarfa.my.id"; const SCAN_PAGE=BASE_URL+"/barcode-cari.html";
+function getScanUrl(barcode){
+  return SCAN_PAGE+"?scan="+encodeURIComponent(barcode)
+}
+ let dataAnggota={},editKey=null,currentDetail=null;
 let pinjamanMap={}, angsuranMap={}, statusMap={};
 window.toggleSidebar=function(){document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active")};
 document.getElementById("overlay").addEventListener("click",toggleSidebar);
@@ -207,6 +209,26 @@ function checkScanParameter(){const params=new URLSearchParams(location.search);
 function escapeHtml(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}
 document.getElementById("modalAnggota").addEventListener("click",function(e){if(e.target===this)closeModal()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeModal()});
-loadAnggota();
+// AUTO BUKA DARI LINK WA ?scan=AG001
+document.addEventListener("DOMContentLoaded", async ()=>{
+  const params = new URLSearchParams(window.location.search);
+  const scan = params.get("scan");
+  if(scan){
+    const kode = decodeURIComponent(scan).trim();
+    // isi input cari
+    const input = document.getElementById("inputCari") || document.getElementById("searchAnggota") || document.querySelector("input[type=text]");
+    if(input) input.value = kode;
+    // tunggu data anggota ke-load, lalu tampilkan detail
+    setTimeout(()=>{
+      if(typeof cariAnggota === "function") cariAnggota(kode);
+      if(typeof filterAnggota === "function") filterAnggota(kode);
+      if(typeof tampilkanDetailByBarcode === "function") tampilkanDetailByBarcode(kode);
+      // kalau ada function checkScanParameter
+      if(typeof checkScanParameter === "function") checkScanParameter();
+    }, 800);
+  }
+});
+ loadAnggota();
+ 
 </script></body>
 </html>

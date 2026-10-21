@@ -7,8 +7,9 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:'Poppins',sans-serif;background:#f1f5f9;font-size:13px}
-header{background:linear-gradient(to right,#1e90ff,#0f3057);color:#fff;padding:12px 16px;position:sticky;top:0;z-index:101}
-.container{padding:14px;max-width:1200px;margin:auto}.card{background:#fff;padding:16px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid #e2e8f0}
+header{background:linear-gradient(135deg,#1e90ff,#0f3057);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:101}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px}
+  .container{padding:14px;max-width:1200px;margin:auto}.card{background:#fff;padding:16px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);border:1px solid #e2e8f0}
 .form-group{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;position:relative}label{font-size:11px;font-weight:600;color:#6b7280}
 input,select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px}
 .btn-primary{width:100%;padding:11px;border:none;border-radius:10px;background:#3b82f6;color:#fff;font-weight:600;cursor:pointer}
@@ -28,7 +29,8 @@ input,select{width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radiu
 </style>
 </head>
 <body>
-<header>PINJAMAN V15 ANTI LUPA 2 BUKTI</header>
+  <header><div class="brand"><img src="img/icon-192.png"><div>PINJAMAN V7.2</div>
+       <div onclick="location.href='dashboard.html'" style="cursor:pointer">🏠</div></div></header>
 <div class="container"><div class="card">
 <h3 style="background:#ffedd5;text-align:center;padding:10px;border-radius:10px;margin-bottom:12px">Pinjaman + Bukti WA Anti Lupa</h3>
 <div style="background:#dcfce7;padding:10px;border-radius:10px;font-size:11px;margin-bottom:12px">✅ V15: WAJIB Upload Chat WA Pengajuan sebagai bukti anti lupa pinjam</div>
@@ -170,7 +172,7 @@ window.kirimWAPinjaman=(id)=>{
   if(!hp) return showAlert("No HP kosong");
   const jasa=Number(p.jasa||0); const total=Number(p.jumlah||0)+jasa;
   const tgl=new Date(Number(p.tanggal)).toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
-  const pesan=`*KOPERASI ARFA DRIVER*%0A*BUKTI PENCAIRAN PINJAMAN*%0A%0ANo Pinjam: ${p.nomor}%0ATanggal: ${tgl}%0ANama: ${p.nama}%0ANo Anggota: ${ag.idAnggota||'-'}%0AMetode: ${(p.sumberKas||'').toUpperCase()}%0A%0A*RINCIAN*%0AJumlah Pinjam: Rp ${format(p.jumlah)}%0AJasa 20%: Rp ${format(jasa)}%0A%0A*TOTAL TERIMA: Rp ${format(p.jumlah)}*%0ATotal Kembali: Rp ${format(total)}%0A${p.ket?`Ket: ${p.ket}%0A`:''}%0A- Simpan sebagai bukti sah -%0ATerima kasih`;
+  const pesan=`*KOPERASI ARFA Sejahtera*%0A*BUKTI PENCAIRAN PINJAMAN*%0A%0ANo Pinjam: ${p.nomor}%0ATanggal: ${tgl}%0ANama: ${p.nama}%0ANo Anggota: ${ag.idAnggota||'-'}%0AMetode: ${(p.sumberKas||'').toUpperCase()}%0A%0A*RINCIAN*%0AJumlah Pinjam: Rp ${format(p.jumlah)}%0AJasa 20%: Rp ${format(jasa)}%0A%0A*TOTAL TERIMA: Rp ${format(p.jumlah)}*%0ATotal Kembali: Rp ${format(total)}%0A${p.ket?`Ket: ${p.ket}%0A`:''}%0A- Simpan sebagai bukti sah -%0ATerima kasih`;
   window.open(`https://wa.me/${hp}?text=${pesan}`,'_blank');
 }
 window.kirimWATemp=()=>{ if(!tempNotaId) return showAlert("Buat nota dulu"); kirimWAPinjaman(tempNotaId); }
@@ -253,7 +255,7 @@ window.cetakNota=async id=>{
   function dashedLine(yy){doc.setLineDash([1.5,1.5],0); doc.line(4,yy,76,yy); doc.setLineDash([]);}
   function dashedRect(){doc.setLineDash([1.2,1.2],0); doc.rect(2,2,76,285); doc.setLineDash([]);}
   function row(l,r,bold=false,size=9){doc.setFontSize(size); doc.setFont("helvetica",bold?"bold":"normal"); doc.text(l,6,y); doc.text(r,74,y,{align:"right"}); y+=5;}
-  dashedRect(); doc.setFontSize(13); doc.setFont("helvetica","bold"); doc.text("KOPERASI ARFA DRIVER",40,y,{align:"center"}); y+=6; doc.setFontSize(11); doc.text("BUKTI PENCAIRAN PINJAMAN",40,y,{align:"center"}); y+=8; dashedLine(y); y+=7;
+  dashedRect(); doc.setFontSize(13); doc.setFont("helvetica","bold"); doc.text("KOPERASI ARFA Sejahtera",40,y,{align:"center"}); y+=6; doc.setFontSize(11); doc.text("BUKTI PENCAIRAN PINJAMAN",40,y,{align:"center"}); y+=8; dashedLine(y); y+=7;
   const ag=dataAnggota[p.idAnggota]||{}; row("No Pinjam", p.nomor||"-"); row("Tanggal", tglIndo(p.tanggal)); row("Nama", p.nama||"-"); row("No Anggota", ag.idAnggota||"-"); row("Metode", (p.sumberKas||"-").toUpperCase()); y+=2; dashedLine(y); y+=7;
   doc.setFontSize(11); doc.setFont("helvetica","bold"); doc.text("RINCIAN",6,y); y+=6; doc.setFontSize(9); doc.setFont("helvetica","normal");
   const jasa=Number(p.jasa??Math.round(Number(p.jumlah||0)*0.2)); row("Jumlah Pinjam", rupiah(p.jumlah)); row("Jasa 20%", rupiah(jasa)); y+=2; dashedLine(y); y+=8;

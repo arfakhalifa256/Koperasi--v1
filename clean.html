@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cleaner Kas - Hapus Kode Acak</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+body{font-family:Poppins,sans-serif;background:#f1f5f9;padding:16px;max-width:700px;margin:auto;font-size:13px}
+.card{background:#fff;padding:16px;border-radius:12px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #e2e8f0}
+.btn{padding:12px 16px;border:none;border-radius:8px;font-weight:700;cursor:pointer;width:100%}
+.btn-primary{background:#1e90ff;color:#fff}.btn-danger{background:#dc2626;color:#fff}
+.log{background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;max-height:400px;overflow:auto;font-size:11px;white-space:pre-wrap;margin-top:12px}
+.badge{background:#dbeafe;color:#1e40af;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:800}
+</style>
+</head>
+<body>
+<div class="card">
+<h3 style="margin-bottom:8px">🧹 Cleaner Kas - Hapus Kode Acak (-P3FDaQU)</h3>
+<p style="color:#64748b;font-size:11px;line-height:1.5">
+Tool ini akan memperbaiki semua transaksi kas yang keterangannya masih ada kode acak Firebase.<br>
+Contoh: <code>Angsuran Hendra -P3FDaQU</code> → <code>Angsuran Hendra (PJ028)</code>
+</p>
+<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div style="background:#f8fafc;border:1px solid #e2e8f0;padding:8px;border-radius:8px;text-align:center">Total Kas: <b id="totalKas">0</b></div>
+<div style="background:#fee2e2;border:1px solid #fca5a5;padding:8px;border-radius:8px;text-align:center">Kotor: <b id="totalKotor">0</b></div>
+</div>
+<button class="btn btn-primary" id="btnScan" style="margin-top:12px">🔍 Scan Data Kotor</button>
+<button class="btn btn-danger" id="btnClean" style="margin-top:8px;display:none">🧹 Bersihkan Sekarang (Update Firebase)</button>
+<div id="log" class="log" style="display:none"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const firebaseConfig={apiKey:"AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",authDomain:"arfa-c7dee.firebaseapp.com",databaseURL:"https://arfa-c7dee-default-rtdb.firebaseio.com",projectId:"arfa-c7dee"};
+const app=initializeApp(firebaseConfig); const db=getDatabase(app);
+
+let dataKas={}, dataPinjaman={}, dataAngsuran={}, dataKotor=[];
+const logEl=document.getElementById("log");
+function log(t){ logEl.style.display="block"; logEl.textContent += t+"\n"; logEl.scrollTop=logEl.scrollHeight; }
+function extractPJ(text){ const m=String(text||"").match(/\(?(PJ\d+)\)?/i); return m?m[1].toUpperCase():""; }
+function isKotor(ket){ return /\s-([A-Za-z0-9_-]{6,})\b/.test(ket) || /\(\s*-[A-Za-z0-9_-]{5,}\s*\)/.test(ket); }
+
+function getPJ(item){
+  let pj=extractPJ(item.keterangan||"");
+  if(pj) return pj;
+  if(item.idPinjaman && String(item.idPinjaman).toUpperCase().startsWith("PJ")) return item.idPinjaman.toUpperCase();
+  if(item.anggotaId){
+    const idUpper=String(item.anggotaId).toUpperCase();
+    const list=Object.values(dataAngsuran).filter(a=>String(a.idAnggota||a.anggotaId||"").toUpperCase()===idUpper);
+    if(list.length){
+      let closest=list[0]; let diff=Math.abs(Number(item.tanggal||0)-Number(closest.tanggal||0));
+      list.forEach(a=>{ const d=Math.abs(Number(item.tanggal||0)-Number(a.tanggal||0)); if(d<diff){diff=d; closest=a;}});
+      if(closest.idPinjaman && String(closest.idPinjaman).toUpperCase().startsWith("PJ")) return closest.idPinjaman.toUpperCase();
+      if(closest.pinjamanId && dataPinjaman[closest.pinjamanId]) return dataPinjaman[closest.pinjamanId].idPinjaman||"";
+    }
+    const milik=Object.entries(dataPinjaman).filter(([k,v])=>String(v.idAnggota||v.anggotaId||"").toUpperCase()===idUpper).sort((a,b)=>Number(b[1].tanggal||0)-Number(a[1].tanggal||0));
+    if(milik.length) return milik[0][1].idPinjaman||"";
+  }
+  if(item.pinjamanId && dataPinjaman[item.pinjamanId]) return dataPinjaman[item.pinjamanId].idPinjaman||"";
+  return "";
+}
+
+document.getElementById("btnScan").onclick=async()=>{
+  logEl.textContent=""; logEl.style.display="block";
+  log("⏳ Load data...");
+  const [sKas,sPin,sAng]=await Promise.all([get(ref(db,"kas/transaksi")),get(ref(db,"pinjaman")),get(ref(db,"angsuran"))]);
+  dataKas=sKas.val()||{}; dataPinjaman=sPin.val()||{}; dataAngsuran=sAng.val()||{};
+  document.getElementById("totalKas").innerText=Object.keys(dataKas).length;
+  dataKotor=[];
+  Object.entries(dataKas).forEach(([k,v])=>{
+    if(isKotor(v.keterangan||"")){
+      const pj=getPJ(v);
+      dataKotor.push({key:k, old:v.keterangan, pj, nama:v.namaAnggota||"-", kategori:v.kategori});
+    }
+  });
+  document.getElementById("totalKotor").innerText=dataKotor.length;
+  if(dataKotor.length===0){ log("✅ Tidak ada data kotor! Semua sudah bersih PJ."); return; }
+  log(`🔎 Ditemukan ${dataKotor.length} data kotor:`);
+  dataKotor.forEach((d,i)=>{
+    log(`${i+1}. ${d.old} → PJ: ${d.pj||'TIDAK KETEMU'} [${d.kategori}]`);
+  });
+  document.getElementById("btnClean").style.display="block";
+  log("\nSiap dibersihkan. Klik tombol merah.");
+};
+
+document.getElementById("btnClean").onclick=async()=>{
+  if(!confirm(`Yakin bersihkan ${dataKotor.length} transaksi?`)) return;
+  document.getElementById("btnClean").disabled=true;
+  log("\n🚀 Mulai membersihkan...");
+  let sukses=0;
+  for(const item of dataKotor){
+    let newKet=item.old.replace(/\s-([A-Za-z0-9_-]{6,})\b/g,"").replace(/\(\s*-[A-Za-z0-9_-]{5,}\s*\)/g,"").trim().replace(/\s{2,}/g," ");
+    if(item.pj){
+      // hapus PJ lama jika ada biar tidak dobel
+      newKet=newKet.replace(new RegExp("\\(?\\s*"+item.pj+"\\s*\\)?","i"),"").trim().replace(/\s{2,}/g," ");
+      // format final
+      if(newKet.toLowerCase().includes("angsuran")){
+        newKet=`Angsuran ${item.nama} (${item.pj})`;
+      }else if(newKet.toLowerCase().includes("jasa")){
+        newKet=`Jasa ${item.nama} (${item.pj})`;
+      }else{
+        newKet=`${newKet} (${item.pj})`;
+      }
+    }
+    try{
+      await update(ref(db,"kas/transaksi/"+item.key),{keterangan:newKet});
+      log(`✅ ${item.old} → ${newKet}`);
+      sukses++;
+    }catch(e){ log(`❌ Gagal ${item.key}: ${e.message}`); }
+  }
+  log(`\n🎉 Selesai! ${sukses}/${dataKotor.length} berhasil dibersihkan.`);
+  document.getElementById("btnClean").disabled=false;
+  alert(`Selesai ${sukses} data dibersihkan! Refresh halaman kas.html`);
+};
+</script>
+</body>
+</html>

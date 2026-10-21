@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set Modal Awal</title>
+<style>
+  body { font-family: system-ui; padding: 20px; background: #f5f5f5; }
+  .box { background: white; padding: 20px; border-radius: 12px; max-width: 400px; margin: auto; }
+  input, button { width: 100%; padding: 12px; margin-top: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box; }
+  button { background: #1976d2; color: white; border: none; cursor: pointer; }
+  button:disabled { background: #aaa; }
+  .status { margin-top: 15px; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; display: none; }
+  .ok { background: #e8f5e9; color: #2e7d32; display: block; }
+  .err { background: #ffecec; color: #d32f2f; display: block; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h3>Set Modal Awal Koperasi</h3>
+  
+  <label>Modal Awal (Rp)</label>
+  <input type="number" id="modalAwal" placeholder="1320000">
+  
+  <label>SHU Ditahan (Rp)</label>
+  <input type="number" id="shuDitahan" placeholder="0" value="0">
+  
+  <button id="btnSimpan">Simpan ke Firebase</button>
+  
+  <div id="status" class="status"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// GANTI DENGAN CONFIG FIREBASE KAMU - WAJIB
+const firebaseConfig = {
+  apiKey: "AIzaSyDd0s73-qW2uiOlBWR-afybFZzMafCHeSo",
+  authDomain: "arfa-c7dee.firebaseapp.com",
+  databaseURL: "https://arfa-c7dee-default-rtdb.firebaseio.com",
+  projectId: "arfa-c7dee",
+  storageBucket: "arfa-c7dee.firebasestorage.app",
+  messagingSenderId: "468058520812",
+  appId: "1:468058520812:web:f9cbc82fe7e88ecda9b9c9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const btn = document.getElementById('btnSimpan');
+const status = document.getElementById('status');
+
+btn.addEventListener('click', async () => {
+  const modalAwal = parseInt(document.getElementById('modalAwal').value) || 0;
+  const shuDitahan = parseInt(document.getElementById('shuDitahan').value) || 0;
+  
+  if (modalAwal === 0) {
+    alert('Isi dulu Modal Awal nya');
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.innerText = 'Menyimpan...';
+  status.style.display = 'none';
+  
+  try {
+    await set(ref(db, 'global'), {
+      modalAwal: modalAwal,
+      shuDitahan: shuDitahan
+    });
+    
+    status.className = 'status ok';
+    status.innerText = `✓ Berhasil disimpan! Modal Awal: Rp ${modalAwal.toLocaleString('id-ID')}`;
+    alert('Data berhasil disimpan ke Firebase');
+    console.log('Data tersimpan:', {modalAwal, shuDitahan});
+    
+  } catch (e) {
+    status.className = 'status err';
+    status.innerText = `✗ Gagal: ${e.message}`;
+    alert('Gagal simpan: ' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.innerText = 'Simpan ke Firebase';
+  }
+});
+</script>
+
+</body>
+</html>

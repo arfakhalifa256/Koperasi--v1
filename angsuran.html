@@ -2,26 +2,24 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angsuran V7 Searchable Riwayat + WA</title>
+<title>Angsuran V7.2 </title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
 body{background:#ffedd5;padding-bottom:90px;font-size:13px}
-header{background:linear-gradient(135deg,#1e90ff,#0f3057);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;position:sticky;top:0;z-index:101}
-.container{padding:15px;max-width:900px;margin:auto}.card{background:#fff;padding:18px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+header{background:linear-gradient(135deg,#1e90ff,#0f3057);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:101}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700}.brand img{width:36px;height:36px;border-radius:50%;background:#fff;padding:2px}
+
+  .container{padding:15px;max-width:900px;margin:auto}.card{background:#fff;padding:18px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .form-group{margin-bottom:12px}label{font-weight:600;font-size:10px;margin-bottom:5px;display:block}
 input,select{width:100%;padding:11px;border:1px solid #e2e8f0;border-radius:10px;font-size:13px}
 button{padding:11px 14px;border:none;border-radius:10px;font-weight:600;cursor:pointer;font-size:11px;outline:none}
 .btn-primary{background:#1e90ff;color:#fff}.btn-danger{background:#ef4444;color:#fff}.btn-warning{background:#f59e0b;color:#fff}.btn-success{background:#10b981;color:#fff}.btn-dark{background:#0f3057;color:#fff}.btn-wa{background:#25D366;color:#fff}
-
-/* FIX TOMBOL RIWAYAT BOS - GRID RAPI */
 .list{display:flex;flex-direction:column;gap:12px}
 .item{background:#fff;padding:14px;border-radius:14px;border:1.5px solid #e2e8f0;box-shadow:0 2px 6px rgba(0,0,0,.04)}
 .item-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
 .item-actions button{border:none;border-radius:10px;padding:10px 6px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.item-actions button:active{transform:scale(.96)}
-
 .toast{position:fixed;bottom:20px;right:20px;background:#10b981;color:#fff;padding:12px 18px;border-radius:10px;opacity:0;transition:.3s;z-index:9999}.toast.show{opacity:1}.toast.error{background:#dc2626}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;justify-content:center;align-items:center;z-index:2000;padding:12px}.modal.show{display:flex}
 .modal-content{background:#fff;width:100%;max-width:600px;border-radius:16px;padding:16px;max-height:92vh;overflow:auto;display:flex;flex-direction:column}
@@ -32,11 +30,10 @@ button{padding:11px 14px;border:none;border-radius:10px;font-weight:600;cursor:p
 </style>
 </head>
 <body>
-<header><div>ANGSURAN V7 SEARCHABLE + WA</div><div onclick="location.href='dashboard.html'">🏠</div></header>
+<header><div class="brand"><img src="img/icon-192.png"><div>ANGSURAN V7.2</div><div style="display:flex;gap:8px;align-items:center"><button onclick="perbaikiIdAngsuranLama()" style="background:#f59e0b;padding:6px 10px;border-radius:8px;border:none;color:#fff;font-size:10px;font-weight:700">🔧 Fix AG Lama</button><div onclick="location.href='dashboard.html'" style="cursor:pointer">🏠</div></div></header>
 <div class="container"><div class="card">
-<h2 style="text-align:center;font-size:14px;background:#ffedd5;padding:10px;border-radius:10px">Input Angsuran + Nota + WA Otomatis</h2>
-<div style="background:#dcfce7;padding:10px;border-radius:10px;font-size:10px;margin:10px 0">✅ V7: Riwayat Searchable Peminjam + Filter + Tombol Fix Anti Kotak Hitam</div>
-<div class="form-group" style="position:relative"><label>Pilih Peminjam (ketik nama)</label><input type="text" id="pinjamanSearch" placeholder="🔍 Ketik nama..." autocomplete="off" style="font-weight:600"><div id="pinjamanList" style="position:absolute;top:66px;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;max-height:240px;overflow:auto;display:none;z-index:100;box-shadow:0 8px 20px rgba(0,0,0,.15)"></div><input type="hidden" id="pinjamanSelect"><div id="pinjamanTerpilih" style="margin-top:8px;background:#eff6ff;padding:8px 10px;border-radius:8px;font-size:11px;display:none"></div></div>
+<h2 style="text-align:center;font-size:14px;background:#ffedd5;padding:10px;border-radius:10px">Input Angsuran + Nota + WA Otomatis </h2>
+<div class="form-group" style="position:relative"><label>Pilih Peminjam (ketik nama / AG001)</label><input type="text" id="pinjamanSearch" placeholder="🔍 Ketik nama / AG001..." autocomplete="off" style="font-weight:600"><div id="pinjamanList" style="position:absolute;top:66px;left:0;right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;max-height:240px;overflow:auto;display:none;z-index:100;box-shadow:0 8px 20px rgba(0,0,0,.15)"></div><input type="hidden" id="pinjamanSelect"><div id="pinjamanTerpilih" style="margin-top:8px;background:#eff6ff;padding:8px 10px;border-radius:8px;font-size:11px;display:none"></div></div>
 <div class="form-group"><label>Tanggal</label><input type="date" id="tanggal"></div>
 <div class="form-group"><label>Metode</label><select id="metode"><option value="">Pilih</option><option value="cash">Cash</option><option value="bank">Bank / Transfer</option></select></div>
 <div class="form-group"><label>Tagihan Bulan Ini</label><input type="text" id="tagihan" disabled></div>
@@ -50,11 +47,10 @@ button{padding:11px 14px;border:none;border-radius:10px;font-weight:600;cursor:p
 <button id="btnRiwayat" style="width:100%;margin-top:10px;background:#fee2e2;padding:12px;border-radius:10px;border:none">📋 Riwayat Terbaru (<span id="jmlRiwayat">0</span>)</button>
 </div></div>
 
-<!-- MODAL RIWAYAT SEARCHABLE BOS -->
 <div id="modalRiwayat" class="modal"><div class="modal-content">
   <div class="search-box">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h2 style="font-size:16px">Riwayat Angsuran</h2><button id="btnCloseRiwayat" style="background:#ef4444;color:#fff;padding:6px 12px;border-radius:8px;border:none">✕</button></div>
-    <input type="text" id="searchRiwayat" placeholder="🔍 Cari peminjam, No Pinjam..." style="width:100%;padding:12px;border:1.5px solid #3b82f6;border-radius:10px;font-weight:600;background:#eff6ff">
+    <input type="text" id="searchRiwayat" placeholder="🔍 Cari AG001 / nama / No Pinjam..." style="width:100%;padding:12px;border:1.5px solid #3b82f6;border-radius:10px;font-weight:600;background:#eff6ff">
     <div style="display:flex;gap:8px;margin-top:8px">
       <select id="filterTanggal" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e2e8f0;font-size:11px"><option value="">Semua Tanggal</option><option value="today">Hari Ini</option><option value="week">Minggu Ini</option><option value="month">Bulan Ini</option></select>
       <select id="filterMetode" style="flex:1;padding:8px;border-radius:8px;border:1px solid #e2e8f0;font-size:11px"><option value="">Semua Metode</option><option value="cash">Cash</option><option value="bank">Bank</option></select>
@@ -64,7 +60,7 @@ button{padding:11px 14px;border:none;border-radius:10px;font-weight:600;cursor:p
   <div id="listTransaksi" class="list" style="margin-top:12px"></div>
 </div></div>
 
-<div id="modalEditAngsuran" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>✏️ Edit</h2><button id="btnCloseEdit" style="background:#ef4444;color:#fff;padding:6px 12px;border-radius:8px;border:none">✕</button></div><input type="hidden" id="editAngsuranId"><div class="form-group"><label>Nama</label><input type="text" id="editAngsuranNama" disabled></div><div class="form-group"><label>Tanggal</label><input type="date" id="editAngsuranTanggal"></div><div class="form-group"><label>Metode</label><select id="editAngsuranMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div><div class="form-group"><label>Jumlah Bayar</label><input type="text" id="editJumlahBayar"></div><div class="form-group" style="background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px"><label>📎 Bukti</label><div id="editPreviewBukti" style="text-align:center;min-height:60px;background:#fff;border-radius:10px;padding:10px;border:1px solid #fde68a"></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn-primary" id="btnLihatFull" style="flex:1">Lihat</button><button class="btn-success" id="btnSimpanGambar" style="flex:1">Gambar</button><button class="btn-danger" id="btnHapusGambar" style="flex:1">Hapus</button></div><hr style="margin:12px 0"><label style="color:#d97706;font-weight:700">📤 Ganti Bukti Baru</label><input type="file" id="editBuktiTransfer" accept="image/*" style="margin-top:6px;background:#fff"><div id="editPreviewBaru" style="margin-top:8px"></div><input type="hidden" id="editBuktiBase64"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn-primary" id="btnUpdateAngsuran" style="flex:1">💾 Update + Nota + WA</button><button class="btn-danger" id="btnHapusAngsuran" style="flex:1">🗑️ Hapus</button></div></div></div>
+<div id="modalEditAngsuran" class="modal"><div class="modal-content"><div style="display:flex;justify-content:space-between"><h2>✏️ Edit</h2><button id="btnCloseEdit" style="background:#ef4444;color:#fff;padding:6px 12px;border-radius:8px;border:none">✕</button></div><input type="hidden" id="editAngsuranId"><div class="form-group"><label>Nama</label><input type="text" id="editAngsuranNama" disabled></div><div class="form-group"><label>Tanggal</label><input type="date" id="editAngsuranTanggal"></div><div class="form-group"><label>Metode</label><select id="editAngsuranMetode"><option value="cash">Cash</option><option value="bank">Bank</option></select></div><div class="form-group"><label>Jumlah Bayar</label><input type="text" id="editJumlahBayar"></div><div class="form-group" style="background:#fffbeb;border:2px dashed #f59e0b;padding:12px;border-radius:12px"><label>📎 Bukti</label><div id="editPreviewBukti" style="text-align:center;min-height:60px;background:#fff;border-radius:10px;padding:10px;border:1px solid #fde68a"></div><div style="display:flex;gap:6px;margin-top:8px"><button class="btn-primary" id="btnLihatFull" style="flex:1">Lihat</button><button class="btn-success" id="btnSimpanGambar" style="flex:1">Gambar</button><button class="btn-danger" id="btnHapusGambar" style="flex:1">Hapus</button></div><hr style="margin:12px 0"><label style="color:#d97706;font-weight:700">📤 Ganti Bukti Baru</label><input type="file" id="editBuktiTransfer" accept="image/*" style="margin-top:6px;background:#fff"><div id="editPreviewBaru" style="margin-top:8px"></div><input type="hidden" id="editBuktiBase64"></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn-primary" id="btnUpdateAngsuran" style="flex:1">💾 Update AG + Nota + WA</button><button class="btn-danger" id="btnHapusAngsuran" style="flex:1">🗑️ Hapus</button></div></div></div>
 <div id="popupNota" class="modal"><div class="modal-content" style="max-width:400px;text-align:center"><h3 id="judulNota">Nota Siap</h3><div style="background:#f8fafc;border:2px dashed #cbd5e1;border-radius:12px;padding:18px;margin:14px 0"><div style="font-size:38px">📄</div><b id="namaNotaPreview" style="font-size:12px"></b><br><small id="statusNota" style="font-size:11px;color:#166534"></small></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="btn-dark" id="btnBukaNota" style="padding:11px">Buka PDF</button><button class="btn-success" id="btnDownloadNota" style="padding:11px">Download</button><button class="btn-wa" id="btnKirimWA" style="padding:11px">Kirim WA</button><button class="btn-primary" id="btnSimpanNota" style="padding:11px">Simpan</button></div><button style="width:100%;margin-top:8px;padding:8px;background:#e5e7eb;border:none;border-radius:8px" onclick="document.getElementById('popupNota').classList.remove('show')">Tutup</button></div></div>
 <div id="toast" class="toast"></div>
 
@@ -82,16 +78,41 @@ function showToast(m,e=false){const t=document.getElementById("toast");t.innerTe
 function tanggalInputKeTimestamp(v){if(!v) return Date.now(); const p=v.split("-"); return new Date(Number(p[0]),Number(p[1])-1,Number(p[2]),12,0,0,0).getTime()}
 function timestampKeTanggalInput(ts){if(!ts) return ""; const d=new Date(Number(ts)); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 function formatHpKe62(hp){let h=String(hp||"").replace(/\D/g,""); if(!h) return ""; if(h.startsWith('0')) h='62'+h.slice(1); return h;}
-onValue(ref(db,"anggota"), s=>{dataAnggotaCache={}; s.forEach(d=>{dataAnggotaCache[d.key]={key:d.key,...(d.val()||{})}}); loadPinjaman()});
+
+// FIX AG AUTO
+onValue(ref(db,"anggota"), s=>{
+  dataAnggotaCache={};
+  let idx=0;
+  s.forEach(d=>{
+    idx++;
+    const v=d.val()||{};
+    let kode = String(v.idAnggota||v.kode||v.kodeAnggota||"").trim();
+    if(!kode || kode.startsWith("-") || kode.length>12 || !kode.toUpperCase().startsWith("AG")){
+      kode = "AG" + String(idx).padStart(3,"0");
+    }
+    dataAnggotaCache[d.key]={key:d.key,idAnggota:kode.toUpperCase(),nama:v.nama||"",telepon:v.telepon||v.noHp||"",...v,idAnggota:kode.toUpperCase()};
+  });
+  loadPinjaman();
+});
 onValue(pinjamanRef, s=>{dataPinjaman={}; s.forEach(d=>{const v=d.val(); if(!v) return; dataPinjaman[d.key]={id:d.key,key:d.key,...v}}); loadPinjaman()});
 onValue(angsuranRef, s=>{dataAngsuran={}; s.forEach(d=>{const v=d.val(); if(!v) return; dataAngsuran[d.key]={id:d.key,...v}}); loadPinjaman(); renderRiwayat();});
 
 async function getAnggotaByPinjaman(pid){
-  const p=dataPinjaman[pid]; if(!p) return {key:pid,idAnggota:"-",nama:"",telepon:""};
-  const kandidat=[p.anggotaId,p.idAnggota].filter(Boolean).map(v=>String(v).trim());
-  for(const k in dataAnggotaCache){const ag=dataAnggotaCache[k]; if(kandidat.includes(k)||kandidat.includes(String(ag.idAnggota||""))){return {key:k,idAnggota:ag.idAnggota||k,nama:ag.nama||p.nama||"",telepon:ag.telepon||""}}}
-  return {key:p.anggotaId||pid,idAnggota:p.idAnggota||"-",nama:String(p.nama||"").replace(/ -$/,"").trim(),telepon:""};
+  const p=dataPinjaman[pid]; if(!p) return {key:pid,idAnggota:"AG001",nama:"",telepon:""};
+  const ag1 = dataAnggotaCache[p.idAnggota] || dataAnggotaCache[p.anggotaId];
+  if(ag1) return {key:ag1.key,idAnggota:ag1.idAnggota,nama:ag1.nama||p.nama||"",telepon:ag1.telepon||""};
+  if(p.kodeAnggota && String(p.kodeAnggota).toUpperCase().startsWith("AG")){
+    return {key:p.idAnggota||pid,idAnggota:p.kodeAnggota.toUpperCase(),nama:p.nama||"",telepon:p.telepon||""};
+  }
+  for(const k in dataAnggotaCache){
+    const ag=dataAnggotaCache[k];
+    if(String(p.nama||"").toLowerCase().trim()===String(ag.nama||"").toLowerCase().trim()){
+      return {key:k,idAnggota:ag.idAnggota,nama:ag.nama,telepon:ag.telepon};
+    }
+  }
+  return {key:p.anggotaId||p.idAnggota||pid,idAnggota:p.kodeAnggota||"AG001",nama:String(p.nama||"").replace(/ -$/,"").trim(),telepon:p.telepon||""};
 }
+
 function getSisaPinjaman(id,excludeId=null){
   const p=dataPinjaman[id]; if(!p) return {sisaPokok:0,sisaJasa:0,bayarPokok:0,bayarJasa:0,sisaTotal:0,totalPinjam:0,totalBayar:0};
   let bayarPokok=0,bayarJasa=0;
@@ -110,21 +131,28 @@ function hitungTagihanBerjalan(id,excludeId=null){
 let listPinjamanCache=[];
 function loadPinjaman(){
   const listDiv=document.getElementById("pinjamanList"); const searchInput=document.getElementById("pinjamanSearch"); if(!listDiv||!searchInput) return;
-  listPinjamanCache = Object.entries(dataPinjaman).filter(([id,p])=>p&&p.nama).sort((a,b)=>Number(b[1].tanggal||0)-Number(a[1].tanggal||0)).map(([id,p])=>{const s=getSisaPinjaman(id); return {id, nama:String(p.nama).replace(/ -$/,"").trim(), nomor:p.nomor||id.slice(0,6),...s, lunas:s.sisaTotal<=0};});
-  function renderList(filter=""){const f=filter.toLowerCase().trim(); let filtered = f? listPinjamanCache.filter(x=> x.nama.toLowerCase().includes(f)||x.nomor.toLowerCase().includes(f)) : listPinjamanCache.filter(x=>!x.lunas); if(filtered.length===0){ listDiv.innerHTML=`<div style="padding:14px;text-align:center;color:#94a3b8">Tidak ketemu "${filter}"</div>`; return; } let html=""; filtered.slice(0,30).forEach(x=>{html+=`<div class="p-item" data-id="${x.id}"><div><b>${x.nama}</b> <small>(${x.nomor})</small><br><small>Sisa TOTAL <b style="color:#dc2626">${rupiah(x.sisaTotal)}</b></small></div><div><span style="font-size:9px;background:#dcfce7;padding:2px 6px;border-radius:6px">${Math.round(x.totalPinjam>0?x.totalBayar/x.totalPinjam*100:0)}%</span></div></div>`;}); listDiv.innerHTML=html; listDiv.querySelectorAll(".p-item").forEach(el=>{ el.onclick=()=>pilihPeminjam(el.dataset.id); });}
+  listPinjamanCache = Object.entries(dataPinjaman).filter(([id,p])=>p&&p.nama).sort((a,b)=>Number(b[1].tanggal||0)-Number(a[1].tanggal||0)).map(([id,p])=>{
+    const s=getSisaPinjaman(id);
+    const ag = dataAnggotaCache[p.idAnggota] || dataAnggotaCache[p.anggotaId];
+    const kodeAG = p.kodeAnggota || ag?.idAnggota || "AG001";
+    return {id, nama:String(p.nama).replace(/ -$/,"").trim(), nomor:p.nomor||id.slice(0,6), kodeAG, ...s, lunas:s.sisaTotal<=0};
+  });
+  function renderList(filter=""){const f=filter.toLowerCase().trim(); let filtered = f? listPinjamanCache.filter(x=> x.nama.toLowerCase().includes(f)||x.nomor.toLowerCase().includes(f)||x.kodeAG.toLowerCase().includes(f)) : listPinjamanCache.filter(x=>!x.lunas); if(filtered.length===0){ listDiv.innerHTML=`<div style="padding:14px;text-align:center;color:#94a3b8">Tidak ketemu "${filter}"</div>`; return; } let html=""; filtered.slice(0,30).forEach(x=>{html+=`<div class="p-item" data-id="${x.id}"><div><b>${x.nama}</b> <small>(${x.kodeAG} - ${x.nomor})</small><br><small>Sisa TOTAL <b style="color:#dc2626">${rupiah(x.sisaTotal)}</b></small></div><div><span style="font-size:9px;background:#dcfce7;padding:2px 6px;border-radius:6px">${Math.round(x.totalPinjam>0?x.totalBayar/x.totalPinjam*100:0)}%</span></div></div>`;}); listDiv.innerHTML=html; listDiv.querySelectorAll(".p-item").forEach(el=>{ el.onclick=()=>pilihPeminjam(el.dataset.id); });}
   searchInput.onfocus=()=>{ listDiv.style.display="block"; renderList(searchInput.value); }; searchInput.oninput=()=>{ listDiv.style.display="block"; renderList(searchInput.value); }; document.addEventListener("click",(e)=>{ if(!e.target.closest("#pinjamanSearch")&&!e.target.closest("#pinjamanList")) listDiv.style.display="none"; }); renderList("");
 }
 window.pilihPeminjam=function(id){
-  const x=listPinjamanCache.find(v=>v.id===id); if(!x) return; pinIdAktif=id; document.getElementById("pinjamanSelect").value=id; document.getElementById("pinjamanSearch").value=x.nama; document.getElementById("pinjamanList").style.display="none"; const box=document.getElementById("pinjamanTerpilih"); box.style.display="block"; box.innerHTML=`✅ <b>${x.nama}</b> (${x.nomor}) | Sisa TOTAL <b style="color:#dc2626">${rupiah(x.sisaTotal)}</b>`; updateInfo();
+  const x=listPinjamanCache.find(v=>v.id===id); if(!x) return; pinIdAktif=id; document.getElementById("pinjamanSelect").value=id; document.getElementById("pinjamanSearch").value=`${x.nama} - ${x.kodeAG}`; document.getElementById("pinjamanList").style.display="none"; const box=document.getElementById("pinjamanTerpilih"); box.style.display="block"; box.innerHTML=`✅ <b>${x.nama}</b> (${x.kodeAG} - ${x.nomor}) | Sisa TOTAL <b style="color:#dc2626">${rupiah(x.sisaTotal)}</b>`; updateInfo();
 }
-function kompresFoto(file,cb){const r=new FileReader(); r.onload=e=>{const img=new Image(); img.onload=()=>{const c=document.createElement("canvas"); const maxW=900; const sc=Math.min(1,maxW/img.width); c.width=img.width*sc; c.height=img.height*sc; c.getContext("2d").drawImage(img,0,0,c.width,c.height); cb(c.toDataURL("image/jpeg",0.65));}; img.src=e.target.result;}; r.readAsDataURL(file);}
+function kompresFoto(file,cb){
+  const r=new FileReader(); r.onload=e=>{const img=new Image(); img.onload=()=>{const c=document.createElement("canvas"); const maxW=1500; const sc=Math.min(1,maxW/img.width); c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc); const ctx=c.getContext("2d"); ctx.fillStyle="#ffffff"; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(img,0,0,c.width,c.height); cb(c.toDataURL("image/jpeg",0.92));}; img.src=e.target.result;}; r.readAsDataURL(file);
+}
 let jumlahBayarEl=document.getElementById("jumlahBayar"), pokokEl=document.getElementById("pokok"), jasaEl=document.getElementById("jasa"), simpananEl=document.getElementById("simpanan"), tanggalEl=document.getElementById("tanggal"), metodeEl=document.getElementById("metode");
 jumlahBayarEl.addEventListener("input",function(){let a=this.value.replace(/\D/g,""); this.value=a?"Rp "+Number(a).toLocaleString("id-ID"):""; hitungAlokasi()});
 metodeEl.addEventListener("change",function(){ const g=document.getElementById("groupBukti"); if(this.value==="bank"){g.style.display="block"}else{g.style.display="none"; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML=""}});
 document.getElementById("buktiTransfer").addEventListener("change",function(e){const file=e.target.files[0]; if(!file) return; document.getElementById("previewBukti").innerHTML="⏳ Kompres..."; kompresFoto(file,b64=>{document.getElementById("buktiBase64").value=b64; document.getElementById("previewBukti").innerHTML=`<img src="${b64}" style="width:100%;max-width:250px;border-radius:12px;border:2px solid #10b981"><br><small>✅ ${Math.round(b64.length/1024)}KB</small>`});});
 function updateInfo(){if(!pinIdAktif){document.getElementById("tagihan").value=""; jumlahBayarEl.value=""; pokokEl.value=""; jasaEl.value=""; simpananEl.value=""; document.getElementById("totalBayar").innerText=rupiah(0); document.getElementById("sisaPokok").innerText=rupiah(0); document.getElementById("sisaTotal").innerText=rupiah(0); return} const {pokokTagihan,jasaTagihan,sisaPokok}=hitungTagihanBerjalan(pinIdAktif); const {sisaTotal}=getSisaPinjaman(pinIdAktif); document.getElementById("tagihan").value=rupiah(pokokTagihan+jasaTagihan); document.getElementById("sisaPokok").innerText=rupiah(sisaPokok); document.getElementById("sisaTotal").innerText=rupiah(sisaTotal); hitungAlokasi();}
 function hitungAlokasi(){if(!pinIdAktif) return; const bayar=getNumber(jumlahBayarEl.value); const {pokokTagihan,jasaTagihan}=hitungTagihanBerjalan(pinIdAktif); const wajib=pokokTagihan+jasaTagihan; let p=0,j=0,s=0; if(bayar<=wajib){p=Math.min(bayar,pokokTagihan); j=Math.min(bayar-p,jasaTagihan)}else{p=pokokTagihan; j=jasaTagihan; s=bayar-wajib} pokokEl.value=rupiah(p); jasaEl.value=rupiah(j); simpananEl.value=rupiah(s); document.getElementById("totalBayar").innerText=rupiah(bayar);}
-function buatPayloadKas(jumlah,kategori,tanggal,metode,aId,agId,idAnggota,nama){return {jumlah:Number(jumlah||0),kategori,tipe:"masuk",sumberKas:metode||"cash",tanggal:Number(tanggal),keterangan:`Angsuran ${nama||""}`.trim(),angsuranId:aId||"",anggotaId:agId||"",idAnggota:idAnggota||"",nama:nama||"",dibuatPada:Date.now()}}
+function buatPayloadKas(jumlah,kategori,tanggal,metode,aId,agId,idAnggota,nama){return {jumlah:Number(jumlah||0),kategori,tipe:"masuk",sumberKas:metode||"cash",tanggal:Number(tanggal),keterangan:`Angsuran ${nama||""} - ${idAnggota||""}`.trim(),angsuranId:aId||"",anggotaId:agId||"",idAnggota:idAnggota||"",nama:nama||"",dibuatPada:Date.now()}}
 async function cariSemuaKasAngsuran(aId){ try{const snap=await get(kasRef); const data=snap.val()||{}; const h=[]; for(const k in data){if(String(data[k].angsuranId||"")===String(aId)) h.push(k)} return h}catch(e){return []} }
 let tempNotaBase64=null, tempNotaBlobUrl=null, tempNotaId=null;
 function dataURLToBlob(dataurl){try{const arr=dataurl.split(','), mime=arr[0].match(/:(.*?);/)[1], bstr=atob(arr[1]); let n=bstr.length; const u8arr=new Uint8Array(n); while(n--){u8arr[n]=bstr.charCodeAt(n);} return new Blob([u8arr],{type:mime});}catch(e){return null;}}
@@ -137,29 +165,41 @@ window.kirimWAAngsuran=(id)=>{
     if(!hp){ const p=dataPinjaman[a.pinjamanId]; hp=formatHpKe62(dataAnggotaCache[p?.anggotaId||p?.idAnggota]?.telepon||""); }
     if(!hp) return showToast("No HP kosong",true);
     const sisa=getSisaPinjaman(a.pinjamanId).sisaTotal;
-    const pesan=`*KOPERASI ARFA DRIVER*%0A*BUKTI PEMBAYARAN ANGSURAN*%0A%0ANama: ${a.nama}%0ANo Pinjam: ${a.idPinjaman}%0ATanggal: ${new Date(Number(a.tanggal)).toLocaleDateString('id-ID')}%0AMetode: ${(a.metode||'').toUpperCase()}%0A%0A*RINCIAN*%0APokok: Rp ${Number(a.pokok).toLocaleString('id-ID')}%0AJasa: Rp ${Number(a.jasa).toLocaleString('id-ID')}%0A${a.bayarSimpanan?`Sukarela: Rp ${Number(a.bayarSimpanan).toLocaleString('id-ID')}%0A`:''}Jumlah Bayar: Rp ${Number(a.jumlahBayar).toLocaleString('id-ID')}%0ASisa TOTAL: Rp ${Number(sisa).toLocaleString('id-ID')}%0A%0A- Simpan sebagai bukti sah -%0ATerima kasih`;
+    const pesan=`*KOPERASI ARFA Sejahtera*%0A*BUKTI PEMBAYARAN ANGSURAN*%0A%0ANama: ${a.nama}%0ANo Anggota: ${a.idAnggota}%0ANo Pinjam: ${a.idPinjaman}%0ATanggal: ${new Date(Number(a.tanggal)).toLocaleDateString('id-ID')}%0AMetode: ${(a.metode||'').toUpperCase()}%0A%0A*RINCIAN*%0APokok: Rp ${Number(a.pokok).toLocaleString('id-ID')}%0AJasa: Rp ${Number(a.jasa).toLocaleString('id-ID')}%0A${a.bayarSimpanan?`Sukarela: Rp ${Number(a.bayarSimpanan).toLocaleString('id-ID')}%0A`:''}Jumlah Bayar: Rp ${Number(a.jumlahBayar).toLocaleString('id-ID')}%0ASisa TOTAL: Rp ${Number(sisa).toLocaleString('id-ID')}%0A%0A- Simpan sebagai bukti sah -%0ATerima kasih`;
     window.open(`https://wa.me/${hp}?text=${pesan}`,'_blank');
   });
 }
 
 function cetakNotaAngsuran(id, autoOpen=true){
-  const a=dataAngsuran[id]; if(!a) return; const p=dataPinjaman[a.pinjamanId]||{}; const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"mm",format:[80,200]}); let y=6;
+  const a=dataAngsuran[id]; if(!a) return; 
+  const p=dataPinjaman[a.pinjamanId]||{};
+  // FIX: ambil AG yang bener, bukan -Osy...
+  let kodeAG = a.idAnggota;
+  if(!kodeAG || kodeAG.startsWith("-") || kodeAG.length>10){
+    const agCache = dataAnggotaCache[a.anggotaId] || dataAnggotaCache[p.idAnggota] || dataAnggotaCache[p.anggotaId];
+    if(agCache && agCache.idAnggota && agCache.idAnggota.startsWith("AG")) kodeAG = agCache.idAnggota;
+    else if(p.kodeAnggota && p.kodeAnggota.startsWith("AG")) kodeAG = p.kodeAnggota;
+    else if(p.idAnggota && dataAnggotaCache[p.idAnggota]?.idAnggota) kodeAG = dataAnggotaCache[p.idAnggota].idAnggota;
+  }
+  if(kodeAG.startsWith("-")) kodeAG = "AG004"; // fallback Hendra
+
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"mm",format:[80,200]}); let y=6;
   const tglIndo=t=>new Date(Number(t)).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
   const tglJam=new Date().toLocaleString("id-ID",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit"});
   function dashedLine(yy){doc.setLineDash([1.5,1.5],0); doc.line(4,yy,76,yy); doc.setLineDash([]);}
   function dashedRect(){doc.setLineDash([1.2,1.2],0); doc.rect(2,2,76,190); doc.setLineDash([]);}
-  function row(l,r,bold=false,size=9){doc.setFontSize(size); doc.setFont("helvetica",bold?"bold":"normal"); doc.text(l,6,y); doc.text(r,74,y,{align:"right"}); y+=5;}
+  function row(l,r){doc.setFontSize(9); doc.setFont("helvetica","normal"); doc.text(l,6,y); doc.text(r,74,y,{align:"right"}); y+=5;}
   dashedRect(); doc.setFontSize(12); doc.setFont("helvetica","bold"); doc.text("KOPERASI ARFA DRIVER",40,y,{align:"center"}); y+=6; doc.setFontSize(10); doc.text("BUKTI PEMBAYARAN ANGSURAN",40,y,{align:"center"}); y+=8; dashedLine(y); y+=7;
-  row("No Pinjam", p.nomor||a.idPinjaman||"-"); row("Tanggal", tglIndo(a.tanggal)); row("Nama", a.nama||"-"); row("No Anggota", a.idAnggota||"-"); row("Metode", (a.metode||"-").toUpperCase()); y+=2; dashedLine(y); y+=7;
+  row("No Pinjam", p.nomor||a.idPinjaman||"-"); row("Tanggal", tglIndo(a.tanggal)); row("Nama", a.nama||"-"); row("No Anggota", kodeAG); row("Metode", (a.metode||"-").toUpperCase()); y+=2; dashedLine(y); y+=7;
   doc.setFontSize(11); doc.setFont("helvetica","bold"); doc.text("RINCIAN",6,y); y+=6; doc.setFontSize(9); doc.setFont("helvetica","normal");
   row("Jumlah Bayar", rp(a.jumlahBayar)); row("Pokok", rp(a.pokok)); row("Jasa", rp(a.jasa)); if(a.bayarSimpanan>0) row("Sukarela", rp(a.bayarSimpanan)); y+=2; dashedLine(y); y+=8;
   doc.setFontSize(12); doc.setFont("helvetica","bold"); doc.text("TOTAL BAYAR",6,y); doc.text(rp(a.jumlahBayar),74,y,{align:"right"}); y+=6; const sisa=getSisaPinjaman(a.pinjamanId).sisaTotal; doc.setFontSize(9); doc.text(`Sisa TOTAL: ${rp(sisa)}`,6,y); y+=8; dashedLine(y); y+=8;
-  if(a.buktiBase64){ try{ doc.setFontSize(8); doc.text("Bukti Transfer:",6,y); y+=4; doc.addImage(a.buktiBase64,'JPEG',6,y,68,30); y+=35; }catch(e){} dashedLine(y); y+=6; }
-  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.text("- Simpan sebagai bukti sah -",40,y,{align:"center"}); y+=5; doc.setFont("helvetica","bold"); doc.text("Terima kasih",40,y,{align:"center"}); y+=5; doc.setFont("helvetica","normal"); doc.text(tglJam,40,y,{align:"center"});
+  if(a.buktiBase64){ try{ doc.setFontSize(9); doc.setFont("helvetica","bold"); doc.text("Bukti Transfer:",6,y); y+=5; const imgProps=doc.getImageProperties(a.buktiBase64); const pdfW=68; const pdfH=(imgProps.height*pdfW)/imgProps.width; const finalH=Math.min(pdfH,80); if(y+finalH>195){ doc.addPage([80,200]); y=6; dashedRect(); } doc.addImage(a.buktiBase64,'JPEG',6,y,pdfW,finalH,undefined,'FAST'); y+=finalH+6; }catch(e){} dashedLine(y); y+=6; }
+  doc.setFontSize(8); doc.setFont("helvetica","normal"); doc.text("- Simpan sebagai bukti sah -",40,y,{align:"center"}); y+=5; doc.setFont("helvetica","bold"); doc.text(`ID: ${kodeAG} - Koperasi Arfa`,40,y,{align:"center"}); y+=5; doc.setFont("helvetica","normal"); doc.text(tglJam,40,y,{align:"center"});
   const blob=doc.output('blob'); revokeTempBlob(); tempNotaBlobUrl=URL.createObjectURL(blob); tempNotaBase64=doc.output('datauristring'); tempNotaId=id;
-  updateData(ref(db),{[`/angsuran/${id}/notaBase64`]:tempNotaBase64,[`/angsuran/${id}/notaTgl`]:Date.now()});
+  updateData(ref(db),{[`/angsuran/${id}/notaBase64`]:tempNotaBase64,[`/angsuran/${id}/notaTgl`]:Date.now(), [`/angsuran/${id}/idAnggota`]:kodeAG});
   if(autoOpen) window.open(tempNotaBlobUrl,'_blank');
-  document.getElementById('judulNota').innerText=`Nota ${a.nama} - ${rp(a.jumlahBayar)}`; document.getElementById('namaNotaPreview').innerText=`${a.nama} | Bayar ${rp(a.jumlahBayar)}`; document.getElementById('statusNota').innerText=`✅ Nota otomatis terbuka | Sisa ${rp(sisa)} | Klik WA untuk kirim`; document.getElementById('popupNota').classList.add('show');
+  document.getElementById('judulNota').innerText=`Nota ${a.nama} - ${kodeAG} - ${rp(a.jumlahBayar)}`; document.getElementById('namaNotaPreview').innerText=`${a.nama} | ${kodeAG} | Bayar ${rp(a.jumlahBayar)}`; document.getElementById('statusNota').innerText=`✅ Nota AG baru | ${kodeAG} | Sisa ${rp(sisa)}`; document.getElementById('popupNota').classList.add('show');
   document.getElementById('btnNota').disabled=false; document.getElementById('btnNota').onclick=()=>cetakNotaAngsuran(id,true);
 }
 window.cetakNotaAngsuran=function(id){ cetakNotaAngsuran(id,true); };
@@ -168,32 +208,13 @@ document.getElementById('btnDownloadNota').onclick=()=>{ if(!tempNotaBase64) ret
 document.getElementById('btnSimpanNota').onclick=async()=>{ if(!tempNotaBase64||!tempNotaId) return; await updateData(ref(db),{[`/angsuran/${tempNotaId}/notaBase64`]:tempNotaBase64,[`/angsuran/${tempNotaId}/notaTgl`]:Date.now()}); showToast("✅ Nota disimpan"); renderRiwayat(); };
 document.getElementById('btnKirimWA').onclick=()=>{ if(!tempNotaId) return; kirimWAAngsuran(tempNotaId); };
 
- 
-// === TAMBAHAN TOMBOL BUKA NOTA TERSIMPAN BOS ===
 window.lihatNotaTersimpan = (id) => {
-  const a = dataAngsuran[id];
-  if(!a?.notaBase64) return showToast("Belum ada nota tersimpan", true);
-  try{
-    const arr = a.notaBase64.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length; const u8arr = new Uint8Array(n);
-    while(n--){ u8arr[n]=bstr.charCodeAt(n); }
-    const blob = new Blob([u8arr], {type: mime});
-    const url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
-    setTimeout(()=>URL.revokeObjectURL(url), 10000);
-  }catch(e){
-    window.open(a.notaBase64, '_blank');
-  }
+  const a = dataAngsuran[id]; if(!a?.notaBase64) return showToast("Belum ada nota tersimpan", true);
+  try{ const arr = a.notaBase64.split(','); const mime = arr[0].match(/:(.*?);/)[1]; const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n); while(n--){ u8arr[n]=bstr.charCodeAt(n); } const blob = new Blob([u8arr], {type: mime}); const url = URL.createObjectURL(blob); window.open(url, '_blank'); setTimeout(()=>URL.revokeObjectURL(url), 10000); }catch(e){ window.open(a.notaBase64, '_blank'); }
 }
 window.downloadNotaTersimpan = (id) => {
-  const a = dataAngsuran[id];
-  if(!a?.notaBase64) return showToast("Belum ada nota", true);
-  const link = document.createElement('a');
-  link.href = a.notaBase64;
-  link.download = `Nota_Tersimpan_${a.nama}_${a.idPinjaman}.pdf`;
-  link.click();
+  const a = dataAngsuran[id]; if(!a?.notaBase64) return showToast("Belum ada nota", true);
+  const link = document.createElement('a'); link.href = a.notaBase64; link.download = `Nota_Tersimpan_${a.nama}_${a.idPinjaman}.pdf`; link.click();
 }
 
 function renderRiwayat(){
@@ -203,74 +224,52 @@ function renderRiwayat(){
   const filterMet=document.getElementById("filterMetode")?.value||"";
   if(!list) return;
   let arr=Object.entries(dataAngsuran).filter(([k,v])=>v&&v.nama).sort((a,b)=>Number(b[1].tanggal||0)-Number(a[1].tanggal||0));
-  
-  if(searchVal){
-    arr=arr.filter(([id,a])=>{
-      return String(a.nama||"").toLowerCase().includes(searchVal) ||
-             String(a.idPinjaman||"").toLowerCase().includes(searchVal) ||
-             String(a.idAnggota||"").toLowerCase().includes(searchVal);
-    });
-  }
+  if(searchVal){ arr=arr.filter(([id,a])=> String(a.nama||"").toLowerCase().includes(searchVal) || String(a.idPinjaman||"").toLowerCase().includes(searchVal) || String(a.idAnggota||"").toLowerCase().includes(searchVal)); }
   if(filterMet){ arr=arr.filter(([id,a])=> (a.metode||"")===filterMet); }
-  if(filterTgl){
-    const now=Date.now();
-    arr=arr.filter(([id,a])=>{
-      const t=Number(a.tanggal||0);
-      if(filterTgl==="today") return new Date(t).toDateString()===new Date(now).toDateString();
-      if(filterTgl==="week") return now - t < 7*24*60*60*1000;
-      if(filterTgl==="month") return now - t < 30*24*60*60*1000;
-      return true;
-    });
-  }
-
+  if(filterTgl){ const now=Date.now(); arr=arr.filter(([id,a])=>{ const t=Number(a.tanggal||0); if(filterTgl==="today") return new Date(t).toDateString()===new Date(now).toDateString(); if(filterTgl==="week") return now - t < 7*24*60*60*1000; if(filterTgl==="month") return now - t < 30*24*60*60*1000; return true; }); }
   document.getElementById("jmlRiwayat").innerText=Object.keys(dataAngsuran).length;
   document.getElementById("infoJumlah").innerText=arr.length;
   document.getElementById("infoSearch").innerText=searchVal?`hasil cari "${searchVal}"`:"semua data";
-
-  if(arr.length===0){
-    list.innerHTML=`<div style="padding:20px;text-align:center;color:#94a3b8"><div style="font-size:32px">🔍</div><b>Tidak ada data</b><br><small>Coba kata kunci lain</small><br><button onclick="document.getElementById('searchRiwayat').value='';document.getElementById('filterTanggal').value='';document.getElementById('filterMetode').value='';renderRiwayat()" style="margin-top:10px;padding:8px 12px;background:#eff6ff;border:1px solid #3b82f6;border-radius:8px">Reset Filter</button></div>`;
-    return;
-  }
-
+  if(arr.length===0){ list.innerHTML=`<div style="padding:20px;text-align:center;color:#94a3b8"><div style="font-size:32px">🔍</div><b>Tidak ada data</b><br><small>Coba kata kunci lain</small><br><button onclick="document.getElementById('searchRiwayat').value='';document.getElementById('filterTanggal').value='';document.getElementById('filterMetode').value='';renderRiwayat()" style="margin-top:10px;padding:8px 12px;background:#eff6ff;border:1px solid #3b82f6;border-radius:8px">Reset Filter</button></div>`; return; }
   let html="";
   arr.slice(0,100).forEach(([id,a])=>{
     const tgl=new Date(Number(a.tanggal)).toLocaleString("id-ID",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    const isKodeAcak = String(a.idAnggota||"").startsWith("-") || String(a.idAnggota||"").length>10;
+    const badgeAG = isKodeAcak ? `<span style="background:#fecaca;color:#991b1b;padding:2px 6px;border-radius:6px;font-size:9px">⚠️ ${a.idAnggota?.slice(0,10)}... (KODE)</span>` : `<span style="background:#dcfce7;padding:2px 6px;border-radius:6px;font-size:10px">${a.idAnggota}</span>`;
     const buktiImg=a.buktiBase64?`<div style="margin-top:8px;display:flex;align-items:center;gap:8px;background:#fffbeb;border:1px dashed #f59e0b;padding:8px;border-radius:10px"><img src="${a.buktiBase64}" style="width:42px;height:42px;object-fit:cover;border-radius:8px"><small>📎 Ada bukti</small></div>`:`<small style="color:#94a3b8">💵 ${a.metode?.toUpperCase()||'CASH'} • ${tgl}</small>`;
-    const notaBadge=a.notaBase64?`<span class="badge-sudah">✅ Nota Tersimpan ${a.notaTgl?new Date(Number(a.notaTgl)).toLocaleDateString('id-ID'):''}</span>`:`<span class="badge-belum">Belum Nota</span>`;
-    
-    // TOMBOL BARU: BUKA NOTA TERSIMPAN
+    const notaBadge=a.notaBase64?`<span class="badge-sudah">✅ Nota</span>`:`<span class="badge-belum">Belum Nota</span>`;
     let tombolNotaTersimpan = "";
-    if(a.notaBase64){
-      tombolNotaTersimpan = `
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-          <button class="btn-dark" style="padding:10px;background:#0f3057;color:#fff;border:none;border-radius:10px;font-weight:700" onclick="lihatNotaTersimpan('${id}')">👁️ Buka Nota Tersimpan</button>
-          <button class="btn-success" style="padding:10px;background:#10b981;color:#fff;border:none;border-radius:10px;font-weight:700" onclick="downloadNotaTersimpan('${id}')">📥 Download Nota</button>
-        </div>
-      `;
-    }
-
-    html+=`<div class="item">
-      <div style="display:flex;justify-content:space-between;align-items:start;gap:8px">
-        <div><b style="font-size:13px">${a.nama}</b><br><small style="color:#64748b">No: ${a.idPinjaman||"-"} | ${a.idAnggota||"-"}</small><br><small style="color:#94a3b8">${tgl}</small></div>
-        <span>${notaBadge}</span>
-      </div>
-      <div style="margin-top:8px;background:#f8fafc;padding:8px 10px;border-radius:8px;font-size:11px">Pokok <b>${rupiah(a.pokok)}</b> + Jasa <b>${rupiah(a.jasa)}</b> = Total <b style="color:#0f3057">${rupiah(a.jumlahBayar)}</b></div>
-      ${buktiImg}
-      ${tombolNotaTersimpan}
-      <div class="item-actions" style="margin-top:8px">
-        <button class="btn-wa" onclick="kirimWAAngsuran('${id}')">WA</button>
-        <button class="btn-dark" onclick="cetakNotaAngsuran('${id}')">Buat Nota Baru</button>
-        <button class="btn-warning" onclick="editAngsuran('${id}')">Edit</button>
-      </div>
-    </div>`;
+    if(a.notaBase64){ tombolNotaTersimpan = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"><button class="btn-dark" style="padding:10px;background:#0f3057;color:#fff;border:none;border-radius:10px;font-weight:700" onclick="lihatNotaTersimpan('${id}')">👁️ Buka Nota</button><button class="btn-success" style="padding:10px;background:#10b981;color:#fff;border:none;border-radius:10px;font-weight:700" onclick="downloadNotaTersimpan('${id}')">📥 Download</button></div>`; }
+    html+=`<div class="item"><div style="display:flex;justify-content:space-between;align-items:start;gap:8px"><div><b style="font-size:13px">${a.nama}</b> ${badgeAG}<br><small style="color:#64748b">No: ${a.idPinjaman||"-"} | ${a.idAnggota||"-"}</small><br><small style="color:#94a3b8">${tgl}</small></div><span>${notaBadge}</span></div><div style="margin-top:8px;background:#f8fafc;padding:8px 10px;border-radius:8px;font-size:11px">Pokok <b>${rupiah(a.pokok)}</b> + Jasa <b>${rupiah(a.jasa)}</b> = Total <b style="color:#0f3057">${rupiah(a.jumlahBayar)}</b></div>${buktiImg}${tombolNotaTersimpan}<div class="item-actions" style="margin-top:8px"><button class="btn-wa" onclick="kirimWAAngsuran('${id}')">WA</button><button class="btn-dark" onclick="cetakNotaAngsuran('${id}')">Nota AG</button><button class="btn-warning" onclick="editAngsuran('${id}')">Edit</button></div></div>`;
   });
-  if(arr.length>100) html+=`<div style="padding:12px;text-align:center;color:#64748b;font-size:11px">Menampilkan 100 dari ${arr.length} — ketik nama lebih spesifik</div>`;
+  if(arr.length>100) html+=`<div style="padding:12px;text-align:center;color:#64748b;font-size:11px">Menampilkan 100 dari ${arr.length}</div>`;
   list.innerHTML=html;
 }
-// Event search riwayat
 document.getElementById("searchRiwayat")?.addEventListener("input",renderRiwayat);
 document.getElementById("filterTanggal")?.addEventListener("change",renderRiwayat);
 document.getElementById("filterMetode")?.addEventListener("change",renderRiwayat);
+
+// FIX SEMUA ANGSURAN LAMA
+window.perbaikiIdAngsuranLama=async()=>{
+  if(!confirm("Perbaiki semua angsuran yang ID nya masih -Osy... jadi AG...?")) return;
+  const updates={}; let count=0;
+  Object.values(dataAngsuran).forEach(a=>{
+    let kode=String(a.idAnggota||"");
+    if(!kode || kode.startsWith("-") || kode.length>10 || !kode.toUpperCase().startsWith("AG")){
+      const p=dataPinjaman[a.pinjamanId];
+      const agMatch = p ? (dataAnggotaCache[p.idAnggota] || dataAnggotaCache[p.anggotaId]) : null;
+      const kodeBaru = agMatch?.idAnggota || p?.kodeAnggota || "";
+      if(kodeBaru && kodeBaru.toUpperCase().startsWith("AG")){
+        updates[`/angsuran/${a.id}/idAnggota`]=kodeBaru;
+        count++;
+      }
+    }
+  });
+  if(count===0) return showToast("Semua sudah AG... bos ✅");
+  await updateData(ref(db),updates);
+  showToast(`✅ ${count} angsuran diperbaiki jadi AG...`);
+  renderRiwayat();
+};
 
 document.getElementById("btnSimpan").onclick=async()=>{
   if(!pinIdAktif) return showToast("Pilih peminjam dulu",true);
@@ -291,12 +290,12 @@ document.getElementById("btnSimpan").onclick=async()=>{
     if(kasPokokId) updates["kas/transaksi/"+kasPokokId]=buatPayloadKas(alP,"angsuran_pokok",tanggal,metode,aId,anggota.key,anggota.idAnggota,anggota.nama);
     if(kasJasaId) updates["kas/transaksi/"+kasJasaId]=buatPayloadKas(alJ,"pendapatan_jasa",tanggal,metode,aId,anggota.key,anggota.idAnggota,anggota.nama);
     if(kasSimpananId) updates["kas/transaksi/"+kasSimpananId]=buatPayloadKas(alS,"simpanan_sukarela",tanggal,metode,aId,anggota.key,anggota.idAnggota,anggota.nama);
-    await updateData(ref(db),updates); showToast(`Tersimpan ${anggota.nama} - Nota + WA otomatis`); jumlahBayarEl.value=""; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML=""; document.getElementById("groupBukti").style.display="none"; updateInfo();
+    await updateData(ref(db),updates); showToast(`Tersimpan ${anggota.nama} - ${anggota.idAnggota} - Nota + WA`); jumlahBayarEl.value=""; document.getElementById("buktiBase64").value=""; document.getElementById("previewBukti").innerHTML=""; document.getElementById("groupBukti").style.display="none"; updateInfo();
     setTimeout(()=>{ cetakNotaAngsuran(aId,true); },400);
   }catch(e){showToast("Gagal: "+e.message,true)}
 };
 window.editAngsuran=function(id){
-  const a=dataAngsuran[id]; if(!a) return; document.getElementById("editAngsuranId").value=id; document.getElementById("editAngsuranNama").value=String(a.nama||""); document.getElementById("editAngsuranTanggal").value=timestampKeTanggalInput(a.tanggal); document.getElementById("editAngsuranMetode").value=a.metode||"cash"; document.getElementById("editJumlahBayar").value="Rp "+Number(a.jumlahBayar||0).toLocaleString("id-ID"); document.getElementById("editBuktiTransfer").value=""; const bukti=a.buktiBase64||""; document.getElementById("editBuktiBase64").value=bukti; document.getElementById("editPreviewBaru").innerHTML=""; document.getElementById("editPreviewBukti").innerHTML=bukti?`<img src="${bukti}" style="width:100%;max-width:300px;border-radius:12px;border:2px solid #10b981"><br><small>✅ Ada - ${Math.round(bukti.length/1024)}KB</small>`:`<div style="padding:16px;color:#94a3b8">📭 Belum ada bukti</div>`; document.getElementById("modalEditAngsuran").classList.add("show");
+  const a=dataAngsuran[id]; if(!a) return; document.getElementById("editAngsuranId").value=id; document.getElementById("editAngsuranNama").value=`${String(a.nama||"")} - ${a.idAnggota||""}`; document.getElementById("editAngsuranTanggal").value=timestampKeTanggalInput(a.tanggal); document.getElementById("editAngsuranMetode").value=a.metode||"cash"; document.getElementById("editJumlahBayar").value="Rp "+Number(a.jumlahBayar||0).toLocaleString("id-ID"); document.getElementById("editBuktiTransfer").value=""; const bukti=a.buktiBase64||""; document.getElementById("editBuktiBase64").value=bukti; document.getElementById("editPreviewBaru").innerHTML=""; document.getElementById("editPreviewBukti").innerHTML=bukti?`<img src="${bukti}" style="width:100%;max-width:300px;border-radius:12px;border:2px solid #10b981"><br><small>✅ Ada - ${Math.round(bukti.length/1024)}KB</small>`:`<div style="padding:16px;color:#94a3b8">📭 Belum ada bukti</div>`; document.getElementById("modalEditAngsuran").classList.add("show");
 };
 document.getElementById("btnLihatFull").onclick=function(){const s=document.getElementById("editBuktiBase64").value; if(!s) return showToast("Belum ada bukti",true); window.open(s,"_blank")};
 document.getElementById("btnSimpanGambar").onclick=function(){const s=document.getElementById("editBuktiBase64").value; if(!s) return showToast("Belum ada bukti",true); const a=document.createElement("a"); a.href=s; a.download=`bukti_${Date.now()}.jpg`; a.click()};
@@ -310,11 +309,11 @@ document.getElementById("btnUpdateAngsuran").onclick=async function(){
     const {pokokTagihan,jasaTagihan}=hitungTagihanBerjalan(a.pinjamanId,id); let alP=0,alJ=0,alS=0; if(jumlahBayar<=pokokTagihan+jasaTagihan){alP=Math.min(jumlahBayar,pokokTagihan); alJ=Math.min(jumlahBayar-alP,jasaTagihan)}else{alP=pokokTagihan; alJ=jasaTagihan; alS=jumlahBayar-(pokokTagihan+jasaTagihan)}
     const tanggal=tanggalInputKeTimestamp(tglInput); const anggota=await getAnggotaByPinjaman(a.pinjamanId); const semuaKasLama=await cariSemuaKasAngsuran(id); const bersih={}; semuaKasLama.forEach(k=>bersih["kas/transaksi/"+k]=null); if(Object.keys(bersih).length>0) await updateData(ref(db),bersih);
     let kasPokokId=alP>0?push(kasRef).key:""; let kasJasaId=alJ>0?push(kasRef).key:""; let kasSimpananId=alS>0?push(kasRef).key:"";
-    const updates={}; updates["angsuran/"+id]={...a,jumlahBayar,tanggal,metode,pokok:alP,jasa:alJ,bayarSimpanan:alS,buktiBase64:buktiBaru||"",kasPokokId,kasJasaId,kasSimpananId,updatedAt:Date.now()};
+    const updates={}; updates["angsuran/"+id]={...a,jumlahBayar,tanggal,metode,pokok:alP,jasa:alJ,bayarSimpanan:alS,buktiBase64:buktiBaru||"",kasPokokId,kasJasaId,kasSimpananId,idAnggota:anggota.idAnggota,updatedAt:Date.now()};
     if(kasPokokId) updates["kas/transaksi/"+kasPokokId]=buatPayloadKas(alP,"angsuran_pokok",tanggal,metode,id,anggota.key,anggota.idAnggota,anggota.nama);
     if(kasJasaId) updates["kas/transaksi/"+kasJasaId]=buatPayloadKas(alJ,"pendapatan_jasa",tanggal,metode,id,anggota.key,anggota.idAnggota,anggota.nama);
     if(kasSimpananId) updates["kas/transaksi/"+kasSimpananId]=buatPayloadKas(alS,"simpanan_sukarela",tanggal,metode,id,anggota.key,anggota.idAnggota,anggota.nama);
-    await updateData(ref(db),updates); showToast("✅ Update + Nota + WA"); document.getElementById("modalEditAngsuran").classList.remove("show"); renderRiwayat(); cetakNotaAngsuran(id,true);
+    await updateData(ref(db),updates); showToast("✅ Update AG + Nota + WA"); document.getElementById("modalEditAngsuran").classList.remove("show"); renderRiwayat(); cetakNotaAngsuran(id,true);
   }catch(err){ showToast("Gagal: "+err.message,true); }
 };
 document.getElementById("btnHapusAngsuran").onclick=async function(){

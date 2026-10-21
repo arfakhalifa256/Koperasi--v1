@@ -2,55 +2,66 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audit Koperasi ARFA</title>
+<title>Audit V3 - Sesuai Kas V5 SHU POS</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 *{box-sizing:border-box;font-family:'Poppins',sans-serif;margin:0;padding:0}
-:root{--primary:#1e90ff;--primary-dark:#0f3057;--bg:#ffedd5;--card:#fff;--border:#e2e8f0;--success:#16a34a;--danger:#dc2626}
-body{background:var(--bg);padding-bottom:20px}
+:root{--primary:#1e90ff;--primary-dark:#0f3057;--bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--success:#16a34a;--danger:#dc2626}
+body{background:var(--bg);padding-bottom:90px;font-size:12px}
 header{background:linear-gradient(90deg,var(--primary),var(--primary-dark));color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:101}
-.card{background:var(--card);padding:15px;border-radius:12px;margin:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-h2{color:#0f3057;font-size:12px;margin-bottom:10px}
-table{width:100%;border-collapse:collapse;font-size:10px}th{background:#1e90ff;color:#fff;padding:8px;text-align:left}td{padding:7px;border-bottom:1px solid #e2e8f0}
-.btn{padding:9px 12px;border:none;border-radius:8px;background:#1e90ff;color:#fff;font-weight:600;cursor:pointer;width:100%;margin-top:10px}
-.btn.red{background:#dc2626}.btn:disabled{background:#9ca3af;cursor:not-allowed}
-input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:12px}
-.label{font-size:10px;color:#64748b;margin-bottom:3px}
+.card{background:var(--card);padding:14px;border-radius:12px;margin:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid var(--border)}
+h2{color:#0f3057;font-size:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+table{width:100%;border-collapse:collapse;font-size:10px}th{background:#1e90ff;color:#fff;padding:8px;text-align:left;white-space:nowrap}td{padding:7px;border-bottom:1px solid #e2e8f0;vertical-align:top}
+.btn{padding:9px 12px;border:none;border-radius:8px;background:#1e90ff;color:#fff;font-weight:600;cursor:pointer;width:100%;margin-top:8px;font-size:11px}
+.btn.red{background:#dc2626}.btn.orange{background:#f59e0b}.btn:disabled{background:#9ca3af}
+input,select{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:11px}
+.label{font-size:9px;color:#64748b;margin-bottom:3px;font-weight:600}
 .sidebar{position:fixed;top:0;left:-280px;width:260px;height:100%;background:#0f3057;padding:16px;transition:.3s;z-index:9999;overflow-y:auto;}
 .sidebar.open{left:0;}.sidebar a{display:flex;gap:10px;color:#fff;text-decoration:none;padding:12px;border-radius:10px;font-size:12px}.sidebar a.active{background:rgba(255,255,255,.2);}
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:9998;}.overlay.active{display:block;}
-.menu-btn{cursor:pointer;font-size:24px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.2);}
+.menu-btn{cursor:pointer;font-size:22px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.2);}
+.badge{padding:2px 7px;border-radius:12px;font-size:9px;font-weight:700;color:#fff}.bg-green{background:#16a34a}.bg-red{background:#dc2626}.bg-orange{background:#f59e0b}
+.badge-shu{background:#f3e8ff;color:#7c3aed;padding:2px 6px;border-radius:6px;font-size:8px;font-weight:800;border:1px solid #c4b5fd}
 .toast{position:fixed;bottom:20px;right:20px;background:#16a34a;color:#fff;padding:12px 18px;border-radius:10px;opacity:0;transition:.3s;z-index:99999}.toast.show{opacity:1}.toast.error{background:#dc2626}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.filter-row>*{flex:1;min-width:90px}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.kpi-box{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:8px;text-align:center}.kpi-box b{display:block;font-size:12px;color:#0f3057}.kpi-box small{font-size:8px;color:#64748b}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;justify-content:center;align-items:center;padding:10px}.modal.show{display:flex}.modal-content{background:#fff;padding:16px;border-radius:12px;width:95%;max-width:520px;max-height:90vh;overflow:auto}
+.info-shu{background:#fffbeb;border:1px dashed #f59e0b;padding:8px 10px;border-radius:8px;font-size:9px;margin-top:8px}
 </style>
 </head>
 <body>
 <div id="sidebar" class="sidebar">
   <a href="dashboard.html">🏠 Beranda</a>
-  <a href="kas.html">💵 Kas</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
+  <a href="kas.html" class="active">💵 Kas V5 SHU POS</a><a href="angsuran.html">📄 Angsuran</a><a href="simpanan.html">📊 Simpanan</a>
   <a href="neraca.html">📖 Neraca</a><a href="labarugi.html">📊 Laba Rugi</a><a href="shu.html">📊 SHU</a>
-  <a href="audit.html" class="active">📚 Audit Kas</a>
+  <a href="audit.html" class="active">📚 Audit V3</a>
   <a href="#" id="btnLogout">🚪 Logout</a>
 </div>
 <div id="overlay" class="overlay"></div>
-<header><div>📚 AUDIT KAS</div><div style="display:flex;gap:10px;align-items:center"><span id="userInfo" style="font-size:11px"></span><span class="menu-btn" id="btnMenu">☰</span></div></header>
+<header><div>📚 AUDIT V3 - SESUAI KAS V5 SHU POS</div><div style="display:flex;gap:10px;align-items:center"><span id="userInfo" style="font-size:10px"></span><span class="menu-btn" id="btnMenu">☰</span></div></header>
 
 <div class="card" style="background:linear-gradient(135deg,#0f3057,#1e90ff);color:#fff;border:none">
-  <h2 style="color:#fff">📌 OPNAME TERAKHIR</h2>
+  <h2 style="color:#fff">📌 OPNAME TERAKHIR + LOGIKA SHU POS</h2>
   <div id="boxTerakhir" style="font-size:11px">Memuat...</div>
+  <div id="boxSistem" style="margin-top:8px;background:rgba(255,255,255,.15);padding:8px;border-radius:8px;font-size:10px"></div>
+  <div class="info-shu" style="background:rgba(255,255,255,.9);color:#92400e">Info SHU 750rb: Cadangan 150rb TIDAK KELUAR CASH (tahan) - Yang keluar cash cuma 600rb. Audit ini sudah disesuaikan, cadangan tidak mengurangi saldo.</div>
 </div>
 
 <div class="card" id="cardInput">
-  <h2>1. Opname Kas Bulanan</h2>
+  <h2>1. Opname Kas (Sesuai Rumus Kas V5)</h2>
+  <div class="kpi"><div class="kpi-box"><small>SALDO KAS SISTEM (tanpa cadangan)</small><b id="sysKas">Rp 0</b></div><div class="kpi-box"><small>SALDO BANK SISTEM</small><b id="sysBank">Rp 0</b></div><div class="kpi-box"><small>TOTAL SISTEM</small><b id="sysTotal">Rp 0</b></div></div>
+  <div class="kpi" style="grid-template-columns:1fr 1fr"><div class="kpi-box" style="background:#fffbeb"><small>CADANGAN DITAHAN (tidak keluar cash)</small><b id="sysCadangan" style="color:#d97706">Rp 0</b></div><div class="kpi-box" style="background:#f3e8ff"><small>TOTAL SHU KELUAR CASH</small><b id="sysShuKeluar" style="color:#7c3aed">Rp 0</b></div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
     <div><div class="label">Tanggal Opname</div><input type="date" id="tglOpname"></div>
     <div><div class="label">Dilakukan Oleh</div><input type="text" id="namaOpname" readonly style="background:#f1f5f9"></div>
-    <div><div class="label">Kas Fisik</div><input type="number" id="kasFisik" placeholder="0"></div>
-    <div><div class="label">Bank Fisik</div><input type="number" id="bankFisik" placeholder="0"></div>
-    <div style="grid-column:1/-1"><div class="label">Catatan</div><input type="text" id="catatanOpname" placeholder="Selisih Nihil"></div>
+    <div><div class="label">Kas Fisik (Hitung Manual)</div><input type="number" id="kasFisik" placeholder="0" oninput="hitungSelisihPreview()"></div>
+    <div><div class="label">Bank Fisik (Mutasi)</div><input type="number" id="bankFisik" placeholder="0" oninput="hitungSelisihPreview()"></div>
+    <div style="grid-column:1/-1"><div id="previewSelisih" style="padding:8px;border-radius:8px;background:#f8fafc;border:1px dashed #cbd5e1;font-size:11px;text-align:center">Isi fisik dulu untuk lihat selisih (rumus sesuai Kas V5)</div></div>
+    <div style="grid-column:1/-1"><div class="label">Catatan</div><input type="text" id="catatanOpname" placeholder="Nihil / SHU Cadangan 150rb tahan"></div>
   </div>
-  <button class="btn" id="btnSimpan" onclick="simpanOpname()">💾 Simpan Opname</button>
+  <button class="btn" id="btnSimpan" onclick="simpanOpname()">💾 Simpan Opname + Hitung Selisih</button>
 </div>
 
 <div class="card" id="cardUserOnly" style="display:none;text-align:center">
@@ -60,13 +71,22 @@ input{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:1
 </div>
 
 <div class="card">
-  <h2>2. Log Aktivitas Kas</h2>
-  <button class="btn red" onclick="exportAuditPDF()">📄 Export Berita Acara PDF</button>
-  <div style="overflow-x:auto;margin-top:10px"><table><thead><tr><th>Tanggal</th><th>Aksi</th><th>User</th><th>Keterangan</th><th>Jumlah</th></tr></thead><tbody id="logTable"></tbody></table></div>
+  <h2>2. Riwayat Opname V3 (Sesuai Kas V5) <span id="jmlOpname" style="background:#ffedd5;padding:2px 8px;border-radius:10px;font-size:10px">0</span></h2>
+  <div class="filter-row">
+    <input type="month" id="filterBulan" onchange="renderRiwayat()">
+    <select id="filterLimit" onchange="renderRiwayat()"><option value="20">20 terakhir</option><option value="50">50</option><option value="100">100</option><option value="9999">Semua</option></select>
+    <input type="text" id="searchOpname" placeholder="Cari catatan / user..." oninput="renderRiwayat()">
+  </div>
+  <div id="riwayatOpname" style="overflow-x:auto">Memuat...</div>
 </div>
 
-<div class="card"><h2>3. Riwayat Opname (10 terakhir)</h2><div id="riwayatOpname" style="overflow-x:auto">Memuat...</div></div>
+<div class="card">
+  <h2>3. Log Aktivitas Kas (Include SHU) <button onclick="exportAuditPDF()" style="width:auto;padding:5px 10px;font-size:9px;background:#dc2626;color:#fff;border:none;border-radius:6px">📄 Export PDF</button></h2>
+  <div class="filter-row"><input type="text" id="searchLog" placeholder="Cari SHU / aksi / user..." oninput="renderLog()"></div>
+  <div style="overflow-x:auto"><table><thead><tr><th>Tanggal</th><th>Aksi</th><th>User</th><th>Keterangan</th><th>Jumlah</th></tr></thead><tbody id="logTable"></tbody></table></div>
+</div>
 
+<div class="modal" id="modalDetail"><div class="modal-content" id="modalDetailContent"></div></div>
 <div id="toast" class="toast"></div>
 
 <script type="module">
@@ -77,6 +97,7 @@ const app=initializeApp(firebaseConfig);const db=getDatabase(app);
 
 function showToast(m,e=false){const t=document.getElementById("toast");t.innerText=m;t.className="toast show"+(e?" error":"");setTimeout(()=>t.className="toast",3500);}
 function formatRp(n){return Number(n||0).toLocaleString("id-ID");}
+function formatTgl(t){return new Date(t).toLocaleDateString("id-ID");}
 const username=(localStorage.getItem("username")||"").trim();
 let role=(localStorage.getItem("role")||"user").toLowerCase().trim();
 if(!username){showToast("Login dulu",true);setTimeout(()=>location.href="index.html",1000);}
@@ -86,12 +107,10 @@ document.getElementById("namaOpname").value=username+" ("+role.toUpperCase()+")"
 
 const cardInput=document.getElementById("cardInput");
 const cardUser=document.getElementById("cardUserOnly");
-
 if(!isAdmin){
   cardInput.style.display="none";
   cardUser.style.display="block";
-  document.getElementById("userInfoText").innerHTML=`Halo <b>${username}</b> (${role})<br>Kamu <b>TIDAK BISA</b> opname kas.<br>Hanya bisa lihat log audit.<br>Opname hanya untuk Admin.`;
-  showToast("Mode lihat saja - opname hanya admin",true);
+  document.getElementById("userInfoText").innerHTML=`Halo <b>${username}</b> (${role})<br>Tidak bisa opname. Hanya lihat log.`;
 }
 
 window.toggleSidebar=function(){document.getElementById("sidebar").classList.toggle("open");document.getElementById("overlay").classList.toggle("active");};
@@ -100,54 +119,189 @@ document.getElementById("btnMenu").addEventListener("click",window.toggleSidebar
 document.getElementById("overlay").addEventListener("click",window.closeSidebar);
 document.getElementById("btnLogout").addEventListener("click",(e)=>{e.preventDefault();if(confirm("Logout?")){localStorage.clear();location.href="index.html";}});
 
-let dataLog=[];
+let dataLog=[], allOpname=[], kasList=[], sysKas=0, sysBank=0, sysCadangan=0, sysShuKeluar=0, dataSaldoAwal={};
+
+onValue(ref(db,"kas/saldoAwal"),snap=>{dataSaldoAwal=snap.val()||{}; hitungSistem();});
+onValue(ref(db,"kas/transaksi"),snap=>{
+  kasList=[]; 
+  snap.forEach(c=>{kasList.push({id:c.key,...c.val()});});
+  hitungSistem();
+  renderRiwayat();
+});
+
+function hitungSistem(){
+  sysKas=Number(dataSaldoAwal.cash||0); 
+  sysBank=Number(dataSaldoAwal.bank||0);
+  sysCadangan=0; sysShuKeluar=0;
+
+  kasList.forEach(i=>{
+    // === LOGIKA SAMA PERSIS KAYAK KAS V5 BOS ===
+    if(String(i.kategori)==="shu_cadangan"){
+      // cadangan tidak potong saldo, cuma catat
+      sysCadangan+=Number(i.jumlah||0);
+      return; 
+    }
+    const jumlah=Number(i.jumlah)||0; 
+    let tipe=String(i.tipe||"").toLowerCase(); 
+    if(tipe==="biaya") tipe="keluar"; 
+    const sumber=String(i.sumberKas||"cash").toLowerCase();
+
+    if(String(i.kategori||"").startsWith("shu_")){
+      if(tipe!=="masuk") sysShuKeluar+=jumlah;
+    }
+
+    if(sumber==="cash"){ if(tipe==="masuk") sysKas+=jumlah; else sysKas-=jumlah; }
+    if(sumber==="bank"){ if(tipe==="masuk") sysBank+=jumlah; else sysBank-=jumlah; }
+  });
+
+  document.getElementById("sysKas").innerText="Rp "+formatRp(sysKas);
+  document.getElementById("sysBank").innerText="Rp "+formatRp(sysBank);
+  document.getElementById("sysTotal").innerText="Rp "+formatRp(sysKas+sysBank);
+  document.getElementById("sysCadangan").innerText="Rp "+formatRp(sysCadangan);
+  document.getElementById("sysShuKeluar").innerText="Rp "+formatRp(sysShuKeluar);
+  document.getElementById("boxSistem").innerHTML=`
+    💻 Sistem (Rumus Kas V5): Kas Rp ${formatRp(sysKas)} | Bank Rp ${formatRp(sysBank)} | Total Rp ${formatRp(sysKas+sysBank)}<br>
+    📦 Cadangan Ditahan: Rp ${formatRp(sysCadangan)} (tidak keluar cash) | 💸 SHU Keluar Cash: Rp ${formatRp(sysShuKeluar)}
+  `;
+  hitungSelisihPreview();
+}
+
+window.hitungSelisihPreview=()=>{
+  let kF=Number(document.getElementById("kasFisik").value||0);
+  let bF=Number(document.getElementById("bankFisik").value||0);
+  let sK= kF - sysKas;
+  let sB= bF - sysBank;
+  let sT= sK + sB;
+  let el=document.getElementById("previewSelisih");
+  let warna = sT===0?"#dcfce7":(sT<0?"#fee2e2":"#ffedd5");
+  let txt = sT===0?"✅ NIHIL (Sesuai Kas V5, cadangan tidak dihitung)":(sT<0?`⚠️ KURANG Rp ${formatRp(Math.abs(sT))}`:`⚠️ LEBIH Rp ${formatRp(sT)}`);
+  el.style.background=warna;
+  el.innerHTML=`Kas Selisih: Rp ${formatRp(sK)} | Bank Selisih: Rp ${formatRp(sB)}<br><b>${txt}</b><br><small style="font-size:9px">Cadangan Rp ${formatRp(sysCadangan)} sudah dikecualikan dari hitungan</small>`;
+};
+
 onValue(ref(db,"audit/opname_terakhir"),snap=>{
   const box=document.getElementById("boxTerakhir");
   if(!snap.exists()){box.innerHTML="Belum ada opname";return;}
   const d=snap.val();
-  box.innerHTML=`<div style="display:flex;justify-content:space-between"><div><b>${d.tanggal}</b><br>Oleh: ${d.oleh}<br><small>${d.catatan||'-'}</small></div><div style="text-align:right">Kas: Rp ${formatRp(d.kasFisik)}<br>Bank: Rp ${formatRp(d.bankFisik)}<br><b>Total: Rp ${formatRp((d.kasFisik||0)+(d.bankFisik||0))}</b></div></div>`;
+  let selisihTotal = Number(d.selisihTotal!=null?d.selisihTotal:0);
+  box.innerHTML=`<div style="display:flex;justify-content:space-between;gap:10px"><div><b>${d.tanggal}</b><br>Oleh: ${d.oleh}<br><small>${d.catatan||'-'}</small><br><br><span class="badge ${selisihTotal===0?'bg-green':selisihTotal<0?'bg-red':'bg-orange'}">${selisihTotal===0?'NIHIL':selisihTotal<0?'KURANG '+formatRp(Math.abs(selisihTotal)):'LEBIH '+formatRp(selisihTotal)}</span></div><div style="text-align:right;font-size:10px">Fisik: Rp ${formatRp((d.kasFisik||0)+(d.bankFisik||0))}<br>Sistem: Rp ${formatRp((d.sysKas||0)+(d.sysBank||0))}<br>Cadangan Tahan: Rp ${formatRp(d.sysCadangan||0)}<br>SHU Keluar: Rp ${formatRp(d.sysShuKeluar||0)}</div></div>`;
 });
 
 onValue(ref(db,"audit/log"),snap=>{
-  const tbody=document.getElementById("logTable");tbody.innerHTML="";
-  if(!snap.exists()){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center">Belum ada aktivitas</td></tr>`;return;}
-  const logs=[];snap.forEach(c=>logs.push(c.val()));logs.sort((a,b)=>b.tanggal-a.tanggal);dataLog=logs;
-  logs.slice(0,100).forEach(d=>{tbody.innerHTML+=`<tr><td>${new Date(d.tanggal).toLocaleString("id-ID")}</td><td><b>${d.aksi}</b></td><td>${d.user}</td><td>${d.keterangan}</td><td style="text-align:right">Rp ${formatRp(d.jumlah)}</td></tr>`});
+  const logs=[];snap.forEach(c=>logs.push(c.val()));logs.sort((a,b)=>b.tanggal-a.tanggal);dataLog=logs;renderLog();
 });
 
 onValue(ref(db,"audit/opname"),snap=>{
-  const arr=[];snap.forEach(c=>arr.push(c.val()));arr.sort((a,b)=>(b.waktu||0)-(a.waktu||0));
-  const div=document.getElementById("riwayatOpname");
-  if(!arr.length){div.innerHTML="Belum ada data";return;}
-  let h=`<table><thead><tr><th>Tanggal</th><th>Kas</th><th>Bank</th><th>Oleh</th><th>Catatan</th></tr></thead><tbody>`;
-  arr.slice(0,10).forEach(d=>{h+=`<tr><td>${d.tanggal}</td><td>Rp ${formatRp(d.kasFisik)}</td><td>Rp ${formatRp(d.bankFisik)}</td><td>${d.oleh}</td><td>${d.catatan||'-'}</td></tr>`});
-  div.innerHTML=h+`</tbody></table>`;
+  const arr=[];snap.forEach(c=>arr.push({id:c.key,...c.val()}));arr.sort((a,b)=>(b.waktu||0)-(a.waktu||0));allOpname=arr;renderRiwayat();
 });
+
+window.renderRiwayat=()=>{
+  let arr=[...allOpname];
+  let bulan=document.getElementById("filterBulan").value;
+  let search=(document.getElementById("searchOpname").value||"").toLowerCase();
+  let limit=Number(document.getElementById("filterLimit").value||20);
+  if(bulan){ arr=arr.filter(d=> String(d.tanggal||"").startsWith(bulan)); }
+  if(search){ arr=arr.filter(d=> `${d.catatan||""} ${d.oleh||""} ${d.tanggal||""}`.toLowerCase().includes(search)); }
+  document.getElementById("jmlOpname").innerText=arr.length+" data";
+  let show=arr.slice(0,limit);
+  const div=document.getElementById("riwayatOpname");
+  if(!show.length){div.innerHTML=`<div style="text-align:center;padding:12px;color:#94a3b8">Tidak ada data</div>`;return;}
+  let h=`<table><thead><tr><th>Tgl</th><th>Fisik Kas</th><th>Fisik Bank</th><th>Sistem (V5)</th><th>Selisih</th><th>Cadangan Tahan</th><th>Oleh</th><th>Aksi</th></tr></thead><tbody>`;
+  show.forEach(d=>{
+    let selT = Number(d.selisihTotal||0);
+    let badge = selT===0?`<span class="badge bg-green">NIHIL</span>`:selT<0?`<span class="badge bg-red">KURANG ${formatRp(Math.abs(selT))}</span>`:`<span class="badge bg-orange">LEBIH ${formatRp(selT)}</span>`;
+    h+=`<tr><td>${d.tanggal||formatTgl(d.waktu)}<br><small>${d.catatan||'-'}</small></td><td>Rp ${formatRp(d.kasFisik)}</td><td>Rp ${formatRp(d.bankFisik)}</td><td>Rp ${formatRp((d.sysKas||0)+(d.sysBank||0))}<br><small>K:${formatRp(d.sysKas||0)} B:${formatRp(d.sysBank||0)}</small></td><td>${badge}</td><td><span class="badge-shu">Rp ${formatRp(d.sysCadangan||0)}</span><br><small>SHU Keluar: ${formatRp(d.sysShuKeluar||0)}</small></td><td>${d.oleh||'-'}</td><td><button onclick="detailOpname('${d.id}')" style="padding:4px 8px;font-size:9px;background:#1e90ff;color:#fff;border:none;border-radius:6px">Detail</button></td></tr>`;
+  });
+  div.innerHTML=h+`</tbody></table><div style="font-size:9px;color:#64748b;margin-top:6px">Menampilkan ${show.length} dari ${arr.length} | Rumus: Saldo sistem tanpa shu_cadangan (sesuai Kas V5)</div>`;
+};
+
+window.renderLog=()=>{
+  let search=(document.getElementById("searchLog").value||"").toLowerCase();
+  let arr=[...dataLog];
+  if(search) arr=arr.filter(d=> `${d.aksi||""} ${d.user||""} ${d.keterangan||""} ${d.kategori||""}`.toLowerCase().includes(search));
+  const tbody=document.getElementById("logTable");tbody.innerHTML="";
+  if(!arr.length){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center">Belum ada aktivitas</td></tr>`;return;}
+  arr.slice(0,100).forEach(d=>{
+    let kat = d.kategori||"";
+    let badge = kat.includes("shu")?` <span class="badge-shu">SHU</span>`:"";
+    tbody.innerHTML+=`<tr><td>${new Date(d.tanggal).toLocaleString("id-ID")}</td><td><b>${d.aksi}</b>${badge}</td><td>${d.user}</td><td>${d.keterangan}</td><td style="text-align:right">Rp ${formatRp(d.jumlah)}</td></tr>`;
+  });
+};
+
+window.detailOpname=(id)=>{
+  let d=allOpname.find(x=>x.id===id); if(!d) return;
+  let selT=Number(d.selisihTotal||0);
+  document.getElementById("modalDetail").classList.add("show");
+  document.getElementById("modalDetailContent").innerHTML=`
+    <h2>Detail Opname V3 - Sesuai Kas V5 SHU POS</h2>
+    <div style="font-size:11px;line-height:1.6">
+      <b>Tanggal:</b> ${d.tanggal}<br>
+      <b>Oleh:</b> ${d.oleh}<br>
+      <b>Catatan:</b> ${d.catatan||'-'}<br><br>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:#f8fafc;padding:8px;border-radius:8px"><small>KAS FISIK</small><br><b>Rp ${formatRp(d.kasFisik)}</b><br><small>Sistem: Rp ${formatRp(d.sysKas||0)}</small></div>
+        <div style="background:#f8fafc;padding:8px;border-radius:8px"><small>BANK FISIK</small><br><b>Rp ${formatRp(d.bankFisik)}</b><br><small>Sistem: Rp ${formatRp(d.sysBank||0)}</small></div>
+      </div>
+      <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:#fffbeb;padding:8px;border-radius:8px;border:1px dashed #f59e0b"><small>CADANGAN DITAHAN</small><br><b>Rp ${formatRp(d.sysCadangan||0)}</b><br><small>Tidak keluar cash</small></div>
+        <div style="background:#f3e8ff;padding:8px;border-radius:8px"><small>SHU KELUAR CASH</small><br><b>Rp ${formatRp(d.sysShuKeluar||0)}</b><br><small>600rb dari 750rb</small></div>
+      </div>
+      <div style="margin-top:10px;padding:10px;border-radius:8px;background:${selT===0?'#dcfce7':'#fee2e2'};text-align:center"><b>TOTAL SELISIH: Rp ${formatRp(selT)}</b><br><small>${selT===0?'NIHIL ✅ - Sesuai Kas V5':'Periksa fisik vs sistem (cadangan sudah dikecualikan)'}</small></div>
+      <button class="btn" onclick="closeModal()">Tutup</button>
+    </div>`;
+};
+window.closeModal=()=>document.getElementById("modalDetail").classList.remove("show");
+document.getElementById("modalDetail").addEventListener("click",e=>{if(e.target.id==="modalDetail") closeModal();});
 
 window.simpanOpname=async()=>{
   if(!isAdmin){showToast("Hanya admin!",true);return;}
   const kasFisik=Number(document.getElementById("kasFisik").value)||0;
   const bankFisik=Number(document.getElementById("bankFisik").value)||0;
   const tgl=document.getElementById("tglOpname").value;
-  const catatan=document.getElementById("catatanOpname").value;
+  const catatan=document.getElementById("catatanOpname").value||"Nihil";
   if(!tgl){showToast("Tanggal wajib isi",true);return;}
-  const data={tanggal:tgl,kasFisik,bankFisik,catatan,oleh:username,waktu:Date.now()};
-  const logData={tanggal:Date.now(),aksi:"OPNAME KAS",user:username,role,keterangan:`Kas: Rp ${formatRp(kasFisik)} | Bank: Rp ${formatRp(bankFisik)} - ${catatan||'Nihil'}`,jumlah:kasFisik+bankFisik};
+  let selisihKas=kasFisik - sysKas;
+  let selisihBank=bankFisik - sysBank;
+  let selisihTotal=selisihKas+selisihBank;
+  const data={
+    tanggal:tgl,
+    kasFisik,bankFisik,
+    sysKas,sysBank,sysCadangan,sysShuKeluar,
+    selisihKas,selisihBank,selisihTotal,
+    catatan,oleh:username,waktu:Date.now()
+  };
+  const logData={tanggal:Date.now(),aksi:"OPNAME KAS V5",user:username,role,keterangan:`Fisik Kas ${formatRp(kasFisik)} Bank ${formatRp(bankFisik)} | Sistem Kas ${formatRp(sysKas)} Bank ${formatRp(sysBank)} | Cadangan Tahan ${formatRp(sysCadangan)} | Selisih ${formatRp(selisihTotal)} - ${catatan}`,jumlah:kasFisik+bankFisik};
   await push(ref(db,"audit/opname"),data);
   await set(ref(db,"audit/opname_terakhir"),data);
   await push(ref(db,"audit/log"),logData);
   await set(ref(db,"audit/log_terakhir"),logData);
-  showToast("Opname tersimpan ✅");
+  showToast(`Opname tersimpan ✅ Selisih ${selisihTotal===0?'Nihil':formatRp(selisihTotal)} | Cadangan ${formatRp(sysCadangan)} tidak potong saldo`);
   document.getElementById("kasFisik").value="";document.getElementById("bankFisik").value="";document.getElementById("catatanOpname").value="";
 };
 
 window.exportAuditPDF=()=>{
   if(!isAdmin){showToast("Hanya admin bisa export",true);return;}
-  if(!dataLog.length){showToast("Belum ada log",true);return;}
+  if(!allOpname.length){showToast("Belum ada opname",true);return;}
   const {jsPDF}=window.jspdf;const doc=new jsPDF();
-  doc.text("BERITA ACARA OPNAME KAS - KOPERASI ARFA",14,15);
-  doc.autoTable({startY:20,head:[["Tanggal","Aksi","User","Keterangan","Jumlah"]],body:dataLog.slice(0,50).map(d=>[new Date(d.tanggal).toLocaleString("id-ID"),d.aksi,d.user,d.keterangan,"Rp "+formatRp(d.jumlah)]),styles:{fontSize:8}});
-  doc.save("Audit_Kas_ARFA.pdf");
+  doc.text("BERITA ACARA OPNAME KAS V5 SHU POS - KOPERASI ARFA",14,15);
+  doc.setFontSize(8);
+  doc.text(`Dicetak: ${new Date().toLocaleString("id-ID")} oleh ${username} | Rumus: shu_cadangan tidak potong saldo`,14,20);
+  doc.autoTable({
+    startY:25,
+    head:[["Tanggal","Kas Fisik","Bank Fisik","Kas Sistem","Bank Sistem","Cadangan Tahan","Selisih","Oleh"]],
+    body:allOpname.slice(0,50).map(d=>[
+      d.tanggal,
+      "Rp "+formatRp(d.kasFisik),
+      "Rp "+formatRp(d.bankFisik),
+      "Rp "+formatRp(d.sysKas||0),
+      "Rp "+formatRp(d.sysBank||0),
+      "Rp "+formatRp(d.sysCadangan||0),
+      "Rp "+formatRp(d.selisihTotal||0),
+      d.oleh
+    ]),
+    styles:{fontSize:6}
+  });
+  doc.save("Audit_Kas_V5_SHU_POS.pdf");
 };
 
 document.getElementById("tglOpname").value=new Date().toISOString().slice(0,10);

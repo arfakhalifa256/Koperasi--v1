@@ -26,7 +26,7 @@ body{
   margin:0;
   padding:15px;
   font-family:'Poppins',sans-serif;
-  background:#f0f6ff;
+  background:#ffedd5;
   color:#333;
 }
 
@@ -738,107 +738,70 @@ function isLogYangDipisahkan(data){
    PARSE WAKTU
 ========================================================= */
 
+
 function parseTimestamp(value){
-
-  if(
-    value === null ||
-    value === undefined ||
-    value === ""
-  ){
-
+  if(value === null || value === undefined || value === ""){
     return 0;
-
   }
 
-
-  if(
-    typeof value === "number" &&
-    !isNaN(value)
-  ){
-
-    if(value < 10000000000){
-
-      return value * 1000;
-
-    }
-
-    return value;
-
+  // Timestamp berupa angka
+  if(typeof value === "number" && Number.isFinite(value)){
+    return value > 0 && value < 10000000000
+      ? value * 1000
+      : value;
   }
 
+  const str = String(value).trim();
 
-  const str =
-    String(value).trim();
+  if(!str) return 0;
 
-
+  // Timestamp numerik yang disimpan sebagai teks
   if(/^\d+$/.test(str)){
-
-    let n =
-      Number(str);
-
-    if(n < 10000000000){
-
-      n *= 1000;
-
-    }
-
-    return n;
-
+    let n = Number(str);
+    if(!Number.isFinite(n) || n <= 0) return 0;
+    return n < 10000000000 ? n * 1000 : n;
   }
 
-
-  const d =
-    new Date(str);
-
-
-  if(!isNaN(d.getTime())){
-
-    return d.getTime();
-
-  }
-
-
-  const match =
-    str.match(
-      /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/
-    );
-
+  // Format Indonesia: DD/MM/YYYY atau DD-MM-YYYY
+  const match = str.match(
+    /^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})(?:[ T]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/
+  );
 
   if(match){
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+    const year = Number(match[3]);
+    const hour = Number(match[4] || 0);
+    const minute = Number(match[5] || 0);
+    const second = Number(match[6] || 0);
 
-    const day =
-      Number(match[1]);
+    if(
+      month < 1 || month > 12 ||
+      day < 1 || day > 31 ||
+      hour > 23 || minute > 59 || second > 59
+    ){
+      return 0;
+    }
 
-    const month =
-      Number(match[2]) - 1;
+    // Gunakan waktu lokal WIB untuk tanggal tanpa zona waktu.
+    const d = new Date(
+      year, month - 1, day, hour, minute, second
+    );
 
-    const year =
-      Number(match[3]);
+    if(
+      d.getFullYear() !== year ||
+      d.getMonth() !== month - 1 ||
+      d.getDate() !== day
+    ){
+      return 0;
+    }
 
-    const hour =
-      Number(match[4] || 0);
-
-    const min =
-      Number(match[5] || 0);
-
-    const sec =
-      Number(match[6] || 0);
-
-
-    return new Date(
-      year,
-      month,
-      day,
-      hour,
-      min,
-      sec
-    ).getTime();
-
+    return d.getTime();
   }
 
-
-  return 0;
-
+  // ISO 8601 atau format tanggal lain yang dikenali browser
+  const d = new Date(str);
+  return Number.isNaN(d.getTime()) ? 0 : d.getTime();
 }
 
 
@@ -1054,11 +1017,13 @@ function tambahLog(data){
       "-",
 
     ts:
-      parseTimestamp(
-        data.ts ??
-        data.waktu ??
-        data.tanggal
-      ),
+  parseTimestamp(
+    data.ts ??
+    data.timestamp ??
+    data.waktu ??
+    data.waktu_baca ??
+    data.tanggal
+  ),
 
     waktuOriginal:
       data.waktu ??
@@ -1218,11 +1183,12 @@ async function(){
               v.role || "-",
 
             ts:
-              v.waktu ??
-              v.timestamp ??
-              v.ts ??
-              v.tanggal ??
-              0,
+  v.timestamp ??
+  v.ts ??
+  v.waktu ??
+  v.waktu_baca ??
+  v.tanggal ??
+  0,
 
             /*
               SIMPAN DATA ASLI
@@ -1675,14 +1641,8 @@ function renderTabel(){
 
 
         const cocokAksi =
-          !filterAksi ||
-          normalisasiAksi(
-            log.aksi
-          )
-          .toLowerCase()
-          .includes(
-            filterAksi
-          );
+  !filterAksi ||
+  normalisasiAksi(log.aksi).toLowerCase() === filterAksi;
 
 
         const cocokTanggal =
